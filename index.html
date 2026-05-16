@@ -513,6 +513,103 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .tk-leg .tk-dot.ca{background:var(--bl)}
 .tk-leg .tk-dot.gm{background:var(--rd)}
 .tk-leg .tk-dot.sl{background:#7c3aed}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Phase A — Layout surgery (v1.4.0)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Sticky pulse strip */
+.pulse-strip{position:sticky;top:44px;z-index:40}
+
+/* Daily Command Brief — auto-height, tighter */
+.brief-strip{align-items:start;padding:18px 28px 0}
+.bf{min-height:0;padding:14px 16px}
+.bf-hd{margin-bottom:2px}
+.bf-sub{margin-bottom:8px;font-size:9px}
+
+/* Priority Stack — compact rows, right-aligned single primary button */
+.bf-priority .bf-it{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--bd)}
+.bf-priority .bf-it:first-of-type{border-top:none;padding-top:4px}
+.bf-priority .bf-rank{font-size:11px;font-weight:700;color:var(--tx3);min-width:14px;line-height:1.2;align-self:start;margin-top:3px}
+.bf-priority .bf-mid{grid-column:2;min-width:0}
+.bf-priority .bf-top{display:flex;align-items:center;gap:8px;margin-bottom:2px;flex-wrap:wrap}
+.bf-priority .bf-nm{font-size:12px}
+.bf-priority .bf-ctx{font-size:10px;color:var(--tx2);line-height:1.4}
+.bf-priority .bf-act{grid-column:3;margin-top:0;align-self:center;font-size:10px;padding:6px 10px;white-space:nowrap}
+.bf-priority .bf-act i{font-size:11px}
+
+/* Next Up — auto-height, no white gap, full Gong text */
+.bf-next .bf-next-hdr{margin-bottom:10px;align-items:flex-start}
+.bf-next-when{font-size:10px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.06em;line-height:1.3;text-align:right;flex-shrink:0;white-space:nowrap}
+.bf-next-when .when-mins{font-size:13px;display:block;letter-spacing:-.01em}
+.bf-kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin:8px 0 12px;align-items:start}
+.bf-next .bf-kv-r{flex-direction:column;align-items:flex-start;gap:1px;display:flex}
+.bf-next .bf-kv-l{font-size:9px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;color:var(--tx3)}
+.bf-next .bf-kv-v{font-size:11px;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.4;color:var(--tx);font-weight:600}
+.bf-next .bf-btns{margin-top:0}
+
+/* Ask Dust — compact command palette */
+.bf-ask .bf-dust-input{margin-bottom:8px;padding:7px 11px}
+.bf-ask .bf-qa{gap:6px;margin-top:0}
+.bf-ask .bf-qa-btn{padding:8px 9px;font-size:11px}
+.bf-ask .bf-qa-btn i{font-size:11px}
+
+/* Pre-loaded briefing tag */
+.pl-tag{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.07em;background:var(--tl-bg);padding:3px 7px;border-radius:4px;margin-left:auto}
+.pl-tag .pl-dot{width:6px;height:6px;border-radius:50%;background:var(--tl);animation:ls-pulse 1.8s infinite}
+
+/* My Agents collapsible directory */
+.ag-toggle{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.07em;padding:12px 0 8px;border-top:1px solid var(--bd);margin-top:16px;cursor:pointer;background:none;border-left:none;border-right:none;border-bottom:none;width:100%;font-family:inherit;text-align:left}
+.ag-toggle:hover{color:var(--tx)}
+.ag-toggle .ag-chev{transition:transform .2s;font-size:14px}
+.ag-toggle.open .ag-chev{transform:rotate(180deg)}
+.ag-body{display:none}
+.ag-body.on{display:block}
+
+/* Live Signals — compact rows */
+.ls-row{padding:0 14px;gap:10px;min-height:48px;display:flex;align-items:center}
+.ls-row:last-child{border-bottom:none}
+.ls-ic{width:28px;height:28px;border-radius:6px;font-size:13px}
+.ls-mid{display:grid;grid-template-columns:140px auto 1fr auto auto auto;align-items:center;gap:10px;min-width:0;flex:1}
+.ls-acct{font-size:11px;color:var(--tx);font-weight:700;text-transform:none;letter-spacing:0;margin-bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ls-type{font-size:10px;font-weight:600;color:var(--tx2);letter-spacing:0;white-space:nowrap}
+.ls-ctx{font-size:10px;color:var(--tx3);margin-bottom:0;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ls-sev{font-size:9px;padding:1px 6px;font-weight:700;border-radius:3px;letter-spacing:.04em;text-transform:uppercase}
+.ls-time{font-size:10px;color:var(--tx3);font-weight:500;white-space:nowrap}
+.ls-act{font-size:10px;font-weight:700;padding:5px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;white-space:nowrap;flex-shrink:0}
+.ls-act:hover{background:var(--surf2);border-color:var(--tx2)}
+.ls-foot{padding:10px 14px;text-align:center;background:var(--surf2);border-top:1px solid var(--bd)}
+.ls-foot-a{font-size:11px;font-weight:600;color:var(--tl);text-decoration:none;cursor:pointer;background:none;border:none;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+.ls-foot-a:hover{text-decoration:underline}
+@media (max-width:1280px){
+  .ls-mid{grid-template-columns:auto 1fr auto auto auto;gap:6px}
+  .ls-type{display:none}
+}
+
+/* Dark Zone collapsible */
+.dz-toggle{background:rgba(255,255,255,.08);border:none;color:#fff;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:5px;text-transform:uppercase;letter-spacing:.05em}
+.dz-toggle:hover{background:rgba(255,255,255,.16)}
+.dz-toggle .dz-chev{transition:transform .2s;font-size:13px}
+.dz-toggle.open .dz-chev{transform:rotate(180deg)}
+.dz-body{display:none}
+.dz-body.on{display:block}
+
+/* Calendar header — compact */
+.cal-hd{padding:10px 18px 9px;display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:44px;border-radius:var(--rlg) var(--rlg) 0 0}
+.cal-date{font-size:13px;font-weight:700;color:var(--tx);letter-spacing:-.01em;line-height:1.3;margin-bottom:0;display:flex;align-items:center;gap:8px}
+.cal-hint{font-size:10px;color:var(--tx3);line-height:1.3}
+
+/* Today's Tasks — 64px row max, single-line title + meta + button */
+.ac{padding:9px 14px;display:grid;grid-template-columns:1fr auto;column-gap:12px;row-gap:1px;align-items:center;border-bottom:1px solid var(--bd);min-height:0}
+.ac:last-child{border-bottom:none}
+.ac-top{grid-column:1;display:flex;align-items:center;gap:6px;font-size:9px;margin-bottom:0}
+.ac-title{grid-column:1;font-size:12px;font-weight:600;color:var(--tx);margin-bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
+.ac > div[style*="display:flex"][style*="justify-content:space-between"]{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ac > div[style*="display:flex"][style*="justify-content:space-between"] > span{font-size:10px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ac-btn{padding:5px 10px;font-size:10px;flex-shrink:0}
+
+/* Default right panel — pre-loaded briefing wrapper */
+.rp-hd.pl{justify-content:space-between}
 </style>
 </head>
 <body>
@@ -700,36 +797,27 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="bf-rank">1</div>
         <div class="bf-mid">
           <div class="bf-top"><span class="bf-nm">NovaVault</span><span class="bf-tag r">Critical save</span></div>
-          <div class="bf-ctx">17 days to renewal &middot; champion lost &middot; health 23 &middot; last call 45d ago</div>
-          <div class="bf-act-row">
-            <button class="bf-act r" onclick="agentBtn('save','nova',this)" type="button"><i class="ti ti-lifebuoy"></i> Open Save Strategy</button>
-            <button class="bf-act-sec" onclick="agentBtn('next','nova',this)" type="button"><i class="ti ti-list-check"></i> Next Steps</button>
-          </div>
+          <div class="bf-ctx">17d to renewal &middot; champion lost &middot; health 23</div>
         </div>
+        <button class="bf-act r" onclick="agentBtn('save','nova',this)" type="button"><i class="ti ti-lifebuoy"></i> Save Strategy</button>
       </div>
 
       <div class="bf-it">
         <div class="bf-rank">2</div>
         <div class="bf-mid">
           <div class="bf-top"><span class="bf-nm">Acme Corp</span><span class="bf-tag g">Expansion</span></div>
-          <div class="bf-ctx">Next meeting 9:00 AM QBR &middot; enterprise tier signal in last Gong</div>
-          <div class="bf-act-row">
-            <button class="bf-act g" onclick="agentBtn('prep','acme',this)" type="button"><i class="ti ti-bolt"></i> Prep Me</button>
-            <button class="bf-act-sec" onclick="agentBtn('next','acme',this)" type="button"><i class="ti ti-list-check"></i> Next Steps</button>
-          </div>
+          <div class="bf-ctx">9:00 AM QBR &middot; enterprise tier signal &middot; health 82</div>
         </div>
+        <button class="bf-act g" onclick="agentBtn('prep','acme',this)" type="button"><i class="ti ti-bolt"></i> Prep Me</button>
       </div>
 
       <div class="bf-it">
         <div class="bf-rank">3</div>
         <div class="bf-mid">
           <div class="bf-top"><span class="bf-nm">Brightex Inc</span><span class="bf-tag a">Watch</span></div>
-          <div class="bf-ctx">Competitor flagged &middot; health 71&rarr;48 in 30d &middot; renews in 31d</div>
-          <div class="bf-act-row">
-            <button class="bf-act a" onclick="agentBtn('risk','brightex',this)" type="button"><i class="ti ti-shield-check"></i> Risk Analyst</button>
-            <button class="bf-act-sec" onclick="agentBtn('next','brightex',this)" type="button"><i class="ti ti-list-check"></i> Next Steps</button>
-          </div>
+          <div class="bf-ctx">Competitor flagged &middot; 71&rarr;48 in 30d &middot; renews 31d</div>
         </div>
+        <button class="bf-act a" onclick="agentBtn('risk','brightex',this)" type="button"><i class="ti ti-shield-check"></i> Risk Analyst</button>
       </div>
     </div>
 
@@ -743,14 +831,14 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
           <div class="bf-next-acct">Acme Corp</div>
           <div class="bf-next-type">Quarterly Business Review &middot; David Kim</div>
         </div>
-        <div class="bf-next-when">In 38 min &middot; 9:00 AM</div>
+        <div class="bf-next-when"><span class="when-mins">In 38 min</span>9:00 AM</div>
       </div>
 
       <div class="bf-kv">
         <div class="bf-kv-r"><span class="bf-kv-l">Health</span><span class="bf-kv-v g">82 &middot; Healthy</span></div>
         <div class="bf-kv-r"><span class="bf-kv-l">Renewal</span><span class="bf-kv-v">Aug 12 &middot; 89d</span></div>
         <div class="bf-kv-r"><span class="bf-kv-l">Open CTAs</span><span class="bf-kv-v g">0</span></div>
-        <div class="bf-kv-r"><span class="bf-kv-l">Last Gong</span><span class="bf-kv-v">5d &middot; enterprise tier mentioned</span></div>
+        <div class="bf-kv-r"><span class="bf-kv-l">Last Gong</span><span class="bf-kv-v">May 10 &middot; David Kim flagged enterprise tier &amp; SSO support</span></div>
       </div>
 
       <div class="bf-btns">
@@ -881,16 +969,14 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 
     <div>
       <div class="cal-hd">
-        <div>
-          <div class="cal-date">
-            Friday, May 15
-            <div class="tip-w" style="display:inline-flex;vertical-align:middle">
-              <i class="ti ti-info-circle tip-ic"></i>
-              <div class="tip-bx">Google Calendar API: filters for external domain attendees. Cross-references attendee email with Gainsight contacts. Call type detected from invite title: &ldquo;QBR&rdquo;, &ldquo;Risk&rdquo;, &ldquo;EBR&rdquo;, &ldquo;Expansion&rdquo; &rarr; routes to matching Dust agent template.</div>
-            </div>
+        <div class="cal-date">
+          Friday, May 15
+          <div class="tip-w" style="display:inline-flex;vertical-align:middle">
+            <i class="ti ti-info-circle tip-ic"></i>
+            <div class="tip-bx">Google Calendar API: filters for external domain attendees. Cross-references attendee email with Gainsight contacts. Call type detected from invite title: &ldquo;QBR&rdquo;, &ldquo;Risk&rdquo;, &ldquo;EBR&rdquo;, &ldquo;Expansion&rdquo; &rarr; routes to matching Dust agent template.</div>
           </div>
-          <div class="cal-sub">Click a call to open your mission briefing in the panel &rarr;</div>
         </div>
+        <div class="cal-hint">Click a call to open the mission briefing &rarr;</div>
       </div>
       <div class="cal-body">
         <div class="ce g" id="ce-acme" onclick="openPanel('acme',this)">
@@ -931,36 +1017,37 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 
       <div class="dz">
         <div class="dz-hd">
-          <div class="dz-title"><i class="ti ti-moon" style="color:var(--rd)"></i> 60-Day Dark Zone</div>
-          <span class="dz-cnt">3 accounts</span>
-          <div class="tip-w" style="margin-left:8px">
-            <i class="ti ti-info-circle" style="font-size:12px;color:rgba(255,255,255,.3);cursor:help"></i>
-            <div class="tip-bx">Query: accounts WHERE <em>(Last_Gong &gt; 60d AND Last_Email &gt; 60d)</em> ORDER BY Renewal_Date. Icebreaker agent pulls last positive Gong moment to personalize re-engagement email.</div>
-          </div>
+          <div style="display:flex;align-items:center;gap:10px"><div class="dz-title"><i class="ti ti-moon" style="color:var(--rd)"></i> 60-Day Dark Zone</div><span class="dz-cnt">3 accounts</span></div>
+          <button class="dz-toggle" id="dz-toggle-btn" type="button" onclick="toggleDz()">
+            <span id="dz-toggle-label">Show accounts</span>
+            <i class="ti ti-chevron-down dz-chev"></i>
+          </button>
         </div>
-        <div class="dz-acct">
-          <div class="dz-left">
-            <div class="dz-nm">Meridian Health Systems &middot; $22K</div>
-            <div class="dz-row"><span class="dz-days">73d dark</span><span class="dz-renewal">Renews Jun 30</span></div>
-            <div class="dz-last">&ldquo;Last positive: SSO rollout discussion &mdash; March 15 (Gong)&rdquo;</div>
+        <div class="dz-body" id="dz-body">
+          <div class="dz-acct">
+            <div class="dz-left">
+              <div class="dz-nm">Meridian Health Systems &middot; $22K</div>
+              <div class="dz-row"><span class="dz-days">73d dark</span><span class="dz-renewal">Renews Jun 30</span></div>
+              <div class="dz-last">&ldquo;Last positive: SSO rollout discussion &mdash; March 15 (Gong)&rdquo;</div>
+            </div>
+            <button class="dz-btn" onclick="openPanel('meridian',null)">Ghost-Buster</button>
           </div>
-          <button class="dz-btn" onclick="openPanel('meridian',null)">Ghost-Buster</button>
-        </div>
-        <div class="dz-acct">
-          <div class="dz-left">
-            <div class="dz-nm">Creston Software &middot; $18K</div>
-            <div class="dz-row"><span class="dz-days">67d dark</span><span class="dz-renewal">Renews Aug 20</span></div>
-            <div class="dz-last">&ldquo;Last positive: Onboarding call &mdash; went quiet after Feb 28&rdquo;</div>
+          <div class="dz-acct">
+            <div class="dz-left">
+              <div class="dz-nm">Creston Software &middot; $18K</div>
+              <div class="dz-row"><span class="dz-days">67d dark</span><span class="dz-renewal">Renews Aug 20</span></div>
+              <div class="dz-last">&ldquo;Last positive: Onboarding call &mdash; went quiet after Feb 28&rdquo;</div>
+            </div>
+            <button class="dz-btn" onclick="openPanel('creston',null)">Ghost-Buster</button>
           </div>
-          <button class="dz-btn" onclick="openPanel('creston',null)">Ghost-Buster</button>
-        </div>
-        <div class="dz-acct">
-          <div class="dz-left">
-            <div class="dz-nm">Apex Dynamics &middot; $15K</div>
-            <div class="dz-row"><span class="dz-days">61d dark</span><span class="dz-renewal">Renews Jul 15</span></div>
-            <div class="dz-last">&ldquo;Champion changed &mdash; Ryan Patel not yet reached (Salesforce)&rdquo;</div>
+          <div class="dz-acct">
+            <div class="dz-left">
+              <div class="dz-nm">Apex Dynamics &middot; $15K</div>
+              <div class="dz-row"><span class="dz-days">61d dark</span><span class="dz-renewal">Renews Jul 15</span></div>
+              <div class="dz-last">&ldquo;Champion changed &mdash; Ryan Patel not yet reached (Salesforce)&rdquo;</div>
+            </div>
+            <button class="dz-btn" onclick="openPanel('apex',null)">Ghost-Buster</button>
           </div>
-          <button class="dz-btn" onclick="openPanel('apex',null)">Ghost-Buster</button>
         </div>
       </div>
 
@@ -973,68 +1060,96 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="ls-row">
           <div class="ls-ic r"><i class="ti ti-microphone-off"></i></div>
           <div class="ls-mid">
-            <div class="ls-top"><div class="ls-type">Gong silence threshold crossed</div><div class="ls-time">3 min ago</div></div>
             <div class="ls-acct">Meridian Health Systems</div>
-            <div class="ls-ctx">No customer-facing call in 73 days. Last positive moment: SSO rollout discussion, Mar 15.</div>
+            <div class="ls-type">Gong silence</div>
+            <div class="ls-ctx">No call in 73 days &middot; last positive: SSO rollout, Mar 15</div>
             <span class="ls-sev crit">Critical</span>
+            <div class="ls-time">3 min ago</div>
+            <button class="ls-act" type="button" onclick="openPanel('meridian',null)"><i class="ti ti-ghost"></i> Ghost-Buster</button>
           </div>
         </div>
         <div class="ls-row">
           <div class="ls-ic r"><i class="ti ti-user-off"></i></div>
           <div class="ls-mid">
-            <div class="ls-top"><div class="ls-type">Champion change detected</div><div class="ls-time">22 min ago</div></div>
             <div class="ls-acct">NovaVault</div>
-            <div class="ls-ctx">James Wu marked inactive in Salesforce &middot; Michael Torres added as new primary contact.</div>
+            <div class="ls-type">Champion change</div>
+            <div class="ls-ctx">James Wu inactive &middot; Michael Torres added as primary</div>
             <span class="ls-sev hi">High Risk</span>
+            <div class="ls-time">22 min ago</div>
+            <button class="ls-act" type="button" onclick="agentBtn('prep','nova',this)"><i class="ti ti-bolt"></i> Prep Me</button>
           </div>
         </div>
         <div class="ls-row">
           <div class="ls-ic a"><i class="ti ti-trending-down"></i></div>
           <div class="ls-mid">
-            <div class="ls-top"><div class="ls-type">Health score drop</div><div class="ls-time">1h ago</div></div>
             <div class="ls-acct">Brightex Inc</div>
-            <div class="ls-ctx">Health 71 &rarr; 48 over 30 days. Gainsight flagged sustained downward trend.</div>
+            <div class="ls-type">Health drop</div>
+            <div class="ls-ctx">Health 71 &rarr; 48 over 30 days &middot; sustained trend</div>
             <span class="ls-sev watch">Watch</span>
+            <div class="ls-time">1h ago</div>
+            <button class="ls-act" type="button" onclick="agentBtn('risk','brightex',this)"><i class="ti ti-shield-check"></i> Risk Analyst</button>
           </div>
         </div>
         <div class="ls-row">
           <div class="ls-ic g"><i class="ti ti-trending-up"></i></div>
           <div class="ls-mid">
-            <div class="ls-top"><div class="ls-type">Expansion signal detected</div><div class="ls-time">2h ago</div></div>
             <div class="ls-acct">Acme Corp</div>
-            <div class="ls-ctx">&ldquo;Enterprise tier&rdquo; mentioned unprompted in last Gong &middot; SSO + advanced reporting flagged as near-term needs.</div>
+            <div class="ls-type">Expansion signal</div>
+            <div class="ls-ctx">&ldquo;Enterprise tier&rdquo; unprompted &middot; SSO + reporting flagged</div>
             <span class="ls-sev opp">Opportunity</span>
+            <div class="ls-time">2h ago</div>
+            <button class="ls-act" type="button" onclick="agentBtn('prep','acme',this)"><i class="ti ti-bolt"></i> Prep Me</button>
           </div>
         </div>
+        <div class="ls-row">
+          <div class="ls-ic a"><i class="ti ti-ticket"></i></div>
+          <div class="ls-mid">
+            <div class="ls-acct">Brightex Inc</div>
+            <div class="ls-type">Support ticket spike</div>
+            <div class="ls-ctx">3 new tickets in 48h &middot; SSO config + provisioning issues</div>
+            <span class="ls-sev watch">Watch</span>
+            <div class="ls-time">3h ago</div>
+            <button class="ls-act" type="button" onclick="agentBtn('risk','brightex',this)"><i class="ti ti-shield-check"></i> Risk Analyst</button>
+          </div>
+        </div>
+        <div class="ls-foot"><button class="ls-foot-a" type="button" onclick="toast('Full signals feed coming in Forecasting tab')">View 6 more signals <i class="ti ti-arrow-right"></i></button></div>
       </div>
     </div>
 
     <div class="rp">
       <div class="rp-view on" id="view-default">
-        <div class="rp-hd"><div class="rp-t"><i class="ti ti-chart-bar"></i> Today at a Glance</div></div>
+        <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Next Up &middot; Auto-loaded</span></div>
         <div class="rp-scroll">
-          <div style="margin-bottom:16px">
-            <div class="ds-row"><span class="ds-l">Customer calls</span><span class="ds-v">3</span></div>
-            <div class="ds-row"><span class="ds-l">Accounts at risk</span><span class="ds-v r">2</span></div>
-            <div class="ds-row"><span class="ds-l">ARR at risk</span><span class="ds-v a">$67K</span></div>
-            <div class="ds-row"><span class="ds-l">Overdue CTAs</span><span class="ds-v r">3</span></div>
-            <div class="ds-row"><span class="ds-l">Dark Zone accounts</span><span class="ds-v r">3</span></div>
-            <div class="ds-row"><span class="ds-l">Tasks done</span><span class="ds-v g" id="ds-tasks">0 / 5</span></div>
+          <div class="mb-nm">Acme Corp</div>
+          <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>QBR &middot; 9:00 AM</span></div>
+          <div class="story">
+            <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health 82, stable. Zero open CTAs. Strong enterprise adoption across IT and Engineering. David Kim confirmed SSO interest in last call &mdash; expansion is on the table.</div></div>
+            <div class="s-item last"><div class="s-lbl">Last Gong &middot; May 10</div><div class="s-val">David Kim unprompted mentioned enterprise tier by name. Asked about SSO rollout support and advanced reporting. Sentiment: strongly positive. No competitor mention.</div></div>
+            <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Confirm value delivered in Q1, align on SSO pilot timeline, and get verbal commit on enterprise tier expansion before renewal in 89 days.</div></div>
           </div>
-          <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px">
-            <i class="ti ti-sparkles" style="color:var(--tl)"></i>
-            My Dust Agents
-            <div class="tip-w"><i class="ti ti-info-circle tip-ic"></i><div class="tip-bx">Context-aware routing: selecting a calendar event sends a pre-built payload to Dust API including Account ID, last 3 Gong transcripts, Gainsight health + CTAs, and open Salesforce opportunities. Zero manual prompt-writing.</div></div>
+          <div class="mb-btns">
+            <button class="mb-btn" onclick="agentBtn('prep','acme',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Last 3 calls + SFDC</div></div></button>
+            <button class="mb-btn" onclick="agentBtn('risk','acme',this)"><i class="ti ti-shield-check mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Gainsight + health</div></div></button>
+            <button class="mb-btn" onclick="agentBtn('next','acme',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">3 Gainsight CTAs</div></div></button>
+            <button class="mb-btn" onclick="agentBtn('save','acme',this)"><i class="ti ti-arrow-right-circle mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Retention play</div></div></button>
           </div>
-          <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Prep Me <span class="ag-tag">Most used</span></div><div class="ag-desc">Pre-Call Brief: account snapshot, last Gong, discovery questions, battle card, follow-up plan.</div></div>
-          <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Risk Analyst</div><div class="ag-desc">Risk Analysis: churn probability, 3 driving signals, recommended save play.</div></div>
-          <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Save Strategy</div><div class="ag-desc">Talking points, discovery, objection handlers, and extension terms for at-risk renewals.</div></div>
-          <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Next Steps</div><div class="ag-desc">3 Gainsight CTAs ready to push (owner + due date) plus the multi-day follow-up sequence.</div></div>
-          <div class="ag-sec-t">More agents <span class="ag-soon">Coming soon</span></div>
-          <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>Icebreaker</div><div class="ag-desc">Re-engagement emails for Dark Zone accounts. Currently powers Ghost-Buster panel only.</div></div>
-          <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>QBR Builder</div><div class="ag-desc">Deck-builder agent invoked by the Generate Deck button. Surfaces in its own modal flow.</div></div>
-          <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>Account Strategist</div><div class="ag-desc">Portfolio-level signal routing. Replaces manual context-gathering across Gainsight + Gong.</div></div>
-          <div style="padding:12px 0 0"><button onclick="configureAgents()" style="width:100%;font-size:11px;color:var(--tx3);background:none;border:1px dashed var(--bd2);border-radius:var(--r);padding:8px;cursor:pointer;font-family:inherit;transition:.1s" onmouseover="this.style.borderColor='var(--tl)';this.style.color='var(--tl)'" onmouseout="this.style.borderColor='var(--bd2)';this.style.color='var(--tx3)'"><i class="ti ti-settings"></i> Configure &middot; select from Dust workspace</button></div>
+          <button class="mb-deck" onclick="openDeckModal('acme')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate QBR Deck</button>
+
+          <button class="ag-toggle" id="ag-toggle-btn" onclick="toggleAgents()" type="button">
+            <span><i class="ti ti-sparkles" style="color:var(--tl);font-size:12px;margin-right:5px;vertical-align:middle"></i>My Agents</span>
+            <i class="ti ti-chevron-down ag-chev"></i>
+          </button>
+          <div class="ag-body" id="ag-body">
+            <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Prep Me <span class="ag-tag">Most used</span></div><div class="ag-desc">Pre-Call Brief: account snapshot, last Gong, discovery questions, battle card, follow-up plan.</div></div>
+            <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Risk Analyst</div><div class="ag-desc">Risk Analysis: churn probability, 3 driving signals, recommended save play.</div></div>
+            <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Save Strategy</div><div class="ag-desc">Talking points, discovery, objection handlers, and extension terms for at-risk renewals.</div></div>
+            <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Next Steps</div><div class="ag-desc">3 Gainsight CTAs ready to push (owner + due date) plus the multi-day follow-up sequence.</div></div>
+            <div class="ag-sec-t">More agents <span class="ag-soon">Coming soon</span></div>
+            <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>Icebreaker</div><div class="ag-desc">Re-engagement emails for Dark Zone accounts. Currently powers Ghost-Buster panel only.</div></div>
+            <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>QBR Builder</div><div class="ag-desc">Deck-builder agent invoked by the Generate Deck button. Surfaces in its own modal flow.</div></div>
+            <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>Account Strategist</div><div class="ag-desc">Portfolio-level signal routing. Replaces manual context-gathering across Gainsight + Gong.</div></div>
+            <div style="padding:12px 0 0"><button onclick="configureAgents()" style="width:100%;font-size:11px;color:var(--tx3);background:none;border:1px dashed var(--bd2);border-radius:var(--r);padding:8px;cursor:pointer;font-family:inherit;transition:.1s" onmouseover="this.style.borderColor='var(--tl)';this.style.color='var(--tl)'" onmouseout="this.style.borderColor='var(--bd2)';this.style.color='var(--tx3)'"><i class="ti ti-settings"></i> Configure &middot; select from Dust workspace</button></div>
+          </div>
         </div>
       </div>
 
@@ -1238,6 +1353,27 @@ function doneTask(btn, id) {
 function markSent(id) {
   var btn = document.getElementById('send-' + id);
   if (btn) { btn.textContent = 'Sent via Gmail'; btn.classList.add('sent'); btn.disabled = true; }
+  var names = { meridian: 'Meridian Health Systems', creston: 'Creston Software', apex: 'Apex Dynamics' };
+  var nm = names[id] || 'Account';
+  toast(nm + ' outreach email sent via Gmail &middot; Outreach activity logged in Salesforce ✓');
+}
+
+function toggleAgents() {
+  var btn = document.getElementById('ag-toggle-btn');
+  var body = document.getElementById('ag-body');
+  if (!btn || !body) return;
+  var on = body.classList.toggle('on');
+  btn.classList.toggle('open', on);
+}
+
+function toggleDz() {
+  var btn = document.getElementById('dz-toggle-btn');
+  var body = document.getElementById('dz-body');
+  var lbl = document.getElementById('dz-toggle-label');
+  if (!btn || !body) return;
+  var on = body.classList.toggle('on');
+  btn.classList.toggle('open', on);
+  if (lbl) lbl.textContent = on ? 'Hide accounts' : 'Show accounts';
 }
 
 function toast(msg) {
@@ -1269,12 +1405,26 @@ var DUST_RESP = {
   'Prepare My Day': function() {
     return ''
       + '<div class="du-sec">'
-        + '<div class="du-sec-t"><i class="ti ti-sun"></i> Your day at a glance</div>'
-        + '<div class="du-card r"><div class="du-card-t">NovaVault &middot; Exec Check-in 3:30 PM <span class="du-card-tag r">Critical</span></div><div class="du-card-s">17 days to renewal. Brand-new champion (Michael Torres). Lead with discovery, not pricing — propose 60-day extension.</div><div class="du-acts"><button class="du-btn prim" onclick="dustQuickToDrawer(\'save\',\'nova\')" type="button"><i class="ti ti-lifebuoy"></i> Open Save Strategy</button></div></div>'
-        + '<div class="du-card g"><div class="du-card-t">Acme Corp &middot; QBR 9:00 AM <span class="du-card-tag g">Expansion</span></div><div class="du-card-s">Health 82, zero open CTAs. David Kim flagged enterprise tier + SSO in last Gong. Goal: verbal commit on the SSO pilot before the call ends.</div></div>'
-        + '<div class="du-card a"><div class="du-card-t">Brightex Inc &middot; Risk Review 11:00 AM <span class="du-card-tag a">At risk</span></div><div class="du-card-s">Competitor flagged 12 days ago. Validate the evaluation, don&rsquo;t resist it. Push the 30-day extension as breathing room.</div></div>'
+        + '<div class="du-sec-t"><i class="ti ti-sun"></i> Today&rsquo;s calls (3)</div>'
+        + '<div class="du-card g"><div class="du-card-t">9:00 AM &middot; Acme Corp QBR <span class="du-card-tag g">Expansion</span></div><div class="du-card-s">Health 82 &middot; Renewal in 89 days<br><strong style="color:var(--tx)">Coaching:</strong> Expansion-ready. Test enterprise tier interest. Confirm SSO pilot commitment.</div></div>'
+        + '<div class="du-card a"><div class="du-card-t">11:00 AM &middot; Brightex Inc Risk Review <span class="du-card-tag a">At risk</span></div><div class="du-card-s">Health 48 &middot; Renewal in 31 days<br><strong style="color:var(--tx)">Coaching:</strong> Competitor evaluation in progress. Lead with value, not pricing. Get to the real objection.</div></div>'
+        + '<div class="du-card r"><div class="du-card-t">3:30 PM &middot; NovaVault Exec Check-in <span class="du-card-tag r">Critical</span></div><div class="du-card-s">Health 23 &middot; Renewal in 17 days<br><strong style="color:var(--tx)">Coaching:</strong> Cold intro to new champion. Don&rsquo;t mention renewal first. Propose 60-day extension.</div></div>'
       + '</div>'
-      + '<div class="du-foot">Pulled from Gainsight + Gong + Google Calendar via Dust.</div>';
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-alert-circle"></i> Urgent actions (4)</div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Reply to Michael Torres &middot; NovaVault</div><div class="du-loop-s">45d no contact &middot; new champion</div></div><div class="du-loop-r"><button class="du-btn" type="button" onclick="toast(\'Opening Gmail draft for Michael Torres...\')"><i class="ti ti-mail"></i> Reply</button></div></div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Reply to Sarah Chen &middot; Brightex</div><div class="du-loop-s">Renewal question awaiting response</div></div><div class="du-loop-r"><button class="du-btn" type="button" onclick="toast(\'Opening Gmail draft for Sarah Chen...\')"><i class="ti ti-mail"></i> Reply</button></div></div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">2 overdue CTAs in Gainsight</div><div class="du-loop-s">NovaVault renewal forecast + exec save call</div></div><div class="du-loop-r"><button class="du-btn gs" type="button" onclick="toast(\'Opening NovaVault CTA queue in Gainsight...\')"><i class="ti ti-external-link"></i> Open Gainsight</button></div></div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Brightex success plan review</div><div class="du-loop-s">3 days overdue</div></div><div class="du-loop-r"><button class="du-btn gs" type="button" onclick="toast(\'Opening Brightex success plan CTA in Gainsight...\')"><i class="ti ti-external-link"></i> Open CTA</button></div></div>'
+      + '</div>'
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-broadcast"></i> Signals to know</div>'
+        + '<div class="du-card r"><div class="du-card-t">NovaVault &middot; champion change</div><div class="du-card-s">Champion changed 45 days ago. New contact Michael Torres has had zero onboarding from 1Password.</div></div>'
+        + '<div class="du-card a"><div class="du-card-t">Brightex &middot; health drop</div><div class="du-card-s">Health dropped 23 points in 30 days. Gong flagged competitor evaluation.</div></div>'
+        + '<div class="du-card g"><div class="du-card-t">Acme &middot; expansion signal</div><div class="du-card-s">Enterprise tier interest mentioned unprompted in last Gong.</div></div>'
+      + '</div>'
+      + '<div class="du-acts foot"><button class="du-btn prim" type="button" onclick="dustQuickToDrawer(\'save\',\'nova\')"><i class="ti ti-lifebuoy"></i> Open NovaVault Save Strategy</button><button class="du-btn" type="button" onclick="dustQuickToDrawer(\'risk\',\'brightex\')"><i class="ti ti-shield-check"></i> Open Brightex Risk Analyst</button></div>'
+      + '<div class="du-foot">Sourced from Gainsight &middot; Gong &middot; Google Calendar via Dust &middot; Updated 8:47 AM</div>';
   },
   'Draft Follow-Ups': function() {
     return ''
@@ -1282,50 +1432,52 @@ var DUST_RESP = {
         + '<div class="du-sec-t"><i class="ti ti-mail-fast"></i> 2 drafts ready to send</div>'
         + '<div class="du-mail">'
           + '<div class="du-mail-to">To: Michael Torres &middot; NovaVault</div>'
-          + '<div class="du-mail-sub">Subject: A different kind of renewal conversation</div>'
-          + '<div class="du-mail-body">Hi Michael,\n\nI know you&rsquo;ve just stepped into this account, so before we talk renewal I want to make sure you have full context on what 1Password has been doing for your team — usage, security incidents prevented, time saved on access management.\n\nRather than rush a decision under deadline pressure, I&rsquo;d like to propose a 60-day extension so you can evaluate with complete information. I&rsquo;ll bring the data; you set the agenda.\n\nDoes 3:30 PM today still work?\n\n— Carmen</div>'
-          + '<div class="du-acts"><button class="du-btn prim" type="button" onclick="toast(\'Opening Gmail draft for Michael Torres...\')"><i class="ti ti-mail"></i> Send via Gmail</button><button class="du-btn" type="button" onclick="toast(\'Draft copied to clipboard ✓\')"><i class="ti ti-copy"></i> Copy</button></div>'
+          + '<div class="du-mail-sub">Subject: Introducing myself &mdash; and a thought on your renewal</div>'
+          + '<div class="du-mail-body">Hi Michael,\n\nI&rsquo;m Carmen, your dedicated CSM at 1Password. I know there&rsquo;s been a transition on your team and I want to make sure you have full context on how 1Password has been supporting NovaVault &mdash; and that any decisions coming up are fully informed ones.\n\nWould you have 20 minutes this week to connect? I have some account data I&rsquo;d love to walk you through.\n\n— Carmen</div>'
+          + '<div class="du-acts"><button class="du-btn prim" type="button" onclick="toast(\'Email sent to Michael Torres &middot; Logged in Salesforce ✓\')"><i class="ti ti-mail"></i> Send via Gmail</button><button class="du-btn" type="button" onclick="toast(\'Draft copied to clipboard ✓\')"><i class="ti ti-copy"></i> Copy</button><button class="du-btn" type="button" onclick="toast(\'Opening editable draft in Gmail...\')"><i class="ti ti-edit"></i> Edit in Gmail</button></div>'
         + '</div>'
         + '<div class="du-mail">'
           + '<div class="du-mail-to">To: Sarah Chen &middot; Brightex Inc</div>'
-          + '<div class="du-mail-sub">Subject: Re: Quick question about our renewal options</div>'
-          + '<div class="du-mail-body">Hi Sarah,\n\nThanks for being open about the evaluation — I&rsquo;m not here to talk you out of it. I&rsquo;d rather make sure you have everything you need to make the right call.\n\nIf it&rsquo;s helpful, I can put together a side-by-side comparison doc this week, plus a 30-day extension so the deadline doesn&rsquo;t force the decision. Want me to set that up?\n\n— Carmen</div>'
-          + '<div class="du-acts"><button class="du-btn prim" type="button" onclick="toast(\'Opening Gmail draft for Sarah Chen...\')"><i class="ti ti-mail"></i> Send via Gmail</button><button class="du-btn" type="button" onclick="toast(\'Draft copied to clipboard ✓\')"><i class="ti ti-copy"></i> Copy</button></div>'
+          + '<div class="du-mail-sub">Subject: Following up on your renewal &mdash; and the evaluation</div>'
+          + '<div class="du-mail-body">Hi Sarah,\n\nI wanted to follow up on our last conversation. I understand you&rsquo;re in an evaluation process and I want to make sure that process is as informed as possible &mdash; including what 1Password delivers that&rsquo;s harder to see in a demo.\n\nWould it help if I put together a side-by-side comparison doc? I can have it to you by end of week.\n\n— Carmen</div>'
+          + '<div class="du-acts"><button class="du-btn prim" type="button" onclick="toast(\'Email sent to Sarah Chen &middot; Logged in Salesforce ✓\')"><i class="ti ti-mail"></i> Send via Gmail</button><button class="du-btn" type="button" onclick="toast(\'Draft copied to clipboard ✓\')"><i class="ti ti-copy"></i> Copy</button><button class="du-btn" type="button" onclick="toast(\'Opening editable draft in Gmail...\')"><i class="ti ti-edit"></i> Edit in Gmail</button></div>'
         + '</div>'
       + '</div>'
-      + '<div class="du-foot">Drafts generated from Gong sentiment + Gainsight risk signals.</div>';
+      + '<div class="du-foot">2 drafts &middot; Personalized from Gong call history via Dust &middot; Generated 8:47 AM</div>';
   },
   'Find Open Loops': function() {
     return ''
       + '<div class="du-sec">'
-        + '<div class="du-sec-t"><i class="ti ti-circle-dashed"></i> 3 overdue CTAs</div>'
-        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Update NovaVault renewal forecast status</div><div class="du-loop-s">Gainsight CTA &middot; Owner: Carmen</div></div><div class="du-loop-r"><span class="du-loop-age">2d</span><button class="du-btn gs" type="button" onclick="toast(\'Opening NovaVault CTA in Gainsight...\')"><i class="ti ti-external-link"></i> Open in Gainsight</button></div></div>'
-        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Reply to Sarah Chen re: renewal options</div><div class="du-loop-s">Brightex Inc &middot; Gmail</div></div><div class="du-loop-r"><span class="du-loop-age">1d</span><button class="du-btn gs" type="button" onclick="toast(\'Opening Brightex CTA in Gainsight...\')"><i class="ti ti-external-link"></i> Open in Gainsight</button></div></div>'
-        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Schedule exec sponsor save call</div><div class="du-loop-s">NovaVault &middot; Due today</div></div><div class="du-loop-r"><span class="du-loop-age">today</span><button class="du-btn gs" type="button" onclick="toast(\'Opening NovaVault CTA in Gainsight...\')"><i class="ti ti-external-link"></i> Open in Gainsight</button></div></div>'
+        + '<div class="du-sec-t"><i class="ti ti-circle-dashed"></i> Overdue CTAs (3)</div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Update NovaVault renewal forecast</div><div class="du-loop-s">Gainsight CTA &middot; Owner: Carmen</div></div><div class="du-loop-r"><span class="du-loop-age">2d</span><button class="du-btn gs" type="button" onclick="toast(\'Opening NovaVault renewal CTA in Gainsight...\')"><i class="ti ti-external-link"></i> Open in Gainsight</button></div></div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Schedule exec save call</div><div class="du-loop-s">NovaVault &middot; Gainsight CTA</div></div><div class="du-loop-r"><span class="du-loop-age">1d</span><button class="du-btn gs" type="button" onclick="toast(\'Opening NovaVault exec save CTA in Gainsight...\')"><i class="ti ti-external-link"></i> Open in Gainsight</button></div></div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Review Brightex success plan</div><div class="du-loop-s">Gainsight CTA &middot; Owner: Carmen</div></div><div class="du-loop-r"><span class="du-loop-age">3d</span><button class="du-btn gs" type="button" onclick="toast(\'Opening Brightex success plan CTA in Gainsight...\')"><i class="ti ti-external-link"></i> Open in Gainsight</button></div></div>'
       + '</div>'
       + '<div class="du-sec">'
-        + '<div class="du-sec-t"><i class="ti ti-mail"></i> 2 unanswered emails</div>'
-        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Michael Torres &middot; NovaVault</div><div class="du-loop-s">&ldquo;Re: Following up on our account — hoping to connect&rdquo;</div></div><div class="du-loop-r"><span class="du-loop-age">5h</span><button class="du-btn" type="button" onclick="toast(\'Opening Gmail thread with Michael Torres...\')"><i class="ti ti-external-link"></i> Open in Gmail</button></div></div>'
-        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Sarah Chen &middot; Brightex Inc</div><div class="du-loop-s">&ldquo;Quick question about our renewal options&rdquo;</div></div><div class="du-loop-r"><span class="du-loop-age">3h</span><button class="du-btn" type="button" onclick="toast(\'Opening Gmail thread with Sarah Chen...\')"><i class="ti ti-external-link"></i> Open in Gmail</button></div></div>'
+        + '<div class="du-sec-t"><i class="ti ti-mail"></i> Unanswered emails (2)</div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Michael Torres &middot; NovaVault</div><div class="du-loop-s">&ldquo;Re: Following up on our account&rdquo;</div></div><div class="du-loop-r"><span class="du-loop-age">5h</span><button class="du-btn" type="button" onclick="toast(\'Opening Gmail draft for Michael Torres...\')"><i class="ti ti-mail"></i> Reply via Gmail</button></div></div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Sarah Chen &middot; Brightex Inc</div><div class="du-loop-s">&ldquo;Quick question about our renewal options&rdquo;</div></div><div class="du-loop-r"><span class="du-loop-age">3h</span><button class="du-btn" type="button" onclick="toast(\'Opening Gmail draft for Sarah Chen...\')"><i class="ti ti-mail"></i> Reply via Gmail</button></div></div>'
       + '</div>'
-      + '<div class="du-foot">Sources: Gainsight CTAs, Gmail thread analysis.</div>';
+      + '<div class="du-acts foot"><button class="du-btn prim" type="button" onclick="toast(\'CTAs prioritized in Gainsight ✓\')"><i class="ti ti-arrow-up"></i> Push all CTAs to top of Gainsight queue</button></div>'
+      + '<div class="du-foot">Sourced from Gainsight CTAs &middot; Gmail via Dust &middot; Updated 8:47 AM</div>';
   },
   'Review At-Risk Renewals': function() {
     return ''
       + '<div class="du-sec">'
-        + '<div class="du-sec-t"><i class="ti ti-alert-triangle"></i> $67K ARR at risk &middot; 2 accounts</div>'
+        + '<div class="du-sec-t"><i class="ti ti-alert-triangle"></i> Risk-ranked renewals</div>'
         + '<table class="du-tbl">'
-          + '<tr><th>Account</th><th>ARR</th><th>Health</th><th>Renewal</th><th>Top signal</th></tr>'
-          + '<tr><td>NovaVault</td><td>$31K</td><td class="r">23 &darr;44</td><td class="r">17d</td><td>Champion lost &middot; 45d Gong silence</td></tr>'
-          + '<tr><td>Brightex Inc</td><td>$36K</td><td class="a">48 &darr;23</td><td class="a">31d</td><td>Competitor evaluation flagged in Gong</td></tr>'
+          + '<tr><th>Account</th><th>ARR</th><th>Health</th><th>Renewal</th><th>Risk</th><th>Churn %</th></tr>'
+          + '<tr><td>NovaVault</td><td>$31K</td><td class="r">23 🔴</td><td class="r">Jun 1 &middot; 17d</td><td class="r">CRITICAL</td><td class="r">91%</td></tr>'
+          + '<tr><td>Brightex Inc</td><td>$36K</td><td class="a">48 🟡</td><td class="a">Jun 15 &middot; 31d</td><td class="a">HIGH</td><td class="a">68%</td></tr>'
         + '</table>'
+        + '<div style="font-size:11px;color:var(--tx2);margin-top:10px;font-weight:600">Total at-risk ARR: <span style="color:var(--rd);font-weight:700">$67K</span> across 2 accounts</div>'
       + '</div>'
       + '<div class="du-sec">'
-        + '<div class="du-sec-t"><i class="ti ti-lifebuoy"></i> Recommended next actions</div>'
-        + '<div class="du-card r"><div class="du-card-t">NovaVault &middot; Emergency save play</div><div class="du-card-s">Goal for today&rsquo;s 3:30 PM call: secure verbal agreement on 60-day extension. Escalate to exec sponsor in parallel.</div><div class="du-acts"><button class="du-btn prim" type="button" onclick="dustQuickToDrawer(\'save\',\'nova\')"><i class="ti ti-lifebuoy"></i> Open Save Strategy</button></div></div>'
-        + '<div class="du-card a"><div class="du-card-t">Brightex Inc &middot; Competitor defense</div><div class="du-card-s">Run Risk Analyst before the 11:00 AM Risk Review. Lead with ROI summary, not pricing. Propose 30-day extension to take deadline pressure off.</div><div class="du-acts"><button class="du-btn prim" type="button" onclick="dustQuickToDrawer(\'risk\',\'brightex\')"><i class="ti ti-shield-check"></i> Open Risk Analyst</button></div></div>'
+        + '<div class="du-sec-t"><i class="ti ti-sparkles"></i> Dust summary</div>'
+        + '<div class="du-card b"><div class="du-card-s">NovaVault is your highest priority. Renewal is in 17 days, health is critical, and your new champion Michael Torres has had no prior contact with 1Password. Brightex has a competitor evaluation in progress &mdash; lead with value before the renewal conversation.</div></div>'
       + '</div>'
-      + '<div class="du-foot">Live data from Gainsight health, Gong sentiment, Salesforce renewal forecast.</div>';
+      + '<div class="du-acts foot"><button class="du-btn prim" type="button" onclick="dustQuickToDrawer(\'save\',\'nova\')"><i class="ti ti-lifebuoy"></i> Open NovaVault Save Strategy</button><button class="du-btn" type="button" onclick="dustQuickToDrawer(\'risk\',\'brightex\')"><i class="ti ti-shield-check"></i> Open Brightex Risk Analyst</button><button class="du-btn" type="button" onclick="toast(\'Forecasting tab coming in next build\')"><i class="ti ti-arrow-right"></i> View full forecast</button></div>'
+      + '<div class="du-foot">Live data from Gainsight health &middot; Gong sentiment &middot; Salesforce renewal forecast &middot; Updated 8:47 AM</div>';
   },
   'Update NovaVault forecast': function() {
     return ''
@@ -1404,11 +1556,10 @@ function askDust(e) {
     body = ''
       + '<div class="du-sec">'
         + '<div class="du-sec-t"><i class="ti ti-sparkles"></i> Agent response</div>'
-        + '<div class="du-card b"><div class="du-card-s">I pulled context across your 3 active accounts and 3 dark accounts. Based on today&rsquo;s signals, NovaVault is your highest-priority intervention (91% churn probability), followed by Brightex (68%) for competitor defense, with Acme positioned for an expansion conversation in the 9:00 AM QBR.</div></div>'
-        + '<div class="du-card g"><div class="du-card-t">Suggested next move</div><div class="du-card-s">Open the agent drawer for the account closest to your question. If NovaVault, start with Save Strategy. If Brightex, Risk Analyst. If Acme, Prep Me.</div></div>'
+        + '<div class="du-card b"><div class="du-card-s">Looking across your portfolio, NovaVault is the highest-priority intervention right now: 17 days to renewal, health 23, brand-new champion (Michael Torres) with no onboarding context, and a 91% modeled churn probability. Brightex is the second priority at 68% &mdash; a live competitor evaluation flagged in Gong, health 48 (down from 71 in 30 days), 31 days to renewal. Acme is your one offensive play: health 82, zero open CTAs, David Kim raised enterprise tier unprompted in the last Gong call &mdash; today&rsquo;s 9:00 AM QBR is the moment to close on an SSO pilot commitment before the Aug 12 renewal.</div></div>'
+        + '<div style="font-size:10px;color:var(--tx3);font-style:italic;margin-top:8px;padding-left:2px">Sources: Gainsight &middot; Gong &middot; Salesforce via Dust</div>'
       + '</div>'
-      + '<div class="du-acts foot"><button class="du-btn" type="button" onclick="toast(\'Response copied to clipboard ✓\')"><i class="ti ti-copy"></i> Copy response</button><button class="du-btn prim" type="button" onclick="toast(\'Summary pushed to Gainsight ✓\')"><i class="ti ti-external-link"></i> Push to Gainsight</button></div>'
-      + '<div class="du-foot">Live context: Gainsight health, Gong sentiment, Salesforce renewal forecast.</div>';
+      + '<div class="du-acts foot"><button class="du-btn" type="button" onclick="toast(\'Response copied to clipboard ✓\')"><i class="ti ti-copy"></i> Copy response</button><button class="du-btn prim" type="button" onclick="toast(\'Saved to NovaVault notes in Gainsight ✓\')"><i class="ti ti-notes"></i> Save to account notes</button></div>';
   }
   var quote = '<div class="du-q"><i class="ti ti-quote"></i> ' + qSafe + '</div>';
   _dustRender('Ask Dust', quote + body);
@@ -1606,7 +1757,7 @@ var DRAWER = {
         ]},
         { t: "Recommended Play", ic: "ti-heart-rate-monitor", cl: "var(--tl)", note: "No save play needed. Protect champion, surface expansion, close renewal." }
       ],
-      foot: [{ l: "Log signal read in Gainsight", a: "Logged in Gainsight ✓" }]
+      foot: [{ l: "Log signal read in Gainsight", a: "Signal read logged in Gainsight &middot; Acme Corp ✓" }]
     },
     brightex: {
       title: "Risk Analysis", sub: "Brightex Inc · 68% Churn Probability",
@@ -1623,7 +1774,7 @@ var DRAWER = {
         ]},
         { t: "Recommended Save Play", ic: "ti-heart-rate-monitor", cl: "var(--am)", note: "Request 30-day renewal pause. Schedule exec sponsor call within 48h. Lead with product roadmap and ROI — not pricing." }
       ],
-      foot: [{ l: "Start Save Play in Gainsight", a: "Save play CTA created in Gainsight ✓" }]
+      foot: [{ l: "Start Save Play in Gainsight", a: "Save play initiated in Gainsight &middot; Brightex Inc &middot; Risk CTA created &middot; Assigned to Carmen ✓" }]
     },
     nova: {
       title: "Risk Analysis", sub: "NovaVault · 91% Churn Probability",
@@ -1640,7 +1791,7 @@ var DRAWER = {
         ]},
         { t: "Recommended Save Play", ic: "ti-heart-rate-monitor", cl: "var(--rd)", note: "Emergency: This is a save play, not a renewal conversation. Objective is a 60-day extension. Get executive sponsor involved today." }
       ],
-      foot: [{ l: "Start Save Play in Gainsight", a: "Save play CTA created in Gainsight ✓" }]
+      foot: [{ l: "Start Save Play in Gainsight", a: "Save play initiated in Gainsight &middot; NovaVault &middot; Risk CTA created &middot; Assigned to Carmen ✓" }]
     }
   },
   save: {
@@ -1661,7 +1812,7 @@ var DRAWER = {
         ]},
         { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Extension Period","30-day pilot, pre-renewal"],["Terms","Current pricing locked"],["Commitment","Dedicated support + weekly check-ins"]] }
       ],
-      foot: [{ l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
+      foot: [{ l: "Push to Gainsight", a: "3 CTAs created in Gainsight &middot; Acme Corp &middot; Assigned to Carmen ✓" }]
     },
     brightex: {
       title: "Save Strategy", sub: "Brightex Inc · Competitor defense play",
@@ -1681,7 +1832,7 @@ var DRAWER = {
         ]},
         { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Extension Period","30 days (Jun 15 → Jul 15)"],["Terms","Current pricing locked"],["Decision Deadline","July 10, 2026"]] }
       ],
-      foot: [{ l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
+      foot: [{ l: "Push to Gainsight", a: "3 CTAs created in Gainsight &middot; Brightex Inc &middot; Assigned to Carmen ✓" }]
     },
     nova: {
       title: "Save Strategy", sub: "NovaVault · Emergency retention play",
@@ -1702,7 +1853,7 @@ var DRAWER = {
         ]},
         { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Extension Period","60 days (Jun 1 → Jul 31)"],["Terms","Current pricing locked"],["Commitment","Weekly touchpoints with Carmen"],["Decision Deadline","July 15, 2026"]] }
       ],
-      foot: [{ l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
+      foot: [{ l: "Push to Gainsight", a: "3 CTAs created in Gainsight &middot; NovaVault &middot; Assigned to Carmen ✓" }]
     }
   },
   next: {
@@ -1720,7 +1871,7 @@ var DRAWER = {
           "Week 3: Renewal conversation with enterprise tier proposal attached."
         ]}
       ],
-      foot: [{ l: "Push 3 CTAs to Gainsight", a: "3 CTAs created in Gainsight ✓" }]
+      foot: [{ l: "Push 3 CTAs to Gainsight", a: "3 CTAs created in Gainsight &middot; Acme Corp &middot; Assigned to Carmen ✓" }]
     },
     brightex: {
       title: "Next Steps", sub: "Brightex Inc · 3 Gainsight CTAs ready",
@@ -1736,7 +1887,7 @@ var DRAWER = {
           "Day 7: Decision checkpoint — renewal or 30-day extension."
         ]}
       ],
-      foot: [{ l: "Push 3 CTAs to Gainsight", a: "3 CTAs created in Gainsight ✓" }]
+      foot: [{ l: "Push 3 CTAs to Gainsight", a: "3 CTAs created in Gainsight &middot; Brightex Inc &middot; Assigned to Carmen ✓" }]
     },
     nova: {
       title: "Next Steps", sub: "NovaVault · 3 Gainsight CTAs ready",
@@ -1753,7 +1904,7 @@ var DRAWER = {
           "Day 7: Decision checkpoint — extension confirmed or final decision."
         ]}
       ],
-      foot: [{ l: "Push 3 CTAs to Gainsight", a: "3 CTAs created in Gainsight ✓" }]
+      foot: [{ l: "Push 3 CTAs to Gainsight", a: "3 CTAs created in Gainsight &middot; NovaVault &middot; Assigned to Carmen ✓" }]
     }
   }
 };
@@ -2103,8 +2254,8 @@ function startDeckProgress() {
       <div class="modal-ok-s">16 slides &middot; Built from live Gainsight + Gong data</div>
     </div>
     <div class="modal-acts" id="modal-acts">
-      <button class="modal-btn prim" onclick="toast('Opening in Google Slides...');closeDeckModal()"><i class="ti ti-brand-google-drive" style="font-size:13px"></i> Open in Google Slides</button>
-      <button class="modal-btn sec" onclick="toast('Deck downloading...');closeDeckModal()"><i class="ti ti-download" style="font-size:13px"></i> Download PPTX</button>
+      <button class="modal-btn prim" onclick="toast('Opening deck in Google Drive &middot; 16 slides &middot; Shared with David Kim ✓');closeDeckModal()"><i class="ti ti-brand-google-drive" style="font-size:13px"></i> Open in Google Slides</button>
+      <button class="modal-btn sec" onclick="toast('Downloading TeamOS_Acme_QBR_May2026.pptx ✓');closeDeckModal()"><i class="ti ti-download" style="font-size:13px"></i> Download PPTX</button>
     </div>
   </div>
 </div>

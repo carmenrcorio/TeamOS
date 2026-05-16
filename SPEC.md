@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 1.3.0
+**Version:** 1.4.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,41 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [1.4.0] — 2026-05-16
+
+Phase A — layout surgery + demo-grade content. The prototype is now an executive-ready demo: every button produces convincing output, every agent returns realistic data, no toasts as final outputs.
+
+### Layout
+- **Pulse strip is sticky.** `position: sticky; top: 44px; z-index: 40` so it stays pinned below the nav while the CSM scrolls.
+- **Priority Stack — compact rows.** Each row is a single CSS grid (`auto 1fr auto`): rank · context · primary action, right-aligned. Removed the secondary Next Steps button per row (the agent is still reachable from Mission Briefing and the Live Signals feed). All three rows now share consistent ~64px height.
+- **Next Up — auto-height, no dead zone.** Countdown header reads `In 38 min · 9:00 AM` (large mins on top). Data grid is true 2×2 (Health / Renewal on row 1, Open CTAs / Last Gong on row 2). Last Gong field shows full text ("May 10 · David Kim flagged enterprise tier & SSO support"), no ellipsis. Three agent buttons sit immediately below the grid, no gap.
+- **Ask Dust — compact command palette.** Search bar on top, 2×2 chip grid directly below, card height = content only. No filler padding.
+- **Right panel default state — pre-loaded Acme briefing.** Removed the "Today at a Glance" stats grid (it duplicated the pulse strip). On page load the right panel shows the next-up Acme QBR briefing — name, ARR, renewal, three story sections (Where we are / Last Gong May 10 / Objective), and all four agent buttons. Header shows "Mission Briefing" with a pulsing teal `Next Up · Auto-loaded` tag. The "My Agents" directory is preserved but moved below the briefing, collapsed behind a `My Agents ▾` toggle.
+- **Live Signals — compact rows.** Each row is a 48px-min grid with [icon badge] [account name] [signal type] [one-line description] [severity badge] [timestamp] [action button]. Five signals total (added Brightex support-ticket-spike as the fifth, WATCH severity). Each row's action button routes to the relevant agent or panel: champion change → Prep Me, health drop → Risk Analyst, Gong silence → Ghost-Buster, expansion signal → Prep Me, ticket spike → Risk Analyst. Widget footer: "View 6 more signals →" toasts "Full signals feed coming in Forecasting tab".
+- **Dark Zone collapsed by default.** Header bar shows the title + count + a "Show accounts ▾" toggle. Body hidden until clicked; toggle rotates the chevron and swaps label to "Hide accounts". Pulse-strip popover Ghost-Buster buttons still work independently.
+- **Calendar header compressed.** Down from ~60px to a single 44px row with date on the left and one-line hint on the right.
+- **Today's Tasks compressed.** Each task row is now a tight grid: source dot + label badge on row 1, single-line title on row 2, context + right-aligned action button on row 3. Max ~64px per row, generous between-task padding removed.
+
+### Demo content
+- **Pre-loaded Acme briefing copy** (`view-default`): Where we are, Last Gong May 10, Objective — all rewritten to executive-ready prose matching the spec.
+- **Ask Dust — Prepare My Day**: 3 sections — Today's Calls (3 calls with coaching notes), Urgent Actions (4 items with Reply / Open Gainsight / Open CTA buttons), Signals to Know (champion change / health drop / expansion). Footer: "Sourced from Gainsight · Gong · Google Calendar via Dust · Updated 8:47 AM". Action buttons: Open NovaVault Save Strategy · Open Brightex Risk Analyst.
+- **Ask Dust — Draft Follow-Ups**: two complete drafts per spec text (Michael Torres NovaVault, Sarah Chen Brightex). Each draft has Send via Gmail / Copy / Edit in Gmail buttons. Send toast: "Email sent to [Person] · Logged in Salesforce ✓".
+- **Ask Dust — Find Open Loops**: 3 overdue CTAs per spec (NovaVault forecast 2d / NovaVault exec save call 1d / Brightex success plan 3d), 2 unanswered emails. Bottom action: "Push all CTAs to top of Gainsight queue" → "CTAs prioritized in Gainsight ✓".
+- **Ask Dust — Review At-Risk Renewals**: risk-ranked table with Churn %, "Total at-risk ARR: $67K across 2 accounts" line, Dust summary paragraph. Three buttons: Open NovaVault Save Strategy · Open Brightex Risk Analyst · View full forecast (toast: "Forecasting tab coming in next build").
+- **Ask Dust — free-text query**: paragraph-form Dust answer drawing on NovaVault / Brightex / Acme data; Sources line; Copy response + Save to account notes buttons (toast: "Saved to NovaVault notes in Gainsight ✓").
+- **All Ghost-Buster Send via Gmail buttons**: toast format "[Account] outreach email sent via Gmail · Outreach activity logged in Salesforce ✓".
+- **All Push to Gainsight buttons (Save Strategy + Next Steps drawers, all 3 accounts)**: toast "3 CTAs created in Gainsight · [Account] · Assigned to Carmen ✓".
+- **All Start Save Play buttons (Risk Analyst, Brightex + NovaVault)**: toast "Save play initiated in Gainsight · [Account] · Risk CTA created · Assigned to Carmen ✓".
+- **Generate Deck modal**: Open in Google Slides toast "Opening deck in Google Drive · 16 slides · Shared with David Kim ✓". Download PPTX toast "Downloading TeamOS_Acme_QBR_May2026.pptx ✓".
+
+### Engineering
+- No new color tokens; all new utility classes (`pl-tag`, `ag-toggle`, `ls-act`, `ls-foot`, `dz-toggle`, `dz-body`, `bf-priority`, `bf-next` overrides) bind to existing tokens.
+- No `console.log`. No hardcoded API keys.
+- Removed `#ds-tasks` element from the right panel default; `doneTask` was already null-guarded so the existing task counter on the inbox card continues to update without error.
+- Loading state stays at 1.5s with named agent (from `DUST_AGENT` map, retained from v1.3.0).
 
 ---
 
