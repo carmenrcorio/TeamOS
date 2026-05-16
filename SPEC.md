@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.4.0
+**Version:** 2.5.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,37 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.5.0] — 2026-05-16
+
+The old "My Agents" collapsible directory (4 active agents + 3 Coming Soon stubs + a Configure button) is replaced inside `view-default` with an interactive **Agent Hub & Workspace** card containing three sections: Quick Launch Matrix, Recent Outputs Session Log, and Active Account Documents.
+
+### Added
+- **Agent Hub card** (`.ah-card`) — sits inside `view-default` directly below the Generate QBR Deck button. Surface / border / radius / padding match the brief-strip card treatment (Priority Stack, Next Up, Ask Dust). Single header `🤖 Agent Hub & Workspace` followed by three thin-divider-separated sections.
+- **Quick Launch Matrix** — 4×3 grid (4 agents × 3 accounts = 12 chips, all wired). Column headers are color-coded to existing account semantics (NovaVault `--rd-dk`, Acme Corp `--tl-dk`, Brightex `--am-dk`). Each cell is a `[Run]` chip that calls `openAgentDrawer(agent, acct)` directly — fires the existing slide-over drawer with zero changes to that path. Hover state: teal tint on bg + border + text, opacity 0.9. All 12 combinations verified in a headless render: every chip opens the right drawer with the right title.
+- **Recent Outputs Session Log** — 3 hardcoded demo rows (Prep Me · Acme Corp · 47m ago / Risk Analyst · Brightex · 2h ago / Save Strategy · NovaVault · Yesterday). Each row has agent + account header, single-line preview (truncated with ellipsis), age stamp, and a `[Restore]` chip. The list is rendered from a `_recentOutputs` array via `renderRecentOutputs()` — clearing it is a single line.
+- **Restore behavior** — `restoreAgentOutput(type, acct)` re-injects the agent output **inline into the Mission Briefing center panel** (not the slide-over drawer). Implemented via a new `view-agentout` block in `.rp` mirroring the `view-dust`/`view-draft` pattern: Back button → `resetPanel()`, title slot (`#agentout-title`), content slot (`#agentout-out`). The renderer pulls from the existing `DRAWER[type][acct]` data and re-builds the same section markup `openAgentDrawer` uses (account snapshot / last Gong / discovery / battle card / churn score / save play / extension terms / numbered CTAs / etc). Verified: each of the three Restore buttons loads `view-agentout` with the correct title (Pre-Call Brief / Risk Analysis / Save Strategy) and 3.4 – 5.6 KB of section markup. `openPanel('agentout', null)` triggers the v2.1.0 `scrollPanelIntoView` so the restored output is always visible.
+- **Clear history** — small muted link at the right of the Recent Outputs section header. `clearRecentOutputs()` empties the array and re-renders the zero state ("No recent outputs in this session."). Verified: 3 rows → 0 rows + empty-state message. Does not affect agent drawer state, Mission Briefing state, or any other widget.
+- **Active Account Documents** — header reads `RECENT DOCS · [ACTIVE ACCOUNT]` and updates dynamically based on which Mission Briefing is showing. `DOC_LIBRARY` maps `acme` / `brightex` / `nova` to two doc rows each (file icon + name + subtitle + `[Open ↗]` chip). Verified per-account: ACME CORP (Acme QBR Presentation Deck / Acme Joint Success Plan), BRIGHTEX (Brightex Master SLA Agreement / Brightex Renewal Core Deck), NOVAVAULT (NovaVault Executed Contract 2025 / NovaVault Save Playbook). Ghost-Buster accounts (Meridian / Creston / Apex) render the spec's empty state: `No documents on file · Add via CFT Docs ↗`. `[Open]` chips fire a toast: `Opening [name] from Google Drive ✓`.
+- **`openPanel` hook** — added a single line: `if (typeof _updateAgentHubAccount === 'function') _updateAgentHubAccount(id);`. The hook ignores non-account views (`dust`, `draft`, `slack-sum`, `taskbrief`, `agentout`) so the doc section keeps showing the last Mission Briefing's account while the user is inside an agent output / Dust output / email draft / task brief. `resetPanel` gets the same hook with `'default'` (= Acme) so the Back button always restores the Acme doc list when returning to the pre-loaded briefing.
+- New CSS namespace `.ah-*` (header, sections, matrix grid, run chip, recent-row grid, restore chip, empty state, doc row, doc button). All styles bind to existing tokens — no new color values introduced.
+
+### Removed
+- Old `.ag-toggle` button + `.ag-body` block inside `view-default` (My Agents + More agents Coming Soon + Configure button).
+- Dead-code function definitions: `toggleAgents()` and `configureAgents()` (their only call sites were just removed). The `.ag-*` CSS rules survive for now — they're tiny and might be reused by a future surface; removing them is a separate concern.
+
+### Not touched
+- `openAgentDrawer` — every existing call site (Priority Stack, Today's Tasks, Live Signals, Mission Briefing, task briefs, notification rail, Slack summary) still calls it unchanged. The Quick Launch Matrix is just 12 new call sites with the same signature.
+- `DRAWER` data — `restoreAgentOutput` reads from it without mutation.
+- Mission Briefing center panel layout, every existing `rp-view` template, Priority Stack, Next Up, Ask Dust, Calendar, Dark Zone, Live Signals, Urgent Inbox, Today's Tasks, pulse strip, notification rail, deck modal, Ghost-Buster handlers, Recipe for Success tab.
+- All v2.0–v2.4 features remain intact: universal account click, Ask Dust 3x2 grid with Coach Me + Custom Agents dropdown, Mission Briefing scroll-into-view, brief-strip equal-height, Task Brief panel, offline resilience.
+
+### Engineering
+- 100% additive HTML/CSS/JS in the Agent Hub block. The only edits to pre-existing functions are: one new line inside `openPanel`, one new line inside `resetPanel`. Both are no-ops when `_updateAgentHubAccount` isn't yet defined (boot order safe).
+- `restoreAgentOutput` duplicates the section-rendering loop from `openAgentDrawer` (~30 lines) rather than refactoring the drawer renderer — the spec required leaving `openAgentDrawer` untouched. The duplication is a deliberate trade: small surface, zero risk to drawer flow.
+- All 12 matrix buttons + 3 restore buttons + 4 doc-state transitions verified in a single Playwright pass before commit.
 
 ---
 
