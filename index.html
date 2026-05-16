@@ -718,6 +718,41 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .tl-signal-body{color:var(--tx2);font-weight:500}
 .tl-signal-quote{font-style:italic;padding:8px 10px;background:rgba(255,255,255,.7);border-radius:6px;color:var(--tx);line-height:1.5;border:1px solid rgba(24,165,117,.18)}
 .tl-signal-prefix{font-style:normal;font-weight:700;color:var(--tl-dk);margin-right:4px;text-transform:none;letter-spacing:0}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CFT Docs popover (v2.10.0) — 7th pulse-strip indicator
+   ═══════════════════════════════════════════════════════════════════════════ */
+.cft-pop{width:380px;max-height:520px;display:none;flex-direction:column;overflow:hidden}
+.cft-pop.on{display:flex}
+.cft-hd{padding:12px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--surf2);flex-shrink:0}
+.cft-hd-t{font-size:11px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:6px;letter-spacing:.02em}
+.cft-hd-t i{font-size:14px}
+.cft-hd-src{color:var(--tx3);font-weight:600}
+.cft-close{font-size:18px;color:var(--tx3);cursor:pointer;background:none;border:none;line-height:1;padding:0;font-family:inherit}
+.cft-close:hover{color:var(--tx)}
+.cft-search{display:flex;align-items:center;gap:7px;padding:10px 14px;border-bottom:1px solid var(--bd);background:var(--surf);flex-shrink:0}
+.cft-search i{color:var(--tx3);font-size:14px}
+.cft-search input{flex:1;border:1px solid var(--bd2);border-radius:6px;padding:7px 10px;font-family:inherit;font-size:11px;color:var(--tx);outline:none;background:var(--surf2);transition:border-color .1s;min-width:0}
+.cft-search input:focus{border-color:var(--tl);background:var(--surf)}
+.cft-search input::placeholder{color:var(--tx3)}
+.cft-results-label{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;padding:9px 14px 5px;flex-shrink:0}
+.cft-list{flex:1;overflow-y:auto;padding:0 0 6px}
+.cft-row{display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center;padding:9px 14px;border-bottom:1px solid var(--bd);min-height:56px}
+.cft-row:last-child{border-bottom:none}
+.cft-row > i{font-size:16px;color:var(--bl);grid-column:1;align-self:start;padding-top:2px}
+.cft-row.pdf > i{color:var(--rd)}
+.cft-row.slides > i{color:var(--am)}
+.cft-row.sheets > i{color:var(--tl)}
+.cft-row-mid{grid-column:2;min-width:0}
+.cft-row-nm{font-size:12px;font-weight:600;color:var(--tx);line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cft-row-meta{font-size:10px;color:var(--tx3);margin-top:2px;letter-spacing:.02em}
+.cft-row-btns{grid-column:3;display:flex;gap:5px;flex-shrink:0}
+.cft-btn{font-size:10px;font-weight:700;padding:5px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;white-space:nowrap}
+.cft-btn:hover{background:var(--surf2);border-color:var(--tx2);color:var(--tx)}
+.cft-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.cft-btn.prim:hover{background:#2a2a28}
+.cft-btn i{font-size:11px}
+.cft-empty{font-size:11px;color:var(--tx3);padding:14px;font-style:italic;text-align:center}
 .tl-signal-acts{display:flex;gap:6px;flex-wrap:wrap}
 .tl-signal-btn{background:var(--tx);color:#fff;border:none;border-radius:5px;padding:6px 11px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
 .tl-signal-btn:hover{background:#2a2a28}
@@ -1228,6 +1263,23 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
         <div class="tk-list" id="tk-list"></div>
       </div>
     </div>
+
+    <div class="ps-wrap">
+      <button class="ps-btn" id="pb-cft" onclick="togglePop('cft',event)" type="button"><i class="ti ti-folder"></i>&nbsp;CFT Docs</button>
+      <div class="pop pop-right cft-pop" id="pop-cft">
+        <div class="cft-hd">
+          <div class="cft-hd-t"><i class="ti ti-folder" style="color:var(--bl)"></i> CFT Docs <span class="cft-hd-src">&middot; Google Drive</span></div>
+          <button class="cft-close" type="button" onclick="closePops()" aria-label="Close CFT Docs">&times;</button>
+        </div>
+        <div class="cft-search">
+          <i class="ti ti-search"></i>
+          <input id="cft-q" type="text" autocomplete="off" placeholder="Search docs for Acme Corp&hellip;" aria-label="Search CFT Docs" oninput="cftSearch(this.value)" />
+        </div>
+        <div class="cft-results-label" id="cft-results-label">Recent &middot; Acme Corp</div>
+        <div class="cft-list" id="cft-list"></div>
+      </div>
+    </div>
+
     <span class="cached-badge"><i class="ti ti-database-off"></i> Cached</span>
     <div class="queue-badge" id="queue-badge" title="Actions queued while offline — will sync when connection restores"><i class="ti ti-cloud-upload"></i> <span id="queue-badge-count">0</span> queued</div>
   </div>
@@ -2171,6 +2223,7 @@ function openPanel(id, ceEl) {
   document.getElementById('view-' + id).classList.add('on');
   if (ceEl) ceEl.classList.add('sel');
   if (typeof _updateAgentHubAccount === 'function') _updateAgentHubAccount(id);
+  if (typeof _updateCFTDocs === 'function') _updateCFTDocs(id);
   scrollPanelIntoView();
 }
 
@@ -2246,6 +2299,7 @@ function resetPanel() {
   document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
   document.getElementById('view-default').classList.add('on');
   if (typeof _updateAgentHubAccount === 'function') _updateAgentHubAccount('default');
+  if (typeof _updateCFTDocs === 'function') _updateCFTDocs('default');
   scrollPanelIntoView();
 }
 
@@ -4118,6 +4172,143 @@ function _updateAgentHubAccount(viewId) {
 function openDoc(name) {
   toast('Opening ' + name + ' from Google Drive ✓');
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CFT Docs pulse-strip popover (v2.10.0) — Google Drive search portal
+// ═══════════════════════════════════════════════════════════════════════════
+var CFT_DOCS = {
+  acme: [
+    { name:'Acme QBR Presentation Deck',          date:'Modified today', type:'Google Slides', kind:'slides' },
+    { name:'Acme Joint Success Plan',             date:'May 10',         type:'Google Docs',   kind:'doc' },
+    { name:'1Password Enterprise Comparison Sheet', date:'May 8',        type:'Google Sheets', kind:'sheets' },
+    { name:'Acme Onboarding Checklist',           date:'Jan 2022',       type:'Google Docs',   kind:'doc' }
+  ],
+  brightex: [
+    { name:'Brightex Master SLA Agreement',        date:'May 12',        type:'Google Docs',   kind:'doc' },
+    { name:'Brightex Renewal Core Deck · Draft v2', date:'May 14',       type:'Google Slides', kind:'slides' },
+    { name:'1Password Business SLA Reference',     date:'Apr 30',        type:'Google Docs',   kind:'doc' },
+    { name:'Brightex Competitive Battle Card',     date:'May 9',         type:'Google Docs',   kind:'doc' }
+  ],
+  nova: [
+    { name:'NovaVault Executed Contract 2025',     date:'Ironclad',      type:'PDF',           kind:'pdf' },
+    { name:'NovaVault Save Playbook',              date:'May 15',        type:'Google Docs',   kind:'doc' },
+    { name:'Champion Transition Template',         date:'May 14',        type:'Google Docs',   kind:'doc' },
+    { name:'NovaVault Implementation Summary',     date:'Aug 2023',      type:'Google Docs',   kind:'doc' }
+  ]
+};
+
+// Global docs — always searchable, only appear in default-recent view when
+// no account is active (dark-zone or unset).
+var CFT_GLOBAL = [
+  { name:'1Password Security White Paper',          date:'Reference', type:'Google Docs', kind:'doc',   tags:'security white paper compliance' },
+  { name:'1Password Implementation Guide',          date:'Reference', type:'Google Docs', kind:'doc',   tags:'implementation setup onboarding guide' },
+  { name:'CSM Playbook — Renewal Conversations',    date:'Reference', type:'Google Docs', kind:'doc',   tags:'renewal playbook save csm' }
+];
+
+var CFT_ICON = { doc:'ti-file-text', sheets:'ti-table', slides:'ti-presentation', pdf:'ti-file-certificate' };
+
+var _cftAccount = 'acme';
+
+function _cftAcctLabel(key) {
+  return ({ acme:'Acme Corp', brightex:'Brightex Inc', nova:'NovaVault' })[key] || '';
+}
+
+function _cftDocRow(d) {
+  var safeName = String(d.name).replace(/'/g, "\\'");
+  return '<div class="cft-row ' + d.kind + '">'
+    + '<i class="ti ' + (CFT_ICON[d.kind] || 'ti-file-text') + '"></i>'
+    + '<div class="cft-row-mid">'
+      + '<div class="cft-row-nm">' + d.name + '</div>'
+      + '<div class="cft-row-meta">' + d.date + ' &middot; ' + d.type + '</div>'
+    + '</div>'
+    + '<div class="cft-row-btns">'
+      + '<button class="cft-btn prim" type="button" onclick="cftOpen(\'' + safeName + '\')"><i class="ti ti-external-link"></i> Open</button>'
+      + '<button class="cft-btn" type="button" onclick="cftCopy(\'' + safeName + '\')"><i class="ti ti-link"></i> Copy Link</button>'
+    + '</div>'
+  + '</div>';
+}
+
+function _cftRender(items, emptyHtml) {
+  var list = document.getElementById('cft-list');
+  if (!list) return;
+  if (!items || !items.length) {
+    list.innerHTML = emptyHtml || '<div class="cft-empty">No docs found.</div>';
+    return;
+  }
+  list.innerHTML = items.map(_cftDocRow).join('');
+}
+
+function _updateCFTDocs(viewId) {
+  var label = document.getElementById('cft-results-label');
+  var ph = document.getElementById('cft-q');
+  if (!label || !ph) return;
+  // Determine which account to show. Treat dark accounts + non-account views as "no active account".
+  var key;
+  if (viewId === 'default') key = 'acme';
+  else if (['acme','brightex','nova'].indexOf(viewId) !== -1) key = viewId;
+  else if (['meridian','creston','apex'].indexOf(viewId) !== -1) key = null; // dark-zone → global
+  else return; // dust / draft / slack-sum / taskbrief / agentout — leave previous selection alone
+  _cftAccount = key;
+  // Clear any active search so the recent list re-renders cleanly.
+  if (ph) ph.value = '';
+  if (key) {
+    label.textContent = 'Recent · ' + _cftAcctLabel(key).toUpperCase();
+    ph.placeholder = 'Search docs for ' + _cftAcctLabel(key) + '…';
+    _cftRender(CFT_DOCS[key]);
+  } else {
+    label.textContent = 'Global Resources';
+    ph.placeholder = 'Search all CFT docs…';
+    _cftRender(CFT_GLOBAL);
+  }
+}
+
+function cftSearch(q) {
+  var query = String(q || '').trim().toLowerCase();
+  var label = document.getElementById('cft-results-label');
+  if (!label) return;
+  if (!query) {
+    // Re-render default view for the current account.
+    if (_cftAccount) {
+      label.textContent = 'Recent · ' + _cftAcctLabel(_cftAccount).toUpperCase();
+      _cftRender(CFT_DOCS[_cftAccount]);
+    } else {
+      label.textContent = 'Global Resources';
+      _cftRender(CFT_GLOBAL);
+    }
+    return;
+  }
+  // Build the searchable pool: current account's docs (if any) + globals.
+  var pool = [];
+  if (_cftAccount && CFT_DOCS[_cftAccount]) pool = pool.concat(CFT_DOCS[_cftAccount]);
+  pool = pool.concat(CFT_GLOBAL);
+  var matches = pool.filter(function(d) {
+    var hay = (d.name + ' ' + (d.tags || '')).toLowerCase();
+    return hay.indexOf(query) !== -1;
+  });
+  label.textContent = 'Results · "' + q + '"';
+  if (matches.length) {
+    _cftRender(matches);
+  } else {
+    _cftRender([], '<div class="cft-empty">No docs found for "' + q + '" &middot; Try a different search term</div>');
+  }
+}
+
+function cftOpen(name) {
+  toast('Opening ' + name + ' from Google Drive ✓');
+}
+
+function cftCopy(name) {
+  // Simulated Drive URL for the prototype.
+  var slug = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  var url = 'https://drive.google.com/file/d/' + slug + '/view';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).catch(function(){});
+  }
+  toast('Link copied · ' + name + ' ✓');
+}
+
+// Init on boot.
+_updateCFTDocs('default');
 
 // Restore an agent output inline into the Mission Briefing center panel.
 // Uses the same DRAWER data and section markup as openAgentDrawer, but

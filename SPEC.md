@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.9.0
+**Version:** 2.10.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,77 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.10.0] — 2026-05-16
+
+CFT Docs added to the pulse strip as a 7th indicator with a Google Drive search dropdown. Pre-filtered by the active account, searchable across the account's docs + a small global library.
+
+### Added — 7th pulse-strip indicator
+- New `<button id="pb-cft">📁 CFT Docs</button>` ps-wrap directly after Tasks. No count badge — this is an access portal, not a notification.
+- Click routes through the existing `togglePop('cft', event)` (no JS handler changes), so the indicator inherits the established "one popover at a time" behavior, outside-click close, and `closePops()` from previous popovers.
+
+### Added — CFT Docs dropdown
+- 380px right-aligned popover (`.cft-pop`). Max height 520px with internal scrolling on the doc list.
+- **Header:** `📁 CFT Docs · Google Drive` + close button.
+- **Search bar:** full-width input, pre-labeled with the active account name. Placeholder updates when the active account changes.
+- **Recent label:** small uppercase muted text — `RECENT · [ACCOUNT NAME]` for an active account, `GLOBAL RESOURCES` for dark-zone / no-account contexts.
+- **Doc rows:** file-type icon (left, color-coded per kind — `doc`/`sheets`/`slides`/`pdf`), doc name (bold), `modified · type` meta line, `[Open]` (dark primary) + `[Copy Link]` (outlined) action buttons right-aligned. ~56px row height with thin dividers.
+
+### Added — content
+- **Acme Corp** (4 docs): Acme QBR Presentation Deck (Slides), Acme Joint Success Plan (Docs), 1Password Enterprise Comparison Sheet (Sheets), Acme Onboarding Checklist (Docs).
+- **Brightex Inc** (4 docs): Brightex Master SLA Agreement, Brightex Renewal Core Deck · Draft v2 (Slides), 1Password Business SLA Reference, Brightex Competitive Battle Card.
+- **NovaVault** (4 docs): NovaVault Executed Contract 2025 (PDF), NovaVault Save Playbook, Champion Transition Template, NovaVault Implementation Summary.
+- **Global library** (always searchable, shown alone for dark accounts): 1Password Security White Paper, 1Password Implementation Guide, CSM Playbook — Renewal Conversations. Each has a `tags` field (e.g. `security white paper compliance`) so they surface for related search queries even when their name doesn't contain the literal term.
+
+### Added — search behavior
+- `cftSearch(query)` runs on every keystroke (`oninput`). Case-insensitive substring match against `name + tags`.
+- Search pool: current account's recent docs + the 3 global docs. Brightex docs don't surface in an Acme search context (the dropdown is account-scoped per spec).
+- Empty query → restore default-recent for the active account.
+- No matches → `No docs found for "[query]" · Try a different search term`.
+- Results label switches to `Results · "[query]"` while a query is active.
+
+### Added — active account sync
+- `_updateCFTDocs(viewId)` is wired into the existing `openPanel` hook (one new line) and `resetPanel` (one new line). Mirrors the v2.5.0 `_updateAgentHubAccount` pattern.
+- Behavior:
+  - `default` (Acme pre-loaded MB) → Acme docs.
+  - `acme` / `brightex` / `nova` → that account's docs.
+  - `meridian` / `creston` / `apex` (Ghost-Buster views) → Global Resources label + 3 global docs only.
+  - `dust` / `draft` / `slack-sum` / `taskbrief` / `agentout` → leave previous selection alone (consistent with Agent Hub's behavior for these transient views).
+- Any active search is cleared on account switch so the recent list re-renders cleanly.
+
+### Added — button behaviors
+- `[Open]` → `cftOpen(name)` → `toast("Opening [Doc Name] from Google Drive ✓")`.
+- `[Copy Link]` → `cftCopy(name)` → writes a slugified Drive URL (e.g. `https://drive.google.com/file/d/acme-qbr-presentation-deck/view`) to the clipboard via `navigator.clipboard.writeText` (graceful no-op when unavailable) and toasts `"Link copied · [Doc Name] ✓"`.
+
+### Verified end-to-end in a headless render
+- Pulse strip has 7 indicators ✓
+- Opens with `Recent · ACME CORP` label, 4 Acme rows, placeholder `Search docs for Acme Corp…` ✓
+- `openPanel('brightex')` → header label flips to `Recent · BRIGHTEX INC`, list swaps to the 4 Brightex docs, placeholder updates ✓
+- `openPanel('nova')` → NovaVault docs ✓
+- `openPanel('meridian')` (dark zone) → `Global Resources` label, only the 3 global docs ✓
+- `resetPanel()` → restores Acme docs ✓
+- Search `success` (Acme active) → returns `Acme Joint Success Plan` ✓
+- Search `security` → returns global `1Password Security White Paper` (via name match) ✓
+- Search `renewal` → returns `CSM Playbook — Renewal Conversations` (via `tags`) ✓
+- Search `foobarbaz` → empty state with the right copy ✓
+- Clearing search restores Acme recent ✓
+- `[Open]` toast: `Opening Acme QBR Presentation Deck from Google Drive ✓` ✓
+- `[Copy Link]` toast: `Link copied · Acme QBR Presentation Deck ✓` ✓
+- Outside-click closes the popover (handled by the existing `.ps-wrap` outside-click listener) ✓
+
+### Not touched
+- All 6 other pulse-strip indicators (calls / risk / arr / ctas / dark / tasks) and their popovers — unchanged.
+- `togglePop`, `closePops`, the outside-click listener — unchanged.
+- `openPanel` and `resetPanel` — each got exactly one line added (`if (typeof _updateCFTDocs === 'function') _updateCFTDocs(id);`), no other body changes.
+- Every other widget, every drawer, every Mission Briefing view, the v2.5.0 Agent Hub & Workspace card (which has its own `DOC_LIBRARY` for the in-card "Recent Docs" section — kept separate from `CFT_DOCS` to keep concerns decoupled), Ask Dust, Task Brief, Ghost-Buster wizard, TeamOS Live drawer, Service Worker, offline resilience, Recipe for Success tab.
+
+### Engineering
+- New `.cft-*` CSS namespace (~28 rules). All styles bind to existing color tokens. No new color values introduced.
+- File-type icons via Tabler: `ti-file-text` (Docs), `ti-table` (Sheets), `ti-presentation` (Slides), `ti-file-certificate` (PDF). Color tinted per type via `.cft-row.pdf/slides/sheets` modifiers.
+- `CFT_DOCS` (4 docs × 3 accounts = 12 entries) and `CFT_GLOBAL` (3 entries) are static maps. Roughly 40 lines total. Phase 2 will replace the maps with a Drive API fetch keyed by the active account.
+- All clipboard writes guarded with a `typeof navigator.clipboard.writeText === 'function'` shape check via `&&` short-circuit. Failures are silent — the toast still fires so the user gets immediate feedback.
 
 ---
 
