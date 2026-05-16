@@ -666,6 +666,37 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 @media (max-width:768px){
   .n-pop{position:fixed;top:44px;right:0;left:0;width:auto;border-radius:0;border-left:none;border-right:none}
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Tasks pulse-strip dropdown (v1.8.0)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.pop.tk-pop{width:520px;padding:0}
+.tk-pop-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--bd);background:var(--surf2)}
+.tk-pop-title{font-size:12px;font-weight:700;color:var(--tx);letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.tk-pop-title i{font-size:14px;color:var(--tx2)}
+.tk-pop-title .tk-pop-count{color:var(--tx3);font-weight:600;letter-spacing:.02em}
+.tk-pop-new{font-size:10px;font-weight:700;padding:5px 10px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s}
+.tk-pop-new:hover{background:var(--tx);color:#fff;border-color:var(--tx)}
+.tk-pop-new i{font-size:11px}
+.tk-list{max-height:440px;overflow-y:auto}
+.tk-row{display:grid;grid-template-columns:14px 52px 1fr auto;align-items:center;gap:11px;padding:11px 16px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s;background:var(--surf)}
+.tk-row:last-child{border-bottom:none}
+.tk-row:hover{background:var(--surf2)}
+.tk-row.done{opacity:.45}
+.tk-row.done .tk-row-title{text-decoration:line-through;color:var(--tx3)}
+.tk-sev{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tk-sev.r{background:var(--rd)}
+.tk-sev.a{background:#EAB308}
+.tk-sev.g{background:var(--tl)}
+.tk-sev.n{background:transparent;border:1.5px solid var(--bd2)}
+.tk-src{font-size:9px;font-weight:700;color:var(--tx2);background:var(--surf2);border:1px solid var(--bd);padding:3px 0;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;text-align:center;width:52px}
+.tk-row-body{min-width:0;display:flex;align-items:baseline;gap:7px;flex-wrap:nowrap;overflow:hidden}
+.tk-row-acct{font-size:12px;font-weight:700;color:var(--tx);flex-shrink:0;letter-spacing:-.01em}
+.tk-row-sep{font-size:11px;color:var(--tx3);flex-shrink:0}
+.tk-row-title{font-size:12px;color:var(--tx2);line-height:1.4;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tk-row-age{font-size:10px;font-weight:600;color:var(--tx3);white-space:nowrap;text-align:right;flex-shrink:0}
+.tk-row-age.r{color:var(--rd)}
+.tk-row-age.a{color:#A16207}
 </style>
 </head>
 <body>
@@ -918,6 +949,17 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
           <div class="pop-btns"><button class="gb-btn" onclick="openGhostBusterFromPopover('apex')" type="button">Ghost-Buster</button></div>
         </div>
         <div class="pop-foot"><a class="pop-foot-a" href="#" onclick="toastLink(event,'Dark zone')">Open dark zone <i class="ti ti-arrow-right"></i></a></div>
+      </div>
+    </div>
+
+    <div class="ps-wrap">
+      <button class="ps-btn" id="pb-tasks" onclick="togglePop('tasks',event)" type="button"><i class="ti ti-menu-2"></i><span class="ps-n" id="pn-tasks">8</span>&nbsp;tasks</button>
+      <div class="pop pop-right tk-pop" id="pop-tasks">
+        <div class="tk-pop-hd">
+          <div class="tk-pop-title"><i class="ti ti-menu-2"></i> Tasks <span class="tk-pop-count">&middot; <span id="tk-pop-count-n">8</span> items</span></div>
+          <button class="tk-pop-new" type="button" onclick="toast('New task &mdash; coming in next build')"><i class="ti ti-plus"></i> New Task</button>
+        </div>
+        <div class="tk-list" id="tk-list"></div>
       </div>
     </div>
   </div>
@@ -1968,6 +2010,51 @@ function markCtaDone(rowId, e) {
 }
 
 buildRecipe();
+
+// ── Tasks pulse-strip dropdown (v1.8.0) ─────────────────────────────────────
+// Source of truth for the tasks list. Brief-panel content is intentionally
+// not built here — that's the next spec.
+var TASKS = [
+  { id:'t1', sev:'r', src:'CTA',   acct:'NovaVault',      title:'Update champion contact',             age:'2d overdue', ageCls:'r' },
+  { id:'t2', sev:'a', src:'EMAIL', acct:'Brightex',       title:'Sarah Chen asking about SLA terms',   age:'4h',         ageCls:'a' },
+  { id:'t3', sev:'a', src:'SLACK', acct:'Maggie Spry',    title:'NovaVault contract flagged',          age:'47m',        ageCls:'a' },
+  { id:'t4', sev:'g', src:'CAL',   acct:'Acme',           title:'Send QBR follow-up by EOD' },
+  { id:'t5', sev:'n', src:'CTA',   acct:'Meridian',       title:'Log re-engagement attempt' },
+  { id:'t6', sev:'n', src:'PROJ',  acct:'',               title:'Renewal deck for Brightex due Friday' },
+  { id:'t7', sev:'n', src:'EMAIL', acct:'Jennifer Ramos', title:'Meridian check-in',                   age:'1d' },
+  { id:'t8', sev:'n', src:'CTA',   acct:'Creston',        title:'Update health score rationale' }
+];
+
+function renderTasksList() {
+  var list = document.getElementById('tk-list');
+  var countEl = document.getElementById('tk-pop-count-n');
+  var pillEl  = document.getElementById('pn-tasks');
+  if (!list) return;
+  var active = TASKS.filter(function(t){ return !t.done; });
+  if (countEl) countEl.textContent = active.length;
+  if (pillEl)  pillEl.textContent  = active.length;
+  var html = '';
+  TASKS.forEach(function(t) {
+    var doneCls = t.done ? ' done' : '';
+    var ageHtml = t.age ? '<span class="tk-row-age' + (t.ageCls ? ' ' + t.ageCls : '') + '">' + t.age + '</span>' : '<span></span>';
+    var lead = t.acct ? '<span class="tk-row-acct">' + t.acct + '</span><span class="tk-row-sep">&middot;</span>' : '';
+    html += '<div class="tk-row' + doneCls + '" onclick="openTaskBrief(\'' + t.id + '\')">'
+         + '<div class="tk-sev ' + t.sev + '"></div>'
+         + '<div class="tk-src">' + t.src + '</div>'
+         + '<div class="tk-row-body">' + lead + '<span class="tk-row-title">' + t.title + '</span></div>'
+         + ageHtml
+         + '</div>';
+  });
+  list.innerHTML = html;
+}
+
+// Stub — full task brief panel arrives in the next spec.
+function openTaskBrief(taskId) {
+  window._activeTaskId = taskId;
+  closePops();
+}
+
+renderTasksList();
 
 
 // ── DRAWER DATA ──────────────────────────────────────────────────────────────

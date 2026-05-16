@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 1.7.0
+**Version:** 1.8.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,28 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [1.8.0] — 2026-05-16
+
+Tasks dropdown — UI only. The brief panel that opens on row click is intentionally deferred to the next spec.
+
+### Added
+- Sixth indicator on the pulse strip: `≡ 8 tasks`. Opens a 520px right-aligned dropdown that matches the supplied mockup verbatim:
+  - Header bar (surf2 background, bottom border): `≡ Tasks · <n> items` on the left, `+ New Task` button on the right.
+  - 8 task rows in mockup order. Each row is a 4-column grid `[10px severity dot] [52px source tag] [body] [age]`:
+    - severity dots: `r` red (overdue/critical), `a` yellow (warning), `g` green (active), `n` hollow outline (neutral / no urgency)
+    - source tags: `CTA` / `EMAIL` / `SLACK` / `CAL` / `PROJ` rendered as a fixed-width outlined chip
+    - body: bold account/sender prefix + `·` separator + task title (or just title when no leading actor, e.g. the PROJ row)
+    - age: optional, right-aligned, colorized when overdue or warning
+- New CSS namespace `.tk-pop*` / `.tk-row*` / `.tk-sev*` / `.tk-src` reusing existing design tokens. Yellow severity dot uses `#EAB308` (matches the 🟡 in the mockup); all other colors come from `:root` tokens.
+- `TASKS` array as the single source of truth for the list. `renderTasksList()` builds the rows, keeps the header `<n> items` count and the pulse-strip pill count in sync with the number of incomplete tasks. Initial render is called at script-end.
+- Stub `openTaskBrief(taskId)` wired to each row's onclick. For now it stashes the task id on `window._activeTaskId` and closes the popover. The full Mission Briefing brief panel content (incl. Mark Complete behavior) is intentionally not built — that comes in the next spec.
+- `+ New Task` button toasts "New task — coming in next build".
+
+### Not touched
+- Existing pulse-strip popovers (calls / at-risk / ARR / overdue CTAs / dark accounts), the Today's Tasks card on the dashboard, the Mission Briefing pre-loaded Acme state, every agent drawer, the notification rail, Recipe for Success tab, all toast/click handlers outside the new dropdown.
 
 ---
 
