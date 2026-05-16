@@ -519,6 +519,33 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .tb-kv-v a{color:var(--tl);text-decoration:none;font-weight:600}
 .tb-kv-v a:hover{text-decoration:underline}
 .tb-kv-v .sep{color:var(--tx3);margin:0 3px}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Offline resilience (v2.4.0) — banner + cached badges + queue badge
+   ═══════════════════════════════════════════════════════════════════════════ */
+.offline-banner{position:fixed;top:0;left:0;right:0;height:36px;background:#1C1917;color:#FCD34D;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font-size:11px;font-weight:600;z-index:60;transform:translateY(-100%);transition:transform 200ms ease;letter-spacing:.02em}
+body.offline .offline-banner{transform:translateY(44px)}
+body.offline .pulse-strip{top:80px}
+.offline-banner-l{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.offline-banner-l i{font-size:14px;flex-shrink:0}
+.offline-banner-l .sep{opacity:.4;margin:0 2px}
+.offline-banner-l .ts{color:#FDE68A;font-weight:700}
+.ob-retry{background:transparent;border:1px solid #FCD34D;color:#FCD34D;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;flex-shrink:0;font-family:inherit}
+.ob-retry:hover{background:rgba(252,211,77,.1)}
+.ob-retry i{font-size:12px}
+
+/* Per-widget "Cached" badges — hidden by default, shown when body.offline */
+.cached-badge{display:none;font-size:9px;font-weight:700;color:var(--am-dk);background:var(--am-bg);padding:2px 7px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase;margin-left:8px;align-items:center;gap:4px;border:1px solid var(--am-bg)}
+.cached-badge i{font-size:10px;color:var(--am)}
+body.offline .cached-badge{display:inline-flex}
+
+/* Pulse-strip queue badge — shown only when queue length > 0 (JS-managed) */
+.queue-badge{display:none;font-size:11px;font-weight:700;color:var(--am-dk);background:var(--am-bg);padding:5px 11px;border-radius:6px;border:1px solid var(--am);align-items:center;gap:6px;margin-left:auto;cursor:default}
+.queue-badge.on{display:inline-flex}
+.queue-badge i{font-size:13px;color:var(--am)}
+
+/* Notification rail pills get a subtle frozen treatment when offline */
+body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .du-loop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:11px}
 .du-loop:last-child{border-bottom:none}
 .du-loop-l{flex:1;min-width:0}
@@ -833,6 +860,18 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
   </div>
 </nav>
 
+<!-- Offline-mode banner (v2.4.0) — hidden by default, slides in when body.offline -->
+<div class="offline-banner" id="offline-banner" role="status" aria-live="polite">
+  <div class="offline-banner-l">
+    <i class="ti ti-bolt"></i>
+    <span>Offline mode</span><span class="sep">&middot;</span>
+    <span>AI unavailable</span><span class="sep">&middot;</span>
+    <span>Last synced <span class="ts" id="offline-ts">just now</span></span><span class="sep">&middot;</span>
+    <span>Showing cached data</span>
+  </div>
+  <button class="ob-retry" type="button" onclick="retryReconnect()"><i class="ti ti-refresh"></i> Retry</button>
+</div>
+
 <div class="tc on" id="tab-dash">
 
   <!-- Portfolio Pulse Strip — SPEC §5.2 -->
@@ -1006,6 +1045,8 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="tk-list" id="tk-list"></div>
       </div>
     </div>
+    <span class="cached-badge"><i class="ti ti-database-off"></i> Cached</span>
+    <div class="queue-badge" id="queue-badge" title="Actions queued while offline — will sync when connection restores"><i class="ti ti-cloud-upload"></i> <span id="queue-badge-count">0</span> queued</div>
   </div>
 
   <!-- Daily Command Brief — SPEC §5.1 -->
@@ -1126,6 +1167,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
               <i class="ti ti-info-circle tip-ic"></i>
               <div class="tip-bx">Logic: <em>(Gainsight Health &lt; 50 AND Last_Reply &gt; 2d)</em> OR <em>(Gong_Competitor_Flag)</em> OR <em>(Unanswered_Email AND Renewal &lt; 60d)</em><br>Sources: Gmail API + Slack API + Gainsight webhooks + Gong AI</div>
             </div>
+            <span class="cached-badge"><i class="ti ti-database-off"></i> Cached</span>
           </div>
         </div>
         <div class="ii crit">
@@ -1497,7 +1539,7 @@ When works best this week?
       <!-- Live Signals widget — SPEC §5.7 -->
       <div class="ls">
         <div class="ls-hd">
-          <div class="ls-title"><i class="ti ti-broadcast" style="color:var(--rd)"></i> Live Signals</div>
+          <div class="ls-title"><i class="ti ti-broadcast" style="color:var(--rd)"></i> Live Signals <span class="cached-badge"><i class="ti ti-database-off"></i> Cached</span></div>
           <div class="ls-live"><span class="ls-dot"></span> Live &middot; Gainsight + Gong</div>
         </div>
         <div class="ls-row">
@@ -2096,7 +2138,9 @@ function logBrightexRenewal() {
 }
 
 // ── Simulated polling: new email arrives at 90s ─────────────────────────────
+// Skipped while offline — incoming-data simulation can't run without an API.
 setTimeout(function() {
+  if (typeof _isOffline === 'function' && _isOffline()) return;
   _setNotifPill('em', NOTIF.em + 1);
   var pill = document.getElementById('np-em');
   if (!pill) return;
@@ -3099,6 +3143,195 @@ function startDeckProgress() {
       }, 6000);
     }, 6000);
   }, 6000);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Offline resilience (v2.4.0)
+// ═══════════════════════════════════════════════════════════════════════════
+var STORAGE_KEY = 'teamos_last_session';
+var QUEUE_KEY   = 'teamos_action_queue';
+var FRESH_TTL   = 24 * 60 * 60 * 1000; // 24h
+var _lastSnapshot = null;
+
+function _snapshotState() {
+  try {
+    var snap = {
+      timestamp: new Date().toISOString(),
+      accounts: {
+        acme:    { health: 82, arr: '$48K', renewal: 'Aug 12', champion: 'David Kim' },
+        brightex:{ health: 48, arr: '$36K', renewal: 'Jun 15', champion: 'Sarah Chen' },
+        nova:    { health: 23, arr: '$31K', renewal: 'Jun 1',  champion: 'Michael Torres' }
+      },
+      pulse: {
+        calls: _readPillText('pb-calls'),
+        risk:  _readPillText('pb-risk'),
+        arr:   _readPillText('pb-arr'),
+        ctas:  _readPillText('pn-ctas', true),
+        dark:  _readPillText('pb-dark'),
+        tasks: _readPillText('pn-tasks', true)
+      },
+      tasks: (typeof TASKS !== 'undefined') ? TASKS.slice() : [],
+      activeAccount: window._activeAccount || null
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(snap));
+    _lastSnapshot = snap;
+    return snap;
+  } catch (e) { return null; }
+}
+
+function _readPillText(id, direct) {
+  var el = direct ? document.getElementById(id) : document.querySelector('#' + id + ' .ps-n');
+  return el ? el.textContent.trim() : '';
+}
+
+function _readSnapshot() {
+  try {
+    var s = localStorage.getItem(STORAGE_KEY);
+    if (!s) return null;
+    var p = JSON.parse(s);
+    var age = Date.now() - new Date(p.timestamp).getTime();
+    if (age > FRESH_TTL) return null;
+    return p;
+  } catch (e) { return null; }
+}
+
+function _hydrateFromSnapshot() {
+  // Static-prototype hydration: the page already bakes in fresh data, so
+  // hydration's only job is to stash the previous snapshot so the offline
+  // banner can show "last synced" against it. In a Phase 2 build the snapshot
+  // would seed the DOM before the live fetch returns.
+  _lastSnapshot = _readSnapshot();
+  return !!_lastSnapshot;
+}
+
+function _isOffline() {
+  return document.body.classList.contains('offline') || !navigator.onLine;
+}
+
+function _formatSyncedAgo(iso) {
+  if (!iso) return 'just now';
+  try {
+    var sec = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (sec < 60) return 'just now';
+    if (sec < 3600) return Math.floor(sec/60) + 'm ago';
+    if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+    return Math.floor(sec/86400) + 'd ago';
+  } catch (e) { return 'recently'; }
+}
+
+function showOfflineBanner() {
+  document.body.classList.add('offline');
+  var ts = document.getElementById('offline-ts');
+  if (ts) {
+    var snap = _lastSnapshot || _readSnapshot();
+    ts.textContent = _formatSyncedAgo(snap && snap.timestamp);
+  }
+  // Freeze notification pill counts: titles narrate, JS-set polling is gated.
+  document.querySelectorAll('.n-pill').forEach(function(p){
+    p.setAttribute('title', 'Data frozen · API unavailable');
+  });
+  _renderQueueBadge();
+}
+
+function hideOfflineBanner() {
+  document.body.classList.remove('offline');
+  document.querySelectorAll('.n-pill').forEach(function(p){ p.removeAttribute('title'); });
+  _renderQueueBadge();
+}
+
+function retryReconnect() {
+  if (navigator.onLine) {
+    hideOfflineBanner();
+    _flushQueue();
+    toast('Connection restored ✓');
+  } else {
+    toast('Still offline · Will retry when connection returns');
+  }
+}
+
+window.addEventListener('offline', showOfflineBanner);
+window.addEventListener('online', function() {
+  hideOfflineBanner();
+  _flushQueue();
+});
+
+// ── Write-back queue ────────────────────────────────────────────────────────
+// Toast messages matching this pattern are write-back actions that need to
+// reach an external system (Gainsight / Salesforce / Gmail / Slack / Ironclad).
+// During an outage they're added to a localStorage queue and replayed when
+// the connection returns.
+var QUEUEABLE_RE = /(in Gainsight|via Gmail|Notify AE|in Salesforce|Slack DM|in Ironclad|Push to|Re-engagement attempt logged|Activity logged|Opening Ironclad)/i;
+
+function _readQueue() {
+  try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); }
+  catch (e) { return []; }
+}
+
+function _writeQueue(arr) {
+  try { localStorage.setItem(QUEUE_KEY, JSON.stringify(arr)); } catch (e) {}
+}
+
+function _queueAction(msg) {
+  var q = _readQueue();
+  q.push({ msg: msg, ts: new Date().toISOString() });
+  _writeQueue(q);
+  _renderQueueBadge();
+}
+
+function _renderQueueBadge() {
+  var badge = document.getElementById('queue-badge');
+  var cnt = document.getElementById('queue-badge-count');
+  if (!badge || !cnt) return;
+  var q = _readQueue();
+  if (_isOffline() && q.length > 0) {
+    cnt.textContent = q.length;
+    badge.classList.add('on');
+  } else {
+    badge.classList.remove('on');
+  }
+}
+
+function _flushQueue() {
+  var q = _readQueue();
+  if (q.length === 0) return;
+  var origToast = window._origToast || toast;
+  origToast('Connection restored · Syncing ' + q.length + ' queued action' + (q.length === 1 ? '' : 's') + '…');
+  _writeQueue([]);
+  _renderQueueBadge();
+  var i = 0;
+  function step() {
+    if (i >= q.length) {
+      setTimeout(function(){ origToast('All actions synced ✓'); }, 400);
+      return;
+    }
+    origToast(q[i].msg);
+    i++;
+    setTimeout(step, 800);
+  }
+  setTimeout(step, 800);
+}
+
+// Wrap the existing toast() so write-back actions get queued during outages.
+window._origToast = toast;
+window.toast = function(msg) {
+  if (_isOffline() && typeof msg === 'string' && QUEUEABLE_RE.test(msg)) {
+    _queueAction(msg);
+    return window._origToast(msg + ' · Queued · Will sync when connection restores');
+  }
+  return window._origToast(msg);
+};
+
+// ── Init ────────────────────────────────────────────────────────────────────
+_hydrateFromSnapshot();
+_snapshotState();
+if (!navigator.onLine) showOfflineBanner();
+_renderQueueBadge();
+
+// ── Service worker registration ─────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/sw.js').catch(function(){ /* SW not available — graceful no-op */ });
+  });
 }
 
 </script>

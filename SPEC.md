@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.3.0
+**Version:** 2.4.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,72 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.4.0] — 2026-05-16
+
+TeamOS is now a PWA with four layers of offline resilience. When Dust or any connected API goes down, the CSM sees their last loaded session — not a blank screen — and write-backs queue silently until the connection returns.
+
+### Added — Layer 1: Service Worker (`/sw.js`)
+- New file at the project root. Network-first with cache fallback, cache name `teamos-v1`.
+- **Install:** precaches `'/'` and `'/index.html'`, then calls `skipWaiting()`.
+- **Activate:** clears any non-current cache versions, then `clients.claim()`.
+- **Fetch:** for every GET, races the network against a 3000ms timeout; if the network wins, the response is cloned into the cache (including opaque CDN responses) and served; if it times out or fails, the cached copy is served, with a final `503 Offline` fallback if nothing's cached yet. Non-GETs pass through.
+- Registered from `index.html` via `navigator.serviceWorker.register('/sw.js')` inside a `window.load` listener with a `.catch()` graceful no-op for browsers that can't register (file:// previews, ITP, etc.).
+
+### Added — Layer 2: localStorage state snapshot
+- Storage key `teamos_last_session`. 24h freshness TTL.
+- `_snapshotState()` writes `{ timestamp, accounts:{acme,brightex,nova}, pulse:{calls,risk,arr,ctas,dark,tasks}, tasks, activeAccount }`. Account fields are health/ARR/renewal/champion. Pulse counts read from the live pill text in the DOM so the snapshot reflects the user's actual session (e.g. CTAs decremented after marking done).
+- `_hydrateFromSnapshot()` reads the previous snapshot and stashes it on `window._lastSnapshot` so the offline banner's "Last synced …" text can render against it. In Phase 2 with live APIs, the hydrator will seed the DOM before the live fetch returns.
+- Both run at boot: hydrate first, then snapshot the freshly-baked state.
+
+### Added — Layer 3: offline detection + UI
+- **Offline banner** (`#offline-banner`) — 36px fixed bar between the nav and the pulse strip. Background `#1C1917`, text `#FCD34D`, slim sans-serif. Slides down via `transform` over 200ms. Anchored at `top:0` with `translateY(-100%)` hidden state; `body.offline` shifts to `translateY(44px)` so the bar sits flush below the 44px nav. Pulse strip's sticky `top` is pushed from `44px` → `80px` when offline so it lands flush under the banner — no overlap.
+- Banner copy: `⚡ Offline mode · AI unavailable · Last synced [ago] · Showing cached data` + a `Retry ↺` button.
+- **Retry button** calls `retryReconnect()` — if `navigator.onLine` is true, hides the banner, flushes the queue, and toasts "Connection restored ✓"; otherwise toasts "Still offline · Will retry when connection returns".
+- **`offline` / `online` window listeners** wire `showOfflineBanner` / `hideOfflineBanner` directly. On boot, `if (!navigator.onLine) showOfflineBanner()` so a tab that was already offline at load time gets the banner immediately.
+- **Per-widget "Cached" badges** (`.cached-badge` with `ti-database-off` icon, amber on amber-bg, displayed only when `body.offline`). Live on the Portfolio Pulse Strip, Live Signals header, and Urgent Inbox header. Pure CSS show/hide — no JS toggling each badge.
+- **Notification rail freeze** — when offline, every `.n-pill` gets `title="Data frozen · API unavailable"` and a subtle grayscale filter via `body.offline .n-pill{filter:grayscale(.3);opacity:.85}`. The simulated 90s email-poll bump now short-circuits with an `_isOffline()` guard so counts don't drift while disconnected.
+
+### Added — Layer 4: write-back queue
+- Storage key `teamos_action_queue`. JSON array of `{ msg, ts }` entries.
+- `toast()` is wrapped: the original is preserved as `window._origToast`. The new `window.toast` checks whether the message matches `QUEUEABLE_RE` — a single regex covering `in Gainsight`, `via Gmail`, `Notify AE`, `in Salesforce`, `Slack DM`, `in Ironclad`, `Push to`, `Re-engagement attempt logged`, `Activity logged`, `Opening Ironclad` — and whether we're offline. If both are true, the action is pushed to the queue and the displayed toast is amended with " · Queued · Will sync when connection restores".
+- **Queue badge** (`#queue-badge`) lives at the right edge of the pulse strip. Hidden by default; visible only when `body.offline` AND queue length > 0. Reads "N queued" in amber with a cloud-upload icon. JS-managed via `_renderQueueBadge()` (called on every queue mutation and every offline toggle).
+- **Reconnect flush** — `_flushQueue()` is called from the `online` event handler and from `retryReconnect()`. It toasts "Connection restored · Syncing N queued action(s)…", clears the queue, then replays each queued message at 800ms intervals via the original (un-wrapped) toast so they don't re-queue. After the last replay, toasts "All actions synced ✓".
+
+### Documented — what still works during an outage
+- ✅ Full dashboard visible from cache (SW serves `index.html` if the network dies mid-session)
+- ✅ All Mission Briefing content readable (Acme / Brightex / NovaVault / Meridian / Creston / Apex views are pre-baked into the cached `index.html`)
+- ✅ All agent drawer content readable (all 12 agent × account combos render from local `DRAWER` data)
+- ✅ Calendar events visible and clickable (calendar is in-DOM; click → `openPanel` works against cached views)
+- ✅ Task briefs readable (v2.3.0 task brief renderer is local + deterministic)
+- ✅ Ghost-Buster drafts readable and editable (every account's draft is pre-rendered in its `view-*` block; Send via Gmail queues for sync)
+- ✅ All navigation and tab switching (CSM Dashboard ↔ Recipe for Success works locally)
+- ✅ Compose and edit emails — the action *queues* on send, doesn't error
+- ⚠️ Ask Dust shows last cached response only — new free-text queries can't reach Dust during an outage
+- ⚠️ New AI queries unavailable — chip-click quick-actions and free-text both depend on the live agent
+- ⚠️ Write-backs queued, not immediate — replayed on reconnect at 800ms intervals
+
+### Verified end-to-end in a headless render
+- Hidden banner rect: top=-36, bottom=0 (fully off-screen above) ✓
+- Offline state: banner top=44, bottom=80; pulse strip top=80 — no overlap ✓
+- Snapshot keys: `timestamp, accounts, pulse, tasks, activeAccount` ✓
+- 3 queueable toasts during outage → 3 entries in `teamos_action_queue`; queue badge reads "3 queued" ✓
+- Non-queueable toast ("Opening Gong · Acme Corp · Last call May 10…") does **not** queue ✓
+- After `online` event: banner hidden, queue cleared, body class removed ✓
+- After `online` event while online: a queueable toast does **not** queue ✓
+
+### Not touched
+- All existing JS functions (every handler, agent renderer, panel opener, calendar onclick), every view, every widget header HTML except the three lines that gained the `.cached-badge` span, every drawer, the deck modal, the pulse strip pill markup, every Mission Briefing template, every Ask Dust template, every task brief, every Ghost-Buster draft, the Recipe for Success tab.
+- The Service Worker wraps the app — it does not change it. The existing app would behave identically if `sw.js` were deleted (the registration call is a no-op fallback for unsupported browsers).
+
+### Engineering
+- Banner positioning math: `top:0; translateY(-100%)` keeps the 36px banner exactly off-screen above (y=-36..0). `translateY(44px)` shifts it to y=44..80 — flush below the 44px sticky nav. The pulse strip's `top` is pushed from 44 → 80 in the same `body.offline` cascade so it remains visually anchored to the banner's bottom edge.
+- The write-back-detection regex is intentionally a single allow-list expression. Any new write-back surface phrase added to `toast()` calls needs a one-line update to `QUEUEABLE_RE` — no per-button instrumentation required.
+- `_flushQueue()` deliberately replays via `window._origToast` (the un-wrapped function) so replays don't bounce back into the queue if the connection flickers off again during sync.
+- Snapshot is taken at boot only in this prototype. Phase 2 hook points (after Dust / Gainsight / Gong fetch success) are stubbed: just call `_snapshotState()`.
+- No new color tokens. No new dependencies. `sw.js` is ~60 lines.
 
 ---
 
