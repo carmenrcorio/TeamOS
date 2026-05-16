@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeamOS &middot; CSM Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#EEEDE9;--surf:#fff;--surf2:#F6F5F2;
+  --bd:#E0DFD9;--bd2:#C6C5C0;
+  --tx:#111110;--tx2:#52524E;--tx3:#8A8A86;
+  --tl:#18A575;--tl-bg:#E3F5EE;--tl-dk:#0A5C41;--tl-md:#0F6E51;
+  --am:#D97706;--am-bg:#FEF3C7;--am-dk:#78350F;
+  --rd:#DC2626;--rd-bg:#FEE2E2;--rd-dk:#7F1D1D;
+  --bl:#2563EB;--bl-bg:#EFF6FF;--bl-dk:#1E3A8A;
+  --r:8px;--rlg:12px;
+}
+html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5}
+
+.nav{height:44px;background:#0D0D0C;display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:50}
+.n-brand{color:#fff;font-size:14px;font-weight:700;padding-right:16px;border-right:1px solid rgba(255,255,255,.1);margin-right:14px;display:flex;align-items:center;gap:7px;letter-spacing:-.03em;flex-shrink:0}
+.n-dot{width:9px;height:9px;background:var(--tl);border-radius:2px}
+.n-tab{font-size:12px;color:rgba(255,255,255,.4);padding:0 14px;height:44px;display:flex;align-items:center;cursor:pointer;border-bottom:2px solid transparent;font-weight:500;transition:.1s;white-space:nowrap}
+.n-tab:hover{color:rgba(255,255,255,.8)}
+.n-tab.on{color:#fff;border-bottom-color:var(--tl)}
+.n-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.n-av{width:28px;height:28px;border-radius:50%;background:var(--tl);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.n-nm{font-size:11px;color:rgba(255,255,255,.35)}
+
+.tc{display:none}.tc.on{display:block}
+
+.acct-strip{padding:20px 28px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.at{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:18px 20px;cursor:pointer;transition:all .15s;border-left:4px solid var(--bd)}
+.at:hover{box-shadow:0 3px 14px rgba(0,0,0,.09)}
+.at.sel{box-shadow:0 0 0 2px var(--tl)}
+.at.g{border-left-color:var(--tl)}
+.at.am{border-left-color:var(--am)}
+.at.rd{border-left-color:var(--rd);background:#FFFAFA}
+.at-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.at-nm{font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.07em}
+.at-arr{font-size:20px;font-weight:700;color:var(--tx);letter-spacing:-.03em}
+.at-health{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.h-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.h-dot.g{background:var(--tl)}.h-dot.am{background:var(--am)}.h-dot.rd{background:var(--rd)}
+.h-bar{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.h-bar-f{height:100%;border-radius:3px}
+.h-lbl{font-size:11px;color:var(--tx3)}
+.h-sc{font-size:13px;font-weight:700;color:var(--tx2)}
+.at-row{font-size:12px;color:var(--tx3);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.at-row.warn{color:var(--am);font-weight:600}
+.at-row.crit{color:var(--rd);font-weight:700}
+.at-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--bd);font-size:12px;display:flex;align-items:center;gap:6px}
+.at-foot.g{color:var(--tl-md);font-weight:500}
+.at-foot.am{color:var(--am);font-weight:500}
+.at-foot.rd{color:var(--rd);font-weight:600}
+.at-pill{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:700;margin-left:auto}
+.at-pill.g{background:var(--tl-bg);color:var(--tl-dk)}
+.at-pill.am{background:var(--am-bg);color:var(--am-dk)}
+.at-pill.rd{background:var(--rd-bg);color:var(--rd-dk)}
+
+.main{display:grid;grid-template-columns:275px 1fr 270px;gap:20px;padding:20px 28px 40px}
+
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;margin-bottom:16px}
+.card:last-child{margin-bottom:0}
+.card-hd{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:11px;font-weight:700;color:var(--tx);text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:7px}
+.cnt{font-size:10px;font-weight:700;background:var(--rd);color:#fff;padding:1px 7px;border-radius:99px}
+.cnt.am{background:var(--am)}
+.cnt.gray{background:var(--tx3)}
+
+.tip-w{position:relative;display:inline-flex;align-items:center}
+.tip-ic{font-size:12px;color:var(--tx3);cursor:help;margin-left:4px;opacity:.6}
+.tip-ic:hover{opacity:1}
+.tip-bx{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#18181A;color:#DDDDE0;font-size:10px;line-height:1.65;padding:10px 12px;border-radius:var(--r);width:250px;z-index:200;font-family:monospace}
+.tip-bx::before{content:"";position:absolute;top:-5px;left:10px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid #18181A}
+.tip-w:hover .tip-bx{display:block}
+.tip-bx em{color:var(--tl);font-style:normal}
+
+.ii{padding:13px 16px;border-bottom:1px solid var(--bd);border-left:4px solid transparent;transition:background .1s}
+.ii:last-child{border-bottom:none}
+.ii.crit{border-left-color:var(--rd);background:#FFF8F8}
+.ii.warn{border-left-color:var(--am)}
+.ii.info{border-left-color:var(--bl)}
+.ii-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+.ii-from{font-size:12px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:5px}
+.ii-time{font-size:10px;color:var(--tx3);white-space:nowrap;flex-shrink:0;margin-top:1px}
+.ii-body{font-size:12px;color:var(--tx2);margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;font-style:italic}
+.ii-meta{display:flex;align-items:center;gap:6px}
+.tag{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700}
+.tag.red{background:var(--rd-bg);color:var(--rd-dk)}
+.tag.amber{background:var(--am-bg);color:var(--am-dk)}
+.tag.blue{background:var(--bl-bg);color:var(--bl-dk)}
+
+.ac{padding:12px 16px;border-bottom:1px solid var(--bd);transition:background .1s}
+.ac:last-child{border-bottom:none}
+.ac:hover{background:var(--surf2)}
+.ac.done{opacity:.45}
+.ac-top{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.src-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.src-dot.gs{background:var(--tl)}
+.src-dot.gm{background:var(--rd)}
+.src-dot.ca{background:var(--bl)}
+.src-dot.sl{background:var(--tx3)}
+.ac-src{font-size:10px;color:var(--tx3);flex:1}
+.ac-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700}
+.ac-badge.ov{background:var(--rd-bg);color:var(--rd-dk)}
+.ac-badge.td{background:var(--am-bg);color:var(--am-dk)}
+.ac-badge.lo{background:var(--surf2);color:var(--tx3);border:1px solid var(--bd)}
+.ac-title{font-size:12px;font-weight:500;color:var(--tx);margin-bottom:6px;line-height:1.4}
+.ac.done .ac-title{text-decoration:line-through;color:var(--tx3)}
+.ac-btn{font-size:11px;font-weight:500;padding:5px 11px;border:1px solid var(--bd2);border-radius:var(--r);cursor:pointer;background:var(--surf);color:var(--tx);font-family:inherit;transition:all .1s;white-space:nowrap}
+.ac-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.ac-btn.done-btn{background:var(--tl-bg);color:var(--tl-dk);border-color:var(--tl-bg);cursor:default}
+
+.cal-hd{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg) var(--rlg) 0 0;padding:18px 20px 16px;border-bottom:1px solid var(--bd)}
+.cal-date{font-size:22px;font-weight:700;color:var(--tx);letter-spacing:-.03em;margin-bottom:4px}
+.cal-sub{font-size:12px;color:var(--tx3)}
+.cal-body{background:var(--surf);border:1px solid var(--bd);border-top:none;border-radius:0 0 var(--rlg) var(--rlg);padding:16px;display:flex;flex-direction:column;gap:10px}
+.ce{display:flex;align-items:stretch;border-radius:var(--rlg);overflow:hidden;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.ce:not(.int):hover{transform:translateX(2px)}
+.ce.sel{border-color:var(--tl);box-shadow:0 0 0 2px rgba(24,165,117,.15)}
+.ce.g{background:#EAF7F0;border-color:#C0E8D5}
+.ce.am{background:#FEF6E0;border-color:#F5D98A}
+.ce.rd{background:#FEF1F1;border-color:#F7BEBE}
+.ce.int{background:var(--surf2);cursor:default;border-color:var(--bd)}
+.ce-bar{width:5px;flex-shrink:0}
+.ce.g .ce-bar{background:var(--tl)}
+.ce.am .ce-bar{background:var(--am)}
+.ce.rd .ce-bar{background:var(--rd)}
+.ce.int .ce-bar{background:var(--bd2)}
+.ce-body{flex:1;padding:12px 14px;min-width:0}
+.ce-time-row{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.ce-time{font-size:11px;font-weight:700;color:var(--tx3)}
+.ce-dur{font-size:10px;color:var(--tx3)}
+.ce-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:6px;line-height:1.3}
+.ce.int .ce-title{font-weight:500;color:var(--tx2)}
+.ce-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.ce-pill{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700}
+.ce-pill.g{background:var(--tl-bg);color:var(--tl-dk)}
+.ce-pill.am{background:var(--am-bg);color:var(--am-dk)}
+.ce-pill.rd{background:var(--rd-bg);color:var(--rd-dk)}
+.ce-person{font-size:11px;color:var(--tx3)}
+.ce-arr{padding:12px 14px;display:flex;align-items:center;font-size:16px;color:var(--tx3);flex-shrink:0;transition:color .12s}
+.ce.sel .ce-arr{color:var(--tl)}
+.ce.int .ce-arr{display:none}
+
+.dz{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;margin-top:16px}
+.dz-hd{padding:13px 18px;border-bottom:1px solid var(--bd);background:#1A1A1F;display:flex;align-items:center;justify-content:space-between}
+.dz-title{font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px;letter-spacing:.02em}
+.dz-cnt{font-size:10px;font-weight:700;background:var(--rd);color:#fff;padding:2px 8px;border-radius:99px}
+.dz-acct{padding:13px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.dz-acct:last-child{border-bottom:none}
+.dz-left{flex:1;min-width:0}
+.dz-nm{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:4px}
+.dz-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.dz-days{font-size:10px;font-weight:700;background:var(--rd-bg);color:var(--rd-dk);padding:1px 6px;border-radius:4px}
+.dz-renewal{font-size:10px;color:var(--tx3)}
+.dz-last{font-size:11px;color:var(--tx3);font-style:italic;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.dz-btn{font-size:11px;font-weight:600;background:var(--tl);color:#fff;border:none;border-radius:var(--r);padding:6px 12px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background .1s}
+.dz-btn:hover{background:var(--tl-md)}
+
+.rp{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;height:100%;min-height:520px;display:flex;flex-direction:column}
+.rp-view{display:none;flex-direction:column;flex:1}
+.rp-view.on{display:flex}
+.rp-hd{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.rp-t{font-size:11px;font-weight:700;color:var(--tx);text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:6px}
+.rp-scroll{flex:1;overflow-y:auto;padding:16px 18px}
+.rp-back{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx3);cursor:pointer;padding:11px 18px;border-bottom:1px solid var(--bd);transition:.1s;flex-shrink:0}
+.rp-back:hover{color:var(--tx);background:var(--bg)}
+
+.mb-nm{font-size:17px;font-weight:700;color:var(--tx);letter-spacing:-.02em;margin-bottom:4px}
+.mb-meta{font-size:12px;color:var(--tx3);margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.story{margin-bottom:14px;display:flex;flex-direction:column;gap:7px}
+.s-item{padding:10px 12px;border-radius:var(--r);border-left:3px solid var(--bd);background:var(--surf2)}
+.s-item.where{border-left-color:var(--tl)}
+.s-item.last{border-left-color:var(--am)}
+.s-item.obj{border-left-color:var(--bl)}
+.s-lbl{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.s-val{font-size:11px;color:var(--tx2);line-height:1.55}
+.mb-btns{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.mb-btn{padding:9px 10px;border:1px solid var(--bd2);border-radius:var(--r);cursor:pointer;background:var(--surf);display:flex;align-items:flex-start;gap:7px;text-align:left;font-family:inherit;transition:all .12s}
+.mb-btn:hover{border-color:var(--tl);background:var(--tl-bg)}
+.mb-ic{font-size:14px;color:var(--tl);flex-shrink:0;padding-top:1px}
+.mb-bl{font-size:11px;font-weight:700;color:var(--tx);line-height:1.3}
+.mb-bs{font-size:10px;color:var(--tx3);margin-top:2px}
+.mb-deck{width:100%;padding:10px 14px;background:var(--tx);color:var(--surf);border:none;border-radius:var(--r);cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .1s}
+.mb-deck:hover{background:#2a2a28}
+.mb-note{font-size:10px;color:var(--tx3);margin-top:7px;line-height:1.5}
+
+.ds-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd)}
+.ds-row:last-child{border-bottom:none}
+.ds-l{font-size:12px;color:var(--tx2)}
+.ds-v{font-size:14px;font-weight:700;color:var(--tx)}
+.ds-v.r{color:var(--rd)}.ds-v.a{color:var(--am)}.ds-v.g{color:var(--tl)}
+
+.ag-item{padding:11px 18px;border-bottom:1px solid var(--bd)}
+.ag-item:last-of-type{border-bottom:none}
+.ag-nm{font-size:12px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.ag-d{width:7px;height:7px;border-radius:50%;background:var(--tl);flex-shrink:0}
+.ag-desc{font-size:11px;color:var(--tx2);line-height:1.45}
+.ag-tag{font-size:9px;background:var(--tl-bg);color:var(--tl-dk);padding:1px 5px;border-radius:3px;font-weight:700;margin-left:auto}
+
+.ge-ctx{font-size:10px;color:var(--tl-dk);background:var(--tl-bg);border-radius:var(--r);padding:8px 11px;margin-bottom:12px;line-height:1.55}
+.ge-subj{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.ge-body{font-size:11px;color:var(--tx2);line-height:1.7;white-space:pre-line;background:var(--surf2);border-radius:var(--r);padding:11px 13px;margin-bottom:12px}
+.ge-btns{display:flex;gap:8px}
+.ge-send{flex:1;padding:9px;background:var(--tx);color:var(--surf);border:none;border-radius:var(--r);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .1s}
+.ge-send:hover{background:#2a2a28}
+.ge-send.sent{background:var(--tl)}
+.ge-edit{flex:1;padding:9px;background:transparent;color:var(--tx2);border:1px solid var(--bd2);border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit}
+.ge-edit:hover{background:var(--surf2)}
+
+.sc-pg{padding:20px 28px}
+.sc-ban{background:var(--tl-bg);border-radius:var(--r);padding:14px 18px;display:flex;align-items:flex-start;gap:10px;margin-bottom:20px}
+.sc-bt{font-weight:700;font-size:13px;color:var(--tl-dk);margin-bottom:4px}
+.sc-bs{font-size:12px;color:var(--tl-dk);line-height:1.5}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.sc-card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px}
+.sc-ct{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+.sc-row{display:flex;align-items:flex-start;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd);gap:10px}
+.sc-row:last-child{border-bottom:none}
+.sc-ml{font-size:12px;color:var(--tx)}
+.sc-mt{font-size:10px;color:var(--tx3);margin-top:2px}
+.sc-mv{font-size:14px;font-weight:700;color:var(--tl);text-align:right;white-space:nowrap}
+.sc-mv.w{color:var(--am)}.sc-mv.d{color:var(--rd)}
+.sc-src{font-size:9px;background:var(--tl-bg);color:var(--tl-dk);padding:1px 5px;border-radius:3px;font-weight:700;display:flex;align-items:center;gap:3px;margin-top:3px;justify-content:flex-end}
+.sc-fin{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:20px}
+.sc-sr{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd)}
+.sc-sr:last-child{border-bottom:none}
+.sc-sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sc-sn{font-size:12px;color:var(--tx);flex:1}
+.sc-sw{font-size:10px;color:var(--tx3);min-width:28px;text-align:right}
+.sc-bw{width:90px;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.sc-bf{height:100%;border-radius:3px}
+.sc-pct{font-size:12px;font-weight:700;min-width:36px;text-align:right}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+.mb-btn.loading{opacity:.6;cursor:wait}
+.mb-btn.loading .mb-ic{animation:spin 1s linear infinite}
+.agent-out{border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;margin-top:14px;display:none}
+.ao-hd{padding:10px 14px;background:var(--surf2);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.ao-hd-t{font-size:11px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:6px}
+.ao-done{font-size:11px;color:var(--tx3);cursor:pointer;background:none;border:1px solid var(--bd);border-radius:var(--r);padding:3px 9px;font-family:inherit}
+.ao-body{padding:12px 14px}
+.ao-row{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.ao-row:last-child{border-bottom:none}
+.ao-row-ic{font-size:14px;flex-shrink:0;margin-top:2px}
+.ao-row-tx{font-size:12px;color:var(--tx2);line-height:1.5}
+.ao-foot{padding:10px 14px;background:var(--surf2);border-top:1px solid var(--bd);display:flex;gap:7px}
+.ao-foot-btn{flex:1;padding:6px 10px;font-size:11px;font-weight:500;border:1px solid var(--bd2);border-radius:var(--r);cursor:pointer;background:var(--surf);color:var(--tx);font-family:inherit;transition:all .1s}
+.ao-foot-btn:hover{border-color:var(--tl);background:var(--tl-bg);color:var(--tl-dk)}
+.ao-foot-btn.prim{background:var(--tl);color:#fff;border-color:var(--tl)}
+.ao-foot-btn.prim:hover{background:var(--tl-md)}
+.risk-score{display:flex;align-items:baseline;gap:8px;margin-bottom:14px}
+.risk-num{font-size:36px;font-weight:700;letter-spacing:-.03em}
+.risk-lbl{font-size:13px;font-weight:600}
+.save-note{margin-top:12px;padding:10px 12px;background:var(--tl-bg);border-radius:var(--r);border-left:3px solid var(--tl)}
+.save-note-t{font-size:10px;font-weight:700;color:var(--tl-dk);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.save-note-b{font-size:12px;color:var(--tl-dk);line-height:1.5}
+.cta-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.cta-row:last-child{border-bottom:none}
+.cta-num{font-size:13px;font-weight:700;color:var(--tl);min-width:20px;flex-shrink:0}
+.cta-title{font-size:12px;font-weight:500;color:var(--tx);margin-bottom:3px}
+.cta-meta{font-size:10px;color:var(--tx3)}
+.dov{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:none}
+.dov.on{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:420px;background:var(--surf);border-left:1px solid var(--bd);z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;overflow:hidden}
+.drawer.on{transform:translateX(0)}
+.dr-hd{padding:18px 22px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.dr-title{font-size:16px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.dr-sub{font-size:12px;color:var(--tx3);margin-top:3px}
+.dr-close{font-size:22px;color:var(--tx3);cursor:pointer;background:none;border:none;line-height:1;padding:0}
+.dr-scroll{flex:1;overflow-y:auto;padding:20px 22px}
+.dr-sec{margin-bottom:22px}
+.dr-sec-t{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.tp{padding:11px 13px;background:var(--surf2);border-radius:var(--r);border-left:3px solid var(--tl);margin-bottom:8px;font-size:12px;color:var(--tx2);line-height:1.55}
+.ob{padding:11px 13px;background:var(--rd-bg);border-radius:var(--r);border-left:3px solid var(--rd);margin-bottom:8px}
+.ob-q{font-size:11px;font-weight:700;color:var(--rd-dk);margin-bottom:4px}
+.ob-a{font-size:11px;color:var(--rd-dk);line-height:1.5}
+.ext{background:var(--am-bg);border-radius:var(--rlg);padding:14px;border:1px solid var(--am)}
+.ext-t{font-size:11px;font-weight:700;color:var(--am-dk);margin-bottom:8px}
+.ext-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--am-dk);padding:4px 0;border-bottom:1px solid rgba(217,119,6,.2)}
+.ext-row:last-child{border-bottom:none}
+.dr-ft{padding:16px 22px;border-top:1px solid var(--bd);flex-shrink:0;display:flex;gap:8px}
+.dr-ft-btn{flex:1;padding:11px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .1s;border:none}
+.dr-ft-btn.prim{background:var(--tx);color:#fff}
+.dr-ft-btn.prim:hover{background:#2a2a28}
+.dr-ft-btn.sec{background:var(--surf2);color:var(--tx);border:1px solid var(--bd2)}
+.dr-ft-btn.sec:hover{background:var(--bg)}
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;display:none;align-items:center;justify-content:center}
+.mov.on{display:flex}
+.modal{background:var(--surf);border-radius:18px;padding:36px;width:500px;max-width:92vw;position:relative}
+.modal-t{font-size:20px;font-weight:700;color:var(--tx);margin-bottom:5px;letter-spacing:-.03em}
+.modal-s{font-size:13px;color:var(--tx3);margin-bottom:28px}
+.prog-bar-wrap{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:24px}
+.prog-bar{height:100%;background:var(--tl);border-radius:3px;transition:width .5s ease;width:0%}
+.prog-steps{margin-bottom:20px}
+.ps{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.ps:last-child{border-bottom:none}
+.ps-ic{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.ps-ic.done{background:var(--tl-bg);color:var(--tl)}
+.ps-ic.active{background:var(--am-bg);color:var(--am)}
+.ps-ic.wait{background:var(--surf2);color:var(--tx3)}
+.ps-lbl{font-size:13px;color:var(--tx);font-weight:500}
+.ps-lbl.wait{color:var(--tx3);font-weight:400}
+.modal-ok{text-align:center;padding:8px 0 20px;display:none}
+.modal-ok-ic{font-size:36px;color:var(--tl);margin-bottom:8px}
+.modal-ok-t{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:4px}
+.modal-ok-s{font-size:12px;color:var(--tx3)}
+.modal-acts{display:flex;gap:10px;display:none}
+.modal-btn{flex:1;padding:13px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .1s;border:none}
+.modal-btn.prim{background:var(--tx);color:#fff}
+.modal-btn.prim:hover{background:#2a2a28}
+.modal-btn.sec{background:var(--surf2);color:var(--tx);border:1px solid var(--bd2)}
+.modal-btn.sec:hover{background:var(--bg)}
+.modal-x{position:absolute;right:20px;top:20px;font-size:22px;color:var(--tx3);cursor:pointer;background:none;border:none;line-height:1}
+
+.pulse-strip{background:var(--surf);border-bottom:1px solid var(--bd);padding:0 28px;display:flex;align-items:center;gap:0;position:relative;z-index:50}
+.ps-wrap{position:relative;display:inline-flex}
+.ps-btn{font-size:12px;font-weight:500;color:var(--tx2);background:none;border:none;border-right:1px solid var(--bd);padding:9px 20px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:color .1s;white-space:nowrap;text-decoration:none}
+.ps-btn:hover{color:var(--tx);text-decoration:underline;text-underline-offset:3px}
+.ps-btn.on{color:var(--tl)}
+.ps-btn .ps-n{font-weight:700;color:var(--tx)}
+.ps-btn .ps-n.r{color:var(--rd)}.ps-btn .ps-n.a{color:var(--am)}.ps-btn .ps-n.g{color:var(--tl)}
+.pop{position:absolute;top:calc(100% + 4px);left:0;width:320px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:0 8px 32px rgba(0,0,0,.12);z-index:200;display:none;overflow:hidden}
+.pop.on{display:block}
+.pop.right{left:auto;right:0}
+.pop-hd{padding:11px 14px;border-bottom:1px solid var(--bd);font-size:11px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:6px}
+.pop-row{padding:10px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:8px}
+.pop-row:last-child{border-bottom:none}
+.pop-row.done-row{background:var(--tlb);transition:background .4s}
+.pop-left{flex:1;min-width:0}
+.pop-main{font-size:12px;font-weight:600;color:var(--tx);margin-bottom:2px}
+.pop-sub{font-size:10px;color:var(--tx3);margin-bottom:4px}
+.pop-signal{font-size:10px;color:var(--tx2);font-style:italic;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.pop-btns{display:flex;align-items:center;gap:4px;flex-shrink:0;margin-top:2px;flex-direction:column;align-items:flex-end;gap:5px}
+.ext{font-size:9px;font-weight:600;padding:2px 7px;border-radius:3px;border:1px solid var(--bd2);cursor:pointer;color:var(--tx2);background:var(--surf);text-decoration:none;transition:all .1s;display:inline-block;white-space:nowrap}
+.ext:hover{background:var(--bg);border-color:var(--bd2);color:var(--tx)}
+.ext.sf:hover{border-color:#0176D3;color:#0176D3}
+.ext.gs:hover{border-color:var(--tl);color:var(--tl)}
+.ext.go:hover{border-color:var(--am);color:var(--am)}
+.done-btn{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:none;cursor:pointer;background:var(--tl);color:#fff;font-family:inherit;transition:all .1s}
+.done-btn:hover{background:var(--tlm)}
+.gb-btn{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:none;cursor:pointer;background:var(--rd);color:#fff;font-family:inherit;transition:all .1s}
+.gb-btn:hover{background:#b91c1c}
+.pop-foot{padding:9px 14px;border-top:1px solid var(--bd);background:var(--s2)}
+.pop-foot-a{font-size:11px;font-weight:600;color:var(--tl);cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px}
+.pop-foot-a:hover{text-decoration:underline;text-underline-offset:3px}
+.ren-bar{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:5px}
+.ren-fill{height:100%;border-radius:3px}
+.hp-badge{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:700;margin-left:4px}
+.hp-badge.g{background:var(--tlb);color:var(--tld)}.hp-badge.a{background:var(--amb);color:var(--amd)}.hp-badge.r{background:var(--rdb);color:var(--rdd)}
+.delta{font-size:10px;font-weight:600}
+.delta.down{color:var(--rd)}.delta.up{color:var(--tl)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="n-brand"><div class="n-dot"></div>TeamOS</div>
+  <div class="n-tab on" onclick="goTab('dash',this)">CSM Dashboard</div>
+  <div class="n-tab" onclick="goTab('recipe',this)">Recipe for Success</div>
+  <div class="n-right"><div class="n-av">CL</div><span class="n-nm">Carmen</span></div>
+</nav>
+
+<div class="tc on" id="tab-dash">
+
+  <div class="acct-strip">
+    <div class="at g" onclick="pickAt('acme',this)">
+      <div class="at-hdr"><span class="at-nm">ACME CORP</span><span class="at-arr">$48K</span></div>
+      <div class="at-health">
+        <div class="h-dot g"></div>
+        <div class="h-bar"><div class="h-bar-f" style="width:82%;background:var(--tl)"></div></div>
+        <span class="h-lbl">Health</span><span class="h-sc">82</span>
+        <span class="at-pill g">Healthy</span>
+      </div>
+      <div class="at-row">Renews Aug 12 &middot; 89 days</div>
+      <div class="at-row">0 open CTAs &middot; Last call 5d ago</div>
+      <div class="at-foot g"><i class="ti ti-microphone" style="font-size:12px"></i> QBR today 9:00 AM &rarr;</div>
+    </div>
+    <div class="at am" onclick="pickAt('brightex',this)">
+      <div class="at-hdr"><span class="at-nm">BRIGHTEX INC</span><span class="at-arr">$36K</span></div>
+      <div class="at-health">
+        <div class="h-dot am"></div>
+        <div class="h-bar"><div class="h-bar-f" style="width:48%;background:var(--am)"></div></div>
+        <span class="h-lbl">Health</span><span class="h-sc">48</span>
+        <span class="at-pill am">At Risk</span>
+      </div>
+      <div class="at-row warn"><i class="ti ti-alert-triangle" style="font-size:11px"></i> Renews Jun 15 &middot; 31 days</div>
+      <div class="at-row">2 CTAs &middot; 1 overdue &middot; Competitor flagged</div>
+      <div class="at-foot am"><i class="ti ti-microphone" style="font-size:12px"></i> Risk Review 11:00 AM &rarr;</div>
+    </div>
+    <div class="at rd" onclick="pickAt('nova',this)">
+      <div class="at-hdr"><span class="at-nm">NOVAVAULT</span><span class="at-arr">$31K</span></div>
+      <div class="at-health">
+        <div class="h-dot rd"></div>
+        <div class="h-bar"><div class="h-bar-f" style="width:23%;background:var(--rd)"></div></div>
+        <span class="h-lbl">Health</span><span class="h-sc">23</span>
+        <span class="at-pill rd">Critical</span>
+      </div>
+      <div class="at-row crit"><i class="ti ti-flame" style="font-size:11px"></i> Renews Jun 1 &middot; 17 DAYS LEFT</div>
+      <div class="at-row crit">4 CTAs &middot; 2 overdue &middot; Last call 45d ago</div>
+      <div class="at-foot rd"><i class="ti ti-alert-circle" style="font-size:12px"></i> Exec Check-in 3:30 PM &rarr; URGENT</div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">
+            <i class="ti ti-bell-ringing" style="color:var(--rd)"></i>
+            Urgent Inbox
+            <span class="cnt">4</span>
+            <div class="tip-w">
+              <i class="ti ti-info-circle tip-ic"></i>
+              <div class="tip-bx">Logic: <em>(Gainsight Health &lt; 50 AND Last_Reply &gt; 2d)</em> OR <em>(Gong_Competitor_Flag)</em> OR <em>(Unanswered_Email AND Renewal &lt; 60d)</em><br>Sources: Gmail API + Slack API + Gainsight webhooks + Gong AI</div>
+            </div>
+          </div>
+        </div>
+        <div class="ii crit">
+          <div class="ii-top"><div class="ii-from"><i class="ti ti-robot" style="font-size:12px;color:var(--rd)"></i> Gainsight Alert</div><span class="ii-time">2h ago</span></div>
+          <div class="ii-body">NovaVault health dropped 67 &rarr; 23 overnight</div>
+          <div class="ii-meta"><span class="tag red">CRITICAL</span><span style="font-size:10px;color:var(--tx3)">Renewal 17 days &middot; 45d Gong silence</span></div>
+        </div>
+        <div class="ii crit">
+          <div class="ii-top"><div class="ii-from"><i class="ti ti-mail" style="font-size:12px;color:var(--rd)"></i> Michael Torres &middot; NovaVault</div><span class="ii-time">5h ago</span></div>
+          <div class="ii-body">&ldquo;Re: Following up on our account &mdash; hoping to connect&rdquo;</div>
+          <div class="ii-meta"><span class="tag red">NO REPLY</span><span style="font-size:10px;color:var(--tx3)">45d since last Gong call</span></div>
+        </div>
+        <div class="ii warn">
+          <div class="ii-top"><div class="ii-from"><i class="ti ti-mail" style="font-size:12px;color:var(--am)"></i> Sarah Chen &middot; Brightex Inc</div><span class="ii-time">3h ago</span></div>
+          <div class="ii-body">&ldquo;Quick question about our renewal options &mdash; do you have a moment?&rdquo;</div>
+          <div class="ii-meta"><span class="tag amber">NO REPLY</span><span style="font-size:10px;color:var(--tx3)">Renews in 31 days</span></div>
+        </div>
+        <div class="ii info">
+          <div class="ii-top"><div class="ii-from"><i class="ti ti-brand-slack" style="font-size:12px;color:var(--bl)"></i> Maggie Spry &middot; Slack</div><span class="ii-time">1h ago</span></div>
+          <div class="ii-body">&ldquo;Can you make sure Acme QBR slides are ready before 9?&rdquo;</div>
+          <div class="ii-meta"><span class="tag blue">DM</span><span style="font-size:10px;color:var(--tx3)">#cs-leaders</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">
+            <i class="ti ti-layout-cards"></i>
+            Today&rsquo;s Tasks
+            <div class="tip-w">
+              <i class="ti ti-info-circle tip-ic"></i>
+              <div class="tip-bx">Sources: <em>Gainsight CTAs</em> (REST API, sync 30min) + <em>Gmail</em> follow-up labels + <em>Google Calendar</em> tasks + <em>Slack</em> reminders. Auto-sorted: overdue &rarr; today &rarr; low.</div>
+            </div>
+          </div>
+          <span style="font-size:11px;color:var(--tx3)" id="task-count">0 / 5</span>
+        </div>
+        <div class="ac" id="ac1">
+          <div class="ac-top"><div class="src-dot gs"></div><span class="ac-src">Gainsight CTA</span><span class="ac-badge ov">2d overdue</span></div>
+          <div class="ac-title">Update NovaVault renewal forecast status</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:10px;color:var(--tx3)">Health 23 &middot; Renewal Jun 1 &middot; Critical</span>
+            <button class="ac-btn" data-label="Update forecast" onclick="doneTask(this,'ac1')">Update forecast</button>
+          </div>
+        </div>
+        <div class="ac" id="ac2">
+          <div class="ac-top"><div class="src-dot ca"></div><span class="ac-src">Calendar</span><span class="ac-badge td">Before 9am</span></div>
+          <div class="ac-title">Finalize Acme Corp QBR slides &middot; send to David Kim</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:10px;color:var(--tx3)">QBR at 9:00 AM &middot; Health 82 &middot; No CTAs</span>
+            <button class="ac-btn" data-label="Generate prep" onclick="doneTask(this,'ac2')">Generate prep</button>
+          </div>
+        </div>
+        <div class="ac" id="ac3">
+          <div class="ac-top"><div class="src-dot gs"></div><span class="ac-src">Gainsight CTA</span><span class="ac-badge ov">Today</span></div>
+          <div class="ac-title">Schedule exec sponsor save call for NovaVault</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:10px;color:var(--tx3)">Emergency retention &middot; 17d to renewal</span>
+            <button class="ac-btn" data-label="Draft outreach" onclick="doneTask(this,'ac3')">Draft outreach</button>
+          </div>
+        </div>
+        <div class="ac" id="ac4">
+          <div class="ac-top"><div class="src-dot gm"></div><span class="ac-src">Gmail</span><span class="ac-badge td">3h ago</span></div>
+          <div class="ac-title">Reply to Sarah Chen re: Brightex renewal options</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:10px;color:var(--tx3)">At risk &middot; Competitor flagged &middot; Renewal 31d</span>
+            <button class="ac-btn" data-label="Draft reply" onclick="doneTask(this,'ac4')">Draft reply</button>
+          </div>
+        </div>
+        <div class="ac" id="ac5">
+          <div class="ac-top"><div class="src-dot sl"></div><span class="ac-src">Slack reminder</span><span class="ac-badge lo">Low</span></div>
+          <div class="ac-title">Log Klaxton Labs call notes from yesterday</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:10px;color:var(--tx3)">Onboarding &middot; Health 76 &middot; All good</span>
+            <button class="ac-btn" data-label="Log notes" onclick="doneTask(this,'ac5')">Log notes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="cal-hd">
+        <div>
+          <div class="cal-date">
+            Friday, May 15
+            <div class="tip-w" style="display:inline-flex;vertical-align:middle">
+              <i class="ti ti-info-circle tip-ic"></i>
+              <div class="tip-bx">Google Calendar API: filters for external domain attendees. Cross-references attendee email with Gainsight contacts. Call type detected from invite title: &ldquo;QBR&rdquo;, &ldquo;Risk&rdquo;, &ldquo;EBR&rdquo;, &ldquo;Expansion&rdquo; &rarr; routes to matching Dust agent template.</div>
+            </div>
+          </div>
+          <div class="cal-sub">Click a call to open your mission briefing in the panel &rarr;</div>
+        </div>
+      </div>
+      <div class="cal-body">
+        <div class="ce g" id="ce-acme" onclick="openPanel('acme',this)">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">9:00 AM</span><span class="ce-dur">60 min</span></div>
+            <div class="ce-title">Acme Corp &middot; Quarterly Business Review</div>
+            <div class="ce-meta"><span class="ce-pill g">Health 82</span><span class="ce-person">David Kim +2</span></div>
+          </div>
+          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
+        </div>
+        <div class="ce am" id="ce-brightex" onclick="openPanel('brightex',this)">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">11:00 AM</span><span class="ce-dur">60 min</span></div>
+            <div class="ce-title">Brightex Inc &middot; Risk Review</div>
+            <div class="ce-meta"><span class="ce-pill am">Health 48 &middot; At Risk</span><span class="ce-person">Sarah Chen</span></div>
+          </div>
+          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
+        </div>
+        <div class="ce int">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">2:00 PM</span><span class="ce-dur">30 min</span></div>
+            <div class="ce-title">CS Team Sync &middot; Internal</div>
+          </div>
+        </div>
+        <div class="ce rd" id="ce-nova" onclick="openPanel('nova',this)">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">3:30 PM</span><span class="ce-dur">30 min</span></div>
+            <div class="ce-title">NovaVault &middot; Executive Check-in</div>
+            <div class="ce-meta"><span class="ce-pill rd">Health 23 &middot; Critical</span><span class="ce-person">Michael Torres</span></div>
+          </div>
+          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
+        </div>
+      </div>
+
+      <div class="dz">
+        <div class="dz-hd">
+          <div class="dz-title"><i class="ti ti-moon" style="color:var(--rd)"></i> 60-Day Dark Zone</div>
+          <span class="dz-cnt">3 accounts</span>
+          <div class="tip-w" style="margin-left:8px">
+            <i class="ti ti-info-circle" style="font-size:12px;color:rgba(255,255,255,.3);cursor:help"></i>
+            <div class="tip-bx">Query: accounts WHERE <em>(Last_Gong &gt; 60d AND Last_Email &gt; 60d)</em> ORDER BY Renewal_Date. Icebreaker agent pulls last positive Gong moment to personalize re-engagement email.</div>
+          </div>
+        </div>
+        <div class="dz-acct">
+          <div class="dz-left">
+            <div class="dz-nm">Meridian Health Systems &middot; $22K</div>
+            <div class="dz-row"><span class="dz-days">73d dark</span><span class="dz-renewal">Renews Jun 30</span></div>
+            <div class="dz-last">&ldquo;Last positive: SSO rollout discussion &mdash; March 15 (Gong)&rdquo;</div>
+          </div>
+          <button class="dz-btn" onclick="openPanel('meridian',null)">Ghost-Buster</button>
+        </div>
+        <div class="dz-acct">
+          <div class="dz-left">
+            <div class="dz-nm">Creston Software &middot; $18K</div>
+            <div class="dz-row"><span class="dz-days">67d dark</span><span class="dz-renewal">Renews Aug 20</span></div>
+            <div class="dz-last">&ldquo;Last positive: Onboarding call &mdash; went quiet after Feb 28&rdquo;</div>
+          </div>
+          <button class="dz-btn" onclick="openPanel('creston',null)">Ghost-Buster</button>
+        </div>
+        <div class="dz-acct">
+          <div class="dz-left">
+            <div class="dz-nm">Apex Dynamics &middot; $15K</div>
+            <div class="dz-row"><span class="dz-days">61d dark</span><span class="dz-renewal">Renews Jul 15</span></div>
+            <div class="dz-last">&ldquo;Champion changed &mdash; Ryan Patel not yet reached (Salesforce)&rdquo;</div>
+          </div>
+          <button class="dz-btn" onclick="openPanel('apex',null)">Ghost-Buster</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp">
+      <div class="rp-view on" id="view-default">
+        <div class="rp-hd"><div class="rp-t"><i class="ti ti-chart-bar"></i> Today at a Glance</div></div>
+        <div class="rp-scroll">
+          <div style="margin-bottom:16px">
+            <div class="ds-row"><span class="ds-l">Customer calls</span><span class="ds-v">3</span></div>
+            <div class="ds-row"><span class="ds-l">Accounts at risk</span><span class="ds-v r">2</span></div>
+            <div class="ds-row"><span class="ds-l">ARR at risk</span><span class="ds-v a">$67K</span></div>
+            <div class="ds-row"><span class="ds-l">Overdue CTAs</span><span class="ds-v r">3</span></div>
+            <div class="ds-row"><span class="ds-l">Dark Zone accounts</span><span class="ds-v r">3</span></div>
+            <div class="ds-row"><span class="ds-l">Tasks done</span><span class="ds-v g" id="ds-tasks">0 / 5</span></div>
+          </div>
+          <div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+            <i class="ti ti-sparkles" style="color:var(--tl)"></i>
+            My Dust Agents
+            <div class="tip-w"><i class="ti ti-info-circle tip-ic"></i><div class="tip-bx">Context-aware routing: selecting a calendar event sends a pre-built payload to Dust API including Account ID, last 3 Gong transcripts, Gainsight health + CTAs, and open Salesforce opportunities. Zero manual prompt-writing.</div></div>
+          </div>
+          <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Account Strategist <span class="ag-tag">Most used</span></div><div class="ag-desc">Health, risk signals, CTAs across Gainsight + Gong. Pre-loaded when you click a call.</div></div>
+          <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>QBR Builder</div><div class="ag-desc">Exec-ready QBR content: wins, value delivered, roadmap alignment, renewal positioning.</div></div>
+          <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Risk Analyst</div><div class="ag-desc">Deep dives on at-risk accounts, surfaces churn signals, drafts save plays.</div></div>
+          <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Icebreaker</div><div class="ag-desc">Personalized re-engagement emails using last positive Gong moment. Powers the Dark Zone.</div></div>
+          <div style="padding:12px 0 0"><button style="width:100%;font-size:11px;color:var(--tx3);background:none;border:1px dashed var(--bd2);border-radius:var(--r);padding:8px;cursor:pointer;font-family:inherit;transition:.1s" onmouseover="this.style.borderColor='var(--tl)';this.style.color='var(--tl)'" onmouseout="this.style.borderColor='var(--bd2)';this.style.color='var(--tx3)'"><i class="ti ti-settings"></i> Configure &middot; select from Dust workspace</button></div>
+        </div>
+      </div>
+
+      <div class="rp-view" id="view-acme">
+        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+        <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--tl-bg);color:var(--tl-dk);padding:2px 8px;border-radius:4px">QBR</span></div>
+        <div class="rp-scroll">
+          <div class="mb-nm">Acme Corp</div>
+          <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>9:00 AM</span></div>
+          <div class="story">
+            <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health 82, healthy trajectory. Zero open CTAs. Strong adoption across all teams. Expansion signals in last call.</div></div>
+            <div class="s-item last"><div class="s-lbl">Gong &middot; 5 days ago</div><div class="s-val">David Kim: strong interest in enterprise tier, asked about SSO and advanced reporting. Very positive sentiment.</div></div>
+            <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Confirm renewal, surface enterprise upsell. Present SSO roadmap. Get verbal commit on expansion pilot.</div></div>
+          </div>
+          <div class="mb-btns">
+            <button class="mb-btn" id="btn-acme-prep" onclick="agentBtn('prep','acme',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Last 3 calls + SFDC</div></div></button>
+            <button class="mb-btn" id="btn-acme-risk" onclick="agentBtn('risk','acme',this)"><i class="ti ti-shield-check mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Gainsight + health</div></div></button>
+            <button class="mb-btn" id="btn-acme-next" onclick="agentBtn('next','acme',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">3 Gainsight CTAs</div></div></button>
+            <button class="mb-btn" id="btn-acme-save" onclick="agentBtn('save','acme',this)"><i class="ti ti-arrow-right-circle mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Retention play</div></div></button>
+          </div>
+          <button class="mb-deck" onclick="openDeckModal('acme')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate QBR Deck</button>
+          <div class="mb-note"><i class="ti ti-info-circle"></i> &ldquo;QBR&rdquo; detected in invite &rarr; Dust routes to QBR template pre-loaded with Acme data via Gainsight + Gong API</div>
+          
+        </div>
+      </div>
+
+      <div class="rp-view" id="view-brightex">
+        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+        <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--am-bg);color:var(--am-dk);padding:2px 8px;border-radius:4px">Risk Review</span></div>
+        <div class="rp-scroll">
+          <div class="mb-nm">Brightex Inc</div>
+          <div class="mb-meta"><span>$36K ARR</span><span>&middot;</span><span style="color:var(--am)">Jun 15 &middot; 31 days &#9888;</span><span>&middot;</span><span>11:00 AM</span></div>
+          <div class="story">
+            <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health dropped 71&rarr;48 in 30 days. Competitor flagged in last Gong. Champion change risk &mdash; Marcus Webb no longer involved.</div></div>
+            <div class="s-item last"><div class="s-lbl">Gong &middot; 12 days ago &middot; &#9888; Flag</div><div class="s-val">Sarah Chen mentioned evaluating competitor solutions. Adoption dropped since Q1. Gong AI: &ldquo;looking at alternatives.&rdquo;</div></div>
+            <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Understand competitor eval. Surface differentiated value. Request 30-day extension. Do NOT negotiate price yet.</div></div>
+          </div>
+          <div class="mb-btns">
+            <button class="mb-btn" onclick="agentBtn('prep','brightex',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Account brief + SFDC</div></div></button>
+            <button class="mb-btn" onclick="agentBtn('risk','brightex',this)"><i class="ti ti-alert-triangle mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Churn signals</div></div></button>
+            <button class="mb-btn" onclick="agentBtn('save','brightex',this)"><i class="ti ti-lifebuoy mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Counter-competitor</div></div></button>
+            <button class="mb-btn" onclick="agentBtn('next','brightex',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">3 Gainsight CTAs</div></div></button>
+          </div>
+          <button class="mb-deck" onclick="openDeckModal('brightex')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate Risk Review Deck</button>
+          <div class="mb-note"><i class="ti ti-info-circle"></i> &ldquo;Risk Review&rdquo; detected &rarr; at-risk template with competitor battle card + save play</div>
+          
+        </div>
+      </div>
+
+      <div class="rp-view" id="view-nova">
+        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+        <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--rd-bg);color:var(--rd-dk);padding:2px 8px;border-radius:4px">Critical</span></div>
+        <div class="rp-scroll">
+          <div class="mb-nm">NovaVault</div>
+          <div class="mb-meta"><span>$31K ARR</span><span>&middot;</span><span style="color:var(--rd);font-weight:700">Jun 1 &middot; 17 DAYS &#128308;</span><span>&middot;</span><span>3:30 PM</span></div>
+          <div class="story">
+            <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health in freefall: 91&rarr;67&rarr;23. No Gong calls in 45 days. Previous champion James Wu left the company. New contact: Michael Torres.</div></div>
+            <div class="s-item last"><div class="s-lbl">Gong &middot; 45 DAYS AGO &#128308;</div><div class="s-val">Last contact with James Wu who has since left. Michael Torres has had zero onboarding from us. This is a cold re-introduction.</div></div>
+            <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Introduce yourself to Torres. Understand priorities. Buy time &mdash; request 60-day extension. This is a save play, not a renewal call.</div></div>
+          </div>
+          <div class="mb-btns">
+            <button class="mb-btn" onclick="agentBtn('prep','nova',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Account + champion brief</div></div></button>
+            <button class="mb-btn" onclick="agentBtn('risk','nova',this)"><i class="ti ti-alert-triangle mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Emergency churn</div></div></button>
+            <button class="mb-btn" onclick="agentBtn('save','nova',this)"><i class="ti ti-heart-rate-monitor mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Exec retention play</div></div></button>
+            <button class="mb-btn" onclick="agentBtn('next','nova',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">Push to Gainsight</div></div></button>
+          </div>
+          <button class="mb-deck" onclick="openDeckModal('nova')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate Save Deck</button>
+          <div class="mb-note"><i class="ti ti-info-circle"></i> Critical health (23) + new champion &rarr; emergency retention deck tailored for first-touch with Michael Torres</div>
+          
+        </div>
+      </div>
+
+      <div class="rp-view" id="view-meridian">
+        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+        <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
+        <div class="rp-scroll">
+          <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Meridian Health Systems</div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">73 days dark &middot; $22K ARR &middot; Renews Jun 30</div>
+          <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Personalized from Gong (Mar 15): SSO rollout discussion was the last positive touchpoint. Icebreaker agent references this specifically.</div>
+          <div class="ge-subj">Subject: Checking in &mdash; picking up where we left off on SSO</div>
+          <div class="ge-body">Hi [Name],
+
+I wanted to reach out personally. The last time we connected in March, your team was in the middle of rolling out SSO and had just seen some early adoption wins.
+
+I have a couple of product updates that align directly with where you were headed. Would you have 20 minutes this week?
+
+&mdash; Carmen</div>
+          <div class="ge-btns">
+            <button class="ge-send" id="send-meridian" onclick="markSent('meridian')">Send via Gmail</button>
+            <button class="ge-edit">Edit first</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rp-view" id="view-creston">
+        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+        <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
+        <div class="rp-scroll">
+          <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Creston Software</div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">67 days dark &middot; $18K ARR &middot; Renews Aug 20</div>
+          <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Personalized from Gong (Feb 28): positive onboarding call was the last touchpoint before going dark. Icebreaker references that momentum.</div>
+          <div class="ge-subj">Subject: Quick check-in &mdash; how&rsquo;s the team settling in?</div>
+          <div class="ge-body">Hi [Name],
+
+It&rsquo;s been a few months since your onboarding. Your team hit the ground running in February &mdash; I&rsquo;d love to hear how things are going.
+
+I also have a few product updates that align with the goals you shared during setup. Worth a quick 20-minute call?
+
+&mdash; Carmen</div>
+          <div class="ge-btns">
+            <button class="ge-send" id="send-creston" onclick="markSent('creston')">Send via Gmail</button>
+            <button class="ge-edit">Edit first</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rp-view" id="view-apex">
+        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+        <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
+        <div class="rp-scroll">
+          <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Apex Dynamics</div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">61 days dark &middot; $15K ARR &middot; Renews Jul 15</div>
+          <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Champion change detected in Salesforce: James Wu &rarr; Ryan Patel. Agent generates a warm intro email for first-touch with new decision-maker.</div>
+          <div class="ge-subj">Subject: Introducing myself &mdash; your dedicated CSM</div>
+          <div class="ge-body">Hi Ryan,
+
+I&rsquo;m Carmen, reaching out because I&rsquo;ll be your primary point of contact going forward. I&rsquo;ve been reviewing your account and would love to schedule a quick 20-minute intro to understand your current priorities.
+
+When works best this week?
+
+&mdash; Carmen</div>
+          <div class="ge-btns">
+            <button class="ge-send" id="send-apex" onclick="markSent('apex')">Send via Gmail</button>
+            <button class="ge-edit">Edit first</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="tc" id="tab-recipe">
+  <div class="sc-pg" id="recipe-root"></div>
+</div>
+
+<script>
+var tasksDone = 0;
+
+function goTab(id, el) {
+  document.querySelectorAll('.tc').forEach(function(e){ e.classList.remove('on'); });
+  document.querySelectorAll('.n-tab').forEach(function(e){ e.classList.remove('on'); });
+  document.getElementById('tab-' + id).classList.add('on');
+  el.classList.add('on');
+}
+
+function openPanel(id, ceEl) {
+  document.querySelectorAll('.rp-view').forEach(function(v){ v.classList.remove('on'); });
+  document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
+  document.getElementById('view-' + id).classList.add('on');
+  if (ceEl) ceEl.classList.add('sel');
+}
+
+function resetPanel() {
+  document.querySelectorAll('.rp-view').forEach(function(v){ v.classList.remove('on'); });
+  document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
+  document.getElementById('view-default').classList.add('on');
+}
+
+function pickAt(id, el) {
+  document.querySelectorAll('.at').forEach(function(a){ a.classList.remove('sel'); });
+  el.classList.add('sel');
+  var ceMap = { acme:'acme', brightex:'brightex', nova:'nova' };
+  var ceId = ceMap[id];
+  if (ceId) {
+    var ce = document.getElementById('ce-' + ceId);
+    if (ce) { openPanel(ceId, ce); ce.scrollIntoView({ behavior:'smooth', block:'center' }); }
+  }
+}
+
+function doneTask(btn, id) {
+  var card = document.getElementById(id);
+  card.classList.add('done');
+  btn.textContent = 'Done';
+  btn.classList.add('done-btn');
+  btn.disabled = true;
+  tasksDone++;
+  var txt = tasksDone + ' / 5';
+  var tc = document.getElementById('task-count');
+  if (tc) tc.textContent = txt;
+  var ds = document.getElementById('ds-tasks');
+  if (ds) { ds.textContent = txt; ds.className = 'ds-v ' + (tasksDone === 5 ? 'g' : tasksDone > 0 ? 'a' : ''); }
+}
+
+function markSent(id) {
+  var btn = document.getElementById('send-' + id);
+  if (btn) { btn.textContent = 'Sent via Gmail'; btn.classList.add('sent'); btn.disabled = true; }
+}
+
+function toast(msg) {
+  var t = document.getElementById('toast-el');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast-el';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#111;color:#fff;font-size:12px;padding:12px 16px;border-radius:12px;max-width:340px;line-height:1.55;z-index:999;pointer-events:none';
+    document.body.appendChild(t);
+  }
+  t.innerHTML = '<i class="ti ti-sparkles" style="color:#18A575"></i> ' + msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.style.opacity = '0'; }, 4500);
+}
+
+function buildRecipe() {
+  var scores = [
+    {l:'Success plans & objectives',w:'50%',p:78,c:'#18A575'},
+    {l:'Book of business growth',w:'20%',p:62,c:'#2563EB'},
+    {l:'Renewal forecast actions',w:'10%',p:55,c:'#D97706'},
+    {l:'Business reviews (EBRs)',w:'10%',p:90,c:'#18A575'},
+    {l:'Customer advocacy',w:'10%',p:40,c:'#8A8A86'}
+  ];
+  var metrics = [
+    {sec:'Success plans & objectives',rows:[['Active success plans','Target: 100% of $25K+ accounts','16/18',''],['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7',''],['CTAs overdue','Resolve immediately &mdash; hard stop','2','w']]},
+    {sec:'Book of business growth',rows:[['Renewal opps with upsell','Target: &gt;50% of renewal opps','6/11',''],['Closed won expansions','Target: &ge;5% of accounts','3',''],['Renewals in downsell','Negative &middot; target &lt;20%','2/11','w']]},
+    {sec:'Renewal forecast actions',rows:[['Renewals with blank status','Negative &middot; target &le;5%','3','d'],['Renewal status changes','Negative &middot; target &lt;10%','1/11','']]},
+    {sec:'Business reviews & advocacy',rows:[['EBRs &middot; $25K+ accounts','Target: 50% of $25K+ accounts','11/18',''],['EBRs &middot; $10K&ndash;$25K','Target: 10% of $10K&ndash;$25K','3/24',''],['Advocacy milestones','Quarterly: &ge;2.5% of accounts','2','']]}
+  ];
+  var h = '<div class="sc-ban"><i class="ti ti-check-circle" style="font-size:20px;color:var(--tl);flex-shrink:0;margin-top:1px"></i><div><div class="sc-bt">Auto-populated from Gainsight &middot; zero manual input</div><div class="sc-bs">All metrics pulled via Gainsight REST API. Refreshes daily at 9 AM. Leadership sees live scores without a single form submission. This is the automated tax return &mdash; accurate, hated, 100% hands-off.</div></div></div>';
+  h += '<div class="sc-grid">';
+  metrics.forEach(function(m){
+    h += '<div class="sc-card"><div class="sc-ct">' + m.sec + '</div>';
+    m.rows.forEach(function(r){
+      h += '<div class="sc-row"><div><div class="sc-ml">' + r[0] + '</div><div class="sc-mt">' + r[1] + '</div></div><div style="text-align:right"><div class="sc-mv' + (r[3] ? ' ' + r[3] : '') + '">' + r[2] + '</div><div class="sc-src"><i class="ti ti-check" style="font-size:9px"></i> Gainsight</div></div></div>';
+    });
+    h += '</div>';
+  });
+  h += '</div><div class="sc-fin"><div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Live weighted score</div><div style="margin-bottom:16px">';
+  scores.forEach(function(s){
+    h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%</div></div>';
+  });
+  h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div></div>';
+  document.getElementById('recipe-root').innerHTML = h;
+}
+
+var ctaDone = 0;
+function togglePop(id, e) {
+  e.stopPropagation();
+  var el = document.getElementById('pop-' + id);
+  var isOn = el.classList.contains('on');
+  closePops();
+  if (!isOn) { el.classList.add('on'); document.getElementById('pb-' + id).classList.add('on'); }
+}
+function closePops() {
+  document.querySelectorAll('.pop').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.ps-btn').forEach(function(b){ b.classList.remove('on'); });
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.ps-wrap')) closePops();
+});
+function toastLink(e, label) {
+  e.preventDefault(); e.stopPropagation();
+  toast('Opening ' + label + '...');
+}
+function markCtaDone(rowId, e) {
+  e.stopPropagation();
+  var row = document.getElementById(rowId);
+  row.classList.add('done-row');
+  setTimeout(function() {
+    row.style.opacity = '0'; row.style.transition = 'opacity .3s';
+    setTimeout(function() {
+      row.style.display = 'none';
+      ctaDone++;
+      var remaining = 3 - ctaDone;
+      var el = document.getElementById('pn-ctas');
+      if (el) {
+        el.textContent = remaining;
+        if (remaining === 0) { el.className = 'ps-n g'; el.textContent = '0'; }
+      }
+      if (remaining === 0) toast('All CTAs resolved ✓');
+    }, 300);
+  }, 500);
+}
+
+buildRecipe();
+
+
+// ── DRAWER DATA ──────────────────────────────────────────────────────────────
+var DRAWER = {
+  prep: {
+    acme: {
+      title: "Pre-Call Brief", sub: "Acme Corp · QBR · 9:00 AM",
+      sections: [
+        { t: "Account Snapshot", ic: "ti-chart-bar", cl: "var(--tl)", items: [
+          "Health 82 — stable, no downward trend in 90 days. Zero open CTAs.",
+          "ARR $48K · Renews Aug 12 · 89 days out · No urgency on renewal.",
+          "Last call 5 days ago. Gong sentiment: Positive. No flags."
+        ]},
+        { t: "Last Gong · 5 days ago", ic: "ti-microphone", cl: "var(--am)", items: [
+          "David Kim mentioned enterprise tier by name — unprompted. Strong buying signal.",
+          "SSO and advanced reporting came up as near-term needs for their growing team.",
+          "Positive tone throughout. No competitor mention. No pricing objection."
+        ]},
+        { t: "Discovery Questions", ic: "ti-message-question", cl: "var(--bl)", items: [
+          "\"Since we last spoke, has anything changed in how your team thinks about the roadmap for the next 6 months?\"",
+          "\"You mentioned SSO last time — how is that rollout going, and what would make it easier?\"",
+          "\"Are there other teams or use cases inside Acme where you see 1Password expanding its footprint?\""
+        ]},
+        { t: "Battle Card", ic: "ti-shield", cl: "var(--tx)", items: [
+          "✅ SAY: \"Based on the SSO interest, I want to walk you through our enterprise tier — it maps exactly to what you described.\"",
+          "🚫 AVOID: Bringing up pricing first. Don't compare competitors unless David raises it.",
+          "✅ SAY: \"We can run a pilot with your engineering team before the renewal — no extra cost.\""
+        ]},
+        { t: "Follow-Up Plan", ic: "ti-arrow-right-circle", cl: "var(--tl)", items: [
+          "Send enterprise tier overview doc within 2 hours of call.",
+          "Log expansion interest as CTA in Gainsight — flag for AE.",
+          "Schedule SSO pilot kickoff within 7 days."
+        ]}
+      ],
+      foot: [{ l: "Copy battle card", a: "Copied to clipboard ✓" }, { l: "Open in Gong notes", a: "Opening Gong notes..." }]
+    },
+    brightex: {
+      title: "Pre-Call Brief", sub: "Brightex Inc · Risk Review · 11:00 AM",
+      sections: [
+        { t: "Account Snapshot", ic: "ti-chart-bar", cl: "var(--am)", items: [
+          "Health 48 — dropped from 71 in 30 days. Accelerating decline, not plateau.",
+          "ARR $36K · Renews Jun 15 · 31 days · URGENT. 2 CTAs, 1 overdue.",
+          "Gong flag 12d ago: competitor evaluation mentioned. Champion change risk."
+        ]},
+        { t: "Last Gong · 12 days ago ⚠", ic: "ti-microphone", cl: "var(--rd)", items: [
+          "Sarah Chen mentioned she's \"looking at alternatives\" — Gong AI confirmed competitor signal.",
+          "Marcus Webb (previous champion) not on the call. Sarah is now primary contact.",
+          "Tone shift from previous calls: guarded, not engaged. Shorter responses."
+        ]},
+        { t: "Discovery Questions", ic: "ti-message-question", cl: "var(--bl)", items: [
+          "\"I want to make sure I understand where things stand — what's changed for your team since Q1?\"",
+          "\"When you mention evaluating alternatives, what's driving that conversation — is it a feature gap, a cost pressure, or something else?\"",
+          "\"What would need to be true for you to feel fully confident in renewing with us this cycle?\""
+        ]},
+        { t: "Battle Card", ic: "ti-shield", cl: "var(--tx)", items: [
+          "✅ SAY: \"I'm not here to talk you out of an evaluation — I want to make sure you have everything you need to make the right call.\"",
+          "🚫 AVOID: Responding defensively to competitor mention. Don't negotiate price — this is a value conversation.",
+          "✅ SAY: \"Would it help if I put together a comparison doc so your team can evaluate us side by side?\""
+        ]},
+        { t: "Follow-Up Plan", ic: "ti-arrow-right-circle", cl: "var(--am)", items: [
+          "Send value + ROI summary within 24h of call.",
+          "Request 30-day renewal pause to give evaluation room.",
+          "Schedule exec sponsor call within 48h — loop in AE."
+        ]}
+      ],
+      foot: [{ l: "Copy battle card", a: "Copied to clipboard ✓" }, { l: "Open in Gong notes", a: "Opening Gong notes..." }]
+    },
+    nova: {
+      title: "Pre-Call Brief", sub: "NovaVault · Exec Check-in · 3:30 PM",
+      sections: [
+        { t: "Account Snapshot", ic: "ti-chart-bar", cl: "var(--rd)", items: [
+          "Health 23 — CRITICAL. Freefall: 91 → 67 → 23 over 90 days. No recovery signal.",
+          "ARR $31K · Renews June 1 · 17 DAYS. 4 CTAs, 2 overdue. No Gong call in 45 days.",
+          "Previous champion James Wu left the company. Michael Torres = cold intro."
+        ]},
+        { t: "Last Gong · 45 days ago 🔴", ic: "ti-microphone", cl: "var(--rd)", items: [
+          "Last call was with James Wu — who has since left. Michael Torres has had zero onboarding from us.",
+          "No handoff call was ever scheduled. Michael inherited the account with no context.",
+          "This is a cold first impression at the worst possible moment — 17 days from renewal."
+        ]},
+        { t: "Discovery Questions", ic: "ti-message-question", cl: "var(--bl)", items: [
+          "\"I wanted to start fresh — I know there's been transition on your team. How much context do you have on how 1Password has been used so far?\"",
+          "\"What are your top security priorities right now as you settle into this role?\"",
+          "\"Is there anything about the current setup that's been working well, or anything that's felt unclear?\""
+        ]},
+        { t: "Battle Card", ic: "ti-shield", cl: "var(--tx)", items: [
+          "✅ SAY: \"I want to make sure you have full context on the value your team has been getting — let me walk you through what's been active.\"",
+          "🚫 AVOID: Mentioning the renewal deadline in the first 10 minutes. Let Michael talk first.",
+          "✅ SAY: \"Rather than rush a decision, what if we extended 60 days so you have time to evaluate with full information?\""
+        ]},
+        { t: "Follow-Up Plan", ic: "ti-arrow-right-circle", cl: "var(--rd)", items: [
+          "Send personalized account summary + usage report immediately after call.",
+          "Propose 60-day extension in writing within 24h.",
+          "Escalate to executive sponsor — get exec-to-exec call on calendar."
+        ]}
+      ],
+      foot: [{ l: "Copy battle card", a: "Copied to clipboard ✓" }, { l: "Open in Gong notes", a: "Opening Gong notes..." }]
+    }
+  },
+  risk: {
+    acme: {
+      title: "Risk Analysis", sub: "Acme Corp · 12% Churn Probability",
+      sections: [
+        { t: "Churn Score · Low Risk", ic: "ti-activity", cl: "var(--tl)", score: "12%", scoreL: "Low Risk", scoreC: "var(--tl)", items: [] },
+        { t: "3 Driving Signals", ic: "ti-signal", cl: "var(--tl)", items: [
+          "Health stable at 82 — no downward trend detected in 90 days.",
+          "Gong sentiment consistently positive. No competitor flags. No pricing mentions.",
+          "Champion David Kim stable, active, and expressing expansion interest."
+        ]},
+        { t: "Discovery Questions", ic: "ti-message-question", cl: "var(--bl)", items: [
+          "\"Is there anything about the product that hasn't met expectations you'd want us to know?\"",
+          "\"Are there other teams or departments we haven't reached yet?\""
+        ]},
+        { t: "Recommended Play", ic: "ti-heart-rate-monitor", cl: "var(--tl)", note: "No save play needed. Protect champion, surface expansion, close renewal." }
+      ],
+      foot: [{ l: "Log signal read in Gainsight", a: "Logged in Gainsight ✓" }]
+    },
+    brightex: {
+      title: "Risk Analysis", sub: "Brightex Inc · 68% Churn Probability",
+      sections: [
+        { t: "Churn Score · High Risk", ic: "ti-activity", cl: "var(--rd)", score: "68%", scoreL: "High Risk", scoreC: "var(--rd)", items: [] },
+        { t: "3 Driving Signals", ic: "ti-signal", cl: "var(--rd)", items: [
+          "Health dropped 71 → 48 in 30 days — accelerating decline, not plateau.",
+          "Gong competitor flag: \"looking at alternatives\" + pricing comparison in last call.",
+          "Champion change risk: Marcus Webb absent from last 3 calls."
+        ]},
+        { t: "Discovery Questions for This Call", ic: "ti-message-question", cl: "var(--bl)", items: [
+          "\"What's driving the evaluation — is it a feature gap, cost, or something that's happened internally?\"",
+          "\"What would a successful renewal look like for your team this cycle?\""
+        ]},
+        { t: "Recommended Save Play", ic: "ti-heart-rate-monitor", cl: "var(--am)", note: "Request 30-day renewal pause. Schedule exec sponsor call within 48h. Lead with product roadmap and ROI — not pricing." }
+      ],
+      foot: [{ l: "Start Save Play in Gainsight", a: "Save play CTA created in Gainsight ✓" }]
+    },
+    nova: {
+      title: "Risk Analysis", sub: "NovaVault · 91% Churn Probability",
+      sections: [
+        { t: "Churn Score · CRITICAL", ic: "ti-activity", cl: "var(--rd)", score: "91%", scoreL: "Critical", scoreC: "var(--rd)", items: [] },
+        { t: "3 Driving Signals", ic: "ti-signal", cl: "var(--rd)", items: [
+          "Health in freefall: 91 → 67 → 23 over 90 days. No recovery signals detected.",
+          "45-day Gong silence + champion departure = zero active relationship with decision-maker.",
+          "Renewal in 17 days with no forecast status set — highest risk indicator in system."
+        ]},
+        { t: "Discovery Questions for This Call", ic: "ti-message-question", cl: "var(--bl)", items: [
+          "\"How much context do you have on how your team has been using 1Password?\"",
+          "\"What would help you feel confident making a decision on this account in the next few weeks?\""
+        ]},
+        { t: "Recommended Save Play", ic: "ti-heart-rate-monitor", cl: "var(--rd)", note: "Emergency: This is a save play, not a renewal conversation. Objective is a 60-day extension. Get executive sponsor involved today." }
+      ],
+      foot: [{ l: "Start Save Play in Gainsight", a: "Save play CTA created in Gainsight ✓" }]
+    }
+  },
+  save: {
+    acme: {
+      title: "Save Strategy", sub: "Acme Corp · Expansion-first retention",
+      sections: [
+        { t: "Talking Points", ic: "ti-message-circle", cl: "var(--tl)", items: [
+          "Lead with the enterprise tier conversation they asked about — tie it to renewal naturally.",
+          "Anchor on the outcomes: SSO rollout support, team growth, security coverage.",
+          "Position extension + pilot as a package: \"Let's run the pilot before renewal so you're buying something proven.\""
+        ]},
+        { t: "Discovery", ic: "ti-message-question", cl: "var(--bl)", items: [
+          "\"What would need to happen for this renewal to be a no-brainer?\"",
+          "\"Are there other stakeholders we should be including in this conversation?\""
+        ]},
+        { t: "Objection Handlers", ic: "ti-shield-exclamation", cl: "var(--rd)", objections: [
+          { q: '"We need more time to evaluate."', a: "\"Totally fair — that's exactly why I want to propose a 30-day pilot so you can evaluate in production, not in a demo.\"" }
+        ]},
+        { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Proposal","30-day pilot pre-renewal"],["Terms","Current pricing locked"],["Commitment","Dedicated support + weekly check-ins"]] }
+      ],
+      foot: [{ l: "Generate QBR Deck", a: "deck" }, { l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
+    },
+    brightex: {
+      title: "Save Strategy", sub: "Brightex Inc · Competitor defense play",
+      sections: [
+        { t: "Talking Points", ic: "ti-message-circle", cl: "var(--tl)", items: [
+          "Start with: \"I'm not here to talk you out of an evaluation — I want to make sure you have everything you need.\"",
+          "Anchor on outcomes they've already seen: security events prevented, time saved, vault adoption.",
+          "Propose the extension as breathing room: \"Let's make sure your decision is fully informed.\""
+        ]},
+        { t: "Discovery", ic: "ti-message-question", cl: "var(--bl)", items: [
+          "\"What criteria are most important to your team in this evaluation?\"",
+          "\"What does the competitor offer that you feel we don't — I'd love to address that directly.\""
+        ]},
+        { t: "Objection Handlers", ic: "ti-shield-exclamation", cl: "var(--rd)", objections: [
+          { q: '"We\'re looking at alternatives."', a: "Validate, don't resist. \"That makes sense — what's driving the evaluation? I want to make sure we're solving the right problem.\"" },
+          { q: '"The pricing is too high."', a: "\"Let's hold on price for a moment — I want to first make sure we're solving the right problem for your team.\"" }
+        ]},
+        { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Extension","30 days (Jun 15 → Jul 15)"],["Terms","Current pricing locked"],["Decision deadline","July 10, 2026"]] }
+      ],
+      foot: [{ l: "Generate Risk Deck", a: "deck" }, { l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
+    },
+    nova: {
+      title: "Save Strategy", sub: "NovaVault · Emergency retention play",
+      sections: [
+        { t: "Talking Points", ic: "ti-message-circle", cl: "var(--tl)", items: [
+          "Start with their world, not yours: \"I want to understand where your team is before we talk about the account.\"",
+          "Anchor on outcomes the previous team experienced — show Michael the data visually.",
+          "Propose the extension as a win for him: \"This gives you time to make the right call with full information.\""
+        ]},
+        { t: "Discovery", ic: "ti-message-question", cl: "var(--bl)", items: [
+          "\"How much visibility do you have into how 1Password has been used so far?\"",
+          "\"What are your biggest security priorities right now as you step into this role?\"",
+          "\"Is there anything about the current setup that's felt unclear or incomplete?\""
+        ]},
+        { t: "Objection Handlers", ic: "ti-shield-exclamation", cl: "var(--rd)", objections: [
+          { q: '"I\'m not sure we\'re getting value."', a: "Pull up the usage report in the call. Show active users, vaults accessed, security events this quarter. Make the value visible before you respond." },
+          { q: '"We\'re re-evaluating our security stack."', a: "\"That makes sense given the transition. Would it help to do a formal evaluation together so you have a full picture?\"" }
+        ]},
+        { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Extension","60 days (Jun 1 → Jul 31)"],["Terms","Current pricing locked"],["Commitment","Weekly touchpoints with Carmen"],["Decision deadline","July 15, 2026"]] }
+      ],
+      foot: [{ l: "Generate Save Deck", a: "deck" }, { l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
+    }
+  },
+  next: {
+    acme: {
+      title: "Next Steps", sub: "Acme Corp · 3 Gainsight CTAs ready",
+      sections: [
+        { t: "Immediate Actions", ic: "ti-list-check", cl: "var(--tl)", ctas: [
+          { t: "Send enterprise tier overview to David Kim", o: "Carmen", d: "Today", s: "Gmail" },
+          { t: "Log QBR outcomes + expansion interest in Gainsight", o: "Carmen", d: "Today", s: "Gainsight CTA" },
+          { t: "Schedule SSO demo + pilot kickoff call", o: "Carmen", d: "May 19", s: "Calendar" }
+        ]},
+        { t: "Follow-Up Sequence", ic: "ti-arrow-right-circle", cl: "var(--bl)", items: [
+          "Week 1: Confirm pilot logistics with David Kim + IT team.",
+          "Week 2: Check in on SSO rollout progress — offer troubleshooting support.",
+          "Week 3: Renewal conversation with enterprise tier proposal attached."
+        ]}
+      ],
+      foot: [{ l: "Push 3 CTAs to Gainsight", a: "3 CTAs created in Gainsight ✓" }]
+    },
+    brightex: {
+      title: "Next Steps", sub: "Brightex Inc · 3 Gainsight CTAs ready",
+      sections: [
+        { t: "Immediate Actions", ic: "ti-list-check", cl: "var(--am)", ctas: [
+          { t: "Schedule exec sponsor save call within 48h", o: "Carmen", d: "May 17", s: "Gainsight CTA" },
+          { t: "Send product ROI summary + roadmap to Brightex", o: "Carmen", d: "Today", s: "Gmail" },
+          { t: "Update renewal forecast — add 30-day extension request", o: "Carmen", d: "Today", s: "Gainsight CTA" }
+        ]},
+        { t: "Follow-Up Sequence", ic: "ti-arrow-right-circle", cl: "var(--bl)", items: [
+          "Day 1: Send ROI doc and comparison framework.",
+          "Day 3: Exec sponsor call with AE — present differentiation.",
+          "Day 7: Decision checkpoint — renewal or 30-day extension."
+        ]}
+      ],
+      foot: [{ l: "Push 3 CTAs to Gainsight", a: "3 CTAs created in Gainsight ✓" }]
+    },
+    nova: {
+      title: "Next Steps", sub: "NovaVault · 3 Gainsight CTAs ready",
+      sections: [
+        { t: "Immediate Actions", ic: "ti-list-check", cl: "var(--rd)", ctas: [
+          { t: "Follow up with Michael Torres to confirm 3:30pm call", o: "Carmen", d: "Today", s: "Gmail" },
+          { t: "Request 60-day extension + update renewal forecast", o: "Carmen", d: "Today", s: "Gainsight CTA" },
+          { t: "Escalate to executive sponsor for emergency support", o: "Carmen", d: "May 16", s: "Gainsight CTA" }
+        ]},
+        { t: "Follow-Up Sequence", ic: "ti-arrow-right-circle", cl: "var(--bl)", items: [
+          "Day 0: Send personalized account summary + usage report.",
+          "Day 1: Propose 60-day extension in writing.",
+          "Day 3: Exec-to-exec call — escalation + retention support.",
+          "Day 7: Decision checkpoint — extension confirmed or final decision."
+        ]}
+      ],
+      foot: [{ l: "Push 3 CTAs to Gainsight", a: "3 CTAs created in Gainsight ✓" }]
+    }
+  }
+};
+
+// ── AGENT BUTTON HANDLER ─────────────────────────────────────────────────────
+function agentBtn(type, acct, btn) {
+  var blEl = btn.querySelector('.mb-bl');
+  var icEl = btn.querySelector('.mb-ic');
+  var orig = blEl ? blEl.textContent : '';
+  btn.disabled = true;
+  btn.style.opacity = '0.65';
+  if (blEl) blEl.textContent = 'Running...';
+  if (icEl) icEl.style.animation = 'spin 1s linear infinite';
+  setTimeout(function() {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    if (blEl) blEl.textContent = orig;
+    if (icEl) icEl.style.animation = '';
+    openAgentDrawer(type, acct);
+  }, 1500);
+}
+
+// ── DRAWER RENDERER ──────────────────────────────────────────────────────────
+function openAgentDrawer(type, acct) {
+  var data = DRAWER[type] && DRAWER[type][acct];
+  if (!data) { openDrawer(); return; }
+
+  var el = document.getElementById('drawer');
+  var subEl = document.getElementById('drawer-sub');
+  var scroll = document.getElementById('drawer-scroll');
+  var ft = document.getElementById('drawer-ft');
+
+  if (subEl) { subEl.innerHTML = '<span style="font-size:11px;font-weight:700;color:var(--tx)">' + data.title + '</span> <span style="color:var(--tx3);font-size:11px;margin-left:4px">&mdash; ' + data.sub + '</span>'; }
+
+  // Build sections
+  var html = '';
+  data.sections.forEach(function(sec) {
+    html += '<div style="margin-bottom:20px">';
+    html += '<div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ' + sec.ic + '" style="color:' + sec.cl + ';font-size:12px"></i>' + sec.t + '</div>';
+
+    if (sec.score) {
+      html += '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:14px"><span style="font-size:38px;font-weight:700;letter-spacing:-.04em;color:' + sec.scoreC + '">' + sec.score + '</span><span style="font-size:14px;font-weight:600;color:' + sec.scoreC + '">' + sec.scoreL + '</span></div>';
+    }
+    if (sec.items && sec.items.length) {
+      sec.items.forEach(function(item) {
+        html += '<div style="padding:10px 12px;background:var(--surf2);border-radius:var(--r);border-left:3px solid ' + sec.cl + ';margin-bottom:8px;font-size:12px;color:var(--tx2);line-height:1.55">' + item + '</div>';
+      });
+    }
+    if (sec.objections) {
+      sec.objections.forEach(function(ob) {
+        html += '<div style="padding:10px 12px;background:var(--rd-bg);border-radius:var(--r);border-left:3px solid var(--rd);margin-bottom:8px"><div style="font-size:11px;font-weight:700;color:var(--rd-dk);margin-bottom:4px">' + ob.q + '</div><div style="font-size:11px;color:var(--rd-dk);line-height:1.5">' + ob.a + '</div></div>';
+      });
+    }
+    if (sec.ctas) {
+      sec.ctas.forEach(function(c, i) {
+        html += '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)"><span style="font-size:13px;font-weight:700;color:' + sec.cl + ';min-width:20px;flex-shrink:0">' + (i+1) + '</span><div><div style="font-size:12px;font-weight:500;color:var(--tx);margin-bottom:3px">' + c.t + '</div><div style="font-size:10px;color:var(--tx3)">Owner: ' + c.o + ' &middot; Due: ' + c.d + ' &middot; ' + c.s + '</div></div></div>';
+      });
+    }
+    if (sec.note) {
+      html += '<div style="padding:12px 14px;background:var(--tl-bg);border-radius:var(--r);border-left:3px solid var(--tl)"><div style="font-size:9px;font-weight:700;color:var(--tl-dk);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Recommended Play</div><div style="font-size:12px;color:var(--tl-dk);line-height:1.55">' + sec.note + '</div></div>';
+    }
+    if (sec.ext) {
+      html += '<div style="background:var(--am-bg);border-radius:var(--rlg);padding:14px;border:1px solid var(--am)"><div style="font-size:10px;font-weight:700;color:var(--am-dk);margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em">Extension Proposal</div>';
+      sec.ext.forEach(function(row) {
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--am-dk);padding:5px 0;border-bottom:1px solid rgba(217,119,6,.2)"><span>' + row[0] + '</span><span style="font-weight:700">' + row[1] + '</span></div>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+  });
+
+  if (scroll) scroll.innerHTML = html;
+
+  // Build footer
+  var ftHtml = '';
+  if (data.foot) {
+    data.foot.forEach(function(f) {
+      if (f.a === 'deck') {
+        ftHtml += '<button class="dr-ft-btn prim" onclick="openDeckModal(\'' + acct + '\');closeDrawer()" style="font-size:12px;font-weight:700;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--tx);color:#fff;border:none;flex:1">&#9632; ' + f.l + '</button>';
+      } else {
+        ftHtml += '<button class="dr-ft-btn sec" onclick="toast(\'' + f.a + '\');closeDrawer()" style="font-size:12px;font-weight:600;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2);flex:1">' + f.l + '</button>';
+      }
+    });
+  }
+  if (ft) ft.innerHTML = ftHtml;
+
+  openDrawer();
+}
+
+function buildRecipe() {
+  var scores = [
+    {l:'Success plans & objectives',w:'50%',p:78,c:'#18A575'},
+    {l:'Book of business growth',w:'20%',p:62,c:'#2563EB'},
+    {l:'Renewal forecast actions',w:'10%',p:55,c:'#D97706'},
+    {l:'Business reviews (EBRs)',w:'10%',p:90,c:'#18A575'},
+    {l:'Customer advocacy',w:'10%',p:40,c:'#8A8A86'}
+  ];
+  var metrics = [
+    {sec:'Success plans & objectives',rows:[['Active success plans','Target: 100% of $25K+ accounts','16/18',''],['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7',''],['CTAs overdue','Resolve immediately &mdash; hard stop','2','w']]},
+    {sec:'Book of business growth',rows:[['Renewal opps with upsell','Target: &gt;50% of renewal opps','6/11',''],['Closed won expansions','Target: &ge;5% of accounts','3',''],['Renewals in downsell','Negative &middot; target &lt;20%','2/11','w']]},
+    {sec:'Renewal forecast actions',rows:[['Renewals with blank status','Negative &middot; target &le;5%','3','d'],['Renewal status changes','Negative &middot; target &lt;10%','1/11','']]},
+    {sec:'Business reviews & advocacy',rows:[['EBRs &middot; $25K+ accounts','Target: 50% of $25K+ accounts','11/18',''],['EBRs &middot; $10K&ndash;$25K','Target: 10% of $10K&ndash;$25K','3/24',''],['Advocacy milestones','Quarterly: &ge;2.5% of accounts','2','']]}
+  ];
+  var h = '<div class="sc-ban"><i class="ti ti-check-circle" style="font-size:20px;color:var(--tl);flex-shrink:0;margin-top:1px"></i><div><div class="sc-bt">Auto-populated from Gainsight &middot; zero manual input</div><div class="sc-bs">All metrics pulled via Gainsight REST API. Refreshes daily at 9 AM. Leadership sees live scores without a single form submission. This is the automated tax return &mdash; accurate, hated, 100% hands-off.</div></div></div>';
+  h += '<div class="sc-grid">';
+  metrics.forEach(function(m){
+    h += '<div class="sc-card"><div class="sc-ct">' + m.sec + '</div>';
+    m.rows.forEach(function(r){
+      h += '<div class="sc-row"><div><div class="sc-ml">' + r[0] + '</div><div class="sc-mt">' + r[1] + '</div></div><div style="text-align:right"><div class="sc-mv' + (r[3] ? ' ' + r[3] : '') + '">' + r[2] + '</div><div class="sc-src"><i class="ti ti-check" style="font-size:9px"></i> Gainsight</div></div></div>';
+    });
+    h += '</div>';
+  });
+  h += '</div><div class="sc-fin"><div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Live weighted score</div><div style="margin-bottom:16px">';
+  scores.forEach(function(s){
+    h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%</div></div>';
+  });
+  h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div></div>';
+  document.getElementById('recipe-root').innerHTML = h;
+}
+
+var ctaDone = 0;
+function togglePop(id, e) {
+  e.stopPropagation();
+  var el = document.getElementById('pop-' + id);
+  var isOn = el.classList.contains('on');
+  closePops();
+  if (!isOn) { el.classList.add('on'); document.getElementById('pb-' + id).classList.add('on'); }
+}
+function closePops() {
+  document.querySelectorAll('.pop').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.ps-btn').forEach(function(b){ b.classList.remove('on'); });
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.ps-wrap')) closePops();
+});
+function toastLink(e, label) {
+  e.preventDefault(); e.stopPropagation();
+  toast('Opening ' + label + '...');
+}
+function markCtaDone(rowId, e) {
+  e.stopPropagation();
+  var row = document.getElementById(rowId);
+  row.classList.add('done-row');
+  setTimeout(function() {
+    row.style.opacity = '0'; row.style.transition = 'opacity .3s';
+    setTimeout(function() {
+      row.style.display = 'none';
+      ctaDone++;
+      var remaining = 3 - ctaDone;
+      var el = document.getElementById('pn-ctas');
+      if (el) {
+        el.textContent = remaining;
+        if (remaining === 0) { el.className = 'ps-n g'; el.textContent = '0'; }
+      }
+      if (remaining === 0) toast('All CTAs resolved ✓');
+    }, 300);
+  }, 500);
+}
+
+buildRecipe();
+
+var PREP = {
+  acme:[
+    {ic:'ti-trending-up',cl:'var(--tl)',tx:'Health 82 &mdash; stable. Zero open CTAs. Strong adoption across all teams.'},
+    {ic:'ti-microphone',cl:'var(--am)',tx:'Last Gong (5d): David Kim mentioned enterprise expansion, specifically SSO and advanced reporting. Positive sentiment.'},
+    {ic:'ti-user',cl:'var(--bl)',tx:'Champion: David Kim, Head of IT Security. Stable, decision-maker, active in all calls.'},
+    {ic:'ti-message',cl:'var(--tl)',tx:'Say this: \"Based on the SSO rollout you mentioned, I want to walk you through our enterprise tier &mdash; it\'s exactly what you described.\"'},
+    {ic:'ti-ban',cl:'var(--rd)',tx:'Avoid: Bringing up pricing first. Don\'t compare competitors unless David raises it.'},
+  ],
+  brightex:[
+    {ic:'ti-trending-down',cl:'var(--rd)',tx:'Health 48 &mdash; dropped from 71 in 30 days. Adoption cliff since Q1. 2 CTAs, 1 overdue.'},
+    {ic:'ti-microphone',cl:'var(--am)',tx:'Last Gong (12d, flagged): Sarah Chen mentioned evaluating competitor solutions. Gong AI: &ldquo;looking at alternatives.&rdquo;'},
+    {ic:'ti-user-exclamation',cl:'var(--am)',tx:'Champion: Sarah Chen (VP Ops). Marcus Webb no longer in calls &mdash; champion change risk. Build with Sarah directly.'},
+    {ic:'ti-message',cl:'var(--tl)',tx:'Say this: \"I want to make sure the value is clear before we make any decisions. What\'s changed since Q1?\"'},
+    {ic:'ti-ban',cl:'var(--rd)',tx:'Avoid: Defensive responses to competitor mention. Don\'t negotiate price &mdash; this is about value.'},
+  ],
+  nova:[
+    {ic:'ti-alert-triangle',cl:'var(--rd)',tx:'Health 23 &mdash; critical freefall: 91&rarr;67&rarr;23. No Gong calls in 45 days. Renewal June 1 (17 days).'},
+    {ic:'ti-microphone',cl:'var(--rd)',tx:'Last Gong (45d ago): Contact was James Wu who has since left. Michael Torres has never spoken with us.'},
+    {ic:'ti-user-plus',cl:'var(--am)',tx:'Champion: Michael Torres (NEW &mdash; IT Director). First contact. No existing relationship. Cold intro to decision-maker at renewal.'},
+    {ic:'ti-message',cl:'var(--tl)',tx:'Say this: \"I want to start fresh and make sure you have full context on the value your team has been getting.\"'},
+    {ic:'ti-ban',cl:'var(--rd)',tx:'Avoid: Mentioning the renewal deadline in the first 10 minutes. Let Michael talk first.'},
+  ]
+};
+
+var RISK = {
+  acme:{prob:'12%',lbl:'Low Risk',col:'var(--tl)',sigs:['Health stable at 82 &mdash; no downward trend in 90 days.','Gong sentiment consistently positive. No competitor mentions.','Champion stable: David Kim active in all calls.'],play:'No save play needed. Focus on expansion. Surface enterprise upsell in QBR.'},
+  brightex:{prob:'68%',lbl:'High Risk',col:'var(--rd)',sigs:['Health dropped 71&rarr;48 in 30 days &mdash; accelerating decline, not plateau.','Gong competitor flag: &ldquo;looking at alternatives&rdquo; + &ldquo;pricing comparison&rdquo; in last call.','Champion change risk: Marcus Webb absent from last 3 calls.'],play:'Request 30-day renewal pause. Schedule exec sponsor call within 48h. Lead with product roadmap and ROI &mdash; not pricing.'},
+  nova:{prob:'91%',lbl:'Critical',col:'var(--rd)',sigs:['Health in freefall: 91&rarr;67&rarr;23 over 90 days. No recovery signals.','45-day Gong silence + champion departure = zero active relationship with decision-maker.','Renewal in 17 days with no forecast status &mdash; highest risk indicator in the system.'],play:'Emergency: This is a save play, not a renewal conversation. Objective is a 60-day extension. Get executive sponsor involved today.'}
+};
+
+var NEXT = {
+  acme:[{t:'Send enterprise tier overview to David Kim',o:'Carmen',d:'Today',s:'Gmail'},{t:'Log QBR outcomes and expansion interest in Gainsight',o:'Carmen',d:'Today',s:'Gainsight CTA'},{t:'Schedule SSO demo follow-up call',o:'Carmen',d:'May 19',s:'Calendar'}],
+  brightex:[{t:'Schedule exec sponsor save call within 48 hours',o:'Carmen',d:'May 17',s:'Gainsight CTA'},{t:'Send product ROI summary and roadmap to Brightex',o:'Carmen',d:'Today',s:'Gmail'},{t:'Update renewal forecast and add 30-day extension request',o:'Carmen',d:'Today',s:'Gainsight CTA'}],
+  nova:[{t:'Follow up with Michael Torres to confirm 3:30pm call',o:'Carmen',d:'Today',s:'Gmail'},{t:'Request 60-day renewal extension and update forecast',o:'Carmen',d:'Today',s:'Gainsight CTA'},{t:'Escalate to executive sponsor for emergency retention support',o:'Carmen',d:'May 16',s:'Gainsight CTA'}]
+};
+
+function runAgent(type, acct, btn) {
+  var blEl = btn.querySelector('.mb-bl');
+  var icEl = btn.querySelector('.mb-ic');
+  var orig = blEl.textContent;
+  btn.classList.add('loading');
+  btn.disabled = true;
+  blEl.textContent = 'Running...';
+  setTimeout(function() {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    blEl.textContent = orig;
+    if (icEl) icEl.style.animation = '';
+    if (type === 'save') {
+      var sub = document.getElementById('drawer-sub');
+      var names = {acme:'Acme Corp &middot; Aug 12 renewal &middot; Expansion opportunity',brightex:'Brightex Inc &middot; 31 days to renewal &middot; Competitor risk',nova:'NovaVault &middot; 17 days to renewal &middot; New champion'};
+      if (sub) sub.innerHTML = names[acct] || '';
+      openDrawer();
+    } else {
+      showOut(type, acct);
+    }
+  }, 1500);
+}
+
+function showOut(type, acct) {
+  var el = document.getElementById('out-' + acct);
+  if (!el) return;
+  el.style.display = 'block';
+  if (type === 'prep') el.innerHTML = buildPrep(acct);
+  if (type === 'risk') el.innerHTML = buildRisk(acct);
+  if (type === 'next') el.innerHTML = buildNext(acct);
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function closeOut(acct) {
+  var el = document.getElementById('out-' + acct);
+  if (el) el.style.display = 'none';
+}
+
+function buildPrep(acct) {
+  var d = PREP[acct] || PREP.acme;
+  var h = '<div class="ao-hd"><div class="ao-hd-t"><i class="ti ti-shield" style="color:var(--tl)"></i> Battle Card</div><button class="ao-done" onclick="closeOut(\''+acct+'\')">Done</button></div>';
+  h += '<div class="ao-body">';
+  d.forEach(function(b){ h += '<div class="ao-row"><i class="ti '+b.ic+' ao-row-ic" style="color:'+b.cl+'"></i><span class="ao-row-tx">'+b.tx+'</span></div>'; });
+  h += '</div>';
+  h += '<div class="ao-foot"><button class="ao-foot-btn" onclick="toast(\'Copied to clipboard\')">Copy to clipboard</button><button class="ao-foot-btn" onclick="toast(\'Opening in Gong notes...\')">Open in Gong notes</button></div>';
+  return h;
+}
+
+function buildRisk(acct) {
+  var d = RISK[acct] || RISK.nova;
+  var h = '<div class="ao-hd"><div class="ao-hd-t"><i class="ti ti-activity" style="color:var(--rd)"></i> Risk Analysis</div><button class="ao-done" onclick="closeOut(\''+acct+'\')">Done</button></div>';
+  h += '<div class="ao-body">';
+  h += '<div class="risk-score"><span class="risk-num" style="color:'+d.col+'">'+d.prob+'</span><span class="risk-lbl" style="color:'+d.col+'">'+d.lbl+'</span></div>';
+  h += '<div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">3 Driving Signals</div>';
+  d.sigs.forEach(function(s){ h += '<div class="ao-row"><i class="ti ti-point-filled ao-row-ic" style="color:var(--rd);font-size:10px;margin-top:4px"></i><span class="ao-row-tx">'+s+'</span></div>'; });
+  h += '<div class="save-note"><div class="save-note-t">Recommended Save Play</div><div class="save-note-b">'+d.play+'</div></div>';
+  h += '</div>';
+  h += '<div class="ao-foot"><button class="ao-foot-btn prim" onclick="toast(\'Save play CTA created in Gainsight \u2713\')">Start Save Play in Gainsight</button></div>';
+  return h;
+}
+
+function buildNext(acct) {
+  var d = NEXT[acct] || NEXT.nova;
+  var h = '<div class="ao-hd"><div class="ao-hd-t"><i class="ti ti-list-check" style="color:var(--bl)"></i> Next Steps</div><button class="ao-done" onclick="closeOut(\''+acct+'\')">Done</button></div>';
+  h += '<div class="ao-body">';
+  d.forEach(function(s,i){ h += '<div class="cta-row"><div class="cta-num">'+(i+1)+'</div><div><div class="cta-title">'+s.t+'</div><div class="cta-meta">Owner: '+s.o+' &middot; Due: '+s.d+' &middot; '+s.s+'</div></div></div>'; });
+  h += '</div>';
+  h += '<div class="ao-foot"><button class="ao-foot-btn prim" onclick="toast(\'3 CTAs created in Gainsight \u2713\')">Push 3 CTAs to Gainsight</button></div>';
+  return h;
+}
+
+function openDrawer() {
+  document.getElementById('dov').classList.add('on');
+  document.getElementById('drawer').classList.add('on');
+}
+function closeDrawer() {
+  document.getElementById('dov').classList.remove('on');
+  document.getElementById('drawer').classList.remove('on');
+}
+
+var _deckTimer = null;
+function openDeckModal(acct) {
+  var names = {acme:'QBR Builder agent &middot; Powered by Dust API',brightex:'Risk Review Builder &middot; Powered by Dust API',nova:'Save Deck Builder &middot; Emergency retention build'};
+  var sub = document.getElementById('modal-sub');
+  if (sub) sub.textContent = names[acct] || names.acme;
+  document.getElementById('deck-modal').classList.add('on');
+  startDeckProgress();
+}
+function closeDeckModal() {
+  document.getElementById('deck-modal').classList.remove('on');
+  if (_deckTimer) clearInterval(_deckTimer);
+}
+function startDeckProgress() {
+  var bar = document.getElementById('prog-bar');
+  var ok = document.getElementById('modal-ok');
+  var acts = document.getElementById('modal-acts');
+  var ics = [document.getElementById('ps-ic0'),document.getElementById('ps-ic1'),document.getElementById('ps-ic2')];
+  var lbls = [document.getElementById('ps-lbl0'),document.getElementById('ps-lbl1'),document.getElementById('ps-lbl2')];
+  bar.style.width = '0%'; ok.style.display = 'none'; acts.style.display = 'none';
+  ics.forEach(function(ic){ ic.className = 'ps-ic wait'; });
+  lbls.forEach(function(lb){ lb.className = 'ps-lbl wait'; });
+  ics[0].className = 'ps-ic active'; lbls[0].className = 'ps-lbl';
+  var pct = 0;
+  if (_deckTimer) clearInterval(_deckTimer);
+  _deckTimer = setInterval(function() {
+    pct += 1.5;
+    bar.style.width = Math.min(pct,100) + '%';
+    if (pct >= 33 && pct < 36) { ics[0].className = 'ps-ic done'; ics[1].className = 'ps-ic active'; lbls[1].className = 'ps-lbl'; }
+    if (pct >= 66 && pct < 69) { ics[1].className = 'ps-ic done'; ics[2].className = 'ps-ic active'; lbls[2].className = 'ps-lbl'; }
+    if (pct >= 100) {
+      clearInterval(_deckTimer);
+      ics[2].className = 'ps-ic done';
+      ok.style.display = 'block'; acts.style.display = 'flex';
+    }
+  }, 40);
+}
+
+</script>
+
+<div class="dov" id="dov" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="dr-hd">
+    <div>
+      <div class="dr-title">Save Strategy</div>
+      <div class="dr-sub" id="drawer-sub">NovaVault &middot; 17 days to renewal &middot; New champion</div>
+    </div>
+    <button class="dr-close" onclick="closeDrawer()" aria-label="Close drawer">&times;</button>
+  </div>
+  <div class="dr-scroll">
+    <div class="dr-sec">
+      <div class="dr-sec-t"><i class="ti ti-message-circle" style="font-size:11px"></i> Talking Points</div>
+      <div class="tp">Start with their world, not yours. &ldquo;I wanted to start by understanding what&rsquo;s changed for your team since earlier this year and what your top priorities look like right now.&rdquo;</div>
+      <div class="tp">Anchor on outcomes, not features. Reference the value delivered before the champion left &mdash; usage data, security incidents prevented, time saved on access management.</div>
+      <div class="tp">Propose the extension as a win for them. &ldquo;I want to make sure you have enough time to feel confident in this decision. Would a 60-day extension give you what you need?&rdquo;</div>
+    </div>
+    <div class="dr-sec">
+      <div class="dr-sec-t"><i class="ti ti-shield-exclamation" style="font-size:11px"></i> Objection Handlers</div>
+      <div class="ob">
+        <div class="ob-q">&ldquo;I&rsquo;m not sure we&rsquo;re getting value from this.&rdquo;</div>
+        <div class="ob-a">Pull up the usage report in the call. Show active users, vaults accessed, and security events this quarter. Make the value visible before responding.</div>
+      </div>
+      <div class="ob">
+        <div class="ob-q">&ldquo;We&rsquo;re re-evaluating our security stack.&rdquo;</div>
+        <div class="ob-a">Validate the review, don&rsquo;t resist it. Ask: &ldquo;What criteria are most important to your team?&rdquo; Then map those criteria to your strengths &mdash; don&rsquo;t list features unprompted.</div>
+      </div>
+      <div class="ob">
+        <div class="ob-q">&ldquo;The previous team was handling this.&rdquo;</div>
+        <div class="ob-a">Acknowledge the transition directly. &ldquo;That&rsquo;s exactly why I wanted to reach out &mdash; I want to make sure you have full context so you can make the right call for your team.&rdquo;</div>
+      </div>
+    </div>
+    <div class="dr-sec">
+      <div class="dr-sec-t"><i class="ti ti-clock" style="font-size:11px"></i> Proposed Extension Terms</div>
+      <div class="ext">
+        <div class="ext-t">60-Day Extension Proposal</div>
+        <div class="ext-row"><span>Extension period</span><span style="font-weight:600">60 days (Jun 1 &rarr; Jul 31)</span></div>
+        <div class="ext-row"><span>Terms</span><span style="font-weight:600">Current pricing locked</span></div>
+        <div class="ext-row"><span>Commitment</span><span style="font-weight:600">Weekly touchpoints with Carmen</span></div>
+        <div class="ext-row"><span>Decision deadline</span><span style="font-weight:600">July 15, 2026</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="dr-ft">
+    <button class="dr-ft-btn prim" onclick="openDeckModal('nova');closeDrawer()"><i class="ti ti-layout-board" style="font-size:13px"></i> Generate Save Deck</button>
+    <button class="dr-ft-btn sec" onclick="toast('3 CTAs pushed to Gainsight ✓');closeDrawer()">Push to Gainsight</button>
+  </div>
+</div>
+
+<div class="mov" id="deck-modal" onclick="if(event.target===this)closeDeckModal()">
+  <div class="modal">
+    <button class="modal-x" onclick="closeDeckModal()" aria-label="Close">&times;</button>
+    <div class="modal-t">Building your deck</div>
+    <div class="modal-s" id="modal-sub">QBR Builder agent &middot; Powered by Dust API</div>
+    <div class="prog-bar-wrap"><div class="prog-bar" id="prog-bar"></div></div>
+    <div class="prog-steps">
+      <div class="ps" id="ps0"><div class="ps-ic wait" id="ps-ic0"><i class="ti ti-database"></i></div><span class="ps-lbl wait" id="ps-lbl0">Pulling account data from Gainsight...</span></div>
+      <div class="ps" id="ps1"><div class="ps-ic wait" id="ps-ic1"><i class="ti ti-microphone"></i></div><span class="ps-lbl wait" id="ps-lbl1">Fetching Gong call highlights...</span></div>
+      <div class="ps" id="ps2"><div class="ps-ic wait" id="ps-ic2"><i class="ti ti-layout-board"></i></div><span class="ps-lbl wait" id="ps-lbl2">Building slides with QBR Builder agent...</span></div>
+    </div>
+    <div class="modal-ok" id="modal-ok">
+      <div class="modal-ok-ic"><i class="ti ti-circle-check"></i></div>
+      <div class="modal-ok-t">Your deck is ready</div>
+      <div class="modal-ok-s">16 slides &middot; Built from live Gainsight + Gong data</div>
+    </div>
+    <div class="modal-acts" id="modal-acts">
+      <button class="modal-btn prim" onclick="toast('Opening in Google Slides...');closeDeckModal()"><i class="ti ti-brand-google-drive" style="font-size:13px"></i> Open in Google Slides</button>
+      <button class="modal-btn sec" onclick="toast('Deck downloading...');closeDeckModal()"><i class="ti ti-download" style="font-size:13px"></i> Download PPTX</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
