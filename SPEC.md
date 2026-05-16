@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 1.2.0
+**Version:** 1.3.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,48 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [1.3.0] — 2026-05-16
+
+QA pass #2 — seven polish fixes to take the prototype from 8.5/10 to 9.5/10.
+
+### Fixed
+- **Next Steps surfaced on Priority Stack.** Mission Briefing already exposed all four agents for every account; the Priority Stack only had one. Added a secondary "Next Steps" button next to the primary action on each of the three stack items (NovaVault, Acme, Brightex). New `.bf-act-row` + `.bf-act-sec` CSS keep the primary action visually dominant.
+- **Extension Terms section restored and standardized.** Renderer was already producing the amber-background section, but the duplicate inner "Extension Proposal" header and inconsistent row labels were hiding the structure. Removed the inner header (section title `Extension Terms` already covers it), normalized row labels across all three accounts to *Extension Period / Terms / Commitment / Decision Deadline*:
+  - Acme: 30-day pilot pre-renewal · current pricing locked · dedicated support + weekly check-ins
+  - Brightex: 30 days (Jun 15 → Jul 15) · current pricing locked · decision deadline Jul 10
+  - NovaVault: 60 days (Jun 1 → Jul 31) · current pricing locked · weekly touchpoints · decision deadline Jul 15
+- **Agent naming harmonized across surfaces.** Canonical mapping is now used everywhere: button label → drawer title.
+  - Prep Me → Pre-Call Brief
+  - Risk Analyst → Risk Analysis
+  - Save Strategy → Save Strategy
+  - Next Steps → Next Steps
+  Today at a Glance's "My Dust Agents" directory was replaced: now lists the canonical four with matching one-liners. *Icebreaker*, *QBR Builder*, and *Account Strategist* moved into a "More agents — Coming soon" sub-section so the prototype no longer claims agents it doesn't expose as buttons.
+- **Action buttons on every Ask Dust output.** Each output now ends with at least one contextual button that moves work forward, matching the Ghost-Buster button pattern (dark primary + outlined secondary):
+  - *Draft Follow-Ups*: per-draft Send via Gmail + Copy buttons
+  - *Find Open Loops*: per-row Open in Gainsight / Open in Gmail (sources vary by loop type)
+  - *Prepare My Day*: NovaVault row gets an Open Save Strategy primary action
+  - *Review At-Risk Renewals*: per-account Open Save Strategy / Open Risk Analyst
+  - *Free-text query*: footer with Copy response + Push to Gainsight
+  All buttons fire contextual toasts naming the specific person, account, or surface.
+- **Ask Dust loading state extended to 1.5s and now names the agent.** The loader previously flashed at 700ms with generic text. Now: 1500ms, spinner, "Routing to Dust agent…", second line shows the agent being called (Day Planner agent, Draft Composer agent, Loop Closer agent, Risk Analyst agent, Forecast Updater agent, Note Logger agent, or Account Strategist agent for free-text). Backed by a `DUST_AGENT` lookup map keyed by quick-action label.
+- **"Open in Gong notes" footer wired account-by-account.** The Pre-Call Brief drawer footer button was a generic toast. The Gong toast is now account-specific (last-call date sourced from existing `prep.<acct>.sections[1].t` data and inlined as constants in the foot):
+  - Acme → "Opening Gong · Acme Corp · Last call May 10…"
+  - Brightex → "Opening Gong · Brightex Inc · Last call May 4…"
+  - NovaVault → "Opening Gong · NovaVault · Last call March 31…"
+- **Configure + Tasks consistency.**
+  - "Configure · select from Dust workspace" button: now wired to a `configureAgents()` toast — "Agent configuration requires Dust workspace connection — available in Phase 2".
+  - "Update forecast" task (ac1): now opens Ask Dust right panel pre-loaded with a NovaVault renewal forecast table (current vs proposed across renewal date, forecast status, health, open CTAs, ARR) and a primary "Update in Gainsight" action button.
+  - "Log notes" task (ac5): now opens Ask Dust right panel pre-loaded with a Klaxton Labs post-call note template (attendees, summary, signal read, follow-ups) plus Save to Gainsight + Copy buttons.
+  - Today's Tasks header now sits above a source legend: ● Gainsight CTA · ● Calendar · ● Gmail · ● Slack.
+
+### Engineering
+- No new color tokens. Three new utility classes (`.bf-act-row` / `.bf-act-sec`, `.du-acts` / `.du-btn`, `.tk-legend` / `.tk-leg`) all bind to tokens from SPEC §9.1.
+- No `console.log`. No hardcoded API keys.
+- All Ask Dust output continues to HTML-escape free-text input before rendering.
+- Task action wiring is additive: opens the relevant agent drawer or Dust panel, then marks the task done — buttons keep their visible-result guarantee from v1.2.0.
 
 ---
 
