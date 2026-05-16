@@ -901,21 +901,21 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
             <div class="pop-main">Meridian Health Systems</div>
             <div class="pop-sub">73 days silent &middot; $22K &middot; Renews Jun 30</div>
           </div>
-          <div class="pop-btns"><button class="gb-btn" onclick="closePops();openPanel('meridian',null)" type="button">Ghost-Buster</button></div>
+          <div class="pop-btns"><button class="gb-btn" onclick="openGhostBusterFromPopover('meridian')" type="button">Ghost-Buster</button></div>
         </div>
         <div class="pop-row">
           <div class="pop-left">
             <div class="pop-main">Creston Software</div>
             <div class="pop-sub">67 days silent &middot; $18K &middot; Renews Aug 20</div>
           </div>
-          <div class="pop-btns"><button class="gb-btn" onclick="closePops();openPanel('creston',null)" type="button">Ghost-Buster</button></div>
+          <div class="pop-btns"><button class="gb-btn" onclick="openGhostBusterFromPopover('creston')" type="button">Ghost-Buster</button></div>
         </div>
         <div class="pop-row">
           <div class="pop-left">
             <div class="pop-main">Apex Dynamics</div>
             <div class="pop-sub">61 days silent &middot; $15K &middot; Renews Jul 15</div>
           </div>
-          <div class="pop-btns"><button class="gb-btn" onclick="closePops();openPanel('apex',null)" type="button">Ghost-Buster</button></div>
+          <div class="pop-btns"><button class="gb-btn" onclick="openGhostBusterFromPopover('apex')" type="button">Ghost-Buster</button></div>
         </div>
         <div class="pop-foot"><a class="pop-foot-a" href="#" onclick="toastLink(event,'Dark zone')">Open dark zone <i class="ti ti-arrow-right"></i></a></div>
       </div>
@@ -1212,7 +1212,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
 
         <div class="rp-view" id="view-meridian">
-          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-back" onclick="backFromGhostBuster()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
           <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
           <div class="rp-scroll">
             <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Meridian Health Systems</div>
@@ -1234,7 +1234,7 @@ I have a couple of product updates that align directly with where you were heade
         </div>
 
         <div class="rp-view" id="view-creston">
-          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-back" onclick="backFromGhostBuster()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
           <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
           <div class="rp-scroll">
             <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Creston Software</div>
@@ -1274,7 +1274,7 @@ I also have a few product updates that align with the goals you shared during se
         </div>
 
         <div class="rp-view" id="view-apex">
-          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-back" onclick="backFromGhostBuster()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
           <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
           <div class="rp-scroll">
             <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Apex Dynamics</div>
@@ -1474,6 +1474,42 @@ function resetPanel() {
   document.querySelectorAll('.rp-view').forEach(function(v){ v.classList.remove('on'); });
   document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
   document.getElementById('view-default').classList.add('on');
+}
+
+// ── Ghost-Buster trigger from pulse strip popover (v1.7.0 bug fix) ──────────
+// Remembers the active Mission Briefing view so Back can return to it.
+var _lastBriefingView = 'view-default';
+function openGhostBusterFromPopover(acct) {
+  closePops();
+  setTimeout(function() {
+    var pop = document.getElementById('pop-dark');
+    var fire = function() {
+      var current = document.querySelector('.rp-view.on');
+      if (current) {
+        var id = current.id;
+        if (id === 'view-default' || id === 'view-acme' || id === 'view-brightex' || id === 'view-nova') {
+          _lastBriefingView = id;
+        }
+      }
+      openPanel(acct, null);
+    };
+    if (pop && pop.classList.contains('on')) {
+      setTimeout(fire, 50);
+    } else {
+      fire();
+    }
+  }, 100);
+}
+function backFromGhostBuster() {
+  document.querySelectorAll('.rp-view').forEach(function(v){ v.classList.remove('on'); });
+  document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
+  var target = _lastBriefingView || 'view-default';
+  var el = document.getElementById(target);
+  if (!el) { el = document.getElementById('view-default'); target = 'view-default'; }
+  el.classList.add('on');
+  var acctId = target.replace(/^view-/, '');
+  var ce = document.getElementById('ce-' + acctId);
+  if (ce) ce.classList.add('sel');
 }
 
 function pickAt(id, el) {
@@ -2485,7 +2521,7 @@ function openDeckModal(acct) {
 }
 function closeDeckModal() {
   document.getElementById('deck-modal').classList.remove('on');
-  if (_deckTimer) clearInterval(_deckTimer);
+  if (_deckTimer) { clearTimeout(_deckTimer); _deckTimer = null; }
 }
 function startDeckProgress() {
   var bar = document.getElementById('prog-bar');
@@ -2493,23 +2529,42 @@ function startDeckProgress() {
   var acts = document.getElementById('modal-acts');
   var ics = [document.getElementById('ps-ic0'),document.getElementById('ps-ic1'),document.getElementById('ps-ic2')];
   var lbls = [document.getElementById('ps-lbl0'),document.getElementById('ps-lbl1'),document.getElementById('ps-lbl2')];
-  bar.style.width = '0%'; ok.style.display = 'none'; acts.style.display = 'none';
+
+  if (_deckTimer) { clearTimeout(_deckTimer); _deckTimer = null; }
+
+  // Reset to clean state
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  ok.style.display = 'none'; acts.style.display = 'none';
   ics.forEach(function(ic){ ic.className = 'ps-ic wait'; });
   lbls.forEach(function(lb){ lb.className = 'ps-lbl wait'; });
+  void bar.offsetWidth; // force reflow so the new transition takes effect
+
+  // Step 1 begins immediately, fills bar to 33% over 6s
   ics[0].className = 'ps-ic active'; lbls[0].className = 'ps-lbl';
-  var pct = 0;
-  if (_deckTimer) clearInterval(_deckTimer);
-  _deckTimer = setInterval(function() {
-    pct += 1.5;
-    bar.style.width = Math.min(pct,100) + '%';
-    if (pct >= 33 && pct < 36) { ics[0].className = 'ps-ic done'; ics[1].className = 'ps-ic active'; lbls[1].className = 'ps-lbl'; }
-    if (pct >= 66 && pct < 69) { ics[1].className = 'ps-ic done'; ics[2].className = 'ps-ic active'; lbls[2].className = 'ps-lbl'; }
-    if (pct >= 100) {
-      clearInterval(_deckTimer);
-      ics[2].className = 'ps-ic done';
-      ok.style.display = 'block'; acts.style.display = 'flex';
-    }
-  }, 40);
+  bar.style.transition = 'width 6s linear';
+  bar.style.width = '33%';
+
+  _deckTimer = setTimeout(function() {
+    // Step 2 starts at 6s, fills bar to 66% over 6s
+    ics[0].className = 'ps-ic done';
+    ics[1].className = 'ps-ic active'; lbls[1].className = 'ps-lbl';
+    bar.style.width = '66%';
+
+    _deckTimer = setTimeout(function() {
+      // Step 3 starts at 12s, fills bar to 100% over 6s
+      ics[1].className = 'ps-ic done';
+      ics[2].className = 'ps-ic active'; lbls[2].className = 'ps-lbl';
+      bar.style.width = '100%';
+
+      _deckTimer = setTimeout(function() {
+        // Completion at 18s — show "16 slides ready" + action buttons
+        ics[2].className = 'ps-ic done';
+        ok.style.display = 'block'; acts.style.display = 'flex';
+        _deckTimer = null;
+      }, 6000);
+    }, 6000);
+  }, 6000);
 }
 
 </script>

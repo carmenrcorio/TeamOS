@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 1.6.0
+**Version:** 1.7.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,20 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [1.7.0] — 2026-05-16
+
+Two bug fixes only.
+
+### Fixed
+- **Back button non-functional when Ghost-Buster is triggered from the pulse-strip dark-accounts popover.** Root cause: the popover was still in the live DOM when the user clicked Back, intercepting the panel reset. Added `openGhostBusterFromPopover(acct)` which (a) closes the popover via `closePops()`, (b) waits 100ms for the close animation to settle, (c) re-checks visibility and waits an additional 50ms if still on, then (d) records the currently-active briefing view in `_lastBriefingView` before calling `openPanel(acct, null)`. Added `backFromGhostBuster()` which restores `_lastBriefingView` (default `view-default`) and re-selects the matching calendar event if applicable. The three pulse-strip popover Ghost-Buster buttons (Meridian / Creston / Apex) now route through `openGhostBusterFromPopover`. The three Ghost-Buster panel Back buttons now route through `backFromGhostBuster`. **Dark Zone widget Ghost-Buster buttons were not touched** — they continue to call `openPanel(acct, null)` directly; the new back handler falls back to `view-default` for that path so existing behavior holds.
+- **Deck builder animation duration regression.** The progress driver had drifted to `setInterval(..., 40ms)` with `pct += 1.5` per tick, producing total durations under 3s in one direction and reportedly ~35s in another (drift between deployments). Replaced with the canonical setTimeout chain: three nested `setTimeout(..., 6000)` calls totaling 18s. The progress bar uses an inline `width 6s linear` transition so it fills smoothly between milestones (0% → 33% → 66% → 100%). Completion at the 18-second mark reveals the "Your deck is ready" state + Open in Google Slides / Download PPTX buttons. Copy, completion content, and action buttons untouched. `closeDeckModal` updated to call `clearTimeout` for correctness (the previous `clearInterval` worked due to shared ID space but no longer matched the timer type).
+
+### Not touched
+- `openPanel`, `resetPanel`, `closePops`, `togglePop` — all unchanged.
+- Dark Zone widget, Live Signals row Ghost-Buster button, Email/Slack/Renewal popover handlers, Ask Dust handlers, agent drawer logic, calendar onclicks, brief-strip widgets, nav, pulse-strip counts, deck modal HTML (only the JS function body changed), Recipe for Success tab.
 
 ---
 
