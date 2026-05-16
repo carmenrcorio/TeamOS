@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.8.1
+**Version:** 2.8.2
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,67 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.8.2] — 2026-05-16
+
+Re-architecture of the slide-out drawer. v2.8.0 / v2.8.1 turned the drawer into a TeamOS-Live-only surface and redirected all agent output (Prep Me / Risk Analyst / Save Strategy / Next Steps) to the Mission Briefing center panel via `view-agentout`. The user's revised spec calls for the drawer to host **both** experiences side-by-side, selectable via a toggle. The agent output should stay in the drawer (Assistant mode) — not be redirected. This commit makes that pivot.
+
+The user labeled the changelog entry `[2.8.0]`; shipped as `[2.8.2]` here because `[2.8.0]` and `[2.8.1]` had already shipped and are pinned in the changelog with the old architecture descriptions. The bullet content matches the user's `[2.8.0]` brief verbatim.
+
+### Added — Dual-mode toggle at the top of the drawer
+- New `.dr-mode-bar` (2-col pill) above everything else in the drawer:
+  - `📋 Assistant` (default on open)
+  - `⚡ Live Call`
+- Active mode: teal background, white text, subtle teal-tinted shadow. Inactive: outlined, muted. Toggling the chip swaps the body content; the header (account / meeting / close) stays visible.
+- New `setDrawerMode(mode)` JS function manages the toggle:
+  - To Assistant: re-renders the last loaded agent (from `_drawerCtx.lastAgent`) so the body is never blank when the user toggles Live → Assistant. If no agent has been loaded yet, leaves the header at the default "Agent / Select an agent" state. Cancels any pending Live signal timer.
+  - To Live Call: rewrites the unified header to show the current account + meeting + time, initializes the situation-mode chips, loads the Carmen profile coaching line + the opening message, and schedules the 8-second auto-signal timer.
+
+### Reverted — Agent output renders in the drawer again
+- `openAgentDrawer(type, acct)` is restored to its pre-v2.8.0 behavior: populates `drawer-title` / `drawer-sub` / `drawer-scroll` / `drawer-ft` and calls `openDrawer()`. The `view-agentout` redirect introduced in v2.8.0 is removed from this path.
+- The Agent Hub Recent Outputs **Restore** path (v2.5.0) still routes through `restoreAgentOutput` → `view-agentout` (Mission Briefing panel inline) — that's the explicit "restore to panel" mechanism. Quick Launch Matrix in the Agent Hub continues to call `openAgentDrawer`, which now opens the drawer in Assistant mode.
+- All other agent-button call sites (Priority Stack, Today's Tasks "Generate prep" / "Draft outreach" / "Draft reply", Mission Briefing default's "My Agents" buttons, Live Signals row buttons, Task Brief buttons, notification rail Save Play, Slack Summary Save Strategy) inherit the restored drawer behavior automatically.
+- `agentBtn(type, acct, btn)` (the 1.5s loading-state wrapper) is unchanged; still calls `openAgentDrawer` at the end.
+
+### Updated — Live Call experience
+- **Drawer header in Live Call** — the v2.8.0 dark "TEAMOS LIVE" hero block is replaced with the standard light header reused by Assistant mode. In Live Call mode the title shows the account name (e.g. "Acme Corp") and the sub shows the meeting + time (e.g. "QBR · 9:00 AM"). The pulse indicator now lives in the Live Monitor bar directly below the header.
+- **Live Monitor bar** — dark forest bg, mint label, pulsing green dot. Copy: `🟢 LIVE MONITOR · Listening via Zoom API…`. Unchanged from v2.8.1.
+- **Situation Mode chips** — Risk / Growth / Executive / Discovery / Prep. Default by account (Nova→Risk, Brightex→Risk, Acme→Prep). Switching a chip resets the chat and loads a new opening message. Unchanged from v2.8.0.
+- **Carmen profile line** — now appears in **every** Live Call situation mode (not just Prep as in v2.8.1). Carmen text updated per the new spec:
+  - **Acme:** "Your Gong data shows you talk 68% of the time in QBRs. Today — ask the SSO question and let David Kim fill the silence."
+  - **Brightex:** *(updated)* "You've folded on pricing early in the last 2 Brightex calls. Hold the line on value before any commercial discussion."
+  - **NovaVault:** *(updated)* "Cold intro calls work better when you listen first. Ask Torres what he already knows before pitching anything."
+- **Auto-signal card** — now scheduled by `_tlScheduleSignal()` whenever Live Call mode is entered (either via the `[⚡ TeamOS Live]` Mission Briefing button or the in-drawer toggle to Live). 8-second timer, reset on every entry, cancelled on `closeDrawer`. Card structure updated per new spec:
+  - Header: `💡 LIVE SIGNAL · 12s ago` (timestamp inline)
+  - Subject line: e.g. "David mentioned 'headcount consolidation'"
+  - Quote box with `Pivot:` / `Response:` prefix in bold + the suggested italic quote
+  - Buttons: `[📋 Copy Line]` + optional second button (Acme has `[🔍 See Integration Specs]` → toasts "Opening 1Password integration documentation ✓")
+- **Card styling restyled** from amber to teal-themed per spec: teal-bg pill, 4px teal left border, muted timestamp.
+- **Pattern matching** — unchanged from v2.8.0. Pricing / competitor / objection / help patterns and the default fallback all carry over.
+- **Input bar** — unchanged from v2.8.0. Updated placeholder copy to "Type anything or ask a question…" per new spec.
+
+### Verified end-to-end in a headless render
+- `openAgentDrawer('save','nova')` opens the drawer in Assistant mode, populates `drawer-title="Save Strategy"`, `drawer-sub="NovaVault · Emergency retention play"`, fills `drawer-scroll` (4976 chars) and `drawer-ft` (351 chars), leaves Mission Briefing on `view-default`. No more `view-agentout` redirect.
+- Toggling to Live: header changes to "NovaVault" / "Executive Check-in · 3:30 PM", chip activates `risk` (Nova default), Carmen line + opening message load in chat.
+- Toggling back to Assistant: header restores to "Save Strategy" / "NovaVault · Emergency retention play", Assistant body re-renders the last-loaded Nova Save Strategy content.
+- Mission Briefing `[⚡ TeamOS Live]` button on the Brightex view opens the drawer in Live mode with header "Brightex Inc" / "Risk Review · 11:00 AM", chip = `risk`, Carmen line = new Brightex text.
+- 8.5s after Live Call entry: signal card auto-appears with `LIVE SIGNAL · 12s ago` header, "David mentioned 'headcount consolidation'" subject, `Pivot: "Our SSO integration..."` quote, 2 buttons (Copy Line + See Integration Specs).
+- Pattern matching: "what about pricing" returns the per-account Acme pricing response.
+- Carmen lines verified for all 3 accounts with the new copy.
+
+### Not touched
+- DRAWER agent data objects — unchanged.
+- Every Mission Briefing template (view-default / view-acme / view-brightex / view-nova), Ghost-Buster wizard (v2.6.0), Agent Hub & Workspace card (v2.5.0), Task Brief panel (v2.3.0), Ask Dust + Coach Me + Custom Agents (v2.0.0), the universal account click (v2.0.0), Next Up intelligence (v2.7.0), pulse strip + Tasks dropdown, notification rail, calendar, Live Signals widget, Urgent Inbox + Today's Tasks, deck modal, Service Worker + offline resilience (v2.4.0), brief-strip equal-height (v2.2.0), Recipe for Success tab.
+- `openPanel`, `resetPanel`, `scrollPanelIntoView`, `closePops`, `closeNotifPops`, `openGhostBusterFromPopover`, `backFromGhostBuster`, `restoreAgentOutput`, every Ask Dust template, every task brief, every Ghost-Buster wizard view, `agentBtn` — all unchanged.
+- `view-agentout` HTML — preserved for the Agent Hub Restore path. No longer the target of `openAgentDrawer`.
+
+### Engineering
+- New `_drawerCtx = { mode, lastAgent, acct }` state object tracks the most recent agent load + active account so the toggle can restore content in either direction.
+- Three new CSS rules (`.dr-mode-bar`, `.dr-mode`, `.dr-mode.on`) plus `.dm-body { display:none } .dm-body.on { display:flex; flex-direction:column; flex:1 }` for the body show/hide.
+- Signal card retheming touches `.tl-signal*` rules — amber tokens swapped for teal-bg + teal left border + new `.tl-signal-prefix` for the bold "Pivot:" / "Response:" label.
+- Removed the dark `.tl-hd` and its child rules (`.tl-hd-t-row`, `.tl-acct`, `.tl-ctx`, `.tl-close`) — the unified `.dr-hd` light header replaces them.
 
 ---
 

@@ -268,7 +268,16 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .dov.on{display:block}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:420px;background:var(--surf);border-left:1px solid var(--bd);z-index:201;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;overflow:hidden}
 .drawer.on{transform:translateX(0)}
-.dr-hd{padding:18px 22px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+/* Dual-mode drawer toggle (v2.8.2) */
+.dr-mode-bar{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px 14px 0;flex-shrink:0;background:var(--surf)}
+.dr-mode{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;font-size:12px;font-weight:700;font-family:inherit;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);border-radius:8px;cursor:pointer;transition:all .12s;letter-spacing:-.01em}
+.dr-mode i{font-size:14px}
+.dr-mode:hover{border-color:var(--tx2);color:var(--tx)}
+.dr-mode.on{background:var(--tl);color:#fff;border-color:var(--tl);box-shadow:0 1px 4px rgba(24,165,117,.25)}
+.dm-body{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+.dm-body.on{display:flex}
+
+.dr-hd{padding:14px 22px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:10px}
 .dr-title{font-size:16px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
 .dr-sub{font-size:12px;color:var(--tx3);margin-top:3px}
 .dr-close{font-size:22px;color:var(--tx3);cursor:pointer;background:none;border:none;line-height:1;padding:0}
@@ -668,14 +677,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 /* ═══════════════════════════════════════════════════════════════════════════
    TeamOS Live (v2.8.0) — drawer repurposed as conversational AI companion
    ═══════════════════════════════════════════════════════════════════════════ */
-.tl-hd{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-shrink:0;background:#0D0D0C;color:#fff}
-.tl-hd-t-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tl)}
-.tl-pulse{width:7px;height:7px;border-radius:50%;background:var(--tl);animation:tl-pulse 1.5s ease-in-out infinite;flex-shrink:0}
 @keyframes tl-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.85)}}
-.tl-acct{font-size:13px;font-weight:700;color:#fff;letter-spacing:-.01em;line-height:1.3}
-.tl-ctx{font-size:10px;color:rgba(255,255,255,.65);margin-top:4px;line-height:1.45}
-.tl-close{font-size:22px;color:rgba(255,255,255,.6);cursor:pointer;background:none;border:none;line-height:1;padding:0;flex-shrink:0;font-family:inherit}
-.tl-close:hover{color:#fff}
 
 .tl-modes{display:flex;flex-wrap:wrap;gap:5px;padding:11px 16px;border-bottom:1px solid var(--bd);flex-shrink:0;background:var(--surf2)}
 .tl-mode{font-size:10px;font-weight:600;padding:5px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;white-space:nowrap}
@@ -706,14 +708,19 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .tl-carmen{align-self:flex-start;max-width:88%;margin-top:-3px;padding:8px 12px;background:rgba(24,165,117,.07);border-left:2px solid var(--tl);border-radius:0 8px 8px 0;font-size:11px;color:var(--tx2);line-height:1.55;font-style:italic}
 .tl-carmen-l{font-style:normal;font-weight:700;color:var(--tl-dk);margin-right:4px}
 
-/* Live Signal card (v2.8.1) — auto-appears 8s after drawer opens */
-.tl-signal{align-self:stretch;background:var(--am-bg);border:1px solid var(--am);border-radius:11px;padding:11px 13px;font-size:11px;line-height:1.55;color:var(--am-dk);display:flex;flex-direction:column;gap:7px;max-width:none}
-.tl-signal-hd{font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--am-dk);display:flex;align-items:center;gap:6px}
-.tl-signal-hd i{font-size:13px}
-.tl-signal-body{color:var(--tx)}
-.tl-signal-quote{font-style:italic;padding:7px 9px;background:rgba(255,255,255,.55);border-radius:6px;color:var(--tx);line-height:1.5}
-.tl-signal-btn{align-self:flex-start;background:var(--tx);color:#fff;border:none;border-radius:5px;padding:6px 11px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+/* Live Signal card (v2.8.2) — auto-appears 8s after switching to Live Call mode */
+.tl-signal{align-self:stretch;background:var(--tl-bg);border:1px solid var(--bd);border-left:4px solid var(--tl);border-radius:8px;padding:11px 13px;font-size:11px;line-height:1.55;color:var(--tx);display:flex;flex-direction:column;gap:7px;max-width:none}
+.tl-signal-hd{font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--tl-dk);display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+.tl-signal-hd i{font-size:13px;align-self:center}
+.tl-signal-ago{font-weight:600;font-size:9px;color:var(--tx3);letter-spacing:.04em;margin-left:auto}
+.tl-signal-body{color:var(--tx2);font-weight:500}
+.tl-signal-quote{font-style:italic;padding:8px 10px;background:rgba(255,255,255,.7);border-radius:6px;color:var(--tx);line-height:1.5;border:1px solid rgba(24,165,117,.18)}
+.tl-signal-prefix{font-style:normal;font-weight:700;color:var(--tl-dk);margin-right:4px;text-transform:none;letter-spacing:0}
+.tl-signal-acts{display:flex;gap:6px;flex-wrap:wrap}
+.tl-signal-btn{background:var(--tx);color:#fff;border:none;border-radius:5px;padding:6px 11px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
 .tl-signal-btn:hover{background:#2a2a28}
+.tl-signal-btn.sec{background:var(--surf);color:var(--tx2);border:1px solid var(--bd2)}
+.tl-signal-btn.sec:hover{background:var(--surf2);border-color:var(--tx2);color:var(--tx)}
 .tl-signal-btn i{font-size:11px}
 
 /* [⚡ TeamOS Live] trigger in Mission Briefing headers */
@@ -3383,19 +3390,25 @@ function agentBtn(type, acct, btn) {
   }, 1500);
 }
 
-// ── AGENT OUTPUT RENDERER ────────────────────────────────────────────────────
-// As of v2.8.0 the slide-out drawer is reserved for TeamOS Live. Agent
-// content (Prep Me / Risk Analyst / Save Strategy / Next Steps) now renders
-// directly into the Mission Briefing center panel via view-agentout, then
-// scrollPanelIntoView ensures it's visible. The DRAWER data objects are
-// unchanged — only the render target changed.
+// ── DRAWER AGENT RENDERER ────────────────────────────────────────────────────
+// Renders agent content (Prep Me / Risk Analyst / Save Strategy / Next Steps)
+// into the Assistant body of the slide-out drawer. The drawer is dual-mode
+// since v2.8.2 — this populates the Assistant side and forces the toggle to
+// Assistant. Live Call side is initialized lazily by openTeamOSLive /
+// setDrawerMode('live').
 function openAgentDrawer(type, acct) {
   var data = DRAWER[type] && DRAWER[type][acct];
-  if (!data) return;
+  if (!data) { openDrawer(); return; }
 
-  var html = '<div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:2px;letter-spacing:-.01em">' + data.title + '</div>'
-    + '<div style="font-size:11px;color:var(--tx3);margin-bottom:16px">' + data.sub + '</div>';
+  var titleEl = document.getElementById('drawer-title');
+  var subEl = document.getElementById('drawer-sub');
+  var scroll = document.getElementById('drawer-scroll');
+  var ft = document.getElementById('drawer-ft');
 
+  if (titleEl) titleEl.textContent = data.title;
+  if (subEl) subEl.textContent = data.sub;
+
+  var html = '';
   data.sections.forEach(function(sec) {
     html += '<div style="margin-bottom:20px">';
     html += '<div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ' + sec.ic + '" style="color:' + sec.cl + ';font-size:12px"></i>' + sec.t + '</div>';
@@ -3424,27 +3437,27 @@ function openAgentDrawer(type, acct) {
     }
     html += '</div>';
   });
+  if (scroll) scroll.innerHTML = html;
 
-  // Footer buttons (Push to Gainsight / Generate Deck etc) — rendered inline
-  // at the bottom of the agent output panel.
+  // Footer buttons (Push to Gainsight / Generate Deck etc)
+  var ftHtml = '';
   if (data.foot && data.foot.length) {
-    html += '<div style="display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--bd);flex-wrap:wrap">';
     data.foot.forEach(function(f) {
       if (f.a === 'deck') {
-        html += '<button type="button" onclick="openDeckModal(\'' + acct + '\')" style="flex:1;min-width:140px;font-size:12px;font-weight:700;padding:10px 12px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--tx);color:#fff;border:none">&#9632; ' + f.l + '</button>';
+        ftHtml += '<button class="dr-ft-btn prim" type="button" onclick="openDeckModal(\'' + acct + '\');closeDrawer()" style="font-size:12px;font-weight:700;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--tx);color:#fff;border:none;flex:1">&#9632; ' + f.l + '</button>';
       } else {
         var safe = (f.a || '').replace(/'/g, "\\'");
-        html += '<button type="button" onclick="toast(\'' + safe + '\')" style="flex:1;min-width:140px;font-size:12px;font-weight:600;padding:10px 12px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2)">' + f.l + '</button>';
+        ftHtml += '<button class="dr-ft-btn sec" type="button" onclick="toast(\'' + safe + '\');closeDrawer()" style="font-size:12px;font-weight:600;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2);flex:1">' + f.l + '</button>';
       }
     });
-    html += '</div>';
   }
+  if (ft) ft.innerHTML = ftHtml;
 
-  var out = document.getElementById('agentout-out');
-  if (out) out.innerHTML = html;
-  var ttl = document.getElementById('agentout-title');
-  if (ttl) ttl.textContent = data.title;
-  openPanel('agentout', null);
+  // Track last-loaded agent so the toggle can restore it when user flips back.
+  _drawerCtx.lastAgent = { type: type, acct: acct };
+  _drawerCtx.acct = acct;
+  setDrawerMode('assistant', { skipReinit: true });
+  openDrawer();
 }
 
 function buildRecipe() {
@@ -3648,32 +3661,38 @@ var TL_ACCT_INFO = {
 var TL_DEFAULT_MODE = { acme:'prep', brightex:'risk', nova:'risk' };
 var TL_MODE_LABEL   = { risk:'Risk', growth:'Growth', exec:'Executive', discovery:'Discovery', prep:'Prep' };
 
-// Carmen profile coaching — appended to the Prep mode opening for each account.
-// CSM-specific behavioral notes from her Gong / call-recording profile.
+// Carmen profile coaching — appended above the bot opening message on every
+// mode switch in Live Call. CSM-specific behavioral notes from her Gong /
+// call-recording profile.
 var TL_CARMEN = {
   acme:     'Your Gong data shows you talk 68% of the time in QBRs. Today &mdash; ask the SSO question and let David Kim fill the silence.',
-  brightex: 'You tend to over-explain when accounts push back. Today &mdash; answer Sarah&rsquo;s SLA question in one sentence, then ask hers.',
-  nova:     'Your last 3 cold intros were technical pitches. With Torres &mdash; open with what his team is already getting from the platform, not what&rsquo;s possible.'
+  brightex: 'You&rsquo;ve folded on pricing early in the last 2 Brightex calls. Hold the line on value before any commercial discussion.',
+  nova:     'Cold intro calls work better when you listen first. Ask Torres what he already knows before pitching anything.'
 };
 
-// Simulated mid-call signal detection — auto-appears 8 seconds after the
-// drawer opens. Phase 3 will replace this with real WebRTC/WebSocket
-// transcript parsing. Each entry: { detected, body, line (suggested quote) }.
+// Simulated mid-call signal detection — auto-appears 8 seconds after Live
+// Call mode is entered (either via the [⚡ TeamOS Live] trigger or the
+// in-drawer mode toggle). Phase 3 replaces this with real WebRTC/WebSocket
+// transcript parsing. Each entry: { hd, ago, body, quote, extra (optional 2nd button) }.
 var TL_SIGNALS = {
   acme: {
-    detected: '&ldquo;headcount consolidation&rdquo; detected',
-    body:     'Pivot to SSO automation ROI.',
-    line:     '1Password automates the entire offboarding lifecycle — saves your IT team ~4 hours per departure.'
+    hd:     'David mentioned &ldquo;headcount consolidation&rdquo;',
+    ago:    '12s ago',
+    prefix: 'Pivot',
+    quote:  'Our SSO integration automates the entire offboarding lifecycle — saving your IT team roughly 4 hours per employee departure.',
+    extra:  { lbl:'See Integration Specs', ic:'ti-search', toast:'Opening 1Password integration documentation ✓' }
   },
   brightex: {
-    detected: 'Competitor mention detected',
-    body:     'Surface what they&rsquo;re evaluating before you respond.',
-    line:     "Can you share what you've been looking at? I want to make sure we're comparing the right things."
+    hd:     'Competitor mention detected',
+    ago:    '8s ago',
+    prefix: 'Response',
+    quote:  "Can you share what you've been looking at? I want to make sure we're comparing the right things for your compliance requirements."
   },
   nova: {
-    detected: 'Budget concern detected',
-    body:     'Reframe before the number lands.',
-    line:     'Before we get to numbers — what would make this renewal an easy yes for your team?'
+    hd:     'Budget concern language detected',
+    ago:    '5s ago',
+    prefix: 'Response',
+    quote:  'Before we get to numbers — what would make this renewal an easy yes for your team?'
   }
 };
 
@@ -3770,17 +3789,18 @@ function _tlSetMode(mode) {
     c.classList.toggle('on', c.getAttribute('data-mode') === mode);
   });
   var chat = document.getElementById('tl-chat');
-  if (chat) chat.innerHTML = '';
-  var opening = (TL_OPENINGS[_TL.acct] && TL_OPENINGS[_TL.acct][mode]) || '';
-  if (opening) _tlAppend('bot', opening);
-  // In Prep mode, append Carmen's CSM-specific coaching line right below the opening.
-  if (mode === 'prep' && TL_CARMEN[_TL.acct] && chat) {
+  if (!chat) return;
+  chat.innerHTML = '';
+  // Carmen profile coaching line — sits above the opening message in every
+  // mode, italicized and muted.
+  if (TL_CARMEN[_TL.acct]) {
     var c = document.createElement('div');
     c.className = 'tl-carmen';
     c.innerHTML = '<span class="tl-carmen-l">💬 Carmen:</span>' + TL_CARMEN[_TL.acct];
     chat.appendChild(c);
-    chat.scrollTop = chat.scrollHeight;
   }
+  var opening = (TL_OPENINGS[_TL.acct] && TL_OPENINGS[_TL.acct][mode]) || '';
+  if (opening) _tlAppend('bot', opening);
 }
 
 function _tlAppendSignal(sig) {
@@ -3788,12 +3808,21 @@ function _tlAppendSignal(sig) {
   if (!chat) return;
   var card = document.createElement('div');
   card.className = 'tl-msg tl-signal';
-  var safeLine = String(sig.line || '').replace(/"/g,'&quot;');
+  var safeLine = String(sig.quote || '').replace(/"/g,'&quot;');
+  var extraBtn = '';
+  if (sig.extra) {
+    var safeToast = String(sig.extra.toast || '').replace(/'/g, "\\'");
+    extraBtn = '<button class="tl-signal-btn sec" type="button" onclick="toast(\'' + safeToast + '\')"><i class="ti ' + (sig.extra.ic || 'ti-external-link') + '"></i> ' + sig.extra.lbl + '</button>';
+  }
+  var prefix = sig.prefix ? '<span class="tl-signal-prefix">' + sig.prefix + ':</span> ' : '';
   card.innerHTML = ''
-    + '<div class="tl-signal-hd"><i class="ti ti-bulb"></i> Live Signal &middot; ' + sig.detected + '</div>'
-    + '<div class="tl-signal-body">' + sig.body + '</div>'
-    + '<div class="tl-signal-quote">&ldquo;' + sig.line + '&rdquo;</div>'
-    + '<button class="tl-signal-btn" type="button" data-line="' + safeLine + '" onclick="_tlCopySignal(this)"><i class="ti ti-copy"></i> Copy Line</button>';
+    + '<div class="tl-signal-hd"><i class="ti ti-bulb"></i> Live Signal <span class="tl-signal-ago">&middot; ' + sig.ago + '</span></div>'
+    + '<div class="tl-signal-body">' + sig.hd + '</div>'
+    + '<div class="tl-signal-quote">' + prefix + '&ldquo;' + sig.quote + '&rdquo;</div>'
+    + '<div class="tl-signal-acts">'
+      + '<button class="tl-signal-btn" type="button" data-line="' + safeLine + '" onclick="_tlCopySignal(this)"><i class="ti ti-copy"></i> Copy Line</button>'
+      + extraBtn
+    + '</div>';
   chat.appendChild(card);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -3803,11 +3832,18 @@ function _tlCopySignal(btn) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(line).catch(function(){});
   }
-  toast('Line copied to clipboard ✓');
+  toast('Copied to clipboard ✓');
 }
 
 function _tlCancelSignal() {
   if (_tlSignalTimer) { clearTimeout(_tlSignalTimer); _tlSignalTimer = null; }
+}
+
+function _tlScheduleSignal() {
+  _tlCancelSignal();
+  var sig = TL_SIGNALS[_TL.acct];
+  if (!sig) return;
+  _tlSignalTimer = setTimeout(function(){ _tlAppendSignal(sig); }, 8000);
 }
 
 function _tlShortOpening(acct, mode) {
@@ -3843,27 +3879,71 @@ function _tlSendMessage(e) {
   return false;
 }
 
+// Drawer mode context — tracks last-loaded agent + active account so the
+// toggle bar can restore the right content in each direction.
+var _drawerCtx = { mode:'assistant', lastAgent:null, acct:null };
+
 function openTeamOSLive(acct, mode) {
   if (!TL_ACCT_INFO[acct]) acct = window._activeAccount || 'acme';
   if (!TL_ACCT_INFO[acct]) acct = 'acme';
   _TL.acct = acct;
   _TL.mode = mode || TL_DEFAULT_MODE[acct] || 'prep';
-  var info = TL_ACCT_INFO[acct];
-  var ah = document.getElementById('tl-acct');
-  var ax = document.getElementById('tl-ctx');
-  if (ah) ah.innerHTML = info.name + ' &middot; ' + info.meeting + ' &middot; ' + info.time;
-  if (ax) ax.innerHTML = 'Context loaded: ' + info.ctx;
-  _tlSetMode(_TL.mode);
+  _drawerCtx.acct = acct;
+  setDrawerMode('live');
   openDrawer();
-  setTimeout(function() {
+}
+
+// Toggle between Assistant and Live Call mode. Skip-reinit short-circuits
+// the body refresh when openAgentDrawer has just populated Assistant fresh.
+function setDrawerMode(mode, opts) {
+  opts = opts || {};
+  _drawerCtx.mode = mode;
+  document.querySelectorAll('.dr-mode').forEach(function(b){
+    var on = b.getAttribute('data-mode') === mode;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.querySelectorAll('.dm-body').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('id') === 'dm-' + mode);
+  });
+
+  if (mode === 'assistant') {
+    // If there's no rendered agent, leave the header at its current state
+    // (or default to "Agent / Select an agent"). openAgentDrawer handles the
+    // populated case directly and skips this branch.
+    if (!opts.skipReinit) {
+      // Replay the last loaded agent if present so the body isn't blank when
+      // user toggles Live → Assistant.
+      if (_drawerCtx.lastAgent && _drawerCtx.lastAgent.type && _drawerCtx.lastAgent.acct) {
+        openAgentDrawer(_drawerCtx.lastAgent.type, _drawerCtx.lastAgent.acct);
+        return;
+      }
+      var t = document.getElementById('drawer-title');
+      var s = document.getElementById('drawer-sub');
+      if (t && !t.textContent.trim()) t.textContent = 'Agent';
+      if (s && !s.textContent.trim()) s.textContent = 'Select an agent';
+    }
+    _tlCancelSignal();
+    return;
+  }
+
+  // mode === 'live'
+  var acct = _drawerCtx.acct || window._activeAccount || 'acme';
+  if (!TL_ACCT_INFO[acct]) acct = 'acme';
+  _TL.acct = acct;
+  _drawerCtx.acct = acct;
+  var info = TL_ACCT_INFO[acct];
+  var t = document.getElementById('drawer-title');
+  var s = document.getElementById('drawer-sub');
+  if (t) t.textContent = info.name;
+  if (s) s.innerHTML = info.meeting + ' &middot; ' + info.time;
+  _TL.mode = _TL.mode || TL_DEFAULT_MODE[acct] || 'prep';
+  _tlSetMode(_TL.mode);
+  _tlScheduleSignal();
+  setTimeout(function(){
     var fld = document.getElementById('tl-input-fld');
     if (fld) fld.focus();
   }, 280);
-  // Schedule the simulated mid-call signal for this account. Replaces any
-  // pending signal from a previous session so each open gets a fresh 8s clock.
-  _tlCancelSignal();
-  var sig = TL_SIGNALS[acct];
-  if (sig) _tlSignalTimer = setTimeout(function(){ _tlAppendSignal(sig); }, 8000);
 }
 
 var _deckTimer = null;
@@ -4259,31 +4339,49 @@ if ('serviceWorker' in navigator) {
 
 <div class="dov" id="dov" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
-  <div class="tl-hd">
+
+  <!-- Mode toggle (v2.8.2) — top-most, full-width pill -->
+  <div class="dr-mode-bar" role="tablist" aria-label="Drawer mode">
+    <button class="dr-mode on" data-mode="assistant" role="tab" aria-selected="true" type="button" onclick="setDrawerMode('assistant')"><i class="ti ti-clipboard-list"></i> Assistant</button>
+    <button class="dr-mode"    data-mode="live"      role="tab" aria-selected="false" type="button" onclick="setDrawerMode('live')"><i class="ti ti-bolt"></i> Live Call</button>
+  </div>
+
+  <!-- Unified header — visible in both modes -->
+  <div class="dr-hd">
     <div style="min-width:0;flex:1">
-      <div class="tl-hd-t-row"><span class="tl-pulse"></span><i class="ti ti-bolt" style="font-size:12px"></i> TEAMOS LIVE</div>
-      <div class="tl-acct" id="tl-acct">Acme Corp &middot; QBR &middot; 9:00 AM</div>
-      <div class="tl-ctx" id="tl-ctx">Context loaded: Health 82 &middot; $48K &middot; 89 days to renewal &middot; David Kim</div>
+      <div class="dr-title" id="drawer-title">Agent</div>
+      <div class="dr-sub" id="drawer-sub">Select an agent</div>
     </div>
-    <button class="tl-close" onclick="closeDrawer()" aria-label="Close TeamOS Live" type="button">&times;</button>
+    <button class="dr-close" onclick="closeDrawer()" aria-label="Close drawer" type="button">&times;</button>
   </div>
-  <div class="tl-monitor" id="tl-monitor">
-    <span class="tl-monitor-dot"></span>
-    <span class="tl-monitor-l">Live Monitor</span>
-    <span class="tl-monitor-s">&middot; Listening via Zoom API&hellip;</span>
+
+  <!-- Assistant mode body (default visible) -->
+  <div class="dm-body dm-assistant on" id="dm-assistant">
+    <div class="dr-scroll" id="drawer-scroll"></div>
+    <div class="dr-ft" id="drawer-ft"></div>
   </div>
-  <div class="tl-modes" id="tl-modes">
-    <button class="tl-mode" data-mode="risk"      type="button" onclick="_tlSetMode('risk')">🚨 Risk</button>
-    <button class="tl-mode" data-mode="growth"    type="button" onclick="_tlSetMode('growth')">📈 Growth</button>
-    <button class="tl-mode" data-mode="exec"      type="button" onclick="_tlSetMode('exec')">👔 Executive</button>
-    <button class="tl-mode" data-mode="discovery" type="button" onclick="_tlSetMode('discovery')">🔍 Discovery</button>
-    <button class="tl-mode" data-mode="prep"      type="button" onclick="_tlSetMode('prep')">📋 Prep</button>
+
+  <!-- Live Call mode body (TeamOS Live) -->
+  <div class="dm-body dm-live" id="dm-live">
+    <div class="tl-monitor" id="tl-monitor">
+      <span class="tl-monitor-dot"></span>
+      <span class="tl-monitor-l">Live Monitor</span>
+      <span class="tl-monitor-s">&middot; Listening via Zoom API&hellip;</span>
+    </div>
+    <div class="tl-modes" id="tl-modes">
+      <button class="tl-mode" data-mode="risk"      type="button" onclick="_tlSetMode('risk')">🚨 Risk</button>
+      <button class="tl-mode" data-mode="growth"    type="button" onclick="_tlSetMode('growth')">📈 Growth</button>
+      <button class="tl-mode" data-mode="exec"      type="button" onclick="_tlSetMode('exec')">👔 Executive</button>
+      <button class="tl-mode" data-mode="discovery" type="button" onclick="_tlSetMode('discovery')">🔍 Discovery</button>
+      <button class="tl-mode" data-mode="prep"      type="button" onclick="_tlSetMode('prep')">📋 Prep</button>
+    </div>
+    <div class="tl-chat" id="tl-chat"></div>
+    <form class="tl-input" onsubmit="return _tlSendMessage(event)">
+      <input id="tl-input-fld" class="tl-input-fld" type="text" autocomplete="off" placeholder="Type anything or ask a question&hellip;" aria-label="Message TeamOS Live" />
+      <button class="tl-input-send" type="submit"><i class="ti ti-bolt"></i> Send</button>
+    </form>
   </div>
-  <div class="tl-chat" id="tl-chat"></div>
-  <form class="tl-input" onsubmit="return _tlSendMessage(event)">
-    <input id="tl-input-fld" class="tl-input-fld" type="text" autocomplete="off" placeholder="Type anything&hellip;" aria-label="Message TeamOS Live" />
-    <button class="tl-input-send" type="submit">Send <i class="ti ti-arrow-right"></i></button>
-  </form>
+
 </div>
 
 <div class="mov" id="deck-modal" onclick="if(event.target===this)closeDeckModal()">
