@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.8.0
+**Version:** 2.8.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,58 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.8.1] — 2026-05-16
+
+Three additions to the TeamOS Live drawer that were intended for v2.8.0 but arrived after the v2.8.0 commit had already shipped (per the stop-hook commit policy). Folded into a clean patch on top of v2.8.0 rather than amending the pushed history.
+
+### Added — Live Monitor status bar
+- New `.tl-monitor` strip between the dark drawer header and the mode-chip row.
+- Dark forest background (`#0F1814`), mint label text (`#86EFAC`), pulsing green dot (`#22C55E` — distinct from the brand teal so it reads as "audio listening" not "AI active").
+- Copy: `🟢 LIVE MONITOR · Listening via Zoom API…`. Always-on in Phase 1 — communicates the Phase 3 vision (real WebSpeech / WebRTC audio capture) without requiring any audio infrastructure today.
+- Pure HTML/CSS — no JS needed for the simulated state.
+
+### Added — Live Signal Cards (mid-call simulated detection)
+- New `_tlSignalTimer` setTimeout fired by `openTeamOSLive()` at the 8000ms mark. Reset on every re-open and cancelled on `closeDrawer()` so a card can't bleed across sessions.
+- Each account has one hardcoded signal in `TL_SIGNALS`:
+  - **Acme** — `"headcount consolidation" detected` → Pivot to SSO automation ROI. Suggested line: *"1Password automates the entire offboarding lifecycle — saves your IT team ~4 hours per departure."*
+  - **Brightex** — `Competitor mention detected` → Surface what they're evaluating. Suggested line: *"Can you share what you've been looking at? I want to make sure we're comparing the right things."*
+  - **NovaVault** — `Budget concern detected` → Reframe before the number lands. Suggested line: *"Before we get to numbers — what would make this renewal an easy yes for your team?"*
+- Card visual: amber-bg pill (`.tl-signal`) with uppercase `Live Signal · …` header, plain-text body, italic suggested quote in a white inner block, dark `[📋 Copy Line]` button.
+- **Copy Line** copies the suggested line to the clipboard via `navigator.clipboard.writeText` (graceful no-op when unavailable) and toasts "Line copied to clipboard ✓". The line is escaped via `&quot;` on the `data-line` attribute to defend against quote characters in future signal text.
+- This is the demo-impressive moment: the card appears without the CSM typing anything — the simulated mid-call signal lands automatically 8 seconds in.
+
+### Added — Carmen profile coaching line on Prep openings
+- New `TL_CARMEN` map keyed by account. One CSM-specific behavioral note per account, all in Carmen's actual voice:
+  - **Acme:** "Your Gong data shows you talk 68% of the time in QBRs. Today — ask the SSO question and let David Kim fill the silence."
+  - **Brightex:** "You tend to over-explain when accounts push back. Today — answer Sarah's SLA question in one sentence, then ask hers."
+  - **NovaVault:** "Your last 3 cold intros were technical pitches. With Torres — open with what his team is already getting from the platform, not what's possible."
+- Appended inside `_tlSetMode` only when `mode === 'prep'`. Renders as a separate styled card (`.tl-carmen`) directly under the bot's Prep opening — left-edge teal border, italic body, teal `💬 Carmen:` label, soft tinted background (`rgba(24,165,117,.07)`).
+- Switching to a non-Prep mode removes the Carmen card on the chat reset (the chat container is wiped before the new opening renders). Switching back to Prep re-injects it.
+
+### Verified end-to-end in a headless render
+- Live Monitor bar visible on every drawer open, dot is `rgb(34, 197, 94)` (correct green), label / sub copy match spec exactly.
+- Carmen line renders in Prep mode for all three accounts with the correct per-account copy.
+- Switching Acme to Risk removes the Carmen line; switching back to Prep restores it.
+- Brightex open → wait 8.5s → Live Signal card appears with `"Live Signal · Competitor mention detected"` header (no manual trigger).
+- Closing the drawer cancels the pending timer (`_tlSignalTimer === null` after close, no stale signal appears later).
+- `[Copy Line]` button reads its source from `data-line` and toasts "Line copied to clipboard ✓".
+
+### Phase alignment (architectural intent)
+- **Phase 1 (this commit):** simulated — hardcoded responses, fake Live Monitor bar, 8s auto-signal per account, Carmen line from a static table.
+- **Phase 2:** a Next.js `/api/chat` proxy injects a system prompt (full account context block) into an Anthropic API call so user messages get live responses; Carmen line driven by a real Gong profile feed.
+- **Phase 3:** WebRTC / WebSocket to Zoom + Gong with 15-second rolling transcript windows; `TL_SIGNALS` regex/keyword detection replaced by real-time NLP; the green "Listening via Zoom API…" state becomes truthful.
+
+### Not touched
+- Everything from v2.8.0 (drawer header, mode chips, mode openings, pattern matching, input bar, agent-output redirect, `[⚡ TeamOS Live]` Mission Briefing buttons) — all unchanged.
+- All Mission Briefing content, Ghost-Buster wizard, Agent Hub & Workspace, Task Brief, Ask Dust + Coach Me + Custom Agents, pulse strip + Tasks dropdown, notification rail, calendar, Live Signals widget, Urgent Inbox + Today's Tasks, deck modal, Service Worker + offline resilience, brief-strip layout, universal account click, scroll-into-view, Recipe for Success tab.
+
+### Engineering
+- ~50 lines of new JS (Carmen map, Signals map, `_tlAppendSignal`, `_tlCopySignal`, `_tlCancelSignal`, plus the two-line patches into `_tlSetMode`, `openTeamOSLive`, and `closeDrawer`).
+- ~20 lines of new CSS (`.tl-monitor*`, `.tl-carmen*`, `.tl-signal*`). No new color tokens — green `#22C55E` and `#86EFAC` are inlined exactly once, matching the visual brief.
+- The signal timer is module-scoped (`_tlSignalTimer`) and explicitly cleared on every re-open and on close — no leaks even if the user opens/closes rapidly.
 
 ---
 

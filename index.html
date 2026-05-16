@@ -693,6 +693,26 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .tl-input-send:hover{background:var(--tl-md)}
 .tl-input-send i{font-size:13px}
 
+/* Live Monitor status bar (v2.8.1) — between header and mode chips */
+.tl-monitor{display:flex;align-items:center;gap:7px;padding:8px 18px;background:#0F1814;color:#86EFAC;font-size:10px;letter-spacing:.04em;border-bottom:1px solid var(--bd);flex-shrink:0}
+.tl-monitor-dot{width:7px;height:7px;border-radius:50%;background:#22C55E;animation:tl-pulse 1.5s ease-in-out infinite;flex-shrink:0}
+.tl-monitor-l{font-weight:700;color:#86EFAC;text-transform:uppercase;letter-spacing:.08em}
+.tl-monitor-s{color:rgba(134,239,172,.78);font-weight:500;letter-spacing:0}
+
+/* Carmen profile coaching line (v2.8.1) — appended to Prep mode openings */
+.tl-carmen{align-self:flex-start;max-width:88%;margin-top:-3px;padding:8px 12px;background:rgba(24,165,117,.07);border-left:2px solid var(--tl);border-radius:0 8px 8px 0;font-size:11px;color:var(--tx2);line-height:1.55;font-style:italic}
+.tl-carmen-l{font-style:normal;font-weight:700;color:var(--tl-dk);margin-right:4px}
+
+/* Live Signal card (v2.8.1) — auto-appears 8s after drawer opens */
+.tl-signal{align-self:stretch;background:var(--am-bg);border:1px solid var(--am);border-radius:11px;padding:11px 13px;font-size:11px;line-height:1.55;color:var(--am-dk);display:flex;flex-direction:column;gap:7px;max-width:none}
+.tl-signal-hd{font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--am-dk);display:flex;align-items:center;gap:6px}
+.tl-signal-hd i{font-size:13px}
+.tl-signal-body{color:var(--tx)}
+.tl-signal-quote{font-style:italic;padding:7px 9px;background:rgba(255,255,255,.55);border-radius:6px;color:var(--tx);line-height:1.5}
+.tl-signal-btn{align-self:flex-start;background:var(--tx);color:#fff;border:none;border-radius:5px;padding:6px 11px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+.tl-signal-btn:hover{background:#2a2a28}
+.tl-signal-btn i{font-size:11px}
+
 /* [⚡ TeamOS Live] trigger in Mission Briefing headers */
 .mb-tl-btn{font-size:10px;font-weight:700;padding:5px 10px;border-radius:5px;background:var(--tl);color:#fff;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:background .1s;margin-left:8px;flex-shrink:0}
 .mb-tl-btn:hover{background:var(--tl-md)}
@@ -3605,6 +3625,7 @@ function openDrawer() {
 function closeDrawer() {
   document.getElementById('dov').classList.remove('on');
   document.getElementById('drawer').classList.remove('on');
+  if (typeof _tlCancelSignal === 'function') _tlCancelSignal();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -3618,6 +3639,37 @@ var TL_ACCT_INFO = {
 };
 var TL_DEFAULT_MODE = { acme:'prep', brightex:'risk', nova:'risk' };
 var TL_MODE_LABEL   = { risk:'Risk', growth:'Growth', exec:'Executive', discovery:'Discovery', prep:'Prep' };
+
+// Carmen profile coaching — appended to the Prep mode opening for each account.
+// CSM-specific behavioral notes from her Gong / call-recording profile.
+var TL_CARMEN = {
+  acme:     'Your Gong data shows you talk 68% of the time in QBRs. Today &mdash; ask the SSO question and let David Kim fill the silence.',
+  brightex: 'You tend to over-explain when accounts push back. Today &mdash; answer Sarah&rsquo;s SLA question in one sentence, then ask hers.',
+  nova:     'Your last 3 cold intros were technical pitches. With Torres &mdash; open with what his team is already getting from the platform, not what&rsquo;s possible.'
+};
+
+// Simulated mid-call signal detection — auto-appears 8 seconds after the
+// drawer opens. Phase 3 will replace this with real WebRTC/WebSocket
+// transcript parsing. Each entry: { detected, body, line (suggested quote) }.
+var TL_SIGNALS = {
+  acme: {
+    detected: '&ldquo;headcount consolidation&rdquo; detected',
+    body:     'Pivot to SSO automation ROI.',
+    line:     '1Password automates the entire offboarding lifecycle — saves your IT team ~4 hours per departure.'
+  },
+  brightex: {
+    detected: 'Competitor mention detected',
+    body:     'Surface what they&rsquo;re evaluating before you respond.',
+    line:     "Can you share what you've been looking at? I want to make sure we're comparing the right things."
+  },
+  nova: {
+    detected: 'Budget concern detected',
+    body:     'Reframe before the number lands.',
+    line:     'Before we get to numbers — what would make this renewal an easy yes for your team?'
+  }
+};
+
+var _tlSignalTimer = null;
 
 var TL_OPENINGS = {
   acme: {
@@ -3713,6 +3765,41 @@ function _tlSetMode(mode) {
   if (chat) chat.innerHTML = '';
   var opening = (TL_OPENINGS[_TL.acct] && TL_OPENINGS[_TL.acct][mode]) || '';
   if (opening) _tlAppend('bot', opening);
+  // In Prep mode, append Carmen's CSM-specific coaching line right below the opening.
+  if (mode === 'prep' && TL_CARMEN[_TL.acct] && chat) {
+    var c = document.createElement('div');
+    c.className = 'tl-carmen';
+    c.innerHTML = '<span class="tl-carmen-l">💬 Carmen:</span>' + TL_CARMEN[_TL.acct];
+    chat.appendChild(c);
+    chat.scrollTop = chat.scrollHeight;
+  }
+}
+
+function _tlAppendSignal(sig) {
+  var chat = document.getElementById('tl-chat');
+  if (!chat) return;
+  var card = document.createElement('div');
+  card.className = 'tl-msg tl-signal';
+  var safeLine = String(sig.line || '').replace(/"/g,'&quot;');
+  card.innerHTML = ''
+    + '<div class="tl-signal-hd"><i class="ti ti-bulb"></i> Live Signal &middot; ' + sig.detected + '</div>'
+    + '<div class="tl-signal-body">' + sig.body + '</div>'
+    + '<div class="tl-signal-quote">&ldquo;' + sig.line + '&rdquo;</div>'
+    + '<button class="tl-signal-btn" type="button" data-line="' + safeLine + '" onclick="_tlCopySignal(this)"><i class="ti ti-copy"></i> Copy Line</button>';
+  chat.appendChild(card);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function _tlCopySignal(btn) {
+  var line = btn.getAttribute('data-line') || '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(line).catch(function(){});
+  }
+  toast('Line copied to clipboard ✓');
+}
+
+function _tlCancelSignal() {
+  if (_tlSignalTimer) { clearTimeout(_tlSignalTimer); _tlSignalTimer = null; }
 }
 
 function _tlShortOpening(acct, mode) {
@@ -3764,6 +3851,11 @@ function openTeamOSLive(acct, mode) {
     var fld = document.getElementById('tl-input-fld');
     if (fld) fld.focus();
   }, 280);
+  // Schedule the simulated mid-call signal for this account. Replaces any
+  // pending signal from a previous session so each open gets a fresh 8s clock.
+  _tlCancelSignal();
+  var sig = TL_SIGNALS[acct];
+  if (sig) _tlSignalTimer = setTimeout(function(){ _tlAppendSignal(sig); }, 8000);
 }
 
 var _deckTimer = null;
@@ -4166,6 +4258,11 @@ if ('serviceWorker' in navigator) {
       <div class="tl-ctx" id="tl-ctx">Context loaded: Health 82 &middot; $48K &middot; 89 days to renewal &middot; David Kim</div>
     </div>
     <button class="tl-close" onclick="closeDrawer()" aria-label="Close TeamOS Live" type="button">&times;</button>
+  </div>
+  <div class="tl-monitor" id="tl-monitor">
+    <span class="tl-monitor-dot"></span>
+    <span class="tl-monitor-l">Live Monitor</span>
+    <span class="tl-monitor-s">&middot; Listening via Zoom API&hellip;</span>
   </div>
   <div class="tl-modes" id="tl-modes">
     <button class="tl-mode" data-mode="risk"      type="button" onclick="_tlSetMode('risk')">🚨 Risk</button>
