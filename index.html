@@ -386,12 +386,14 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .bf-tag.r{background:var(--rd-bg);color:var(--rd-dk)}
 .bf-tag.a{background:var(--am-bg);color:var(--am-dk)}
 .bf-tag.g{background:var(--tl-bg);color:var(--tl-dk)}
+.bf-tag.gy{background:var(--surf2);color:var(--tx2);border:1px solid var(--bd)}
 .bf-ctx{font-size:11px;color:var(--tx2);line-height:1.45}
 .bf-act{margin-top:6px;font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:opacity .1s}
 .bf-act:hover{opacity:.85}
 .bf-act.r{background:var(--rd);color:#fff}
 .bf-act.a{background:var(--am);color:#fff}
 .bf-act.g{background:var(--tl);color:#fff}
+.bf-act.gy{background:var(--tx2);color:#fff}
 
 /* Next Up panel */
 .bf-next-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
@@ -1244,25 +1246,43 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
           <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('nova',event)">NovaVault</span><span class="bf-tag r">Critical save</span></div>
           <div class="bf-ctx">17d to renewal &middot; champion lost &middot; health 23</div>
         </div>
-        <button class="bf-act r" onclick="agentBtn('save','nova',this)" type="button"><i class="ti ti-lifebuoy"></i> Save Strategy</button>
+        <button class="bf-act r" onclick="openAgentDrawer('save','nova')" type="button"><i class="ti ti-lifebuoy"></i> Save Strategy</button>
       </div>
 
       <div class="bf-it">
         <div class="bf-rank">2</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('acme',event)">Acme Corp</span><span class="bf-tag g">Expansion</span></div>
-          <div class="bf-ctx">9:00 AM QBR &middot; enterprise tier signal &middot; health 82</div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('brightex',event)">Brightex</span><span class="bf-tag a">Email pending</span></div>
+          <div class="bf-ctx">Sarah Chen SLA question &middot; unanswered 4h &middot; renews 31d</div>
         </div>
-        <button class="bf-act g" onclick="agentBtn('prep','acme',this)" type="button"><i class="ti ti-bolt"></i> Prep Me</button>
+        <button class="bf-act a" onclick="draftReply('brightex')" type="button"><i class="ti ti-mail"></i> Draft Reply</button>
       </div>
 
       <div class="bf-it">
         <div class="bf-rank">3</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('brightex',event)">Brightex Inc</span><span class="bf-tag a">Watch</span></div>
-          <div class="bf-ctx">Competitor flagged &middot; 71&rarr;48 in 30d &middot; renews 31d</div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('acme',event)">Acme Corp</span><span class="bf-tag g">Expansion</span></div>
+          <div class="bf-ctx">9:00 AM QBR &middot; SSO signal &middot; health 82</div>
         </div>
-        <button class="bf-act a" onclick="agentBtn('risk','brightex',this)" type="button"><i class="ti ti-shield-check"></i> Risk Analyst</button>
+        <button class="bf-act g" onclick="openAgentDrawer('prep','acme')" type="button"><i class="ti ti-bolt"></i> Prep Me</button>
+      </div>
+
+      <div class="bf-it">
+        <div class="bf-rank">4</div>
+        <div class="bf-mid">
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('meridian',event)">Meridian</span><span class="bf-tag gy">73 days dark</span></div>
+          <div class="bf-ctx">No contact &middot; $22K at risk &middot; inbound today</div>
+        </div>
+        <button class="bf-act gy" onclick="openGhostBusterFromPopover('meridian')" type="button"><i class="ti ti-ghost"></i> Ghost-Buster</button>
+      </div>
+
+      <div class="bf-it">
+        <div class="bf-rank">5</div>
+        <div class="bf-mid">
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('brightex',event)">Brightex</span><span class="bf-tag a">Overdue CTA</span></div>
+          <div class="bf-ctx">Renewal deck due Friday &middot; 2d overdue</div>
+        </div>
+        <button class="bf-act a" onclick="openTaskBrief('brightex-proj')" type="button"><i class="ti ti-clipboard-text"></i> Open Task</button>
       </div>
     </div>
 

@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.8.2
+**Version:** 2.9.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,46 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.9.0] — 2026-05-16
+
+Today's Priority Stack expanded from 3 rows to 5 rows. The ranking now reflects what the sub-label already claimed since v1.4.0 — `AI-RANKED BY HEALTH, RENEWAL, CTAS, GONG SILENCE` — by pulling priorities across email, dark zone, overdue CTAs, and project deadlines, not just health score.
+
+### Changed — 5-row Priority Stack
+| # | Account | Badge | Context | Button |
+|---|---------|-------|---------|--------|
+| 1 | NovaVault | **CRITICAL SAVE** (red) | 17d to renewal · champion lost · health 23 | `Save Strategy` → `openAgentDrawer('save','nova')` |
+| 2 | Brightex | **EMAIL PENDING** (amber) | Sarah Chen SLA question · unanswered 4h · renews 31d | `Draft Reply` → `draftReply('brightex')` |
+| 3 | Acme Corp | **EXPANSION** (teal) | 9:00 AM QBR · SSO signal · health 82 | `Prep Me` → `openAgentDrawer('prep','acme')` |
+| 4 | Meridian | **73 DAYS DARK** (gray) | No contact · $22K at risk · inbound today | `Ghost-Buster` → `openGhostBusterFromPopover('meridian')` |
+| 5 | Brightex | **OVERDUE CTA** (amber) | Renewal deck due Friday · 2d overdue | `Open Task` → `openTaskBrief('brightex-proj')` |
+
+### Added — two CSS variants
+- `.bf-tag.gy` — gray badge variant for neutral / dark-zone signals. Uses `var(--surf2)` bg with a thin `var(--bd)` border so it reads as a muted pill against the white card.
+- `.bf-act.gy` — dark gray action button (`var(--tx2)` bg + white text) for the Ghost-Buster CTA. Sits between the loud reds/teals and the soft outlined chips.
+- Existing variants (`.bf-tag.r/a/g`, `.bf-act.r/a/g`) re-used for the other 4 rows.
+
+### Verified end-to-end in a headless render
+All 5 buttons fire the expected target:
+- Row 1 → drawer in Assistant mode, `drawer-title="Save Strategy"` ✓
+- Row 2 → `view-draft` with title `"Brightex Inc · Reply to Sarah Chen"` ✓
+- Row 3 → drawer in Assistant mode, `drawer-title="Pre-Call Brief"` ✓
+- Row 4 → `view-meridian` (Ghost-Buster wizard) ✓
+- Row 5 → `view-taskbrief` with title `"Renewal deck due Friday"` ✓
+- Row 4 account name (`Meridian`) click → opens `view-meridian` via the v2.0.0 universal account-click handler ✓
+- Brief-strip equal-height (v2.2.0) still holds: card heights are 400 / 400 / 400 at 1440px viewport.
+
+### Not touched
+- Every other widget (Next Up, Ask Dust, brief-strip layout, pulse strip, notification rail, calendar, Live Signals, Urgent Inbox, Today's Tasks, Dark Zone, deck modal, Mission Briefing views, Ghost-Buster wizard, Agent Hub & Workspace, Task Brief panel, TeamOS Live dual-mode drawer).
+- All JS handlers — no function bodies modified, only new `onclick` wiring on the new rows.
+- The sub-label `"AI-ranked by health, renewal, CTAs, Gong silence"` — unchanged; the data now matches the claim.
+
+### Engineering
+- Pure HTML/CSS change. Two new CSS variants (~2 lines each), five new `<div class="bf-it">` blocks replace the previous three. Existing `.bf-priority .bf-it` grid layout from v1.4.0 (`auto 1fr auto`) absorbs the extra rows without any grid-template tweak.
+- Account-name clickability via `.acct-lk` (v2.0.0) preserved on every row — `Meridian`, `Brightex` (×2), `NovaVault`, `Acme Corp` all open their Mission Briefing or Ghost-Buster view when the name is clicked, independent of the action button.
+- The action buttons now call `openAgentDrawer` / `draftReply` / `openGhostBusterFromPopover` / `openTaskBrief` directly — no `agentBtn` wrapper, since the wrapper's 1.5s loading-state was tuned for the older "agent runs" framing and feels heavy when the user expects the destination to load instantly.
 
 ---
 
