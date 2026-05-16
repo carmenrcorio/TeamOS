@@ -1105,50 +1105,194 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
     </div>
 
     <div>
-      <div class="cal-hd">
-        <div class="cal-date">
-          Friday, May 15
-          <div class="tip-w" style="display:inline-flex;vertical-align:middle">
-            <i class="ti ti-info-circle tip-ic"></i>
-            <div class="tip-bx">Google Calendar API: filters for external domain attendees. Cross-references attendee email with Gainsight contacts. Call type detected from invite title: &ldquo;QBR&rdquo;, &ldquo;Risk&rdquo;, &ldquo;EBR&rdquo;, &ldquo;Expansion&rdquo; &rarr; routes to matching Dust agent template.</div>
+      <div class="rp">
+        <div class="rp-view on" id="view-default">
+          <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Next Up &middot; Auto-loaded</span></div>
+          <div class="rp-scroll">
+            <div class="mb-nm">Acme Corp</div>
+            <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>QBR &middot; 9:00 AM</span></div>
+            <div class="story">
+              <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health 82, stable. Zero open CTAs. Strong enterprise adoption across IT and Engineering. David Kim confirmed SSO interest in last call &mdash; expansion is on the table.</div></div>
+              <div class="s-item last"><div class="s-lbl">Last Gong &middot; May 10</div><div class="s-val">David Kim unprompted mentioned enterprise tier by name. Asked about SSO rollout support and advanced reporting. Sentiment: strongly positive. No competitor mention.</div></div>
+              <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Confirm value delivered in Q1, align on SSO pilot timeline, and get verbal commit on enterprise tier expansion before renewal in 89 days.</div></div>
+            </div>
+            <div class="mb-btns">
+              <button class="mb-btn" onclick="agentBtn('prep','acme',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Last 3 calls + SFDC</div></div></button>
+              <button class="mb-btn" onclick="agentBtn('risk','acme',this)"><i class="ti ti-shield-check mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Gainsight + health</div></div></button>
+              <button class="mb-btn" onclick="agentBtn('next','acme',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">3 Gainsight CTAs</div></div></button>
+              <button class="mb-btn" onclick="agentBtn('save','acme',this)"><i class="ti ti-arrow-right-circle mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Retention play</div></div></button>
+            </div>
+            <button class="mb-deck" onclick="openDeckModal('acme')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate QBR Deck</button>
+
+            <button class="ag-toggle" id="ag-toggle-btn" onclick="toggleAgents()" type="button">
+              <span><i class="ti ti-sparkles" style="color:var(--tl);font-size:12px;margin-right:5px;vertical-align:middle"></i>My Agents</span>
+              <i class="ti ti-chevron-down ag-chev"></i>
+            </button>
+            <div class="ag-body" id="ag-body">
+              <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Prep Me <span class="ag-tag">Most used</span></div><div class="ag-desc">Pre-Call Brief: account snapshot, last Gong, discovery questions, battle card, follow-up plan.</div></div>
+              <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Risk Analyst</div><div class="ag-desc">Risk Analysis: churn probability, 3 driving signals, recommended save play.</div></div>
+              <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Save Strategy</div><div class="ag-desc">Talking points, discovery, objection handlers, and extension terms for at-risk renewals.</div></div>
+              <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Next Steps</div><div class="ag-desc">3 Gainsight CTAs ready to push (owner + due date) plus the multi-day follow-up sequence.</div></div>
+              <div class="ag-sec-t">More agents <span class="ag-soon">Coming soon</span></div>
+              <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>Icebreaker</div><div class="ag-desc">Re-engagement emails for Dark Zone accounts. Currently powers Ghost-Buster panel only.</div></div>
+              <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>QBR Builder</div><div class="ag-desc">Deck-builder agent invoked by the Generate Deck button. Surfaces in its own modal flow.</div></div>
+              <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>Account Strategist</div><div class="ag-desc">Portfolio-level signal routing. Replaces manual context-gathering across Gainsight + Gong.</div></div>
+              <div style="padding:12px 0 0"><button onclick="configureAgents()" style="width:100%;font-size:11px;color:var(--tx3);background:none;border:1px dashed var(--bd2);border-radius:var(--r);padding:8px;cursor:pointer;font-family:inherit;transition:.1s" onmouseover="this.style.borderColor='var(--tl)';this.style.color='var(--tl)'" onmouseout="this.style.borderColor='var(--bd2)';this.style.color='var(--tx3)'"><i class="ti ti-settings"></i> Configure &middot; select from Dust workspace</button></div>
+            </div>
           </div>
         </div>
-        <div class="cal-hint">Click a call to open the mission briefing &rarr;</div>
-      </div>
-      <div class="cal-body">
-        <div class="ce g" id="ce-acme" onclick="openPanel('acme',this)">
-          <div class="ce-bar"></div>
-          <div class="ce-body">
-            <div class="ce-time-row"><span class="ce-time">9:00 AM</span><span class="ce-dur">60 min</span></div>
-            <div class="ce-title">Acme Corp &middot; Quarterly Business Review</div>
-            <div class="ce-meta"><span class="ce-pill g">Health 82</span><span class="ce-person">David Kim +2</span></div>
-          </div>
-          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
-        </div>
-        <div class="ce am" id="ce-brightex" onclick="openPanel('brightex',this)">
-          <div class="ce-bar"></div>
-          <div class="ce-body">
-            <div class="ce-time-row"><span class="ce-time">11:00 AM</span><span class="ce-dur">60 min</span></div>
-            <div class="ce-title">Brightex Inc &middot; Risk Review</div>
-            <div class="ce-meta"><span class="ce-pill am">Health 48 &middot; At Risk</span><span class="ce-person">Sarah Chen</span></div>
-          </div>
-          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
-        </div>
-        <div class="ce int">
-          <div class="ce-bar"></div>
-          <div class="ce-body">
-            <div class="ce-time-row"><span class="ce-time">2:00 PM</span><span class="ce-dur">30 min</span></div>
-            <div class="ce-title">CS Team Sync &middot; Internal</div>
+
+        <div class="rp-view" id="view-acme">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--tl-bg);color:var(--tl-dk);padding:2px 8px;border-radius:4px">QBR</span></div>
+          <div class="rp-scroll">
+            <div class="mb-nm">Acme Corp</div>
+            <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>9:00 AM</span></div>
+            <div class="story">
+              <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health 82, healthy trajectory. Zero open CTAs. Strong adoption across all teams. Expansion signals in last call.</div></div>
+              <div class="s-item last"><div class="s-lbl">Gong &middot; 5 days ago</div><div class="s-val">David Kim: strong interest in enterprise tier, asked about SSO and advanced reporting. Very positive sentiment.</div></div>
+              <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Confirm renewal, surface enterprise upsell. Present SSO roadmap. Get verbal commit on expansion pilot.</div></div>
+            </div>
+            <div class="mb-btns">
+              <button class="mb-btn" id="btn-acme-prep" onclick="agentBtn('prep','acme',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Last 3 calls + SFDC</div></div></button>
+              <button class="mb-btn" id="btn-acme-risk" onclick="agentBtn('risk','acme',this)"><i class="ti ti-shield-check mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Gainsight + health</div></div></button>
+              <button class="mb-btn" id="btn-acme-next" onclick="agentBtn('next','acme',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">3 Gainsight CTAs</div></div></button>
+              <button class="mb-btn" id="btn-acme-save" onclick="agentBtn('save','acme',this)"><i class="ti ti-arrow-right-circle mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Retention play</div></div></button>
+            </div>
+            <button class="mb-deck" onclick="openDeckModal('acme')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate QBR Deck</button>
+            <div class="mb-note"><i class="ti ti-info-circle"></i> &ldquo;QBR&rdquo; detected in invite &rarr; Dust routes to QBR template pre-loaded with Acme data via Gainsight + Gong API</div>
+            
           </div>
         </div>
-        <div class="ce rd" id="ce-nova" onclick="openPanel('nova',this)">
-          <div class="ce-bar"></div>
-          <div class="ce-body">
-            <div class="ce-time-row"><span class="ce-time">3:30 PM</span><span class="ce-dur">30 min</span></div>
-            <div class="ce-title">NovaVault &middot; Executive Check-in</div>
-            <div class="ce-meta"><span class="ce-pill rd">Health 23 &middot; Critical</span><span class="ce-person">Michael Torres</span></div>
+
+        <div class="rp-view" id="view-brightex">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--am-bg);color:var(--am-dk);padding:2px 8px;border-radius:4px">Risk Review</span></div>
+          <div class="rp-scroll">
+            <div class="mb-nm">Brightex Inc</div>
+            <div class="mb-meta"><span>$36K ARR</span><span>&middot;</span><span style="color:var(--am)">Jun 15 &middot; 31 days &#9888;</span><span>&middot;</span><span>11:00 AM</span></div>
+            <div class="story">
+              <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health dropped 71&rarr;48 in 30 days. Competitor flagged in last Gong. Champion change risk &mdash; Marcus Webb no longer involved.</div></div>
+              <div class="s-item last"><div class="s-lbl">Gong &middot; 12 days ago &middot; &#9888; Flag</div><div class="s-val">Sarah Chen mentioned evaluating competitor solutions. Adoption dropped since Q1. Gong AI: &ldquo;looking at alternatives.&rdquo;</div></div>
+              <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Understand competitor eval. Surface differentiated value. Request 30-day extension. Do NOT negotiate price yet.</div></div>
+            </div>
+            <div class="mb-btns">
+              <button class="mb-btn" onclick="agentBtn('prep','brightex',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Account brief + SFDC</div></div></button>
+              <button class="mb-btn" onclick="agentBtn('risk','brightex',this)"><i class="ti ti-alert-triangle mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Churn signals</div></div></button>
+              <button class="mb-btn" onclick="agentBtn('save','brightex',this)"><i class="ti ti-lifebuoy mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Counter-competitor</div></div></button>
+              <button class="mb-btn" onclick="agentBtn('next','brightex',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">3 Gainsight CTAs</div></div></button>
+            </div>
+            <button class="mb-deck" onclick="openDeckModal('brightex')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate Risk Review Deck</button>
+            <div class="mb-note"><i class="ti ti-info-circle"></i> &ldquo;Risk Review&rdquo; detected &rarr; at-risk template with competitor battle card + save play</div>
+            
           </div>
-          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
+        </div>
+
+        <div class="rp-view" id="view-nova">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--rd-bg);color:var(--rd-dk);padding:2px 8px;border-radius:4px">Critical</span></div>
+          <div class="rp-scroll">
+            <div class="mb-nm">NovaVault</div>
+            <div class="mb-meta"><span>$31K ARR</span><span>&middot;</span><span style="color:var(--rd);font-weight:700">Jun 1 &middot; 17 DAYS &#128308;</span><span>&middot;</span><span>3:30 PM</span></div>
+            <div class="story">
+              <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health in freefall: 91&rarr;67&rarr;23. No Gong calls in 45 days. Previous champion James Wu left the company. New contact: Michael Torres.</div></div>
+              <div class="s-item last"><div class="s-lbl">Gong &middot; 45 DAYS AGO &#128308;</div><div class="s-val">Last contact with James Wu who has since left. Michael Torres has had zero onboarding from us. This is a cold re-introduction.</div></div>
+              <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Introduce yourself to Torres. Understand priorities. Buy time &mdash; request 60-day extension. This is a save play, not a renewal call.</div></div>
+            </div>
+            <div class="mb-btns">
+              <button class="mb-btn" onclick="agentBtn('prep','nova',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Account + champion brief</div></div></button>
+              <button class="mb-btn" onclick="agentBtn('risk','nova',this)"><i class="ti ti-alert-triangle mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Emergency churn</div></div></button>
+              <button class="mb-btn" onclick="agentBtn('save','nova',this)"><i class="ti ti-heart-rate-monitor mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Exec retention play</div></div></button>
+              <button class="mb-btn" onclick="agentBtn('next','nova',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">Push to Gainsight</div></div></button>
+            </div>
+            <button class="mb-deck" onclick="openDeckModal('nova')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate Save Deck</button>
+            <div class="mb-note"><i class="ti ti-info-circle"></i> Critical health (23) + new champion &rarr; emergency retention deck tailored for first-touch with Michael Torres</div>
+            
+          </div>
+        </div>
+
+        <div class="rp-view" id="view-meridian">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
+          <div class="rp-scroll">
+            <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Meridian Health Systems</div>
+            <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">73 days dark &middot; $22K ARR &middot; Renews Jun 30</div>
+            <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Personalized from Gong (Mar 15): SSO rollout discussion was the last positive touchpoint. Icebreaker agent references this specifically.</div>
+            <div class="ge-subj">Subject: Checking in &mdash; picking up where we left off on SSO</div>
+            <div class="ge-body">Hi [Name],
+
+I wanted to reach out personally. The last time we connected in March, your team was in the middle of rolling out SSO and had just seen some early adoption wins.
+
+I have a couple of product updates that align directly with where you were headed. Would you have 20 minutes this week?
+
+&mdash; Carmen</div>
+            <div class="ge-btns">
+              <button class="ge-send" id="send-meridian" onclick="markSent('meridian')">Send via Gmail</button>
+              <button class="ge-edit">Edit first</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rp-view" id="view-creston">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
+          <div class="rp-scroll">
+            <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Creston Software</div>
+            <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">67 days dark &middot; $18K ARR &middot; Renews Aug 20</div>
+            <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Personalized from Gong (Feb 28): positive onboarding call was the last touchpoint before going dark. Icebreaker references that momentum.</div>
+            <div class="ge-subj">Subject: Quick check-in &mdash; how&rsquo;s the team settling in?</div>
+            <div class="ge-body">Hi [Name],
+
+It&rsquo;s been a few months since your onboarding. Your team hit the ground running in February &mdash; I&rsquo;d love to hear how things are going.
+
+I also have a few product updates that align with the goals you shared during setup. Worth a quick 20-minute call?
+
+&mdash; Carmen</div>
+            <div class="ge-btns">
+              <button class="ge-send" id="send-creston" onclick="markSent('creston')">Send via Gmail</button>
+              <button class="ge-edit">Edit first</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rp-view" id="view-dust">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t"><i class="ti ti-sparkles" style="color:var(--tl)"></i> <span id="dust-title">Ask Dust</span></div></div>
+          <div class="rp-scroll" id="dust-out"></div>
+        </div>
+
+        <div class="rp-view" id="view-draft">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t"><i class="ti ti-mail" style="color:var(--tl)"></i> <span id="draft-title">Draft Reply</span></div></div>
+          <div class="rp-scroll" id="draft-out"></div>
+        </div>
+
+        <div class="rp-view" id="view-slack-sum">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t"><i class="ti ti-sparkles" style="color:var(--tl)"></i> Slack Summary</div></div>
+          <div class="rp-scroll" id="slack-sum-out"></div>
+        </div>
+
+        <div class="rp-view" id="view-apex">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
+          <div class="rp-scroll">
+            <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Apex Dynamics</div>
+            <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">61 days dark &middot; $15K ARR &middot; Renews Jul 15</div>
+            <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Champion change detected in Salesforce: James Wu &rarr; Ryan Patel. Agent generates a warm intro email for first-touch with new decision-maker.</div>
+            <div class="ge-subj">Subject: Introducing myself &mdash; your dedicated CSM</div>
+            <div class="ge-body">Hi Ryan,
+
+I&rsquo;m Carmen, reaching out because I&rsquo;ll be your primary point of contact going forward. I&rsquo;ve been reviewing your account and would love to schedule a quick 20-minute intro to understand your current priorities.
+
+When works best this week?
+
+&mdash; Carmen</div>
+            <div class="ge-btns">
+              <button class="ge-send" id="send-apex" onclick="markSent('apex')">Send via Gmail</button>
+              <button class="ge-edit">Edit first</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1253,193 +1397,51 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
       </div>
     </div>
 
-    <div class="rp">
-      <div class="rp-view on" id="view-default">
-        <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Next Up &middot; Auto-loaded</span></div>
-        <div class="rp-scroll">
-          <div class="mb-nm">Acme Corp</div>
-          <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>QBR &middot; 9:00 AM</span></div>
-          <div class="story">
-            <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health 82, stable. Zero open CTAs. Strong enterprise adoption across IT and Engineering. David Kim confirmed SSO interest in last call &mdash; expansion is on the table.</div></div>
-            <div class="s-item last"><div class="s-lbl">Last Gong &middot; May 10</div><div class="s-val">David Kim unprompted mentioned enterprise tier by name. Asked about SSO rollout support and advanced reporting. Sentiment: strongly positive. No competitor mention.</div></div>
-            <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Confirm value delivered in Q1, align on SSO pilot timeline, and get verbal commit on enterprise tier expansion before renewal in 89 days.</div></div>
-          </div>
-          <div class="mb-btns">
-            <button class="mb-btn" onclick="agentBtn('prep','acme',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Last 3 calls + SFDC</div></div></button>
-            <button class="mb-btn" onclick="agentBtn('risk','acme',this)"><i class="ti ti-shield-check mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Gainsight + health</div></div></button>
-            <button class="mb-btn" onclick="agentBtn('next','acme',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">3 Gainsight CTAs</div></div></button>
-            <button class="mb-btn" onclick="agentBtn('save','acme',this)"><i class="ti ti-arrow-right-circle mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Retention play</div></div></button>
-          </div>
-          <button class="mb-deck" onclick="openDeckModal('acme')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate QBR Deck</button>
-
-          <button class="ag-toggle" id="ag-toggle-btn" onclick="toggleAgents()" type="button">
-            <span><i class="ti ti-sparkles" style="color:var(--tl);font-size:12px;margin-right:5px;vertical-align:middle"></i>My Agents</span>
-            <i class="ti ti-chevron-down ag-chev"></i>
-          </button>
-          <div class="ag-body" id="ag-body">
-            <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Prep Me <span class="ag-tag">Most used</span></div><div class="ag-desc">Pre-Call Brief: account snapshot, last Gong, discovery questions, battle card, follow-up plan.</div></div>
-            <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Risk Analyst</div><div class="ag-desc">Risk Analysis: churn probability, 3 driving signals, recommended save play.</div></div>
-            <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Save Strategy</div><div class="ag-desc">Talking points, discovery, objection handlers, and extension terms for at-risk renewals.</div></div>
-            <div class="ag-item"><div class="ag-nm"><div class="ag-d"></div>Next Steps</div><div class="ag-desc">3 Gainsight CTAs ready to push (owner + due date) plus the multi-day follow-up sequence.</div></div>
-            <div class="ag-sec-t">More agents <span class="ag-soon">Coming soon</span></div>
-            <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>Icebreaker</div><div class="ag-desc">Re-engagement emails for Dark Zone accounts. Currently powers Ghost-Buster panel only.</div></div>
-            <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>QBR Builder</div><div class="ag-desc">Deck-builder agent invoked by the Generate Deck button. Surfaces in its own modal flow.</div></div>
-            <div class="ag-item coming"><div class="ag-nm"><div class="ag-d"></div>Account Strategist</div><div class="ag-desc">Portfolio-level signal routing. Replaces manual context-gathering across Gainsight + Gong.</div></div>
-            <div style="padding:12px 0 0"><button onclick="configureAgents()" style="width:100%;font-size:11px;color:var(--tx3);background:none;border:1px dashed var(--bd2);border-radius:var(--r);padding:8px;cursor:pointer;font-family:inherit;transition:.1s" onmouseover="this.style.borderColor='var(--tl)';this.style.color='var(--tl)'" onmouseout="this.style.borderColor='var(--bd2)';this.style.color='var(--tx3)'"><i class="ti ti-settings"></i> Configure &middot; select from Dust workspace</button></div>
+    <div>
+      <div class="cal-hd">
+        <div class="cal-date">
+          Friday, May 15
+          <div class="tip-w" style="display:inline-flex;vertical-align:middle">
+            <i class="ti ti-info-circle tip-ic"></i>
+            <div class="tip-bx">Google Calendar API: filters for external domain attendees. Cross-references attendee email with Gainsight contacts. Call type detected from invite title: &ldquo;QBR&rdquo;, &ldquo;Risk&rdquo;, &ldquo;EBR&rdquo;, &ldquo;Expansion&rdquo; &rarr; routes to matching Dust agent template.</div>
           </div>
         </div>
+        <div class="cal-hint">Click a call to open the mission briefing &rarr;</div>
       </div>
-
-      <div class="rp-view" id="view-acme">
-        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-        <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--tl-bg);color:var(--tl-dk);padding:2px 8px;border-radius:4px">QBR</span></div>
-        <div class="rp-scroll">
-          <div class="mb-nm">Acme Corp</div>
-          <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>9:00 AM</span></div>
-          <div class="story">
-            <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health 82, healthy trajectory. Zero open CTAs. Strong adoption across all teams. Expansion signals in last call.</div></div>
-            <div class="s-item last"><div class="s-lbl">Gong &middot; 5 days ago</div><div class="s-val">David Kim: strong interest in enterprise tier, asked about SSO and advanced reporting. Very positive sentiment.</div></div>
-            <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Confirm renewal, surface enterprise upsell. Present SSO roadmap. Get verbal commit on expansion pilot.</div></div>
+      <div class="cal-body">
+        <div class="ce g" id="ce-acme" onclick="openPanel('acme',this)">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">9:00 AM</span><span class="ce-dur">60 min</span></div>
+            <div class="ce-title">Acme Corp &middot; Quarterly Business Review</div>
+            <div class="ce-meta"><span class="ce-pill g">Health 82</span><span class="ce-person">David Kim +2</span></div>
           </div>
-          <div class="mb-btns">
-            <button class="mb-btn" id="btn-acme-prep" onclick="agentBtn('prep','acme',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Last 3 calls + SFDC</div></div></button>
-            <button class="mb-btn" id="btn-acme-risk" onclick="agentBtn('risk','acme',this)"><i class="ti ti-shield-check mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Gainsight + health</div></div></button>
-            <button class="mb-btn" id="btn-acme-next" onclick="agentBtn('next','acme',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">3 Gainsight CTAs</div></div></button>
-            <button class="mb-btn" id="btn-acme-save" onclick="agentBtn('save','acme',this)"><i class="ti ti-arrow-right-circle mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Retention play</div></div></button>
-          </div>
-          <button class="mb-deck" onclick="openDeckModal('acme')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate QBR Deck</button>
-          <div class="mb-note"><i class="ti ti-info-circle"></i> &ldquo;QBR&rdquo; detected in invite &rarr; Dust routes to QBR template pre-loaded with Acme data via Gainsight + Gong API</div>
-          
+          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
         </div>
-      </div>
-
-      <div class="rp-view" id="view-brightex">
-        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-        <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--am-bg);color:var(--am-dk);padding:2px 8px;border-radius:4px">Risk Review</span></div>
-        <div class="rp-scroll">
-          <div class="mb-nm">Brightex Inc</div>
-          <div class="mb-meta"><span>$36K ARR</span><span>&middot;</span><span style="color:var(--am)">Jun 15 &middot; 31 days &#9888;</span><span>&middot;</span><span>11:00 AM</span></div>
-          <div class="story">
-            <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health dropped 71&rarr;48 in 30 days. Competitor flagged in last Gong. Champion change risk &mdash; Marcus Webb no longer involved.</div></div>
-            <div class="s-item last"><div class="s-lbl">Gong &middot; 12 days ago &middot; &#9888; Flag</div><div class="s-val">Sarah Chen mentioned evaluating competitor solutions. Adoption dropped since Q1. Gong AI: &ldquo;looking at alternatives.&rdquo;</div></div>
-            <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Understand competitor eval. Surface differentiated value. Request 30-day extension. Do NOT negotiate price yet.</div></div>
+        <div class="ce am" id="ce-brightex" onclick="openPanel('brightex',this)">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">11:00 AM</span><span class="ce-dur">60 min</span></div>
+            <div class="ce-title">Brightex Inc &middot; Risk Review</div>
+            <div class="ce-meta"><span class="ce-pill am">Health 48 &middot; At Risk</span><span class="ce-person">Sarah Chen</span></div>
           </div>
-          <div class="mb-btns">
-            <button class="mb-btn" onclick="agentBtn('prep','brightex',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Account brief + SFDC</div></div></button>
-            <button class="mb-btn" onclick="agentBtn('risk','brightex',this)"><i class="ti ti-alert-triangle mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Churn signals</div></div></button>
-            <button class="mb-btn" onclick="agentBtn('save','brightex',this)"><i class="ti ti-lifebuoy mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Counter-competitor</div></div></button>
-            <button class="mb-btn" onclick="agentBtn('next','brightex',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">3 Gainsight CTAs</div></div></button>
-          </div>
-          <button class="mb-deck" onclick="openDeckModal('brightex')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate Risk Review Deck</button>
-          <div class="mb-note"><i class="ti ti-info-circle"></i> &ldquo;Risk Review&rdquo; detected &rarr; at-risk template with competitor battle card + save play</div>
-          
+          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
         </div>
-      </div>
-
-      <div class="rp-view" id="view-nova">
-        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-        <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--rd-bg);color:var(--rd-dk);padding:2px 8px;border-radius:4px">Critical</span></div>
-        <div class="rp-scroll">
-          <div class="mb-nm">NovaVault</div>
-          <div class="mb-meta"><span>$31K ARR</span><span>&middot;</span><span style="color:var(--rd);font-weight:700">Jun 1 &middot; 17 DAYS &#128308;</span><span>&middot;</span><span>3:30 PM</span></div>
-          <div class="story">
-            <div class="s-item where"><div class="s-lbl">Where we are</div><div class="s-val">Health in freefall: 91&rarr;67&rarr;23. No Gong calls in 45 days. Previous champion James Wu left the company. New contact: Michael Torres.</div></div>
-            <div class="s-item last"><div class="s-lbl">Gong &middot; 45 DAYS AGO &#128308;</div><div class="s-val">Last contact with James Wu who has since left. Michael Torres has had zero onboarding from us. This is a cold re-introduction.</div></div>
-            <div class="s-item obj"><div class="s-lbl">The objective</div><div class="s-val">Introduce yourself to Torres. Understand priorities. Buy time &mdash; request 60-day extension. This is a save play, not a renewal call.</div></div>
-          </div>
-          <div class="mb-btns">
-            <button class="mb-btn" onclick="agentBtn('prep','nova',this)"><i class="ti ti-bolt mb-ic"></i><div><div class="mb-bl">Prep Me</div><div class="mb-bs">Account + champion brief</div></div></button>
-            <button class="mb-btn" onclick="agentBtn('risk','nova',this)"><i class="ti ti-alert-triangle mb-ic"></i><div><div class="mb-bl">Risk Analyst</div><div class="mb-bs">Emergency churn</div></div></button>
-            <button class="mb-btn" onclick="agentBtn('save','nova',this)"><i class="ti ti-heart-rate-monitor mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Exec retention play</div></div></button>
-            <button class="mb-btn" onclick="agentBtn('next','nova',this)"><i class="ti ti-list-check mb-ic"></i><div><div class="mb-bl">Next Steps</div><div class="mb-bs">Push to Gainsight</div></div></button>
-          </div>
-          <button class="mb-deck" onclick="openDeckModal('nova')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate Save Deck</button>
-          <div class="mb-note"><i class="ti ti-info-circle"></i> Critical health (23) + new champion &rarr; emergency retention deck tailored for first-touch with Michael Torres</div>
-          
-        </div>
-      </div>
-
-      <div class="rp-view" id="view-meridian">
-        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-        <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
-        <div class="rp-scroll">
-          <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Meridian Health Systems</div>
-          <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">73 days dark &middot; $22K ARR &middot; Renews Jun 30</div>
-          <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Personalized from Gong (Mar 15): SSO rollout discussion was the last positive touchpoint. Icebreaker agent references this specifically.</div>
-          <div class="ge-subj">Subject: Checking in &mdash; picking up where we left off on SSO</div>
-          <div class="ge-body">Hi [Name],
-
-I wanted to reach out personally. The last time we connected in March, your team was in the middle of rolling out SSO and had just seen some early adoption wins.
-
-I have a couple of product updates that align directly with where you were headed. Would you have 20 minutes this week?
-
-&mdash; Carmen</div>
-          <div class="ge-btns">
-            <button class="ge-send" id="send-meridian" onclick="markSent('meridian')">Send via Gmail</button>
-            <button class="ge-edit">Edit first</button>
+        <div class="ce int">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">2:00 PM</span><span class="ce-dur">30 min</span></div>
+            <div class="ce-title">CS Team Sync &middot; Internal</div>
           </div>
         </div>
-      </div>
-
-      <div class="rp-view" id="view-creston">
-        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-        <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
-        <div class="rp-scroll">
-          <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Creston Software</div>
-          <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">67 days dark &middot; $18K ARR &middot; Renews Aug 20</div>
-          <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Personalized from Gong (Feb 28): positive onboarding call was the last touchpoint before going dark. Icebreaker references that momentum.</div>
-          <div class="ge-subj">Subject: Quick check-in &mdash; how&rsquo;s the team settling in?</div>
-          <div class="ge-body">Hi [Name],
-
-It&rsquo;s been a few months since your onboarding. Your team hit the ground running in February &mdash; I&rsquo;d love to hear how things are going.
-
-I also have a few product updates that align with the goals you shared during setup. Worth a quick 20-minute call?
-
-&mdash; Carmen</div>
-          <div class="ge-btns">
-            <button class="ge-send" id="send-creston" onclick="markSent('creston')">Send via Gmail</button>
-            <button class="ge-edit">Edit first</button>
+        <div class="ce rd" id="ce-nova" onclick="openPanel('nova',this)">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">3:30 PM</span><span class="ce-dur">30 min</span></div>
+            <div class="ce-title">NovaVault &middot; Executive Check-in</div>
+            <div class="ce-meta"><span class="ce-pill rd">Health 23 &middot; Critical</span><span class="ce-person">Michael Torres</span></div>
           </div>
-        </div>
-      </div>
-
-      <div class="rp-view" id="view-dust">
-        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-        <div class="rp-hd"><div class="rp-t"><i class="ti ti-sparkles" style="color:var(--tl)"></i> <span id="dust-title">Ask Dust</span></div></div>
-        <div class="rp-scroll" id="dust-out"></div>
-      </div>
-
-      <div class="rp-view" id="view-draft">
-        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-        <div class="rp-hd"><div class="rp-t"><i class="ti ti-mail" style="color:var(--tl)"></i> <span id="draft-title">Draft Reply</span></div></div>
-        <div class="rp-scroll" id="draft-out"></div>
-      </div>
-
-      <div class="rp-view" id="view-slack-sum">
-        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-        <div class="rp-hd"><div class="rp-t"><i class="ti ti-sparkles" style="color:var(--tl)"></i> Slack Summary</div></div>
-        <div class="rp-scroll" id="slack-sum-out"></div>
-      </div>
-
-      <div class="rp-view" id="view-apex">
-        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-        <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
-        <div class="rp-scroll">
-          <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Apex Dynamics</div>
-          <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">61 days dark &middot; $15K ARR &middot; Renews Jul 15</div>
-          <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Champion change detected in Salesforce: James Wu &rarr; Ryan Patel. Agent generates a warm intro email for first-touch with new decision-maker.</div>
-          <div class="ge-subj">Subject: Introducing myself &mdash; your dedicated CSM</div>
-          <div class="ge-body">Hi Ryan,
-
-I&rsquo;m Carmen, reaching out because I&rsquo;ll be your primary point of contact going forward. I&rsquo;ve been reviewing your account and would love to schedule a quick 20-minute intro to understand your current priorities.
-
-When works best this week?
-
-&mdash; Carmen</div>
-          <div class="ge-btns">
-            <button class="ge-send" id="send-apex" onclick="markSent('apex')">Send via Gmail</button>
-            <button class="ge-edit">Edit first</button>
-          </div>
+          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
         </div>
       </div>
     </div>

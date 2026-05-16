@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 1.5.0
+**Version:** 1.6.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,27 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [1.6.0] — 2026-05-16
+
+Layout-only swap: Mission Briefing and Calendar trade columns.
+
+### Changed
+- **Mission Briefing → center column.** The full `.rp` right-panel container (every `.rp-view` — default Acme briefing, view-acme/brightex/nova, view-meridian/creston/apex, view-dust, view-draft, view-slack-sum) was lifted out of column 3 and inserted as the first child of column 2's wrapper. It now sits above the Dark Zone + Live Signals at full center-column width (1fr in the `275px 1fr 270px` grid), making it the most prominent widget on the board. All internal classes, ids, content, and view-switching logic are unchanged.
+- **Calendar → right column.** The calendar's `cal-hd` + `cal-body` block was wrapped in a new column 3 `<div>` and inserted where `.rp` used to live. The narrower 270px column hosts the date header, all four colored event blocks, the internal-meeting non-clickable, and the "Click a call to open the mission briefing →" hint.
+
+### Did not change
+- Calendar event onclick handlers (`openPanel('acme'|'brightex'|'nova', this)`) still target the same `.rp-view` ids — those views just live in column 2 now.
+- `.rp` height/scroll behavior (`height:100%; min-height:520px`).
+- Calendar's `cal-hd` / `cal-body` styling, event tiles, chevron affordance, internal-meeting opacity rule.
+- Nav, pulse strip, brief-strip, Priority Stack, Next Up, Ask Dust, Urgent Inbox, Today's Tasks, Dark Zone, Live Signals, all agent drawers, deck modal, notification rail, Recipe for Success tab.
+
+### Engineering
+- Zero CSS changes. The swap is purely a DOM reorder.
+- Zero JS changes. `openPanel`, `resetPanel`, `agentBtn`, `openAgentDrawer`, `draftReply`, `summarizeSlack` all continue to target `#view-*` ids which now live in column 2.
+- Implemented via a single Python pass that physically moved the 190-line `.rp` block and the 46-line calendar block, then verified `.main` still has exactly three top-level grid children.
 
 ---
 
