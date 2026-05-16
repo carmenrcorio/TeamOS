@@ -737,6 +737,37 @@ Small teal button (`.mb-tl-btn`) added to the right of all four Mission Briefing
 
 ---
 
+## [2.7.0] — 2026-05-16
+
+Two contained changes. Shipped after 2.8.0 / 2.8.1 due to commit ordering — placed here chronologically in the changelog so the version gap reads cleanly.
+
+### Added — Next Up card: full account intelligence
+- Four new key/value rows in the Next Up data grid for the currently-up account (Acme Corp):
+  - **ARR** — $48K
+  - **Licenses** — `142 seats · +12 / -3 this month` with the `+N` movement in teal (`.seat-up`) and `-N` movement in red (`.seat-dn`) so seat losses pop visually.
+  - **Industry** — SaaS / IT Security
+  - **Since** — Jan 2022
+- New full-width account summary block (`.bf-next-sum`) below the data grid with a thin top divider, smaller font, muted color: *"IT security team scaling across distributed engineering org. Primary use case: privileged access management + SSO rollout in progress. Expansion signal active — enterprise tier interest confirmed."*
+- The four existing fields (Health / Renewal / Open CTAs / Last Gong) and the In-38-min countdown are untouched.
+- The card kept its v2.2.0 stretch behavior in the brief-strip — all three top cards still render at equal height; the Next Up content just fills more of its allotted height now.
+- Reference data for the other two accounts (Brightex 87 seats -5/+0 / Operations / Mar 2023; NovaVault 64 seats -8/+1 / Fintech / Aug 2023) supplied in the spec for future rotation. Not displayed in this build — Next Up is hardcoded to Acme as the immediately-next meeting.
+
+### Fixed — Agents chip dimensions
+- Root cause: the ⚙ Agents chip lives inside a `.bf-qa-wrap` div (positioning anchor for the dropdown that pops upward), not directly inside the `.bf-qa` grid like the other five chips. The v2.2.0 `flex:1; align-content:stretch` on `.bf-qa` stretched the other chips to fill their grid rows, but the Agents chip stayed at its base `min-height: 34px` while its wrapper cell stretched empty around it.
+- Fix: `.bf-qa-wrap { display: flex; flex-direction: column }` plus `.bf-qa-wrap > .bf-qa-btn { flex: 1; width: 100% }`. Wrapper now passes the stretched grid-cell height down to the button.
+- Also dropped the cosmetic `opacity: .8` from `.bf-qa-btn.muted` since it made the Agents chip read as visually shorter / lighter than its peers. Replaced with `color: var(--tx3)` on the chevron only — keeps the "configuration control" feel without dimming the whole chip.
+- Verified in a headless render: all 6 chips now render at identical 126×140 (was Agents 69×34 vs others 126×140). Agents dropdown still opens correctly via `toggleAgentsDropdown`.
+
+### Engineering
+- Pure HTML/CSS change. No JS touched.
+- Four new `<div class="bf-kv-r">` rows inside the existing `.bf-kv` grid + one new `<div class="bf-next-sum">` after the grid. The existing 2-col grid layout absorbs the new rows without any grid-template change.
+- CSS additions: `.seat-up`, `.seat-dn`, `.bf-next-sum`, plus the two-line patch to `.bf-qa-wrap` and the one-line drop of `opacity:.8` from `.bf-qa-btn.muted`.
+
+### Not touched
+- Every JS function, every panel, every agent drawer, the Mission Briefing center, pulse strip, notification rail, calendar, brief-strip card width allocations, equal-height stretch behavior, Tasks dropdown, Task Brief panel, Ghost-Buster wizard, Agent Hub & Workspace, Ask Dust output templates (Coach Me / Prepare My Day / etc), TeamOS Live drawer (v2.8.0–2.8.1), Service Worker, offline resilience, universal account click, scroll-into-view, Recipe for Success tab.
+
+---
+
 ## [2.6.0] — 2026-05-16
 
 Ghost-Buster expanded from a single pre-drafted email into a full re-engagement strategy wizard. The three existing views (`view-meridian`, `view-creston`, `view-apex`) keep their ids and routing — only the content inside each `.rp-scroll` is replaced.

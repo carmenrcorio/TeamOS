@@ -394,6 +394,9 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .bf-kv-l{flex-shrink:0;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
 .bf-kv-v{color:var(--tx);font-weight:600;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bf-kv-v.g{color:var(--tl)}.bf-kv-v.a{color:var(--am)}.bf-kv-v.r{color:var(--rd)}
+.bf-kv-v .seat-up{color:var(--tl);font-weight:700}
+.bf-kv-v .seat-dn{color:var(--rd);font-weight:700}
+.bf-next-sum{font-size:10px;color:var(--tx3);line-height:1.55;padding-top:9px;border-top:1px solid var(--bd);margin-top:2px;margin-bottom:10px}
 .bf-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:auto}
 .bf-btn{font-size:10px;font-weight:700;padding:8px 6px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .1s;line-height:1.2;text-align:center}
 .bf-btn:hover{background:var(--surf2);border-color:var(--tx2)}
@@ -412,10 +415,10 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .bf-qa{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex:1;align-content:stretch}
 .bf-qa-btn{font-size:11px;font-weight:600;padding:9px 9px;border-radius:6px;border:1px solid var(--bd);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all .1s;text-align:left;line-height:1.2;min-height:34px}
 .bf-qa-btn:hover{background:var(--surf2);border-color:var(--bd2);color:var(--tx)}
-.bf-qa-btn.muted{opacity:.8;justify-content:space-between}
-.bf-qa-btn.muted:hover{opacity:1}
-.bf-qa-btn.muted i.chev{font-size:13px;margin-left:2px}
-.bf-qa-wrap{position:relative}
+.bf-qa-btn.muted{justify-content:space-between}
+.bf-qa-btn.muted i.chev{font-size:13px;margin-left:2px;color:var(--tx3)}
+.bf-qa-wrap{position:relative;display:flex;flex-direction:column}
+.bf-qa-wrap > .bf-qa-btn{flex:1;width:100%}
 .dust-agents-pop{position:absolute;bottom:calc(100% + 6px);right:0;width:280px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);box-shadow:0 12px 40px rgba(0,0,0,.18);z-index:200;display:none;overflow:hidden}
 .dust-agents-pop.on{display:block}
 .dap-hd{padding:10px 14px;font-size:10px;font-weight:700;color:var(--tx);letter-spacing:.04em;background:var(--surf2);border-bottom:1px solid var(--bd);text-transform:uppercase;display:flex;align-items:center;gap:6px}
@@ -1274,7 +1277,12 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
         <div class="bf-kv-r"><span class="bf-kv-l">Renewal</span><span class="bf-kv-v">Aug 12 &middot; 89d</span></div>
         <div class="bf-kv-r"><span class="bf-kv-l">Open CTAs</span><span class="bf-kv-v g">0</span></div>
         <div class="bf-kv-r"><span class="bf-kv-l">Last Gong</span><span class="bf-kv-v">May 10 &middot; David Kim flagged enterprise tier &amp; SSO support</span></div>
+        <div class="bf-kv-r"><span class="bf-kv-l">ARR</span><span class="bf-kv-v">$48K</span></div>
+        <div class="bf-kv-r"><span class="bf-kv-l">Licenses</span><span class="bf-kv-v">142 seats &middot; <span class="seat-up">+12</span>&thinsp;/&thinsp;<span class="seat-dn">-3</span> this month</span></div>
+        <div class="bf-kv-r"><span class="bf-kv-l">Industry</span><span class="bf-kv-v">SaaS / IT Security</span></div>
+        <div class="bf-kv-r"><span class="bf-kv-l">Since</span><span class="bf-kv-v">Jan 2022</span></div>
       </div>
+      <div class="bf-next-sum">IT security team scaling across distributed engineering org. Primary use case: privileged access management + SSO rollout in progress. Expansion signal active &mdash; enterprise tier interest confirmed.</div>
 
       <div class="bf-btns">
         <button class="bf-btn" onclick="agentBtn('prep','acme',this)" type="button"><i class="ti ti-bolt"></i>Prep Me</button>
