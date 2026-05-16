@@ -418,6 +418,69 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
   .brief-strip{grid-template-columns:1fr;gap:12px}
   .bf{min-height:0}
 }
+
+/* Live Signals widget — SPEC §5.7 */
+.ls{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);margin-top:18px;overflow:hidden}
+.ls-hd{padding:12px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--surf2)}
+.ls-title{font-size:11px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:7px;letter-spacing:.04em;text-transform:uppercase}
+.ls-live{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:var(--rd);text-transform:uppercase;letter-spacing:.05em}
+.ls-live .ls-dot{width:6px;height:6px;background:var(--rd);border-radius:50%;animation:ls-pulse 1.6s infinite}
+@keyframes ls-pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.ls-row{padding:12px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:12px}
+.ls-row:last-child{border-bottom:none}
+.ls-ic{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ls-ic.r{background:var(--rd-bg);color:var(--rd-dk)}
+.ls-ic.a{background:var(--am-bg);color:var(--am-dk)}
+.ls-ic.g{background:var(--tl-bg);color:var(--tl-dk)}
+.ls-mid{flex:1;min-width:0}
+.ls-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:2px}
+.ls-type{font-size:12px;font-weight:700;color:var(--tx);letter-spacing:-.01em}
+.ls-time{font-size:10px;color:var(--tx3);flex-shrink:0;font-weight:500}
+.ls-acct{font-size:9px;color:var(--tx3);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.ls-ctx{font-size:11px;color:var(--tx2);line-height:1.45;margin-bottom:7px}
+.ls-sev{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;display:inline-block}
+.ls-sev.crit{background:var(--rd);color:#fff}
+.ls-sev.hi{background:var(--rd-bg);color:var(--rd-dk)}
+.ls-sev.watch{background:var(--am-bg);color:var(--am-dk)}
+.ls-sev.opp{background:var(--tl-bg);color:var(--tl-dk)}
+
+/* Ask Dust output (right panel) */
+.du-load{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--tx2);padding:14px 0}
+.du-load i{animation:spin 1s linear infinite;color:var(--tl);font-size:14px}
+.du-q{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--tx);font-style:italic;padding:10px 12px;background:var(--surf2);border-radius:var(--r);border-left:3px solid var(--tl);margin-bottom:14px;line-height:1.45}
+.du-q i{color:var(--tl);font-size:13px;flex-shrink:0;margin-top:1px;font-style:normal}
+.du-sec{margin-bottom:18px}
+.du-sec:last-child{margin-bottom:0}
+.du-sec-t{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.du-sec-t i{color:var(--tl);font-size:12px}
+.du-card{padding:10px 12px;background:var(--surf2);border-radius:var(--r);border-left:3px solid var(--tl);margin-bottom:8px;line-height:1.5}
+.du-card.r{border-left-color:var(--rd)}
+.du-card.a{border-left-color:var(--am)}
+.du-card.g{border-left-color:var(--tl)}
+.du-card.b{border-left-color:var(--bl)}
+.du-card-t{font-weight:700;margin-bottom:3px;color:var(--tx);font-size:12px;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.du-card-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:.04em;text-transform:uppercase;flex-shrink:0}
+.du-card-tag.r{background:var(--rd-bg);color:var(--rd-dk)}
+.du-card-tag.a{background:var(--am-bg);color:var(--am-dk)}
+.du-card-tag.g{background:var(--tl-bg);color:var(--tl-dk)}
+.du-card-s{color:var(--tx2);font-size:11px;line-height:1.5}
+.du-tbl{width:100%;font-size:11px;border-collapse:collapse;margin-top:4px;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.du-tbl th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;background:var(--surf2);border-bottom:1px solid var(--bd)}
+.du-tbl td{padding:8px 10px;border-bottom:1px solid var(--bd);color:var(--tx2);vertical-align:top}
+.du-tbl tr:last-child td{border-bottom:none}
+.du-tbl td.r{color:var(--rd);font-weight:600}
+.du-tbl td.a{color:var(--am);font-weight:600}
+.du-mail{padding:12px 14px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--bd);margin-bottom:10px}
+.du-mail-to{font-size:10px;color:var(--tx3);margin-bottom:6px;font-weight:600}
+.du-mail-sub{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.du-mail-body{font-size:11px;color:var(--tx2);line-height:1.6;white-space:pre-line}
+.du-foot{font-size:10px;color:var(--tx3);padding:12px 0 4px;text-align:center;font-style:italic;border-top:1px dashed var(--bd);margin-top:12px}
+.du-loop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:11px}
+.du-loop:last-child{border-bottom:none}
+.du-loop-l{flex:1;min-width:0}
+.du-loop-t{color:var(--tx);font-weight:600;margin-bottom:2px}
+.du-loop-s{color:var(--tx3);font-size:10px}
+.du-loop-age{font-size:9px;font-weight:700;color:var(--rd);padding:2px 6px;border-radius:3px;background:var(--rd-bg);flex-shrink:0;text-transform:uppercase;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -564,36 +627,29 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
     </div>
 
     <div class="ps-wrap">
-      <button class="ps-btn" id="pb-dark" onclick="togglePop('dark',event)" type="button"><i class="ti ti-ghost" style="color:var(--tx3)"></i><span class="ps-n">4</span>&nbsp;dark accounts</button>
+      <button class="ps-btn" id="pb-dark" onclick="togglePop('dark',event)" type="button"><i class="ti ti-ghost" style="color:var(--tx3)"></i><span class="ps-n">3</span>&nbsp;dark accounts</button>
       <div class="pop pop-right" id="pop-dark">
-        <div class="pop-hd"><i class="ti ti-ghost" style="color:var(--tx3)"></i> Accounts gone dark</div>
+        <div class="pop-hd"><i class="ti ti-ghost" style="color:var(--tx3)"></i> 60-day Dark Zone</div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">NovaVault</div>
-            <div class="pop-sub">45 days silent &middot; new champion</div>
+            <div class="pop-main">Meridian Health Systems</div>
+            <div class="pop-sub">73 days silent &middot; $22K &middot; Renews Jun 30</div>
           </div>
-          <div class="pop-btns"><button class="gb-btn" onclick="toast('Ghost-Buster draft opened for NovaVault')" type="button">Ghost-Buster</button></div>
+          <div class="pop-btns"><button class="gb-btn" onclick="closePops();openPanel('meridian',null)" type="button">Ghost-Buster</button></div>
         </div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">Apex Studios</div>
-            <div class="pop-sub">38 days silent &middot; renews in 64d</div>
+            <div class="pop-main">Creston Software</div>
+            <div class="pop-sub">67 days silent &middot; $18K &middot; Renews Aug 20</div>
           </div>
-          <div class="pop-btns"><button class="gb-btn" onclick="toast('Ghost-Buster draft opened for Apex Studios')" type="button">Ghost-Buster</button></div>
+          <div class="pop-btns"><button class="gb-btn" onclick="closePops();openPanel('creston',null)" type="button">Ghost-Buster</button></div>
         </div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">Riverbank Tech</div>
-            <div class="pop-sub">31 days silent &middot; renews in 92d</div>
+            <div class="pop-main">Apex Dynamics</div>
+            <div class="pop-sub">61 days silent &middot; $15K &middot; Renews Jul 15</div>
           </div>
-          <div class="pop-btns"><button class="gb-btn" onclick="toast('Ghost-Buster draft opened for Riverbank Tech')" type="button">Ghost-Buster</button></div>
-        </div>
-        <div class="pop-row">
-          <div class="pop-left">
-            <div class="pop-main">Synth Labs</div>
-            <div class="pop-sub">27 days silent &middot; renews in 118d</div>
-          </div>
-          <div class="pop-btns"><button class="gb-btn" onclick="toast('Ghost-Buster draft opened for Synth Labs')" type="button">Ghost-Buster</button></div>
+          <div class="pop-btns"><button class="gb-btn" onclick="closePops();openPanel('apex',null)" type="button">Ghost-Buster</button></div>
         </div>
         <div class="pop-foot"><a class="pop-foot-a" href="#" onclick="toastLink(event,'Dark zone')">Open dark zone <i class="ti ti-arrow-right"></i></a></div>
       </div>
@@ -738,7 +794,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
           <div class="ac-title">Update NovaVault renewal forecast status</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:10px;color:var(--tx3)">Health 23 &middot; Renewal Jun 1 &middot; Critical</span>
-            <button class="ac-btn" data-label="Update forecast" onclick="doneTask(this,'ac1')">Update forecast</button>
+            <button class="ac-btn" data-label="Update forecast" onclick="openAgentDrawer('risk','nova');doneTask(this,'ac1')">Update forecast</button>
           </div>
         </div>
         <div class="ac" id="ac2">
@@ -746,7 +802,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
           <div class="ac-title">Finalize Acme Corp QBR slides &middot; send to David Kim</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:10px;color:var(--tx3)">QBR at 9:00 AM &middot; Health 82 &middot; No CTAs</span>
-            <button class="ac-btn" data-label="Generate prep" onclick="doneTask(this,'ac2')">Generate prep</button>
+            <button class="ac-btn" data-label="Generate prep" onclick="openAgentDrawer('prep','acme');doneTask(this,'ac2')">Generate prep</button>
           </div>
         </div>
         <div class="ac" id="ac3">
@@ -754,7 +810,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
           <div class="ac-title">Schedule exec sponsor save call for NovaVault</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:10px;color:var(--tx3)">Emergency retention &middot; 17d to renewal</span>
-            <button class="ac-btn" data-label="Draft outreach" onclick="doneTask(this,'ac3')">Draft outreach</button>
+            <button class="ac-btn" data-label="Draft outreach" onclick="openAgentDrawer('save','nova');doneTask(this,'ac3')">Draft outreach</button>
           </div>
         </div>
         <div class="ac" id="ac4">
@@ -762,7 +818,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
           <div class="ac-title">Reply to Sarah Chen re: Brightex renewal options</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:10px;color:var(--tx3)">At risk &middot; Competitor flagged &middot; Renewal 31d</span>
-            <button class="ac-btn" data-label="Draft reply" onclick="doneTask(this,'ac4')">Draft reply</button>
+            <button class="ac-btn" data-label="Draft reply" onclick="openAgentDrawer('risk','brightex');doneTask(this,'ac4')">Draft reply</button>
           </div>
         </div>
         <div class="ac" id="ac5">
@@ -858,6 +914,50 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
             <div class="dz-last">&ldquo;Champion changed &mdash; Ryan Patel not yet reached (Salesforce)&rdquo;</div>
           </div>
           <button class="dz-btn" onclick="openPanel('apex',null)">Ghost-Buster</button>
+        </div>
+      </div>
+
+      <!-- Live Signals widget — SPEC §5.7 -->
+      <div class="ls">
+        <div class="ls-hd">
+          <div class="ls-title"><i class="ti ti-broadcast" style="color:var(--rd)"></i> Live Signals</div>
+          <div class="ls-live"><span class="ls-dot"></span> Live &middot; Gainsight + Gong</div>
+        </div>
+        <div class="ls-row">
+          <div class="ls-ic r"><i class="ti ti-microphone-off"></i></div>
+          <div class="ls-mid">
+            <div class="ls-top"><div class="ls-type">Gong silence threshold crossed</div><div class="ls-time">3 min ago</div></div>
+            <div class="ls-acct">Meridian Health Systems</div>
+            <div class="ls-ctx">No customer-facing call in 73 days. Last positive moment: SSO rollout discussion, Mar 15.</div>
+            <span class="ls-sev crit">Critical</span>
+          </div>
+        </div>
+        <div class="ls-row">
+          <div class="ls-ic r"><i class="ti ti-user-off"></i></div>
+          <div class="ls-mid">
+            <div class="ls-top"><div class="ls-type">Champion change detected</div><div class="ls-time">22 min ago</div></div>
+            <div class="ls-acct">NovaVault</div>
+            <div class="ls-ctx">James Wu marked inactive in Salesforce &middot; Michael Torres added as new primary contact.</div>
+            <span class="ls-sev hi">High Risk</span>
+          </div>
+        </div>
+        <div class="ls-row">
+          <div class="ls-ic a"><i class="ti ti-trending-down"></i></div>
+          <div class="ls-mid">
+            <div class="ls-top"><div class="ls-type">Health score drop</div><div class="ls-time">1h ago</div></div>
+            <div class="ls-acct">Brightex Inc</div>
+            <div class="ls-ctx">Health 71 &rarr; 48 over 30 days. Gainsight flagged sustained downward trend.</div>
+            <span class="ls-sev watch">Watch</span>
+          </div>
+        </div>
+        <div class="ls-row">
+          <div class="ls-ic g"><i class="ti ti-trending-up"></i></div>
+          <div class="ls-mid">
+            <div class="ls-top"><div class="ls-type">Expansion signal detected</div><div class="ls-time">2h ago</div></div>
+            <div class="ls-acct">Acme Corp</div>
+            <div class="ls-ctx">&ldquo;Enterprise tier&rdquo; mentioned unprompted in last Gong &middot; SSO + advanced reporting flagged as near-term needs.</div>
+            <span class="ls-sev opp">Opportunity</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1000,6 +1100,12 @@ I also have a few product updates that align with the goals you shared during se
         </div>
       </div>
 
+      <div class="rp-view" id="view-dust">
+        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+        <div class="rp-hd"><div class="rp-t"><i class="ti ti-sparkles" style="color:var(--tl)"></i> <span id="dust-title">Ask Dust</span></div></div>
+        <div class="rp-scroll" id="dust-out"></div>
+      </div>
+
       <div class="rp-view" id="view-apex">
         <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
         <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
@@ -1097,18 +1203,115 @@ function toast(msg) {
   t._timer = setTimeout(function(){ t.style.opacity = '0'; }, 4500);
 }
 
+// ── ASK DUST — mock agent responses to right panel ───────────────────────────
+var DUST_RESP = {
+  'Prepare My Day': function() {
+    return ''
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-sun"></i> Your day at a glance</div>'
+        + '<div class="du-card r"><div class="du-card-t">NovaVault &middot; Exec Check-in 3:30 PM <span class="du-card-tag r">Critical</span></div><div class="du-card-s">17 days to renewal. Brand-new champion (Michael Torres). Lead with discovery, not pricing — propose 60-day extension. Open the Save Strategy drawer for the full play.</div></div>'
+        + '<div class="du-card g"><div class="du-card-t">Acme Corp &middot; QBR 9:00 AM <span class="du-card-tag g">Expansion</span></div><div class="du-card-s">Health 82, zero open CTAs. David Kim flagged enterprise tier + SSO in last Gong. Goal: verbal commit on the SSO pilot before the call ends.</div></div>'
+        + '<div class="du-card a"><div class="du-card-t">Brightex Inc &middot; Risk Review 11:00 AM <span class="du-card-tag a">At risk</span></div><div class="du-card-s">Competitor flagged 12 days ago. Validate the evaluation, don&rsquo;t resist it. Push the 30-day extension as breathing room.</div></div>'
+      + '</div>'
+      + '<div class="du-foot">Pulled from Gainsight + Gong + Google Calendar via Dust.</div>';
+  },
+  'Draft Follow-Ups': function() {
+    return ''
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-mail-fast"></i> 2 drafts ready to send</div>'
+        + '<div class="du-mail">'
+          + '<div class="du-mail-to">To: Michael Torres &middot; NovaVault</div>'
+          + '<div class="du-mail-sub">Subject: A different kind of renewal conversation</div>'
+          + '<div class="du-mail-body">Hi Michael,\n\nI know you&rsquo;ve just stepped into this account, so before we talk renewal I want to make sure you have full context on what 1Password has been doing for your team — usage, security incidents prevented, time saved on access management.\n\nRather than rush a decision under deadline pressure, I&rsquo;d like to propose a 60-day extension so you can evaluate with complete information. I&rsquo;ll bring the data; you set the agenda.\n\nDoes 3:30 PM today still work?\n\n— Carmen</div>'
+        + '</div>'
+        + '<div class="du-mail">'
+          + '<div class="du-mail-to">To: Sarah Chen &middot; Brightex Inc</div>'
+          + '<div class="du-mail-sub">Subject: Re: Quick question about our renewal options</div>'
+          + '<div class="du-mail-body">Hi Sarah,\n\nThanks for being open about the evaluation — I&rsquo;m not here to talk you out of it. I&rsquo;d rather make sure you have everything you need to make the right call.\n\nIf it&rsquo;s helpful, I can put together a side-by-side comparison doc this week, plus a 30-day extension so the deadline doesn&rsquo;t force the decision. Want me to set that up?\n\n— Carmen</div>'
+        + '</div>'
+      + '</div>'
+      + '<div class="du-foot">Drafts generated from Gong sentiment + Gainsight risk signals.</div>';
+  },
+  'Find Open Loops': function() {
+    return ''
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-circle-dashed"></i> 3 overdue CTAs</div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Update NovaVault renewal forecast status</div><div class="du-loop-s">Gainsight CTA &middot; Owner: Carmen</div></div><div class="du-loop-age">2d</div></div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Reply to Sarah Chen re: renewal options</div><div class="du-loop-s">Brightex Inc &middot; Gmail</div></div><div class="du-loop-age">1d</div></div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Schedule exec sponsor save call</div><div class="du-loop-s">NovaVault &middot; Due today</div></div><div class="du-loop-age">today</div></div>'
+      + '</div>'
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-mail"></i> 2 unanswered emails</div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Michael Torres &middot; NovaVault</div><div class="du-loop-s">&ldquo;Re: Following up on our account — hoping to connect&rdquo;</div></div><div class="du-loop-age">5h</div></div>'
+        + '<div class="du-loop"><div class="du-loop-l"><div class="du-loop-t">Sarah Chen &middot; Brightex Inc</div><div class="du-loop-s">&ldquo;Quick question about our renewal options&rdquo;</div></div><div class="du-loop-age">3h</div></div>'
+      + '</div>'
+      + '<div class="du-foot">Sources: Gainsight CTAs, Gmail thread analysis.</div>';
+  },
+  'Review At-Risk Renewals': function() {
+    return ''
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-alert-triangle"></i> $67K ARR at risk &middot; 2 accounts</div>'
+        + '<table class="du-tbl">'
+          + '<tr><th>Account</th><th>ARR</th><th>Health</th><th>Renewal</th><th>Top signal</th></tr>'
+          + '<tr><td>NovaVault</td><td>$31K</td><td class="r">23 &darr;44</td><td class="r">17d</td><td>Champion lost &middot; 45d Gong silence</td></tr>'
+          + '<tr><td>Brightex Inc</td><td>$36K</td><td class="a">48 &darr;23</td><td class="a">31d</td><td>Competitor evaluation flagged in Gong</td></tr>'
+        + '</table>'
+      + '</div>'
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-lifebuoy"></i> Recommended next actions</div>'
+        + '<div class="du-card r"><div class="du-card-t">NovaVault &middot; Emergency save play</div><div class="du-card-s">Open Save Strategy drawer. Goal for today&rsquo;s 3:30 PM call: secure verbal agreement on 60-day extension. Escalate to exec sponsor in parallel.</div></div>'
+        + '<div class="du-card a"><div class="du-card-t">Brightex Inc &middot; Competitor defense</div><div class="du-card-s">Run Risk Analyst before the 11:00 AM Risk Review. Lead with ROI summary, not pricing. Propose 30-day extension to take deadline pressure off.</div></div>'
+      + '</div>'
+      + '<div class="du-foot">Live data from Gainsight health, Gong sentiment, Salesforce renewal forecast.</div>';
+  }
+};
+
+function _dustRender(title, bodyHtml) {
+  var titleEl = document.getElementById('dust-title');
+  var out = document.getElementById('dust-out');
+  if (titleEl) titleEl.textContent = title;
+  if (!out) return;
+  out.innerHTML = '<div class="du-load"><i class="ti ti-loader-2"></i> Routing to Dust agent...</div>';
+  openPanel('dust', null);
+  setTimeout(function() { out.innerHTML = bodyHtml; }, 700);
+}
+
+function _escape(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function dustQuick(label) {
+  var fn = DUST_RESP[label];
+  var body = fn ? fn() : '<div class="du-card"><div class="du-card-s">Routing to Dust agent...</div></div>';
+  _dustRender(label, body);
+}
+
 function askDust(e) {
   if (e && e.preventDefault) e.preventDefault();
   var input = document.getElementById('dust-q');
   var q = input ? input.value.trim() : '';
   if (!q) { if (input) input.focus(); return false; }
-  toast('Routing to Dust agent: &ldquo;' + q.replace(/[<>]/g,'') + '&rdquo;');
+  var qSafe = _escape(q);
+  var lower = q.toLowerCase();
+  var body = '';
+  // route to a matching quick-action template when the question is in that ballpark
+  if (/follow ?up|reply|draft/.test(lower)) body = DUST_RESP['Draft Follow-Ups']();
+  else if (/open loop|overdue|unanswered/.test(lower)) body = DUST_RESP['Find Open Loops']();
+  else if (/at risk|renewal|churn|save/.test(lower)) body = DUST_RESP['Review At-Risk Renewals']();
+  else if (/prepare|day|today|priorit/.test(lower)) body = DUST_RESP['Prepare My Day']();
+  else {
+    body = ''
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-sparkles"></i> Agent response</div>'
+        + '<div class="du-card b"><div class="du-card-s">I pulled context across your 3 active accounts and 3 dark accounts. Based on today&rsquo;s signals, NovaVault is your highest-priority intervention (91% churn probability), followed by Brightex (68%) for competitor defense, with Acme positioned for an expansion conversation in the 9:00 AM QBR.</div></div>'
+        + '<div class="du-card g"><div class="du-card-t">Suggested next move</div><div class="du-card-s">Open the agent drawer for the account closest to your question. If NovaVault, start with Save Strategy. If Brightex, Risk Analyst. If Acme, Prep Me.</div></div>'
+      + '</div>'
+      + '<div class="du-foot">Live context: Gainsight health, Gong sentiment, Salesforce renewal forecast.</div>';
+  }
+  var quote = '<div class="du-q"><i class="ti ti-quote"></i> ' + qSafe + '</div>';
+  _dustRender('Ask Dust', quote + body);
   if (input) input.value = '';
   return false;
-}
-
-function dustQuick(label) {
-  toast('Dust agent: ' + label + ' &mdash; running...');
 }
 
 function buildRecipe() {
@@ -1352,7 +1555,7 @@ var DRAWER = {
         ]},
         { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Proposal","30-day pilot pre-renewal"],["Terms","Current pricing locked"],["Commitment","Dedicated support + weekly check-ins"]] }
       ],
-      foot: [{ l: "Generate QBR Deck", a: "deck" }, { l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
+      foot: [{ l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
     },
     brightex: {
       title: "Save Strategy", sub: "Brightex Inc · Competitor defense play",
@@ -1372,7 +1575,7 @@ var DRAWER = {
         ]},
         { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Extension","30 days (Jun 15 → Jul 15)"],["Terms","Current pricing locked"],["Decision deadline","July 10, 2026"]] }
       ],
-      foot: [{ l: "Generate Risk Deck", a: "deck" }, { l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
+      foot: [{ l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
     },
     nova: {
       title: "Save Strategy", sub: "NovaVault · Emergency retention play",
@@ -1393,7 +1596,7 @@ var DRAWER = {
         ]},
         { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Extension","60 days (Jun 1 → Jul 31)"],["Terms","Current pricing locked"],["Commitment","Weekly touchpoints with Carmen"],["Decision deadline","July 15, 2026"]] }
       ],
-      foot: [{ l: "Generate Save Deck", a: "deck" }, { l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
+      foot: [{ l: "Push to Gainsight", a: "3 CTAs pushed to Gainsight ✓" }]
     }
   },
   next: {
@@ -1473,11 +1676,13 @@ function openAgentDrawer(type, acct) {
   if (!data) { openDrawer(); return; }
 
   var el = document.getElementById('drawer');
+  var titleEl = document.getElementById('drawer-title');
   var subEl = document.getElementById('drawer-sub');
   var scroll = document.getElementById('drawer-scroll');
   var ft = document.getElementById('drawer-ft');
 
-  if (subEl) { subEl.innerHTML = '<span style="font-size:11px;font-weight:700;color:var(--tx)">' + data.title + '</span> <span style="color:var(--tx3);font-size:11px;margin-left:4px">&mdash; ' + data.sub + '</span>'; }
+  if (titleEl) { titleEl.textContent = data.title; }
+  if (subEl) { subEl.textContent = data.sub; }
 
   // Build sections
   var html = '';
@@ -1724,7 +1929,7 @@ function closeDrawer() {
 
 var _deckTimer = null;
 function openDeckModal(acct) {
-  var names = {acme:'QBR Builder agent &middot; Powered by Dust API',brightex:'Risk Review Builder &middot; Powered by Dust API',nova:'Save Deck Builder &middot; Emergency retention build'};
+  var names = {acme:'QBR Builder agent · Powered by Dust API',brightex:'Risk Review Builder · Powered by Dust API',nova:'Save Deck Builder · Emergency retention build'};
   var sub = document.getElementById('modal-sub');
   if (sub) sub.textContent = names[acct] || names.acme;
   document.getElementById('deck-modal').classList.add('on');
@@ -1765,48 +1970,13 @@ function startDeckProgress() {
 <div class="drawer" id="drawer">
   <div class="dr-hd">
     <div>
-      <div class="dr-title">Save Strategy</div>
-      <div class="dr-sub" id="drawer-sub">NovaVault &middot; 17 days to renewal &middot; New champion</div>
+      <div class="dr-title" id="drawer-title">Agent</div>
+      <div class="dr-sub" id="drawer-sub">Select an agent</div>
     </div>
     <button class="dr-close" onclick="closeDrawer()" aria-label="Close drawer">&times;</button>
   </div>
-  <div class="dr-scroll">
-    <div class="dr-sec">
-      <div class="dr-sec-t"><i class="ti ti-message-circle" style="font-size:11px"></i> Talking Points</div>
-      <div class="tp">Start with their world, not yours. &ldquo;I wanted to start by understanding what&rsquo;s changed for your team since earlier this year and what your top priorities look like right now.&rdquo;</div>
-      <div class="tp">Anchor on outcomes, not features. Reference the value delivered before the champion left &mdash; usage data, security incidents prevented, time saved on access management.</div>
-      <div class="tp">Propose the extension as a win for them. &ldquo;I want to make sure you have enough time to feel confident in this decision. Would a 60-day extension give you what you need?&rdquo;</div>
-    </div>
-    <div class="dr-sec">
-      <div class="dr-sec-t"><i class="ti ti-shield-exclamation" style="font-size:11px"></i> Objection Handlers</div>
-      <div class="ob">
-        <div class="ob-q">&ldquo;I&rsquo;m not sure we&rsquo;re getting value from this.&rdquo;</div>
-        <div class="ob-a">Pull up the usage report in the call. Show active users, vaults accessed, and security events this quarter. Make the value visible before responding.</div>
-      </div>
-      <div class="ob">
-        <div class="ob-q">&ldquo;We&rsquo;re re-evaluating our security stack.&rdquo;</div>
-        <div class="ob-a">Validate the review, don&rsquo;t resist it. Ask: &ldquo;What criteria are most important to your team?&rdquo; Then map those criteria to your strengths &mdash; don&rsquo;t list features unprompted.</div>
-      </div>
-      <div class="ob">
-        <div class="ob-q">&ldquo;The previous team was handling this.&rdquo;</div>
-        <div class="ob-a">Acknowledge the transition directly. &ldquo;That&rsquo;s exactly why I wanted to reach out &mdash; I want to make sure you have full context so you can make the right call for your team.&rdquo;</div>
-      </div>
-    </div>
-    <div class="dr-sec">
-      <div class="dr-sec-t"><i class="ti ti-clock" style="font-size:11px"></i> Proposed Extension Terms</div>
-      <div class="ext">
-        <div class="ext-t">60-Day Extension Proposal</div>
-        <div class="ext-row"><span>Extension period</span><span style="font-weight:600">60 days (Jun 1 &rarr; Jul 31)</span></div>
-        <div class="ext-row"><span>Terms</span><span style="font-weight:600">Current pricing locked</span></div>
-        <div class="ext-row"><span>Commitment</span><span style="font-weight:600">Weekly touchpoints with Carmen</span></div>
-        <div class="ext-row"><span>Decision deadline</span><span style="font-weight:600">July 15, 2026</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="dr-ft">
-    <button class="dr-ft-btn prim" onclick="openDeckModal('nova');closeDrawer()"><i class="ti ti-layout-board" style="font-size:13px"></i> Generate Save Deck</button>
-    <button class="dr-ft-btn sec" onclick="toast('3 CTAs pushed to Gainsight ✓');closeDrawer()">Push to Gainsight</button>
-  </div>
+  <div class="dr-scroll" id="drawer-scroll"></div>
+  <div class="dr-ft" id="drawer-ft"></div>
 </div>
 
 <div class="mov" id="deck-modal" onclick="if(event.target===this)closeDeckModal()">
