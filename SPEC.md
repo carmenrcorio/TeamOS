@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 1.9.0
+**Version:** 2.0.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,51 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.0.0] — 2026-05-16
+
+Two big features in one commit: every account name across TeamOS is now a clickable shortcut into the Mission Briefing, and Ask Dust gets a 3x2 chip grid with a fifth Coach Me quick-action plus a Custom Agents dropdown.
+
+### Added — Universal account click → Mission Briefing
+- New CSS utility `.acct-lk` shared by every clickable account name: `cursor:pointer; color:inherit; text-decoration:none; transition:opacity 150ms`. Hover state adds `text-decoration:underline; opacity:.85`. Intentionally not styled as a blue hyperlink — feels like intelligent interactive text.
+- New JS helper trio:
+  - `acctClick(key, ev)` — for surfaces already on screen (Priority Stack, Next Up, Urgent Inbox, Today's Tasks, Live Signals row, Dark Zone).
+  - `acctClickFromPulse(key, ev)` — closes the active pulse-strip popover then opens the panel after a 100ms settle (uses the same close-then-open pattern as `openGhostBusterFromPopover`).
+  - `acctClickFromNotif(key, ev)` — same pattern for the notification rail popovers.
+  All three call `stopPropagation()` so an account-name click inside a row never bubbles to the row's own onclick handler. All three guard with `document.getElementById('view-' + key)` before opening.
+- New `ACCT_KEY` lookup that normalizes every display string ("NovaVault" / "Nova" / "Brightex Inc" / "Brightex" / "Acme Corp" / "Acme" / "Meridian Health Systems" / "Meridian" / "Creston Software" / "Creston" / "Apex Dynamics" / "Apex") to the canonical `view-*` id used by `openPanel`. Dark accounts route through `view-meridian` / `view-creston` / `view-apex` which `openPanel` already maps to the Ghost-Buster email view.
+- Clickable account names now live in: Priority Stack rows (NovaVault, Acme Corp, Brightex Inc), Next Up header (Acme Corp), all four Urgent Inbox cards, four of five Today's Tasks rows (ac5 Klaxton skipped — not a routable account), all five Live Signals rows, all three Dark Zone rows, all three Email-popover account tags, the Slack-popover NovaVault tag, both Renewal-popover tags, all three Calls-today popover rows, both At-Risk popover rows, both ARR popover rows, the NovaVault/Brightex/NovaVault references in the three Overdue-CTAs popover rows, the three Dark-accounts popover rows, and the Tasks-dropdown rows (account-name span gets `stopPropagation` so it goes to Mission Briefing while the rest of the row still calls `openTaskBrief`).
+
+### Added — Ask Dust 5th button: Coach Me
+- New ⚡ Coach Me chip wired to `dustQuick('Coach Me')`.
+- Registered `Coach Me` in `DUST_AGENT` (renders "Call Coach agent" in the 1.5s loader) and in `DUST_RESP`.
+- Output sections (in the existing Mission Briefing `view-dust`): "Your last 3 calls with this account" (3 sentiment-coded cards), "Dust coaching note" (blue insight card), "One thing to do differently today" (green action card). Footer buttons: Open Prep Me (routes to `prep` drawer for Acme via `dustQuickToDrawer`) and View Gong Calls (toast).
+- Source line: "Gong call analysis · Gainsight account history · Updated 8:47 AM".
+
+### Added — Custom Agents dropdown
+- 6th slot in the Ask Dust grid: ⚙ Agents chip with muted opacity (0.8), chevron icon, and `bf-qa-btn.muted` styling. Sits next to Coach Me on row 2.
+- Clicking opens a 280px dropdown anchored above the chip (`position:absolute; bottom:calc(100% + 6px); right:0`) so it pops upward rather than getting clipped by the bottom of the card.
+- Three sections: 5 active agents with teal `circle-check-filled` icon + "Active" status (Prepare My Day, Draft Follow-Ups, Find Open Loops, Review At-Risk, Coach Me); 4 available agents with gray hollow circle + "Available" status (Competitive Intel, EBR Prep, Renewal Forecaster, Champion Tracker); footer row "+ Request new agent".
+- Available agent click → `requestAgent(name)` toast: "Agent requested · Your admin will activate [name] ✓". "Request new agent" → `requestNewAgent()` toast: "Request sent to CS Ops · They'll configure and activate within 24h ✓". Both also close the dropdown.
+- Outside-click handler (scoped to `.bf-qa-wrap`) closes the dropdown — doesn't interfere with the existing pulse-strip or notification-rail outside-click handlers.
+
+### Changed — Ask Dust grid
+- Switched `.bf-qa` from `grid-template-columns:1fr 1fr` (2x2) to `1fr 1fr 1fr` (3x2). All six cells are equal width. Added `min-height:34px` to chips so the new row aligns evenly with the existing four chips. Bumped chip padding from `8px 10px` to `9px 9px` and tightened the inner gap from 6px to 5px so each chip stays one line on a 270px column. "Review At-Risk Renewals" abbreviated to "Review At-Risk" to fit the 3-col width without wrapping.
+- Card height: `.bf-qa{margin-top:auto}` continues to pin the chip grid to the bottom of the card; the added row + tightened padding make the Ask Dust card sit at roughly the same height as Priority Stack and Next Up in the left/center brief-strip columns. No fixed/min heights changed.
+
+### Not touched
+- `openPanel`, `resetPanel`, `closePops`, `closeNotifPops`, `openGhostBusterFromPopover`, `backFromGhostBuster`, `openAgentDrawer`, `agentBtn`, `_dustRender`, `dustQuick`, `askDust`, `dustQuickToDrawer` — all unchanged. Universal click is layered on top of existing routing.
+- All existing Mission Briefing content (Acme / Brightex / NovaVault / Meridian / Creston / Apex views), every agent drawer, all four existing Ask Dust templates, the deck builder modal, all Ghost-Buster handlers, the Back-button logic, calendar event onclicks, pulse-strip popover structure, notification-rail core wiring, Recipe for Success tab.
+- Existing inline buttons (Save Strategy / Prep Me / Risk Analyst per Priority Stack row, Draft Reply per Email popover row, Ghost-Buster per Dark popover row, agent action buttons per Live Signals row) — none touched. The account-name span is a *new* second click target on the same row.
+
+### Engineering
+- Account-name escape hatch: every clickable account span passes `event` to its handler and the handlers all call `stopPropagation()` before delegating, so e.g. clicking "NovaVault" inside a Tasks-dropdown row opens Mission Briefing instead of falling through to the row's `openTaskBrief` handler.
+- No new color tokens. Dropdown styles bind to existing `:root` values.
+- No `console.log`. No hardcoded API keys.
+- Coach Me output reuses the existing `du-sec` / `du-card` / `du-acts foot` / `du-foot` classes — no new Dust output CSS.
+- 5 of the 5 active agents in the dropdown match the actual quick-action chips on the card, keeping the "what's wired vs what's coming" honest.
 
 ---
 

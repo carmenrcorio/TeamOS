@@ -409,9 +409,31 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .bf-dust-input input::placeholder{color:var(--tx3)}
 .bf-dust-send{background:var(--tl);color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;font-weight:600}
 .bf-dust-send:hover{background:var(--tl-md)}
-.bf-qa{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:auto}
-.bf-qa-btn{font-size:11px;font-weight:600;padding:8px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all .1s;text-align:left;line-height:1.25}
+.bf-qa{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:auto}
+.bf-qa-btn{font-size:11px;font-weight:600;padding:9px 9px;border-radius:6px;border:1px solid var(--bd);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all .1s;text-align:left;line-height:1.2;min-height:34px}
 .bf-qa-btn:hover{background:var(--surf2);border-color:var(--bd2);color:var(--tx)}
+.bf-qa-btn.muted{opacity:.8;justify-content:space-between}
+.bf-qa-btn.muted:hover{opacity:1}
+.bf-qa-btn.muted i.chev{font-size:13px;margin-left:2px}
+.bf-qa-wrap{position:relative}
+.dust-agents-pop{position:absolute;bottom:calc(100% + 6px);right:0;width:280px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);box-shadow:0 12px 40px rgba(0,0,0,.18);z-index:200;display:none;overflow:hidden}
+.dust-agents-pop.on{display:block}
+.dap-hd{padding:10px 14px;font-size:10px;font-weight:700;color:var(--tx);letter-spacing:.04em;background:var(--surf2);border-bottom:1px solid var(--bd);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.dap-sec{padding:4px 0;border-bottom:1px solid var(--bd)}
+.dap-sec:last-of-type{border-bottom:none}
+.dap-row{display:flex;align-items:center;gap:10px;padding:7px 14px;font-size:11px;color:var(--tx2);cursor:default}
+.dap-row.avail{cursor:pointer;color:var(--tx3)}
+.dap-row.avail:hover{background:var(--surf2);color:var(--tx)}
+.dap-ic{width:14px;height:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.dap-row.active .dap-ic{color:var(--tl)}
+.dap-row.avail .dap-ic{color:var(--tx3)}
+.dap-nm{flex:1;font-weight:600;color:inherit}
+.dap-st{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em}
+.dap-row.active .dap-st{color:var(--tl)}
+.dap-req{padding:9px 14px;font-size:11px;font-weight:700;color:var(--tl);cursor:pointer;display:flex;align-items:center;gap:6px;background:var(--surf2);border-top:1px solid var(--bd)}
+.dap-req:hover{background:var(--tl-bg)}
+.acct-lk{cursor:pointer;color:inherit;text-decoration:none;transition:opacity 150ms ease}
+.acct-lk:hover{text-decoration:underline;opacity:.85}
 .bf-qa-btn i{font-size:12px;color:var(--tl);flex-shrink:0}
 
 @media (max-width:1100px){
@@ -719,19 +741,19 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
             <button class="n-pop-mark" type="button" onclick="markAllNotifRead('em')">Mark all read</button>
           </div>
           <div class="n-row">
-            <div class="n-row-top"><span class="n-tag r">NovaVault</span><span class="n-age">2h ago</span></div>
+            <div class="n-row-top"><span class="n-tag r acct-lk" onclick="acctClickFromNotif('nova',event)">NovaVault</span><span class="n-age">2h ago</span></div>
             <div class="n-from">Michael Torres</div>
             <div class="n-sub">&ldquo;Re: Contract renewal &mdash; urgent questions&rdquo;</div>
             <div class="n-btns"><button class="n-btn prim" type="button" onclick="draftReply('nova')"><i class="ti ti-mail"></i> Draft Reply</button></div>
           </div>
           <div class="n-row">
-            <div class="n-row-top"><span class="n-tag a">Brightex</span><span class="n-age">4h ago</span></div>
+            <div class="n-row-top"><span class="n-tag a acct-lk" onclick="acctClickFromNotif('brightex',event)">Brightex</span><span class="n-age">4h ago</span></div>
             <div class="n-from">Sarah Chen</div>
             <div class="n-sub">&ldquo;Following up on our last call&rdquo;</div>
             <div class="n-btns"><button class="n-btn prim" type="button" onclick="draftReply('brightex')"><i class="ti ti-mail"></i> Draft Reply</button></div>
           </div>
           <div class="n-row">
-            <div class="n-row-top"><span class="n-tag gy">Meridian</span><span class="n-age">1d ago</span></div>
+            <div class="n-row-top"><span class="n-tag gy acct-lk" onclick="acctClickFromNotif('meridian',event)">Meridian</span><span class="n-age">1d ago</span></div>
             <div class="n-from">Jennifer Ramos</div>
             <div class="n-sub">&ldquo;Haven&rsquo;t heard back &mdash; checking in&rdquo;</div>
             <div class="n-btns"><button class="n-btn prim" type="button" onclick="draftReply('meridian')"><i class="ti ti-mail"></i> Draft Reply</button></div>
@@ -750,7 +772,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
             <button class="n-pop-mark" type="button" onclick="markAllNotifRead('sl')">Mark all read</button>
           </div>
           <div class="n-row">
-            <div class="n-row-top"><span class="n-channel">#cs-team</span><span class="n-tag r">NovaVault</span><span class="n-age">47m ago</span></div>
+            <div class="n-row-top"><span class="n-channel">#cs-team</span><span class="n-tag r acct-lk" onclick="acctClickFromNotif('nova',event)">NovaVault</span><span class="n-age">47m ago</span></div>
             <div class="n-from">Maggie Spry</div>
             <div class="n-prev">&ldquo;Hey &mdash; heads up, NovaVault&rsquo;s Michael Torres just emailed RevOps about the contract. You may want to get ahead of it before EOD.&rdquo;</div>
             <div class="n-btns"><button class="n-btn prim" type="button" onclick="summarizeSlack()"><i class="ti ti-sparkles"></i> Summarize with Dust</button><button class="n-btn" type="button" onclick="closeNotifPops();toast('Opening Slack &middot; #cs-team ✓')"><i class="ti ti-external-link"></i> Open in Slack</button></div>
@@ -770,13 +792,13 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
           </div>
           <div class="n-pop-sub">Contract events synced from Ironclad &rarr; SFDC Contract object &middot; Updated 9:14 AM</div>
           <div class="n-row r" id="nrow-re-nova">
-            <div class="n-row-top"><span class="n-tag r">NovaVault</span><span class="n-stat r">Past Due</span><span class="n-age">17 days elapsed</span></div>
+            <div class="n-row-top"><span class="n-tag r acct-lk" onclick="acctClickFromNotif('nova',event)">NovaVault</span><span class="n-stat r">Past Due</span><span class="n-age">17 days elapsed</span></div>
             <div class="n-event">Contract sent Jun 1 &middot; No signature received</div>
             <div class="n-note">Ironclad shows counterparty status: Not Opened</div>
             <div class="n-btns"><button class="n-btn prim" type="button" onclick="closeNotifPops();openAgentDrawer('save','nova')"><i class="ti ti-lifebuoy"></i> Open Save Play</button><button class="n-btn" type="button" onclick="closeNotifPops();toast('Opening Ironclad contract record ✓')"><i class="ti ti-external-link"></i> View in Ironclad</button></div>
           </div>
           <div class="n-row g" id="nrow-re-brightex">
-            <div class="n-row-top"><span class="n-tag a">Brightex</span><span class="n-stat g">Signed</span><span class="n-age">May 14</span></div>
+            <div class="n-row-top"><span class="n-tag a acct-lk" onclick="acctClickFromNotif('brightex',event)">Brightex</span><span class="n-stat g">Signed</span><span class="n-age">May 14</span></div>
             <div class="n-event">Sarah Chen signed &middot; Awaiting AE counter-signature</div>
             <div class="n-note">Ironclad workflow stage: Partially Executed</div>
             <div class="n-btns"><button class="n-btn prim" type="button" onclick="logBrightexRenewal()"><i class="ti ti-circle-check"></i> Log in Gainsight</button><button class="n-btn" type="button" onclick="closeNotifPops();toast('Slack DM sent to AE &middot; Brightex counter-signature needed ✓')"><i class="ti ti-send"></i> Notify AE</button></div>
@@ -799,7 +821,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="pop-hd"><i class="ti ti-calendar-event"></i> Today &middot; 3 customer calls</div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">9:00 AM &middot; Acme Corp</div>
+            <div class="pop-main">9:00 AM &middot; <span class="acct-lk" onclick="acctClickFromPulse('acme',event)">Acme Corp</span></div>
             <div class="pop-sub">QBR &middot; David Kim <span class="hp-badge g">H 82</span></div>
             <div class="pop-signal">Last Gong: enterprise tier mentioned &mdash; expansion signal</div>
           </div>
@@ -810,7 +832,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">11:00 AM &middot; Brightex Inc</div>
+            <div class="pop-main">11:00 AM &middot; <span class="acct-lk" onclick="acctClickFromPulse('brightex',event)">Brightex Inc</span></div>
             <div class="pop-sub">Risk Review &middot; Sarah Chen <span class="hp-badge a">H 48</span></div>
             <div class="pop-signal">Competitor flagged in last Gong &middot; champion change risk</div>
           </div>
@@ -821,7 +843,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">3:30 PM &middot; NovaVault</div>
+            <div class="pop-main">3:30 PM &middot; <span class="acct-lk" onclick="acctClickFromPulse('nova',event)">NovaVault</span></div>
             <div class="pop-sub">Exec Check-in &middot; URGENT <span class="hp-badge r">H 23</span></div>
             <div class="pop-signal">17 days to renewal &middot; new champion, last call 45d ago</div>
           </div>
@@ -840,7 +862,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="pop-hd"><i class="ti ti-alert-triangle" style="color:var(--am)"></i> Accounts at risk</div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">Brightex Inc <span class="hp-badge a">H 48</span> <span class="delta down">&darr;23 / 30d</span></div>
+            <div class="pop-main"><span class="acct-lk" onclick="acctClickFromPulse('brightex',event)">Brightex Inc</span> <span class="hp-badge a">H 48</span> <span class="delta down">&darr;23 / 30d</span></div>
             <div class="pop-sub">$36K ARR &middot; Renews Jun 15 &middot; 31 days</div>
             <div class="pop-signal">Competitor evaluation signal &middot; champion change</div>
           </div>
@@ -851,7 +873,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">NovaVault <span class="hp-badge r">H 23</span> <span class="delta down">&darr;44 / 30d</span></div>
+            <div class="pop-main"><span class="acct-lk" onclick="acctClickFromPulse('nova',event)">NovaVault</span> <span class="hp-badge r">H 23</span> <span class="delta down">&darr;44 / 30d</span></div>
             <div class="pop-sub">$31K ARR &middot; Renews Jun 1 &middot; 17 days</div>
             <div class="pop-signal">Champion lost &middot; last call 45d ago &middot; CRITICAL</div>
           </div>
@@ -870,7 +892,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="pop-hd"><i class="ti ti-currency-dollar" style="color:var(--rd)"></i> Renewal pipeline at risk</div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">NovaVault &middot; $31K</div>
+            <div class="pop-main"><span class="acct-lk" onclick="acctClickFromPulse('nova',event)">NovaVault</span> &middot; $31K</div>
             <div class="pop-sub">Renews Jun 1 &middot; 17 days left</div>
             <div class="ren-bar"><div class="ren-fill" style="width:90%;background:var(--rd)"></div></div>
           </div>
@@ -881,7 +903,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">Brightex Inc &middot; $36K</div>
+            <div class="pop-main"><span class="acct-lk" onclick="acctClickFromPulse('brightex',event)">Brightex Inc</span> &middot; $36K</div>
             <div class="pop-sub">Renews Jun 15 &middot; 31 days left</div>
             <div class="ren-bar"><div class="ren-fill" style="width:55%;background:var(--am)"></div></div>
           </div>
@@ -900,7 +922,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="pop-hd"><i class="ti ti-list-check" style="color:var(--rd)"></i> Overdue CTAs</div>
         <div class="pop-row" id="cta-row-1">
           <div class="pop-left">
-            <div class="pop-main">Update NovaVault renewal forecast</div>
+            <div class="pop-main">Update <span class="acct-lk" onclick="acctClickFromPulse('nova',event)">NovaVault</span> renewal forecast</div>
             <div class="pop-sub">2 days overdue &middot; Gainsight</div>
           </div>
           <div class="pop-btns"><button class="done-btn" onclick="markCtaDone('cta-row-1',event)" type="button">Done</button></div>
@@ -908,14 +930,14 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="pop-row" id="cta-row-2">
           <div class="pop-left">
             <div class="pop-main">Reply to Sarah Chen re: renewal options</div>
-            <div class="pop-sub">1 day overdue &middot; Brightex Inc</div>
+            <div class="pop-sub">1 day overdue &middot; <span class="acct-lk" onclick="acctClickFromPulse('brightex',event)">Brightex Inc</span></div>
           </div>
           <div class="pop-btns"><button class="done-btn" onclick="markCtaDone('cta-row-2',event)" type="button">Done</button></div>
         </div>
         <div class="pop-row" id="cta-row-3">
           <div class="pop-left">
             <div class="pop-main">Schedule exec sponsor save call</div>
-            <div class="pop-sub">Due today &middot; NovaVault</div>
+            <div class="pop-sub">Due today &middot; <span class="acct-lk" onclick="acctClickFromPulse('nova',event)">NovaVault</span></div>
           </div>
           <div class="pop-btns"><button class="done-btn" onclick="markCtaDone('cta-row-3',event)" type="button">Done</button></div>
         </div>
@@ -929,21 +951,21 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="pop-hd"><i class="ti ti-ghost" style="color:var(--tx3)"></i> 60-day Dark Zone</div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">Meridian Health Systems</div>
+            <div class="pop-main"><span class="acct-lk" onclick="acctClickFromPulse('meridian',event)">Meridian Health Systems</span></div>
             <div class="pop-sub">73 days silent &middot; $22K &middot; Renews Jun 30</div>
           </div>
           <div class="pop-btns"><button class="gb-btn" onclick="openGhostBusterFromPopover('meridian')" type="button">Ghost-Buster</button></div>
         </div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">Creston Software</div>
+            <div class="pop-main"><span class="acct-lk" onclick="acctClickFromPulse('creston',event)">Creston Software</span></div>
             <div class="pop-sub">67 days silent &middot; $18K &middot; Renews Aug 20</div>
           </div>
           <div class="pop-btns"><button class="gb-btn" onclick="openGhostBusterFromPopover('creston')" type="button">Ghost-Buster</button></div>
         </div>
         <div class="pop-row">
           <div class="pop-left">
-            <div class="pop-main">Apex Dynamics</div>
+            <div class="pop-main"><span class="acct-lk" onclick="acctClickFromPulse('apex',event)">Apex Dynamics</span></div>
             <div class="pop-sub">61 days silent &middot; $15K &middot; Renews Jul 15</div>
           </div>
           <div class="pop-btns"><button class="gb-btn" onclick="openGhostBusterFromPopover('apex')" type="button">Ghost-Buster</button></div>
@@ -975,7 +997,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
       <div class="bf-it">
         <div class="bf-rank">1</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm">NovaVault</span><span class="bf-tag r">Critical save</span></div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('nova',event)">NovaVault</span><span class="bf-tag r">Critical save</span></div>
           <div class="bf-ctx">17d to renewal &middot; champion lost &middot; health 23</div>
         </div>
         <button class="bf-act r" onclick="agentBtn('save','nova',this)" type="button"><i class="ti ti-lifebuoy"></i> Save Strategy</button>
@@ -984,7 +1006,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
       <div class="bf-it">
         <div class="bf-rank">2</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm">Acme Corp</span><span class="bf-tag g">Expansion</span></div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('acme',event)">Acme Corp</span><span class="bf-tag g">Expansion</span></div>
           <div class="bf-ctx">9:00 AM QBR &middot; enterprise tier signal &middot; health 82</div>
         </div>
         <button class="bf-act g" onclick="agentBtn('prep','acme',this)" type="button"><i class="ti ti-bolt"></i> Prep Me</button>
@@ -993,7 +1015,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
       <div class="bf-it">
         <div class="bf-rank">3</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm">Brightex Inc</span><span class="bf-tag a">Watch</span></div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('brightex',event)">Brightex Inc</span><span class="bf-tag a">Watch</span></div>
           <div class="bf-ctx">Competitor flagged &middot; 71&rarr;48 in 30d &middot; renews 31d</div>
         </div>
         <button class="bf-act a" onclick="agentBtn('risk','brightex',this)" type="button"><i class="ti ti-shield-check"></i> Risk Analyst</button>
@@ -1007,7 +1029,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 
       <div class="bf-next-hdr">
         <div>
-          <div class="bf-next-acct">Acme Corp</div>
+          <div class="bf-next-acct acct-lk" onclick="acctClick('acme',event)">Acme Corp</div>
           <div class="bf-next-type">Quarterly Business Review &middot; David Kim</div>
         </div>
         <div class="bf-next-when"><span class="when-mins">In 38 min</span>9:00 AM</div>
@@ -1042,7 +1064,28 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <button class="bf-qa-btn" onclick="dustQuick('Prepare My Day')" type="button"><i class="ti ti-sun"></i>Prepare My Day</button>
         <button class="bf-qa-btn" onclick="dustQuick('Draft Follow-Ups')" type="button"><i class="ti ti-mail-fast"></i>Draft Follow-Ups</button>
         <button class="bf-qa-btn" onclick="dustQuick('Find Open Loops')" type="button"><i class="ti ti-circle-dashed"></i>Find Open Loops</button>
-        <button class="bf-qa-btn" onclick="dustQuick('Review At-Risk Renewals')" type="button"><i class="ti ti-alert-triangle"></i>Review At-Risk Renewals</button>
+        <button class="bf-qa-btn" onclick="dustQuick('Review At-Risk Renewals')" type="button"><i class="ti ti-alert-triangle"></i>Review At-Risk</button>
+        <button class="bf-qa-btn" onclick="dustQuick('Coach Me')" type="button"><i class="ti ti-bolt" style="color:var(--am)"></i>Coach Me</button>
+        <div class="bf-qa-wrap">
+          <button class="bf-qa-btn muted" id="dust-agents-btn" onclick="toggleAgentsDropdown(event)" type="button"><span style="display:flex;align-items:center;gap:5px"><i class="ti ti-settings"></i>Agents</span><i class="ti ti-chevron-down chev"></i></button>
+          <div class="dust-agents-pop" id="dust-agents-pop">
+            <div class="dap-hd"><i class="ti ti-settings" style="color:var(--tx2)"></i> Available Dust Agents</div>
+            <div class="dap-sec">
+              <div class="dap-row active"><i class="ti ti-circle-check-filled dap-ic"></i><span class="dap-nm">Prepare My Day</span><span class="dap-st">Active</span></div>
+              <div class="dap-row active"><i class="ti ti-circle-check-filled dap-ic"></i><span class="dap-nm">Draft Follow-Ups</span><span class="dap-st">Active</span></div>
+              <div class="dap-row active"><i class="ti ti-circle-check-filled dap-ic"></i><span class="dap-nm">Find Open Loops</span><span class="dap-st">Active</span></div>
+              <div class="dap-row active"><i class="ti ti-circle-check-filled dap-ic"></i><span class="dap-nm">Review At-Risk</span><span class="dap-st">Active</span></div>
+              <div class="dap-row active"><i class="ti ti-circle-check-filled dap-ic"></i><span class="dap-nm">Coach Me</span><span class="dap-st">Active</span></div>
+            </div>
+            <div class="dap-sec">
+              <div class="dap-row avail" onclick="requestAgent('Competitive Intel')"><i class="ti ti-circle dap-ic"></i><span class="dap-nm">Competitive Intel</span><span class="dap-st">Available</span></div>
+              <div class="dap-row avail" onclick="requestAgent('EBR Prep')"><i class="ti ti-circle dap-ic"></i><span class="dap-nm">EBR Prep</span><span class="dap-st">Available</span></div>
+              <div class="dap-row avail" onclick="requestAgent('Renewal Forecaster')"><i class="ti ti-circle dap-ic"></i><span class="dap-nm">Renewal Forecaster</span><span class="dap-st">Available</span></div>
+              <div class="dap-row avail" onclick="requestAgent('Champion Tracker')"><i class="ti ti-circle dap-ic"></i><span class="dap-nm">Champion Tracker</span><span class="dap-st">Available</span></div>
+            </div>
+            <div class="dap-req" onclick="requestNewAgent()"><i class="ti ti-plus"></i> Request new agent</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1065,22 +1108,22 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
         <div class="ii crit">
           <div class="ii-top"><div class="ii-from"><i class="ti ti-robot" style="font-size:12px;color:var(--rd)"></i> Gainsight Alert</div><span class="ii-time">2h ago</span></div>
-          <div class="ii-body">NovaVault health dropped 67 &rarr; 23 overnight</div>
+          <div class="ii-body"><span class="acct-lk" onclick="acctClick('nova',event)">NovaVault</span> health dropped 67 &rarr; 23 overnight</div>
           <div class="ii-meta"><span class="tag red">CRITICAL</span><span style="font-size:10px;color:var(--tx3)">Renewal 17 days &middot; 45d Gong silence</span></div>
         </div>
         <div class="ii crit">
-          <div class="ii-top"><div class="ii-from"><i class="ti ti-mail" style="font-size:12px;color:var(--rd)"></i> Michael Torres &middot; NovaVault</div><span class="ii-time">5h ago</span></div>
+          <div class="ii-top"><div class="ii-from"><i class="ti ti-mail" style="font-size:12px;color:var(--rd)"></i> Michael Torres &middot; <span class="acct-lk" onclick="acctClick('nova',event)">NovaVault</span></div><span class="ii-time">5h ago</span></div>
           <div class="ii-body">&ldquo;Re: Following up on our account &mdash; hoping to connect&rdquo;</div>
           <div class="ii-meta"><span class="tag red">NO REPLY</span><span style="font-size:10px;color:var(--tx3)">45d since last Gong call</span></div>
         </div>
         <div class="ii warn">
-          <div class="ii-top"><div class="ii-from"><i class="ti ti-mail" style="font-size:12px;color:var(--am)"></i> Sarah Chen &middot; Brightex Inc</div><span class="ii-time">3h ago</span></div>
+          <div class="ii-top"><div class="ii-from"><i class="ti ti-mail" style="font-size:12px;color:var(--am)"></i> Sarah Chen &middot; <span class="acct-lk" onclick="acctClick('brightex',event)">Brightex Inc</span></div><span class="ii-time">3h ago</span></div>
           <div class="ii-body">&ldquo;Quick question about our renewal options &mdash; do you have a moment?&rdquo;</div>
           <div class="ii-meta"><span class="tag amber">NO REPLY</span><span style="font-size:10px;color:var(--tx3)">Renews in 31 days</span></div>
         </div>
         <div class="ii info">
           <div class="ii-top"><div class="ii-from"><i class="ti ti-brand-slack" style="font-size:12px;color:var(--bl)"></i> Maggie Spry &middot; Slack</div><span class="ii-time">1h ago</span></div>
-          <div class="ii-body">&ldquo;Can you make sure Acme QBR slides are ready before 9?&rdquo;</div>
+          <div class="ii-body">&ldquo;Can you make sure <span class="acct-lk" onclick="acctClick('acme',event)">Acme</span> QBR slides are ready before 9?&rdquo;</div>
           <div class="ii-meta"><span class="tag blue">DM</span><span style="font-size:10px;color:var(--tx3)">#cs-leaders</span></div>
         </div>
       </div>
@@ -1096,7 +1139,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         <div class="dz-body" id="dz-body">
           <div class="dz-acct">
             <div class="dz-left">
-              <div class="dz-nm">Meridian Health Systems &middot; $22K</div>
+              <div class="dz-nm"><span class="acct-lk" onclick="acctClick('meridian',event)">Meridian Health Systems</span> &middot; $22K</div>
               <div class="dz-row"><span class="dz-days">73d dark</span><span class="dz-renewal">Renews Jun 30</span></div>
               <div class="dz-last">&ldquo;Last positive: SSO rollout discussion &mdash; March 15 (Gong)&rdquo;</div>
             </div>
@@ -1104,7 +1147,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
           </div>
           <div class="dz-acct">
             <div class="dz-left">
-              <div class="dz-nm">Creston Software &middot; $18K</div>
+              <div class="dz-nm"><span class="acct-lk" onclick="acctClick('creston',event)">Creston Software</span> &middot; $18K</div>
               <div class="dz-row"><span class="dz-days">67d dark</span><span class="dz-renewal">Renews Aug 20</span></div>
               <div class="dz-last">&ldquo;Last positive: Onboarding call &mdash; went quiet after Feb 28&rdquo;</div>
             </div>
@@ -1112,7 +1155,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
           </div>
           <div class="dz-acct">
             <div class="dz-left">
-              <div class="dz-nm">Apex Dynamics &middot; $15K</div>
+              <div class="dz-nm"><span class="acct-lk" onclick="acctClick('apex',event)">Apex Dynamics</span> &middot; $15K</div>
               <div class="dz-row"><span class="dz-days">61d dark</span><span class="dz-renewal">Renews Jul 15</span></div>
               <div class="dz-last">&ldquo;Champion changed &mdash; Ryan Patel not yet reached (Salesforce)&rdquo;</div>
             </div>
@@ -1141,7 +1184,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
         <div class="ac" id="ac1">
           <div class="ac-top"><div class="src-dot gs"></div><span class="ac-src">Gainsight CTA</span><span class="ac-badge ov">2d overdue</span></div>
-          <div class="ac-title">Update NovaVault renewal forecast status</div>
+          <div class="ac-title">Update <span class="acct-lk" onclick="acctClick('nova',event)">NovaVault</span> renewal forecast status</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:10px;color:var(--tx3)">Health 23 &middot; Renewal Jun 1 &middot; Critical</span>
             <button class="ac-btn" data-label="Update forecast" onclick="dustQuick('Update NovaVault forecast');doneTask(this,'ac1')">Update forecast</button>
@@ -1149,7 +1192,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
         <div class="ac" id="ac2">
           <div class="ac-top"><div class="src-dot ca"></div><span class="ac-src">Calendar</span><span class="ac-badge td">Before 9am</span></div>
-          <div class="ac-title">Finalize Acme Corp QBR slides &middot; send to David Kim</div>
+          <div class="ac-title">Finalize <span class="acct-lk" onclick="acctClick('acme',event)">Acme Corp</span> QBR slides &middot; send to David Kim</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:10px;color:var(--tx3)">QBR at 9:00 AM &middot; Health 82 &middot; No CTAs</span>
             <button class="ac-btn" data-label="Generate prep" onclick="openAgentDrawer('prep','acme');doneTask(this,'ac2')">Generate prep</button>
@@ -1157,7 +1200,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
         <div class="ac" id="ac3">
           <div class="ac-top"><div class="src-dot gs"></div><span class="ac-src">Gainsight CTA</span><span class="ac-badge ov">Today</span></div>
-          <div class="ac-title">Schedule exec sponsor save call for NovaVault</div>
+          <div class="ac-title">Schedule exec sponsor save call for <span class="acct-lk" onclick="acctClick('nova',event)">NovaVault</span></div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:10px;color:var(--tx3)">Emergency retention &middot; 17d to renewal</span>
             <button class="ac-btn" data-label="Draft outreach" onclick="openAgentDrawer('save','nova');doneTask(this,'ac3')">Draft outreach</button>
@@ -1165,7 +1208,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
         <div class="ac" id="ac4">
           <div class="ac-top"><div class="src-dot gm"></div><span class="ac-src">Gmail</span><span class="ac-badge td">3h ago</span></div>
-          <div class="ac-title">Reply to Sarah Chen re: Brightex renewal options</div>
+          <div class="ac-title">Reply to Sarah Chen re: <span class="acct-lk" onclick="acctClick('brightex',event)">Brightex</span> renewal options</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <span style="font-size:10px;color:var(--tx3)">At risk &middot; Competitor flagged &middot; Renewal 31d</span>
             <button class="ac-btn" data-label="Draft reply" onclick="openAgentDrawer('risk','brightex');doneTask(this,'ac4')">Draft reply</button>
@@ -1432,7 +1475,7 @@ When works best this week?
         <div class="ls-row">
           <div class="ls-ic r"><i class="ti ti-microphone-off"></i></div>
           <div class="ls-mid">
-            <div class="ls-acct">Meridian Health Systems</div>
+            <div class="ls-acct acct-lk" onclick="acctClick('meridian',event)">Meridian Health Systems</div>
             <div class="ls-type">Gong silence</div>
             <div class="ls-ctx">No call in 73 days &middot; last positive: SSO rollout, Mar 15</div>
             <span class="ls-sev crit">Critical</span>
@@ -1443,7 +1486,7 @@ When works best this week?
         <div class="ls-row">
           <div class="ls-ic r"><i class="ti ti-user-off"></i></div>
           <div class="ls-mid">
-            <div class="ls-acct">NovaVault</div>
+            <div class="ls-acct acct-lk" onclick="acctClick('nova',event)">NovaVault</div>
             <div class="ls-type">Champion change</div>
             <div class="ls-ctx">James Wu inactive &middot; Michael Torres added as primary</div>
             <span class="ls-sev hi">High Risk</span>
@@ -1454,7 +1497,7 @@ When works best this week?
         <div class="ls-row">
           <div class="ls-ic a"><i class="ti ti-trending-down"></i></div>
           <div class="ls-mid">
-            <div class="ls-acct">Brightex Inc</div>
+            <div class="ls-acct acct-lk" onclick="acctClick('brightex',event)">Brightex Inc</div>
             <div class="ls-type">Health drop</div>
             <div class="ls-ctx">Health 71 &rarr; 48 over 30 days &middot; sustained trend</div>
             <span class="ls-sev watch">Watch</span>
@@ -1465,7 +1508,7 @@ When works best this week?
         <div class="ls-row">
           <div class="ls-ic g"><i class="ti ti-trending-up"></i></div>
           <div class="ls-mid">
-            <div class="ls-acct">Acme Corp</div>
+            <div class="ls-acct acct-lk" onclick="acctClick('acme',event)">Acme Corp</div>
             <div class="ls-type">Expansion signal</div>
             <div class="ls-ctx">&ldquo;Enterprise tier&rdquo; unprompted &middot; SSO + reporting flagged</div>
             <span class="ls-sev opp">Opportunity</span>
@@ -1476,7 +1519,7 @@ When works best this week?
         <div class="ls-row">
           <div class="ls-ic a"><i class="ti ti-ticket"></i></div>
           <div class="ls-mid">
-            <div class="ls-acct">Brightex Inc</div>
+            <div class="ls-acct acct-lk" onclick="acctClick('brightex',event)">Brightex Inc</div>
             <div class="ls-type">Support ticket spike</div>
             <div class="ls-ctx">3 new tickets in 48h &middot; SSO config + provisioning issues</div>
             <span class="ls-sev watch">Watch</span>
@@ -1510,6 +1553,58 @@ function openPanel(id, ceEl) {
   document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
   document.getElementById('view-' + id).classList.add('on');
   if (ceEl) ceEl.classList.add('sel');
+}
+
+// ── Universal account click (v2.0.0) ────────────────────────────────────────
+// Map any account display string to the canonical key used by openPanel/view-*.
+var ACCT_KEY = {
+  'nova':'nova','novavault':'nova',
+  'acme':'acme','acme corp':'acme',
+  'brightex':'brightex','brightex inc':'brightex',
+  'meridian':'meridian','meridian health systems':'meridian',
+  'creston':'creston','creston software':'creston',
+  'apex':'apex','apex dynamics':'apex'
+};
+function _resolveAcct(s) { return ACCT_KEY[String(s||'').trim().toLowerCase()] || null; }
+function acctClick(key, ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  var k = _resolveAcct(key) || key;
+  if (document.getElementById('view-' + k)) openPanel(k, null);
+}
+function acctClickFromPulse(key, ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  closePops();
+  var k = _resolveAcct(key) || key;
+  setTimeout(function(){ if (document.getElementById('view-' + k)) openPanel(k, null); }, 100);
+}
+function acctClickFromNotif(key, ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  closeNotifPops();
+  var k = _resolveAcct(key) || key;
+  setTimeout(function(){ if (document.getElementById('view-' + k)) openPanel(k, null); }, 100);
+}
+
+// ── Ask Dust: Agents dropdown (v2.0.0) ──────────────────────────────────────
+function toggleAgentsDropdown(ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  var p = document.getElementById('dust-agents-pop');
+  if (p) p.classList.toggle('on');
+}
+document.addEventListener('click', function(e){
+  if (!e.target.closest('.bf-qa-wrap')) {
+    var p = document.getElementById('dust-agents-pop');
+    if (p) p.classList.remove('on');
+  }
+});
+function requestAgent(name) {
+  var p = document.getElementById('dust-agents-pop');
+  if (p) p.classList.remove('on');
+  toast('Agent requested &middot; Your admin will activate ' + name + ' ✓');
+}
+function requestNewAgent() {
+  var p = document.getElementById('dust-agents-pop');
+  if (p) p.classList.remove('on');
+  toast('Request sent to CS Ops &middot; They&rsquo;ll configure and activate within 24h ✓');
 }
 
 function resetPanel() {
@@ -1625,6 +1720,7 @@ var DUST_AGENT = {
   'Draft Follow-Ups': 'Draft Composer agent',
   'Find Open Loops': 'Loop Closer agent',
   'Review At-Risk Renewals': 'Risk Analyst agent',
+  'Coach Me': 'Call Coach agent',
   'Update NovaVault forecast': 'Forecast Updater agent',
   'Log Klaxton call notes': 'Note Logger agent',
   'Ask Dust': 'Account Strategist agent'
@@ -1707,6 +1803,28 @@ var DUST_RESP = {
       + '</div>'
       + '<div class="du-acts foot"><button class="du-btn prim" type="button" onclick="dustQuickToDrawer(\'save\',\'nova\')"><i class="ti ti-lifebuoy"></i> Open NovaVault Save Strategy</button><button class="du-btn" type="button" onclick="dustQuickToDrawer(\'risk\',\'brightex\')"><i class="ti ti-shield-check"></i> Open Brightex Risk Analyst</button><button class="du-btn" type="button" onclick="toast(\'Forecasting tab coming in next build\')"><i class="ti ti-arrow-right"></i> View full forecast</button></div>'
       + '<div class="du-foot">Live data from Gainsight health &middot; Gong sentiment &middot; Salesforce renewal forecast &middot; Updated 8:47 AM</div>';
+  },
+  'Coach Me': function() {
+    return ''
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-bolt"></i> Coach Me &middot; Acme Corp &middot; Pre-Call</div>'
+      + '</div>'
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t" style="text-transform:uppercase;letter-spacing:.04em;font-size:10px"><i class="ti ti-microphone"></i> Your last 3 calls with this account</div>'
+        + '<div class="du-card a"><div class="du-card-t">May 10 &middot; David Kim &middot; QBR prep</div><div class="du-card-s">You led with pricing before value. Kim disengaged at minute 14.</div></div>'
+        + '<div class="du-card g"><div class="du-card-t">Apr 22 &middot; David Kim &middot; Check-in</div><div class="du-card-s">Strong call. SSO interest first surfaced here.</div></div>'
+        + '<div class="du-card r"><div class="du-card-t">Mar 15 &middot; David Kim + IT team &middot; Onboarding review</div><div class="du-card-s">You missed the SSO question from their IT lead.</div></div>'
+      + '</div>'
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t" style="text-transform:uppercase;letter-spacing:.04em;font-size:10px"><i class="ti ti-sparkles"></i> Dust coaching note</div>'
+        + '<div class="du-card b"><div class="du-card-s">SSO keeps surfacing and you haven&rsquo;t closed it yet. Today&rsquo;s QBR: lead with the SSO pilot proposal in the first 10 minutes before agenda drift. David Kim responds to technical specificity &mdash; have the IT integration doc ready to share on screen.</div></div>'
+      + '</div>'
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t" style="text-transform:uppercase;letter-spacing:.04em;font-size:10px"><i class="ti ti-target"></i> One thing to do differently today</div>'
+        + '<div class="du-card g"><div class="du-card-s">Don&rsquo;t open with renewal. Open with &ldquo;I want to show you what an SSO rollout looks like for a team your size.&rdquo; Let the value conversation earn the renewal.</div></div>'
+      + '</div>'
+      + '<div class="du-acts foot"><button class="du-btn prim" type="button" onclick="dustQuickToDrawer(\'prep\',\'acme\')"><i class="ti ti-bolt"></i> Open Prep Me</button><button class="du-btn" type="button" onclick="toast(\'Opening Gong &middot; Acme Corp &middot; Last 3 calls ✓\')"><i class="ti ti-external-link"></i> View Gong Calls</button></div>'
+      + '<div class="du-foot">Source: Gong call analysis &middot; Gainsight account history &middot; Updated 8:47 AM</div>';
   },
   'Update NovaVault forecast': function() {
     return ''
@@ -2037,7 +2155,15 @@ function renderTasksList() {
   TASKS.forEach(function(t) {
     var doneCls = t.done ? ' done' : '';
     var ageHtml = t.age ? '<span class="tk-row-age' + (t.ageCls ? ' ' + t.ageCls : '') + '">' + t.age + '</span>' : '<span></span>';
-    var lead = t.acct ? '<span class="tk-row-acct">' + t.acct + '</span><span class="tk-row-sep">&middot;</span>' : '';
+    var lead = '';
+    if (t.acct) {
+      var key = _resolveAcct(t.acct);
+      if (key) {
+        lead = '<span class="tk-row-acct acct-lk" onclick="acctClickFromPulse(\'' + key + '\',event)">' + t.acct + '</span><span class="tk-row-sep">&middot;</span>';
+      } else {
+        lead = '<span class="tk-row-acct">' + t.acct + '</span><span class="tk-row-sep">&middot;</span>';
+      }
+    }
     html += '<div class="tk-row' + doneCls + '" onclick="openTaskBrief(\'' + t.id + '\')">'
          + '<div class="tk-sev ' + t.sev + '"></div>'
          + '<div class="tk-src">' + t.src + '</div>'
