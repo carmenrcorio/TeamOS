@@ -661,6 +661,42 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
 .gb-foot{display:flex;flex-direction:column;gap:6px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--bd)}
 .gb-foot .gb-btn{justify-content:center;padding:10px 12px;font-size:11px}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TeamOS Live (v2.8.0) — drawer repurposed as conversational AI companion
+   ═══════════════════════════════════════════════════════════════════════════ */
+.tl-hd{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-shrink:0;background:#0D0D0C;color:#fff}
+.tl-hd-t-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tl)}
+.tl-pulse{width:7px;height:7px;border-radius:50%;background:var(--tl);animation:tl-pulse 1.5s ease-in-out infinite;flex-shrink:0}
+@keyframes tl-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.85)}}
+.tl-acct{font-size:13px;font-weight:700;color:#fff;letter-spacing:-.01em;line-height:1.3}
+.tl-ctx{font-size:10px;color:rgba(255,255,255,.65);margin-top:4px;line-height:1.45}
+.tl-close{font-size:22px;color:rgba(255,255,255,.6);cursor:pointer;background:none;border:none;line-height:1;padding:0;flex-shrink:0;font-family:inherit}
+.tl-close:hover{color:#fff}
+
+.tl-modes{display:flex;flex-wrap:wrap;gap:5px;padding:11px 16px;border-bottom:1px solid var(--bd);flex-shrink:0;background:var(--surf2)}
+.tl-mode{font-size:10px;font-weight:600;padding:5px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;white-space:nowrap}
+.tl-mode:hover{border-color:var(--tx2);color:var(--tx)}
+.tl-mode.on{background:var(--tl);color:#fff;border-color:var(--tl)}
+
+.tl-chat{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:9px;background:var(--surf)}
+.tl-msg{max-width:88%;padding:9px 12px;border-radius:11px;font-size:12px;line-height:1.55;display:flex;gap:7px;align-items:flex-start}
+.tl-msg-bot{align-self:flex-start;background:var(--surf2);color:var(--tx);border-bottom-left-radius:3px}
+.tl-msg-bot i{color:var(--tl);font-size:13px;flex-shrink:0;margin-top:1px}
+.tl-msg-user{align-self:flex-end;background:var(--tl);color:#fff;border-bottom-right-radius:3px}
+
+.tl-input{padding:11px 16px;border-top:1px solid var(--bd);background:var(--surf);flex-shrink:0;display:flex;align-items:center;gap:8px}
+.tl-input-fld{flex:1;border:1px solid var(--bd2);border-radius:8px;padding:9px 11px;background:var(--surf2);font-family:inherit;font-size:12px;color:var(--tx);outline:none;transition:border-color .1s}
+.tl-input-fld:focus{border-color:var(--tl);background:var(--surf)}
+.tl-input-fld::placeholder{color:var(--tx3)}
+.tl-input-send{background:var(--tl);color:#fff;border:none;border-radius:6px;padding:8px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.tl-input-send:hover{background:var(--tl-md)}
+.tl-input-send i{font-size:13px}
+
+/* [⚡ TeamOS Live] trigger in Mission Briefing headers */
+.mb-tl-btn{font-size:10px;font-weight:700;padding:5px 10px;border-radius:5px;background:var(--tl);color:#fff;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:background .1s;margin-left:8px;flex-shrink:0}
+.mb-tl-btn:hover{background:var(--tl-md)}
+.mb-tl-btn i{font-size:12px}
 .du-loop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:11px}
 .du-loop:last-child{border-bottom:none}
 .du-loop-l{flex:1;min-width:0}
@@ -1407,7 +1443,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
     <div>
       <div class="rp">
         <div class="rp-view on" id="view-default">
-          <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Next Up &middot; Auto-loaded</span></div>
+          <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Next Up &middot; Auto-loaded</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">Acme Corp</div>
             <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>QBR &middot; 9:00 AM</span></div>
@@ -1475,7 +1511,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
         <div class="rp-view" id="view-acme">
           <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--tl-bg);color:var(--tl-dk);padding:2px 8px;border-radius:4px">QBR</span></div>
+          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--tl-bg);color:var(--tl-dk);padding:2px 8px;border-radius:4px">QBR</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">Acme Corp</div>
             <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>9:00 AM</span></div>
@@ -1498,7 +1534,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
         <div class="rp-view" id="view-brightex">
           <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--am-bg);color:var(--am-dk);padding:2px 8px;border-radius:4px">Risk Review</span></div>
+          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--am-bg);color:var(--am-dk);padding:2px 8px;border-radius:4px">Risk Review</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('brightex')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">Brightex Inc</div>
             <div class="mb-meta"><span>$36K ARR</span><span>&middot;</span><span style="color:var(--am)">Jun 15 &middot; 31 days &#9888;</span><span>&middot;</span><span>11:00 AM</span></div>
@@ -1521,7 +1557,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
         <div class="rp-view" id="view-nova">
           <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--rd-bg);color:var(--rd-dk);padding:2px 8px;border-radius:4px">Critical</span></div>
+          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--rd-bg);color:var(--rd-dk);padding:2px 8px;border-radius:4px">Critical</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('nova')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">NovaVault</div>
             <div class="mb-meta"><span>$31K ARR</span><span>&middot;</span><span style="color:var(--rd);font-weight:700">Jun 1 &middot; 17 DAYS &#128308;</span><span>&middot;</span><span>3:30 PM</span></div>
@@ -3319,44 +3355,34 @@ function agentBtn(type, acct, btn) {
   }, 1500);
 }
 
-// ── DRAWER RENDERER ──────────────────────────────────────────────────────────
+// ── AGENT OUTPUT RENDERER ────────────────────────────────────────────────────
+// As of v2.8.0 the slide-out drawer is reserved for TeamOS Live. Agent
+// content (Prep Me / Risk Analyst / Save Strategy / Next Steps) now renders
+// directly into the Mission Briefing center panel via view-agentout, then
+// scrollPanelIntoView ensures it's visible. The DRAWER data objects are
+// unchanged — only the render target changed.
 function openAgentDrawer(type, acct) {
   var data = DRAWER[type] && DRAWER[type][acct];
-  if (!data) { openDrawer(); return; }
+  if (!data) return;
 
-  var el = document.getElementById('drawer');
-  var titleEl = document.getElementById('drawer-title');
-  var subEl = document.getElementById('drawer-sub');
-  var scroll = document.getElementById('drawer-scroll');
-  var ft = document.getElementById('drawer-ft');
+  var html = '<div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:2px;letter-spacing:-.01em">' + data.title + '</div>'
+    + '<div style="font-size:11px;color:var(--tx3);margin-bottom:16px">' + data.sub + '</div>';
 
-  if (titleEl) { titleEl.textContent = data.title; }
-  if (subEl) { subEl.textContent = data.sub; }
-
-  // Build sections
-  var html = '';
   data.sections.forEach(function(sec) {
     html += '<div style="margin-bottom:20px">';
     html += '<div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ' + sec.ic + '" style="color:' + sec.cl + ';font-size:12px"></i>' + sec.t + '</div>';
-
     if (sec.score) {
       html += '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:14px"><span style="font-size:38px;font-weight:700;letter-spacing:-.04em;color:' + sec.scoreC + '">' + sec.score + '</span><span style="font-size:14px;font-weight:600;color:' + sec.scoreC + '">' + sec.scoreL + '</span></div>';
     }
-    if (sec.items && sec.items.length) {
-      sec.items.forEach(function(item) {
-        html += '<div style="padding:10px 12px;background:var(--surf2);border-radius:var(--r);border-left:3px solid ' + sec.cl + ';margin-bottom:8px;font-size:12px;color:var(--tx2);line-height:1.55">' + item + '</div>';
-      });
-    }
-    if (sec.objections) {
-      sec.objections.forEach(function(ob) {
-        html += '<div style="padding:10px 12px;background:var(--rd-bg);border-radius:var(--r);border-left:3px solid var(--rd);margin-bottom:8px"><div style="font-size:11px;font-weight:700;color:var(--rd-dk);margin-bottom:4px">' + ob.q + '</div><div style="font-size:11px;color:var(--rd-dk);line-height:1.5">' + ob.a + '</div></div>';
-      });
-    }
-    if (sec.ctas) {
-      sec.ctas.forEach(function(c, i) {
-        html += '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)"><span style="font-size:13px;font-weight:700;color:' + sec.cl + ';min-width:20px;flex-shrink:0">' + (i+1) + '</span><div><div style="font-size:12px;font-weight:500;color:var(--tx);margin-bottom:3px">' + c.t + '</div><div style="font-size:10px;color:var(--tx3)">Owner: ' + c.o + ' &middot; Due: ' + c.d + ' &middot; ' + c.s + '</div></div></div>';
-      });
-    }
+    if (sec.items && sec.items.length) sec.items.forEach(function(item) {
+      html += '<div style="padding:10px 12px;background:var(--surf2);border-radius:var(--r);border-left:3px solid ' + sec.cl + ';margin-bottom:8px;font-size:12px;color:var(--tx2);line-height:1.55">' + item + '</div>';
+    });
+    if (sec.objections) sec.objections.forEach(function(ob) {
+      html += '<div style="padding:10px 12px;background:var(--rd-bg);border-radius:var(--r);border-left:3px solid var(--rd);margin-bottom:8px"><div style="font-size:11px;font-weight:700;color:var(--rd-dk);margin-bottom:4px">' + ob.q + '</div><div style="font-size:11px;color:var(--rd-dk);line-height:1.5">' + ob.a + '</div></div>';
+    });
+    if (sec.ctas) sec.ctas.forEach(function(c, i) {
+      html += '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)"><span style="font-size:13px;font-weight:700;color:' + sec.cl + ';min-width:20px;flex-shrink:0">' + (i+1) + '</span><div><div style="font-size:12px;font-weight:500;color:var(--tx);margin-bottom:3px">' + c.t + '</div><div style="font-size:10px;color:var(--tx3)">Owner: ' + c.o + ' &middot; Due: ' + c.d + ' &middot; ' + c.s + '</div></div></div>';
+    });
     if (sec.note) {
       html += '<div style="padding:12px 14px;background:var(--tl-bg);border-radius:var(--r);border-left:3px solid var(--tl)"><div style="font-size:9px;font-weight:700;color:var(--tl-dk);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Recommended Play</div><div style="font-size:12px;color:var(--tl-dk);line-height:1.55">' + sec.note + '</div></div>';
     }
@@ -3371,22 +3397,26 @@ function openAgentDrawer(type, acct) {
     html += '</div>';
   });
 
-  if (scroll) scroll.innerHTML = html;
-
-  // Build footer
-  var ftHtml = '';
-  if (data.foot) {
+  // Footer buttons (Push to Gainsight / Generate Deck etc) — rendered inline
+  // at the bottom of the agent output panel.
+  if (data.foot && data.foot.length) {
+    html += '<div style="display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--bd);flex-wrap:wrap">';
     data.foot.forEach(function(f) {
       if (f.a === 'deck') {
-        ftHtml += '<button class="dr-ft-btn prim" onclick="openDeckModal(\'' + acct + '\');closeDrawer()" style="font-size:12px;font-weight:700;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--tx);color:#fff;border:none;flex:1">&#9632; ' + f.l + '</button>';
+        html += '<button type="button" onclick="openDeckModal(\'' + acct + '\')" style="flex:1;min-width:140px;font-size:12px;font-weight:700;padding:10px 12px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--tx);color:#fff;border:none">&#9632; ' + f.l + '</button>';
       } else {
-        ftHtml += '<button class="dr-ft-btn sec" onclick="toast(\'' + f.a + '\');closeDrawer()" style="font-size:12px;font-weight:600;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2);flex:1">' + f.l + '</button>';
+        var safe = (f.a || '').replace(/'/g, "\\'");
+        html += '<button type="button" onclick="toast(\'' + safe + '\')" style="flex:1;min-width:140px;font-size:12px;font-weight:600;padding:10px 12px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2)">' + f.l + '</button>';
       }
     });
+    html += '</div>';
   }
-  if (ft) ft.innerHTML = ftHtml;
 
-  openDrawer();
+  var out = document.getElementById('agentout-out');
+  if (out) out.innerHTML = html;
+  var ttl = document.getElementById('agentout-title');
+  if (ttl) ttl.textContent = data.title;
+  openPanel('agentout', null);
 }
 
 function buildRecipe() {
@@ -3575,6 +3605,165 @@ function openDrawer() {
 function closeDrawer() {
   document.getElementById('dov').classList.remove('on');
   document.getElementById('drawer').classList.remove('on');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TeamOS Live — real-time AI companion (v2.8.0)
+// ═══════════════════════════════════════════════════════════════════════════
+var _TL = { acct: 'acme', mode: 'prep' };
+var TL_ACCT_INFO = {
+  acme:     { name:'Acme Corp',    meeting:'QBR',                time:'9:00 AM',  ctx:'Health 82 &middot; $48K &middot; 89 days to renewal &middot; David Kim' },
+  brightex: { name:'Brightex Inc', meeting:'Risk Review',        time:'11:00 AM', ctx:'Health 48 &middot; $36K &middot; 31 days to renewal &middot; Sarah Chen' },
+  nova:     { name:'NovaVault',    meeting:'Executive Check-in', time:'3:30 PM',  ctx:'Health 23 &middot; $31K &middot; 17 days to renewal &middot; Michael Torres' }
+};
+var TL_DEFAULT_MODE = { acme:'prep', brightex:'risk', nova:'risk' };
+var TL_MODE_LABEL   = { risk:'Risk', growth:'Growth', exec:'Executive', discovery:'Discovery', prep:'Prep' };
+
+var TL_OPENINGS = {
+  acme: {
+    risk:      "Acme is healthy at H82 &mdash; no active risk signals. If you want to stress-test the account anyway, the SSO rollout is the most likely future risk: if the IT integration stalls post-QBR, David Kim loses confidence. Want me to help you pre-empt that in today&rsquo;s call?",
+    growth:    "This is your best expansion opportunity right now. David Kim mentioned enterprise tier unprompted in the last Gong call &mdash; that&rsquo;s a buying signal, not a curiosity. The question is how you land it without making the QBR feel like a sales call. Want to run through the expansion pitch?",
+    exec:      "David Kim is Head of IT Security &mdash; technical executive, not a buyer executive. He responds to specificity and ROI tied to his team&rsquo;s operations, not company-wide value statements. Lead with what 142 seats + SSO means for his team&rsquo;s workflow. What&rsquo;s your opening line?",
+    discovery: "You&rsquo;ve had 3 calls with David Kim. The SSO question keeps surfacing but never gets resolved. That&rsquo;s a discovery gap &mdash; you haven&rsquo;t identified whether it&rsquo;s a technical blocker, a budget question, or an internal politics issue. Today&rsquo;s QBR is your best chance. Want the questions that&rsquo;ll uncover the real blocker?",
+    prep:      "You&rsquo;re 38 minutes out from the Acme QBR. Here&rsquo;s what matters: David Kim flagged SSO and enterprise tier in the last call. Zero open CTAs. Health 82. This is a protect-and-grow meeting, not a save meeting. Your job today is to confirm value, advance the SSO conversation, and get verbal commitment on the enterprise tier timeline. What do you want to prep first?"
+  },
+  brightex: {
+    risk:      "Brightex is your most urgent active risk. Health dropped 23 points in 30 days, competitor flagged twice, Sarah Chen asked about SLA terms and hasn&rsquo;t heard back. 31 days to renewal. The account is telling you it&rsquo;s in trouble &mdash; what&rsquo;s your save play?",
+    growth:    "Growth is the wrong frame for Brightex right now. Health is at 48 and falling. The priority is protecting the renewal, not expanding it. If you stabilize the account and close a clean renewal, revisit expansion in Q3. Want to focus on the save play instead?",
+    exec:      "Sarah Chen is VP Ops &mdash; she controls this renewal. She&rsquo;s asking about SLA terms, which means she&rsquo;s either building a business case to stay or a business case to leave. Either way she needs a confident, specific answer &mdash; not a promise to follow up. What&rsquo;s your plan for her SLA question?",
+    discovery: "The Brightex Gong calls show &lsquo;compliance requirements&rsquo; and &lsquo;response time guarantees&rsquo; from Sarah Chen. You haven&rsquo;t closed the loop on either. Discovery here means understanding: is the SLA question a genuine blocker or a negotiation tactic? Is the competitor real or a pressure move? Want the questions that tell you which it is?",
+    prep:      "Brightex Risk Review is on the calendar. Sarah Chen controls the renewal. The SLA question is open. Competitor is real. Health is at 48 and falling. Your job in this meeting is to answer the SLA question confidently, acknowledge the health drop without being defensive, and leave with a clear next step that isn&rsquo;t &lsquo;I&rsquo;ll follow up.&rsquo; What do you want to prep?"
+  },
+  nova: {
+    risk:      "NovaVault is your critical emergency. Health 23, champion gone, 17 days to renewal, 45 days of Gong silence, contract not opened. Michael Torres doesn&rsquo;t know you and the clock is running. Every hour you don&rsquo;t reach Torres is an hour the contract sits unopened. What&rsquo;s your first move?",
+    growth:    "Growth is not the conversation for NovaVault right now. The account needs to survive the next 17 days first. Close the renewal at flat, then revisit expansion in 6 months when Torres has a relationship with the platform. Focus on save.",
+    exec:      "Michael Torres is IT Director &mdash; new to the account, cold to 1Password. He&rsquo;s not going to respond to the same pitch James Wu got. He needs to understand what the platform has already done for his team and what risk he takes on if he doesn&rsquo;t renew. Lead with continuity, not value proposition. What&rsquo;s your opening?",
+    discovery: "You know nothing about Michael Torres. That&rsquo;s the discovery gap. Before you pitch anything you need to know: Does Torres use the product himself? Does he have visibility into what his team uses it for? Was he involved in the original purchase decision? The answers change your entire approach. Want the questions to run in the first 5 minutes?",
+    prep:      "NovaVault is the highest-stakes situation in your portfolio. 17 days. Cold champion. Contract not opened. The prep here isn&rsquo;t about talking points &mdash; it&rsquo;s about approach. Cold email to Torres or warm intro through AE first? What&rsquo;s your read, and what do you want to think through?"
+  }
+};
+
+// Pattern matching: case-insensitive substring on the raw user message.
+// First match wins. Each pattern returns a per-account response.
+var TL_PATTERNS = [
+  {
+    re: /pricing|price|cost/i,
+    get: function(a) {
+      return {
+        nova:     "Don&rsquo;t lead with pricing. Torres is evaluating whether to renew at all &mdash; the question isn&rsquo;t what it costs, it&rsquo;s whether it&rsquo;s worth keeping. Anchor on continuity and what the team has already built on the platform. If he brings up price, acknowledge it and bridge: &lsquo;That&rsquo;s worth discussing &mdash; can we make sure you have full visibility into what your team is using it for first?&rsquo;",
+        brightex: "Sarah&rsquo;s SLA question may be a price conversation in disguise. If she gets the SLA answer she needs and the competitor looks weaker, price becomes less important. Answer the SLA question first. Don&rsquo;t volunteer pricing information before she asks directly.",
+        acme:     "Pricing isn&rsquo;t on the table for Acme &mdash; health is 82 and David Kim is asking about expanding, not reducing. If he brings up price, it&rsquo;s a buying signal for the enterprise tier, not a risk signal. Lean into it."
+      }[a];
+    }
+  },
+  {
+    re: /competitor|competition|okta|lastpass|1pass/i,
+    get: function(a) {
+      return {
+        nova:     "Competitor hasn&rsquo;t been mentioned in any Gong call for NovaVault. Don&rsquo;t introduce the topic. If Torres brings it up, ask what they&rsquo;ve heard specifically before responding. Never bad-mouth competitors &mdash; it makes you look defensive.",
+        brightex: "Competitor has been flagged in the last 2 Gong calls with Brightex. You don&rsquo;t know which competitor yet. Your best move: &lsquo;Can you share what you&rsquo;ve been looking at? I want to make sure we&rsquo;re comparing the right things.&rsquo; That tells you the competitor and their pitch in one question.",
+        acme:     "No competitor signals in Acme Gong calls. Expansion conversation is clean. No need to introduce competitive framing."
+      }[a];
+    }
+  },
+  {
+    re: /what should i say|what do i say|help me say|how do i say/i,
+    get: function() {
+      return "Give me more context &mdash; what situation are you in? Are they pushing back on something, asking a question you&rsquo;re not sure how to answer, or is this an opening line? The more specific you are, the better I can help.";
+    }
+  },
+  {
+    re: /objection|pushback|they said/i,
+    get: function() {
+      return "What exactly did they say? Give me the quote or as close as you can get, and I&rsquo;ll give you the response.";
+    }
+  },
+  {
+    re: /\bhelp\b|what can you do|\?\?|stuck/i,
+    get: function() {
+      return "I&rsquo;m loaded with full context on this account &mdash; health, renewal, Gong history, champion status, open CTAs. Ask me anything: &lsquo;What should I not say?&rsquo; &lsquo;How do I handle [specific situation]?&rsquo; &lsquo;What&rsquo;s the one thing I need to accomplish in this call?&rsquo; I&rsquo;ll give you a direct answer.";
+    }
+  }
+];
+
+function _tlEscape(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function _tlAppend(role, html) {
+  var chat = document.getElementById('tl-chat');
+  if (!chat) return;
+  var bubble = document.createElement('div');
+  bubble.className = 'tl-msg tl-msg-' + role;
+  if (role === 'bot') {
+    bubble.innerHTML = '<i class="ti ti-robot"></i><div class="tl-msg-txt">' + html + '</div>';
+  } else {
+    bubble.innerHTML = '<div class="tl-msg-txt">' + html + '</div>';
+  }
+  chat.appendChild(bubble);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function _tlSetMode(mode) {
+  _TL.mode = mode;
+  document.querySelectorAll('.tl-mode').forEach(function(c){
+    c.classList.toggle('on', c.getAttribute('data-mode') === mode);
+  });
+  var chat = document.getElementById('tl-chat');
+  if (chat) chat.innerHTML = '';
+  var opening = (TL_OPENINGS[_TL.acct] && TL_OPENINGS[_TL.acct][mode]) || '';
+  if (opening) _tlAppend('bot', opening);
+}
+
+function _tlShortOpening(acct, mode) {
+  var op = (TL_OPENINGS[acct] && TL_OPENINGS[acct][mode]) || '';
+  // First two sentences (or first sentence if only one).
+  var parts = op.split(/(?<=\.)\s+/);
+  return parts.slice(0, 2).join(' ');
+}
+
+function _tlMatchResponse(msg) {
+  for (var i = 0; i < TL_PATTERNS.length; i++) {
+    var p = TL_PATTERNS[i];
+    if (p.re.test(msg)) {
+      return p.get(_TL.acct) || '';
+    }
+  }
+  var info = TL_ACCT_INFO[_TL.acct] || { name: _TL.acct };
+  return 'Got it. Based on what I know about ' + info.name + ', here&rsquo;s my take: ' + _tlShortOpening(_TL.acct, _TL.mode) + ' What specifically do you want to work through?';
+}
+
+function _tlSendMessage(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var fld = document.getElementById('tl-input-fld');
+  if (!fld) return false;
+  var msg = (fld.value || '').trim();
+  if (!msg) return false;
+  _tlAppend('user', _tlEscape(msg));
+  fld.value = '';
+  setTimeout(function() {
+    var response = _tlMatchResponse(msg);
+    _tlAppend('bot', response);
+  }, 300);
+  return false;
+}
+
+function openTeamOSLive(acct, mode) {
+  if (!TL_ACCT_INFO[acct]) acct = window._activeAccount || 'acme';
+  if (!TL_ACCT_INFO[acct]) acct = 'acme';
+  _TL.acct = acct;
+  _TL.mode = mode || TL_DEFAULT_MODE[acct] || 'prep';
+  var info = TL_ACCT_INFO[acct];
+  var ah = document.getElementById('tl-acct');
+  var ax = document.getElementById('tl-ctx');
+  if (ah) ah.innerHTML = info.name + ' &middot; ' + info.meeting + ' &middot; ' + info.time;
+  if (ax) ax.innerHTML = 'Context loaded: ' + info.ctx;
+  _tlSetMode(_TL.mode);
+  openDrawer();
+  setTimeout(function() {
+    var fld = document.getElementById('tl-input-fld');
+    if (fld) fld.focus();
+  }, 280);
 }
 
 var _deckTimer = null;
@@ -3970,15 +4159,26 @@ if ('serviceWorker' in navigator) {
 
 <div class="dov" id="dov" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
-  <div class="dr-hd">
-    <div>
-      <div class="dr-title" id="drawer-title">Agent</div>
-      <div class="dr-sub" id="drawer-sub">Select an agent</div>
+  <div class="tl-hd">
+    <div style="min-width:0;flex:1">
+      <div class="tl-hd-t-row"><span class="tl-pulse"></span><i class="ti ti-bolt" style="font-size:12px"></i> TEAMOS LIVE</div>
+      <div class="tl-acct" id="tl-acct">Acme Corp &middot; QBR &middot; 9:00 AM</div>
+      <div class="tl-ctx" id="tl-ctx">Context loaded: Health 82 &middot; $48K &middot; 89 days to renewal &middot; David Kim</div>
     </div>
-    <button class="dr-close" onclick="closeDrawer()" aria-label="Close drawer">&times;</button>
+    <button class="tl-close" onclick="closeDrawer()" aria-label="Close TeamOS Live" type="button">&times;</button>
   </div>
-  <div class="dr-scroll" id="drawer-scroll"></div>
-  <div class="dr-ft" id="drawer-ft"></div>
+  <div class="tl-modes" id="tl-modes">
+    <button class="tl-mode" data-mode="risk"      type="button" onclick="_tlSetMode('risk')">🚨 Risk</button>
+    <button class="tl-mode" data-mode="growth"    type="button" onclick="_tlSetMode('growth')">📈 Growth</button>
+    <button class="tl-mode" data-mode="exec"      type="button" onclick="_tlSetMode('exec')">👔 Executive</button>
+    <button class="tl-mode" data-mode="discovery" type="button" onclick="_tlSetMode('discovery')">🔍 Discovery</button>
+    <button class="tl-mode" data-mode="prep"      type="button" onclick="_tlSetMode('prep')">📋 Prep</button>
+  </div>
+  <div class="tl-chat" id="tl-chat"></div>
+  <form class="tl-input" onsubmit="return _tlSendMessage(event)">
+    <input id="tl-input-fld" class="tl-input-fld" type="text" autocomplete="off" placeholder="Type anything&hellip;" aria-label="Message TeamOS Live" />
+    <button class="tl-input-send" type="submit">Send <i class="ti ti-arrow-right"></i></button>
+  </form>
 </div>
 
 <div class="mov" id="deck-modal" onclick="if(event.target===this)closeDeckModal()">

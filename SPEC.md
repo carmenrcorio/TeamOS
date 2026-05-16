@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.6.0
+**Version:** 2.8.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,64 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.8.0] — 2026-05-16
+
+The 380px slide-out drawer is repurposed from "agent output panel" into **TeamOS Live** — a real-time conversational AI companion. Agent content (Prep Me / Risk Analyst / Save Strategy / Next Steps) previously rendered in the drawer now lands inline in the Mission Briefing center panel via the existing `view-agentout`. The drawer is reserved exclusively for TeamOS Live.
+
+### Added — TeamOS Live drawer
+- **Dark drawer header** — pulsing teal dot + `⚡ TEAMOS LIVE` label, account · meeting · time on row 2, "Context loaded: Health X · $Y · N days to renewal · Champion" on row 3, close button on the right. Three account profiles wired (Acme / Brightex / NovaVault) in `TL_ACCT_INFO`.
+- **Situation Mode selector** — horizontal row of 5 chips: `🚨 Risk` `📈 Growth` `👔 Executive` `🔍 Discovery` `📋 Prep`. Active chip teal + white, inactive outlined. Default mode per account (`TL_DEFAULT_MODE`): NovaVault → Risk, Brightex → Risk, Acme → Prep. Switching modes clears the chat and loads a new opening message instantly.
+- **Conversational chat area** — scrollable, bot bubbles left-aligned (light gray, `🤖` icon, teal-tinted), user bubbles right-aligned (teal background, white text). Auto-scrolls to the latest message.
+- **Input bar** — fixed at the bottom, teal Send button matching the Ask Dust submit style. Enter submits. Input clears after send. Response appears in chat within 300ms.
+
+### Added — opening messages (15 combinations)
+All 5 modes × 3 accounts wired in `TL_OPENINGS`, copied verbatim from the spec. Each message is account-aware (specific names, numbers, signals) and mode-aware (Risk pre-empts churn; Growth pushes expansion; Executive frames stakeholder dynamics; Discovery proposes the missing question; Prep walks meeting logistics). Loaded automatically on drawer open and on every mode switch.
+
+### Added — pattern-matched responses
+`TL_PATTERNS` is an ordered array; first match wins, case-insensitive substring on the raw user message:
+- **pricing / price / cost** — per-account response (Nova: don't lead with pricing, anchor on continuity; Brightex: answer SLA first, don't volunteer pricing; Acme: pricing is a buying signal, lean in).
+- **competitor / competition / Okta / LastPass / 1Pass** — per-account response (Nova: no competitor in Gong, don't introduce; Brightex: flagged twice, ask which one; Acme: clean, no competitive framing).
+- **what should I say / how do I say / help me say** — generic "give me more context" response.
+- **objection / pushback / they said** — "what exactly did they say?" response.
+- **help / what can you do / ?? / stuck** — meta response listing what TL knows.
+- **Default fallback** — "Got it. Based on what I know about [account], here's my take: [first ~2 sentences of the active mode's opening]. What specifically do you want to work through?"
+
+### Changed — agent output target
+- `openAgentDrawer(type, acct)` now renders directly into `view-agentout` (the inline Mission Briefing panel introduced in v2.5.0) and calls `openPanel('agentout', null)` — which in turn triggers `scrollPanelIntoView` (v2.1.0). The slide-out drawer is no longer opened from any agent button.
+- Section markup is identical to the previous drawer render (snapshot / last Gong / discovery / battle card / churn score / save play / extension terms / numbered CTAs / recommended play). Footer action buttons (Push to Gainsight / Generate Deck etc) now render inline at the bottom of the agent output instead of in a separate drawer footer; same `toast()` and `openDeckModal()` behavior.
+- **No DRAWER data changes.** All Prep / Risk / Save / Next content objects are untouched — they just paint in a different container now.
+- All existing call sites continue to work without edits: Priority Stack agent buttons, Today's Tasks "Generate prep" / "Draft outreach" / "Draft reply" rows, Mission Briefing default-view "My Agents" buttons, Live Signals row action buttons, Agent Hub Quick Launch Matrix (all 12), task brief Save / Risk / Prep buttons, notification rail Save Play button, Slack-summary Save Strategy button. All inherit the new render target through the modified `openAgentDrawer`.
+- The `agentBtn(type, acct, btn)` loading-state wrapper (1.5s spinner on the source button before render) is unchanged; it still calls `openAgentDrawer` at the end, which now lands in the panel.
+
+### Added — `[⚡ TeamOS Live]` trigger button
+Small teal button (`.mb-tl-btn`) added to the right of all four Mission Briefing headers: `view-default` (Acme pre-load), `view-acme`, `view-brightex`, `view-nova`. Click → `openTeamOSLive(acct)` opens the drawer in that account's default mode. Not rendered on Ghost-Buster, Dust, Draft, Slack Summary, Task Brief, or Agent Output views — those are non-Mission-Briefing surfaces.
+
+### Verified end-to-end in a headless render
+- Calling `openAgentDrawer('save','nova')` opens `view-agentout` with title "Save Strategy" and leaves the slide-out drawer closed. Confirmed.
+- Clicking the TL button in the Acme Mission Briefing opens the drawer with header "Acme Corp · QBR · 9:00 AM" + "Context loaded: Health 82 · $48K · 89 days to renewal · David Kim", default mode = Prep, opening message = the Acme Prep opening from the spec. Confirmed.
+- Switching to Risk mode resets the chat and loads the Acme Risk opening. Confirmed.
+- Pattern matches: "what about pricing" returns the Acme pricing response; "what about Okta" returns the Acme competitor response. Confirmed.
+- Default fallback for an unmatched query starts with "Got it. Based on what I know about Acme Corp, here's my take:" plus the first two sentences of the active mode's opening. Confirmed.
+- Per-account default modes verified: `acme → prep`, `brightex → risk`, `nova → risk`.
+
+### Removed
+- The old drawer HTML (`#drawer-title`, `#drawer-sub`, `#drawer-scroll`, `#drawer-ft`) is gone — replaced inside `#drawer` by the TeamOS Live structure (`.tl-hd`, `.tl-modes`, `.tl-chat`, `.tl-input`).
+- The drawer-footer button helpers (`.dr-ft-btn.prim` / `.dr-ft-btn.sec`) are unused; CSS rules survive harmlessly for now.
+
+### Not touched
+- DRAWER data objects (the Prep / Risk / Save / Next content for each account) — unchanged.
+- All Mission Briefing pre-loaded content (Acme QBR briefing, view-acme/brightex/nova bodies), the Ghost-Buster wizard (v2.6.0), the Agent Hub & Workspace card (v2.5.0), the Task Brief panel (v2.3.0), Ask Dust + Coach Me + Custom Agents (v2.0.0), the pulse strip + Tasks dropdown, the notification rail, the calendar, the Live Signals widget, the Urgent Inbox + Today's Tasks, the deck modal, the Service Worker + offline resilience (v2.4.0), the brief-strip equal-height layout (v2.2.0), the universal account click (v2.0.0), Mission Briefing scroll-into-view (v2.1.0), Recipe for Success tab.
+- `openPanel`, `resetPanel`, `scrollPanelIntoView`, `closePops`, `closeNotifPops`, `openGhostBusterFromPopover`, `backFromGhostBuster`, `restoreAgentOutput`, every Ask Dust template, every task brief, every Ghost-Buster wizard view — all unchanged.
+
+### Engineering
+- TeamOS Live JS module is ~150 lines: state + per-account info table + default-mode map + 15 opening messages + 5 pattern entries + 7 helpers (`openTeamOSLive`, `_tlSetMode`, `_tlAppend`, `_tlSendMessage`, `_tlMatchResponse`, `_tlShortOpening`, `_tlEscape`).
+- CSS namespace `.tl-*` plus one `.mb-tl-btn` for the trigger. ~30 new rules, all bound to existing tokens. No new colors.
+- The 300ms response delay is a `setTimeout` after the user's message renders — no spinner needed in Phase 1.
+- All user input is HTML-escaped before insertion into the chat bubble. Pattern matching operates on the raw text.
+- Sending while the input is empty is a no-op (no empty user bubble, no bot response triggered).
 
 ---
 
