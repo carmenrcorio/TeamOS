@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.5.0
+**Version:** 2.6.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,62 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.6.0] — 2026-05-16
+
+Ghost-Buster expanded from a single pre-drafted email into a full re-engagement strategy wizard. The three existing views (`view-meridian`, `view-creston`, `view-apex`) keep their ids and routing — only the content inside each `.rp-scroll` is replaced.
+
+### Added — wizard structure (all 3 views)
+- **Rich header** — pill chip with the account short-name + a days-dark badge sit next to the `👻 Ghost-Buster` title in `.rp-hd`.
+- **Account hero block** — large account name, ARR + renewal sub-line, divider.
+- **Section 1 · Situation Read** — three color-coded cards (`.gb-read-row` with `r`/`warn`/`intact` variants):
+  - Why they went dark (Dust hypothesis)
+  - Champion status (intact / dormant / critical)
+  - Risk of wrong approach
+- **Section 2 · 3-Touch Sequence** — three native `<details>` blocks, Touch 1 open by default. Each touch shows the recipient, subject, full body in a `.gb-touch-txt` block, and per-touch actions: Send via Gmail / Edit first (or Copy message for the Slack/LinkedIn middle touch).
+- **Section 3 · Re-engagement Intel** — compact two-column key/value grid (`.gb-intel`) holding the per-account intelligence (last Gong signal, adoption drop, Dust read, recommended angle, inbound signal / champion status / risk level / timeline).
+- **Section 4 · Action footer** — dashed top divider, full-width buttons: `Push 3-touch sequence to Gainsight CTAs` + `Send Touch 1 now` (Apex adds a leading `Notify AE — request warm intro` button).
+
+### Added — Apex-only "Champion Change Protocol" section
+Sits between Situation Read and the 3-touch sequence. Amber-themed `.gb-proto` container with three labeled steps:
+1. Check AE relationship → `[Notify AE — request warm intro]` toasts the spec's "Slack DM sent to AE · Apex Dynamics warm intro requested ✓"
+2. LinkedIn check → `[Check LinkedIn connection ↗]` toasts "Opening LinkedIn — Ryan Patel ✓"
+3. Recommended approach — text-only summary of the `AE intro` vs `no AE` paths
+
+### Added — wizard JS helpers
+- `gbSendTouch(acct, who, n)` → `"Touch [n] sent to [who] · Logged in [Account] Gainsight timeline ✓"`. Used by every Send via Gmail button and by the Send Touch 1 now footer button.
+- `gbEdit(btn)` → toggles `contenteditable` on the sibling `.gb-touch-txt`, swaps button label between `Edit first` and `Save & Send`, focuses the editable area. CSS `[contenteditable="true"]` adds a teal inset ring so the active edit field is visually obvious.
+- `gbCopyTouch(btn)` → writes the touch text to the clipboard via `navigator.clipboard.writeText` (gracefully ignored if unavailable), toasts "Copied to clipboard ✓".
+- `gbPushSequence(acct)` → toasts "3 CTAs created in Gainsight · Touch 1 today · Touch 2 in 5d · Touch 3 in 10d ✓".
+- `gbNotifyAE(acct)` → toasts "Slack DM sent to AE · [Account] warm intro requested ✓".
+- `gbLinkedIn(person)` → toasts "Opening LinkedIn — [person] ✓".
+
+### Per-account content (per spec)
+- **Meridian Health Systems** — $22K ARR · 73 days dark · Renews Jun 30. Touches sent to Jennifer Ramos (IT Manager). Touch 1 email about the SSO rollout, Touch 2 LinkedIn DM at day 5, Touch 3 urgency email at day 10. Intel includes the live inbound signal "Jennifer emailed yesterday".
+- **Creston Software** — $18K ARR · 67 days dark · Renews Jul 15. Touches sent to Marcus Webb (VP Engineering). Touch 1 references onboarding goals, Touch 2 Slack DM at day 5, Touch 3 short check email at day 10. Intel positions this as "passive neglect, low churn risk".
+- **Apex Dynamics** — $15K ARR · 61 days dark · Renews Aug 1. **Champion change** flow: James Wu → Ryan Patel. All three touches addressed to Ryan, Touch 1 leads with "Continuing where James Wu left off". Intel flags risk level as HIGH with the AE-intro-first recommendation.
+
+### Verified end-to-end in a headless render
+- All 3 views open via `openPanel(acct, null)` and route through `backFromGhostBuster()` → `view-default`. Confirmed for all three accounts.
+- Each view has 3 touches, color-coded Situation Read cards, a populated Intel grid, and the right number of footer buttons (Meridian 2, Creston 2, Apex 3).
+- Only Apex shows the Champion Change Protocol — 3 protocol rows present; 0 on the other two.
+- Toasts captured for every button kind: Send Touch 1 ("Touch 1 sent to Jennifer Ramos · Logged in Meridian Health Systems Gainsight timeline ✓"), Push sequence ("3 CTAs created in Gainsight · Touch 1 today · Touch 2 in 5d · Touch 3 in 10d ✓"), Notify AE ("Slack DM sent to AE · Apex Dynamics warm intro requested ✓"), LinkedIn ("Opening LinkedIn — Ryan Patel ✓").
+- Edit toggle: clicking `Edit first` sets `contenteditable="true"` on the body and swaps the button label to `Save & Send`. Second click restores read-only and toasts "Draft saved · Ready to send ✓".
+
+### Removed
+- `markSent(id)` and the three `id="send-meridian"` / `send-creston` / `send-apex` buttons — replaced by the wizard's per-touch `gbSendTouch` flow. The old single-button "outreach email sent · logged in Salesforce" path is no longer reachable.
+- Old single-email content blocks inside each Ghost-Buster view (`.ge-ctx` / `.ge-subj` / `.ge-body` / `.ge-btns` markup). The `.ge-*` CSS rules are untouched — they still style the `view-draft` Gmail Draft Reply path used by the notification rail.
+
+### Not touched
+- `openPanel`, `resetPanel`, `openGhostBusterFromPopover`, `backFromGhostBuster`, `_lastBriefingView` — all unchanged. The wizard is reached through the same paths as the previous single-email view (Dark Zone widget, pulse-strip dark-accounts popover, task brief Ghost-Buster button).
+- Every other view (`view-default`, `view-acme/brightex/nova`, `view-dust`, `view-draft`, `view-slack-sum`, `view-taskbrief`, `view-agentout`), agent drawer, deck modal, calendar, brief strip, Agent Hub & Workspace (v2.5.0), Ask Dust + Coach Me + Custom Agents (v2.0.0), notification rail, pulse strip, Tasks dropdown + Task Brief panel (v2.3.0), Service Worker + offline resilience (v2.4.0), Recipe for Success tab.
+
+### Engineering
+- New CSS namespace `.gb-*` (~30 rules) bound entirely to existing tokens. No new color values introduced. Wizard collapsibles use the native `<details>`/`<summary>` element — zero JS for expand/collapse.
+- Wizard helpers are six small functions; total wizard JS additions ≈ 45 lines.
+- `gbEdit` walks up to the nearest `.gb-touch-body` so a single helper handles every touch in every view without per-touch ids.
 
 ---
 

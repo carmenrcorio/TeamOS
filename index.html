@@ -599,6 +599,68 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .ah-doc-btn{font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;flex-shrink:0}
 .ah-doc-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
 .ah-doc-btn i{font-size:11px}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Ghost-Buster Re-engagement Wizard (v2.6.0)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.gb-hd-pill{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;background:var(--rd-bg);color:var(--rd-dk);margin-left:8px}
+.gb-hd-days{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase;background:var(--surf2);color:var(--tx2);border:1px solid var(--bd);margin-left:6px}
+.gb-acct-hd{padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:14px}
+.gb-acct-nm{font-size:17px;font-weight:700;color:var(--tx);letter-spacing:-.02em;line-height:1.2}
+.gb-acct-meta{font-size:11px;color:var(--tx3);margin-top:4px}
+.gb-sec{margin-bottom:18px}
+.gb-sec:last-of-type{margin-bottom:0}
+.gb-sec-t{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.gb-sec-t i{color:var(--rd);font-size:12px}
+
+.gb-read{display:flex;flex-direction:column;gap:8px}
+.gb-read-row{padding:10px 12px;background:var(--surf2);border-radius:var(--r);border-left:3px solid var(--rd)}
+.gb-read-row.warn{border-left-color:var(--am)}
+.gb-read-row.intact{border-left-color:var(--tl)}
+.gb-read-l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;color:var(--rd-dk)}
+.gb-read-row.warn .gb-read-l{color:var(--am-dk)}
+.gb-read-row.intact .gb-read-l{color:var(--tl-dk)}
+.gb-read-v{font-size:11px;color:var(--tx2);line-height:1.55}
+
+/* Champion Change Protocol (Apex only) */
+.gb-proto{border:1px solid var(--am);border-radius:var(--rlg);background:var(--am-bg);overflow:hidden}
+.gb-proto-row{padding:11px 13px;border-bottom:1px solid rgba(217,119,6,.18);display:flex;flex-direction:column;gap:6px}
+.gb-proto-row:last-child{border-bottom:none}
+.gb-proto-step{font-size:9px;font-weight:700;color:var(--am-dk);text-transform:uppercase;letter-spacing:.05em}
+.gb-proto-t{font-size:12px;font-weight:700;color:var(--tx)}
+.gb-proto-d{font-size:11px;color:var(--tx2);line-height:1.5}
+.gb-proto-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+
+/* 3-touch sequence — collapsible <details> rows */
+.gb-touch{border:1px solid var(--bd);border-radius:var(--r);background:var(--surf);overflow:hidden}
+.gb-touch + .gb-touch{margin-top:8px}
+.gb-touch summary{padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;list-style:none;background:var(--surf2);user-select:none}
+.gb-touch summary::-webkit-details-marker{display:none}
+.gb-touch summary:hover{background:#eeeeea}
+.gb-touch-n{font-size:10px;font-weight:700;color:var(--rd);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0}
+.gb-touch-type{font-size:11px;color:var(--tx2);font-weight:600;flex:1}
+.gb-touch-chev{font-size:14px;color:var(--tx3);transition:transform .2s;flex-shrink:0}
+.gb-touch[open] .gb-touch-chev{transform:rotate(180deg)}
+.gb-touch-body{padding:11px 13px;border-top:1px solid var(--bd)}
+.gb-touch-to{font-size:10px;color:var(--tx3);margin-bottom:5px;font-weight:600}
+.gb-touch-subj{font-size:12px;font-weight:600;color:var(--tx);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.gb-touch-txt{font-size:12px;color:var(--tx);line-height:1.6;white-space:pre-wrap;margin-bottom:10px;padding:9px 11px;background:var(--surf2);border-radius:var(--r);min-height:40px;outline:none}
+.gb-touch-txt[contenteditable="true"]{background:var(--tl-bg);box-shadow:inset 0 0 0 1px var(--tl)}
+.gb-touch-acts{display:flex;gap:6px;flex-wrap:wrap}
+
+.gb-btn{font-size:10px;font-weight:700;padding:6px 10px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:all .1s;line-height:1.2}
+.gb-btn:hover{background:var(--surf2);border-color:var(--tx2);color:var(--tx)}
+.gb-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.gb-btn.prim:hover{background:#2a2a28}
+.gb-btn.danger{background:var(--rd);color:#fff;border-color:var(--rd)}
+.gb-btn.danger:hover{background:#b91c1c}
+
+.gb-intel{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;background:var(--surf2);border-radius:var(--r);padding:11px 13px}
+.gb-intel-l{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;align-self:start;padding-top:2px;white-space:nowrap}
+.gb-intel-v{font-size:11px;color:var(--tx);line-height:1.55}
+
+.gb-foot{display:flex;flex-direction:column;gap:6px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--bd)}
+.gb-foot .gb-btn{justify-content:center;padding:10px 12px;font-size:11px}
 .du-loop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:11px}
 .du-loop:last-child{border-bottom:none}
 .du-loop-l{flex:1;min-width:0}
@@ -1482,44 +1544,231 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
         <div class="rp-view" id="view-meridian">
           <div class="rp-back" onclick="backFromGhostBuster()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-          <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
+          <div class="rp-hd">
+            <div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster</div>
+            <div><span class="gb-hd-pill">Meridian</span><span class="gb-hd-days">73 days dark</span></div>
+          </div>
           <div class="rp-scroll">
-            <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Meridian Health Systems</div>
-            <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">73 days dark &middot; $22K ARR &middot; Renews Jun 30</div>
-            <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Personalized from Gong (Mar 15): SSO rollout discussion was the last positive touchpoint. Icebreaker agent references this specifically.</div>
-            <div class="ge-subj">Subject: Checking in &mdash; picking up where we left off on SSO</div>
-            <div class="ge-body">Hi [Name],
+            <div class="gb-acct-hd">
+              <div class="gb-acct-nm">Meridian Health Systems</div>
+              <div class="gb-acct-meta">$22K ARR &middot; Renews Jun 30</div>
+            </div>
 
-I wanted to reach out personally. The last time we connected in March, your team was in the middle of rolling out SSO and had just seen some early adoption wins.
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-bulb"></i> Situation Read</div>
+              <div class="gb-read">
+                <div class="gb-read-row">
+                  <div class="gb-read-l">Why they went dark</div>
+                  <div class="gb-read-v">Last positive Gong was March 15 &mdash; SSO rollout discussion. Gainsight shows adoption dropped 40% in April. <strong>Dust hypothesis:</strong> SSO rollout hit a technical blocker internally. No one flagged it to the CSM. They didn&rsquo;t go dark because they&rsquo;re unhappy &mdash; they went dark because they&rsquo;re stuck.</div>
+                </div>
+                <div class="gb-read-row intact">
+                  <div class="gb-read-l">Champion status</div>
+                  <div class="gb-read-v">Jennifer Ramos (IT Manager) still appears active &mdash; she sent an inbound check-in email yesterday. Champion is intact.</div>
+                </div>
+                <div class="gb-read-row warn">
+                  <div class="gb-read-l">Risk of wrong approach</div>
+                  <div class="gb-read-v">Do not lead with renewal or commercial pressure. Jennifer is an IT stakeholder, not a buyer. Wrong email = she forwards to procurement and disengages personally.</div>
+                </div>
+              </div>
+            </div>
 
-I have a couple of product updates that align directly with where you were headed. Would you have 20 minutes this week?
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-list-numbers"></i> 3-Touch Sequence</div>
+
+              <details class="gb-touch" open>
+                <summary>
+                  <span class="gb-touch-n">Touch 1</span>
+                  <span class="gb-touch-type">Email &middot; Send today</span>
+                  <i class="ti ti-chevron-down gb-touch-chev"></i>
+                </summary>
+                <div class="gb-touch-body">
+                  <div class="gb-touch-to">To: Jennifer Ramos &middot; jennifer.ramos@meridian.com</div>
+                  <div class="gb-touch-subj">Subject: Quick question about your SSO rollout</div>
+                  <div class="gb-touch-txt">Jennifer,
+
+Hope things are well at Meridian. I was reviewing your account and noticed we haven&rsquo;t connected since your SSO rollout kicked off in March &mdash; I wanted to check in directly.
+
+How is the rollout going? I&rsquo;ve helped a few other teams work through IT integration questions on the SSO side and would love to make sure you have everything you need.
+
+Are you free for a 20-minute call this week?
 
 &mdash; Carmen</div>
-            <div class="ge-btns">
-              <button class="ge-send" id="send-meridian" onclick="markSent('meridian')">Send via Gmail</button>
-              <button class="ge-edit">Edit first</button>
+                  <div class="gb-touch-acts">
+                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('meridian','Jennifer Ramos',1)"><i class="ti ti-send"></i> Send via Gmail</button>
+                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
+                  </div>
+                </div>
+              </details>
+
+              <details class="gb-touch">
+                <summary>
+                  <span class="gb-touch-n">Touch 2</span>
+                  <span class="gb-touch-type">LinkedIn message &middot; Day 5</span>
+                  <i class="ti ti-chevron-down gb-touch-chev"></i>
+                </summary>
+                <div class="gb-touch-body">
+                  <div class="gb-touch-to">To: Jennifer Ramos &middot; LinkedIn DM</div>
+                  <div class="gb-touch-subj">Subject: (LinkedIn — no subject)</div>
+                  <div class="gb-touch-txt">Jennifer, I left you an email earlier this week about your SSO rollout. Happy to connect whenever works &mdash; even a quick call would help me make sure you&rsquo;re set up for success.</div>
+                  <div class="gb-touch-acts">
+                    <button class="gb-btn" type="button" onclick="gbCopyTouch(this)"><i class="ti ti-copy"></i> Copy message</button>
+                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
+                  </div>
+                </div>
+              </details>
+
+              <details class="gb-touch">
+                <summary>
+                  <span class="gb-touch-n">Touch 3</span>
+                  <span class="gb-touch-type">Email &middot; Day 10 (urgency)</span>
+                  <i class="ti ti-chevron-down gb-touch-chev"></i>
+                </summary>
+                <div class="gb-touch-body">
+                  <div class="gb-touch-to">To: Jennifer Ramos &middot; jennifer.ramos@meridian.com</div>
+                  <div class="gb-touch-subj">Subject: Last reach-out &mdash; Meridian + 1Password</div>
+                  <div class="gb-touch-txt">Jennifer, I&rsquo;ve tried to connect a couple of times over the past two weeks. I want to make sure Meridian is getting full value from the platform before your renewal in June.
+
+If now isn&rsquo;t the right time, just let me know &mdash; I&rsquo;ll follow your lead. But I&rsquo;d hate for a technical question to sit unresolved when I&rsquo;m here to help.
+
+15 minutes this week?
+
+&mdash; Carmen</div>
+                  <div class="gb-touch-acts">
+                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('meridian','Jennifer Ramos',3)"><i class="ti ti-send"></i> Send via Gmail</button>
+                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-radar-2"></i> Re-engagement Intel</div>
+              <div class="gb-intel">
+                <div class="gb-intel-l">Last Gong signal</div><div class="gb-intel-v">SSO rollout &middot; March 15 &middot; positive sentiment</div>
+                <div class="gb-intel-l">Adoption drop</div><div class="gb-intel-v">40% in April (Gainsight)</div>
+                <div class="gb-intel-l">Dust read</div><div class="gb-intel-v">Technical blocker, not churn risk</div>
+                <div class="gb-intel-l">Recommended angle</div><div class="gb-intel-v">Lead with technical help, not commercial value</div>
+                <div class="gb-intel-l">Inbound signal</div><div class="gb-intel-v"><strong style="color:var(--tl-dk)">Jennifer emailed yesterday</strong> &mdash; respond within the hour</div>
+              </div>
+            </div>
+
+            <div class="gb-foot">
+              <button class="gb-btn" type="button" onclick="gbPushSequence('meridian')"><i class="ti ti-stack-push"></i> Push 3-touch sequence to Gainsight CTAs</button>
+              <button class="gb-btn prim" type="button" onclick="gbSendTouch('meridian','Jennifer Ramos',1)"><i class="ti ti-send"></i> Send Touch 1 now</button>
             </div>
           </div>
         </div>
 
         <div class="rp-view" id="view-creston">
           <div class="rp-back" onclick="backFromGhostBuster()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-          <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
+          <div class="rp-hd">
+            <div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster</div>
+            <div><span class="gb-hd-pill">Creston</span><span class="gb-hd-days">67 days dark</span></div>
+          </div>
           <div class="rp-scroll">
-            <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Creston Software</div>
-            <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">67 days dark &middot; $18K ARR &middot; Renews Aug 20</div>
-            <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Personalized from Gong (Feb 28): positive onboarding call was the last touchpoint before going dark. Icebreaker references that momentum.</div>
-            <div class="ge-subj">Subject: Quick check-in &mdash; how&rsquo;s the team settling in?</div>
-            <div class="ge-body">Hi [Name],
+            <div class="gb-acct-hd">
+              <div class="gb-acct-nm">Creston Software</div>
+              <div class="gb-acct-meta">$18K ARR &middot; Renews Jul 15</div>
+            </div>
 
-It&rsquo;s been a few months since your onboarding. Your team hit the ground running in February &mdash; I&rsquo;d love to hear how things are going.
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-bulb"></i> Situation Read</div>
+              <div class="gb-read">
+                <div class="gb-read-row warn">
+                  <div class="gb-read-l">Why they went dark</div>
+                  <div class="gb-read-v">Last Gong was onboarding review in March. Health was 76 &mdash; all good. No negative signals. <strong>Dust hypothesis:</strong> the champion went heads-down on an internal project and the CSM relationship de-prioritized passively. This is a neglect dark, not a risk dark.</div>
+                </div>
+                <div class="gb-read-row intact">
+                  <div class="gb-read-l">Champion status</div>
+                  <div class="gb-read-v">Marcus Webb (VP Engineering) &mdash; no LinkedIn activity change, still at Creston. Champion likely intact, just dormant.</div>
+                </div>
+                <div class="gb-read-row warn">
+                  <div class="gb-read-l">Risk of wrong approach</div>
+                  <div class="gb-read-v">Marcus is a technical VP. Generic check-in emails read as automated. Must reference something specific from the last interaction to prove this is a human touch.</div>
+                </div>
+              </div>
+            </div>
 
-I also have a few product updates that align with the goals you shared during setup. Worth a quick 20-minute call?
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-list-numbers"></i> 3-Touch Sequence</div>
+
+              <details class="gb-touch" open>
+                <summary>
+                  <span class="gb-touch-n">Touch 1</span>
+                  <span class="gb-touch-type">Email &middot; Send today</span>
+                  <i class="ti ti-chevron-down gb-touch-chev"></i>
+                </summary>
+                <div class="gb-touch-body">
+                  <div class="gb-touch-to">To: Marcus Webb &middot; m.webb@creston.com</div>
+                  <div class="gb-touch-subj">Subject: Following up on your onboarding goals</div>
+                  <div class="gb-touch-txt">Marcus,
+
+It&rsquo;s been a couple of months since we went through your onboarding goals &mdash; I wanted to check in and see how the team is getting on with the platform.
+
+We&rsquo;ve shipped a few updates since March that I think your engineering team would find useful, particularly around the developer API and SSO management. Worth 20 minutes to walk through?
+
+Happy to work around your schedule.
 
 &mdash; Carmen</div>
-            <div class="ge-btns">
-              <button class="ge-send" id="send-creston" onclick="markSent('creston')">Send via Gmail</button>
-              <button class="ge-edit">Edit first</button>
+                  <div class="gb-touch-acts">
+                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('creston','Marcus Webb',1)"><i class="ti ti-send"></i> Send via Gmail</button>
+                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
+                  </div>
+                </div>
+              </details>
+
+              <details class="gb-touch">
+                <summary>
+                  <span class="gb-touch-n">Touch 2</span>
+                  <span class="gb-touch-type">Slack message &middot; Day 5</span>
+                  <i class="ti ti-chevron-down gb-touch-chev"></i>
+                </summary>
+                <div class="gb-touch-body">
+                  <div class="gb-touch-to">To: Marcus Webb &middot; Slack DM</div>
+                  <div class="gb-touch-subj">Subject: (Slack — no subject)</div>
+                  <div class="gb-touch-txt">Hey Marcus &mdash; sent you an email earlier this week. Wanted to make sure it didn&rsquo;t get buried. Happy to connect whenever works for you.</div>
+                  <div class="gb-touch-acts">
+                    <button class="gb-btn" type="button" onclick="gbCopyTouch(this)"><i class="ti ti-copy"></i> Copy message</button>
+                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
+                  </div>
+                </div>
+              </details>
+
+              <details class="gb-touch">
+                <summary>
+                  <span class="gb-touch-n">Touch 3</span>
+                  <span class="gb-touch-type">Email &middot; Day 10</span>
+                  <i class="ti ti-chevron-down gb-touch-chev"></i>
+                </summary>
+                <div class="gb-touch-body">
+                  <div class="gb-touch-to">To: Marcus Webb &middot; m.webb@creston.com</div>
+                  <div class="gb-touch-subj">Subject: Creston + 1Password &mdash; quick check</div>
+                  <div class="gb-touch-txt">Marcus, I know you&rsquo;re heads down. I&rsquo;ll be brief: I want to make sure Creston is getting value before your July renewal, and I haven&rsquo;t been able to reach you.
+
+Even a reply telling me things are fine gives me what I need. Otherwise happy to schedule something short.
+
+&mdash; Carmen</div>
+                  <div class="gb-touch-acts">
+                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('creston','Marcus Webb',3)"><i class="ti ti-send"></i> Send via Gmail</button>
+                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-radar-2"></i> Re-engagement Intel</div>
+              <div class="gb-intel">
+                <div class="gb-intel-l">Last Gong</div><div class="gb-intel-v">Onboarding review &middot; March &middot; Health 76, positive sentiment</div>
+                <div class="gb-intel-l">Dust read</div><div class="gb-intel-v">Passive neglect, low churn risk</div>
+                <div class="gb-intel-l">Champion</div><div class="gb-intel-v">Marcus Webb, likely intact</div>
+                <div class="gb-intel-l">Recommended angle</div><div class="gb-intel-v">Reference specific onboarding goals from March call, lead with product updates not renewal</div>
+              </div>
+            </div>
+
+            <div class="gb-foot">
+              <button class="gb-btn" type="button" onclick="gbPushSequence('creston')"><i class="ti ti-stack-push"></i> Push 3-touch sequence to Gainsight CTAs</button>
+              <button class="gb-btn prim" type="button" onclick="gbSendTouch('creston','Marcus Webb',1)"><i class="ti ti-send"></i> Send Touch 1 now</button>
             </div>
           </div>
         </div>
@@ -1544,22 +1793,139 @@ I also have a few product updates that align with the goals you shared during se
 
         <div class="rp-view" id="view-apex">
           <div class="rp-back" onclick="backFromGhostBuster()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-          <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
+          <div class="rp-hd">
+            <div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster</div>
+            <div><span class="gb-hd-pill">Apex</span><span class="gb-hd-days">61 days dark</span></div>
+          </div>
           <div class="rp-scroll">
-            <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">Apex Dynamics</div>
-            <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">61 days dark &middot; $15K ARR &middot; Renews Jul 15</div>
-            <div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> Champion change detected in Salesforce: James Wu &rarr; Ryan Patel. Agent generates a warm intro email for first-touch with new decision-maker.</div>
-            <div class="ge-subj">Subject: Introducing myself &mdash; your dedicated CSM</div>
-            <div class="ge-body">Hi Ryan,
+            <div class="gb-acct-hd">
+              <div class="gb-acct-nm">Apex Dynamics</div>
+              <div class="gb-acct-meta">$15K ARR &middot; Renews Aug 1</div>
+            </div>
 
-I&rsquo;m Carmen, reaching out because I&rsquo;ll be your primary point of contact going forward. I&rsquo;ve been reviewing your account and would love to schedule a quick 20-minute intro to understand your current priorities.
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-bulb"></i> Situation Read</div>
+              <div class="gb-read">
+                <div class="gb-read-row">
+                  <div class="gb-read-l">Why they went dark</div>
+                  <div class="gb-read-v">Champion change. James Wu (Head of IT) left the company. Michael Torres (IT Director) was introduced as the new contact but has had zero engagement with 1Password since the handover. The account went dark the moment James left.</div>
+                </div>
+                <div class="gb-read-row">
+                  <div class="gb-read-l">Champion status &mdash; CRITICAL</div>
+                  <div class="gb-read-v">James Wu gone. Ryan Patel is the new IT Director per LinkedIn update. Michael Torres may be a transitional contact only. <strong>Do not send a cold email to the wrong person.</strong></div>
+                </div>
+                <div class="gb-read-row warn">
+                  <div class="gb-read-l">Risk of wrong approach</div>
+                  <div class="gb-read-v">Cold email to Ryan Patel with no warm intro is low-probability. Check AE relationship first. A CSM cold email to a new champion who has never heard of you can set the relationship back 90 days.</div>
+                </div>
+              </div>
+            </div>
 
-When works best this week?
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-route"></i> Champion Change Protocol</div>
+              <div class="gb-proto">
+                <div class="gb-proto-row">
+                  <div class="gb-proto-step">Step 1 &middot; Check AE relationship</div>
+                  <div class="gb-proto-d">Does the AE own Apex? When did they last touch the account? Can they make a warm intro to Ryan Patel before the CSM reaches out cold?</div>
+                  <div class="gb-proto-acts"><button class="gb-btn prim" type="button" onclick="gbNotifyAE('apex')"><i class="ti ti-send"></i> Notify AE &mdash; request warm intro</button></div>
+                </div>
+                <div class="gb-proto-row">
+                  <div class="gb-proto-step">Step 2 &middot; LinkedIn check</div>
+                  <div class="gb-proto-d">Is Ryan Patel connected to anyone on the CS or AE team? A mutual connection changes the outreach approach entirely.</div>
+                  <div class="gb-proto-acts"><button class="gb-btn" type="button" onclick="gbLinkedIn('Ryan Patel')"><i class="ti ti-brand-linkedin"></i> Check LinkedIn connection</button></div>
+                </div>
+                <div class="gb-proto-row">
+                  <div class="gb-proto-step">Step 3 &middot; Recommended approach</div>
+                  <div class="gb-proto-d"><strong>If AE can intro:</strong> AE sends brief intro Slack/email, CSM follows within 24h referencing the intro. <br><strong>If no AE relationship:</strong> CSM sends the cold intro below, leads with James Wu continuity.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-list-numbers"></i> 3-Touch Sequence</div>
+
+              <details class="gb-touch" open>
+                <summary>
+                  <span class="gb-touch-n">Touch 1</span>
+                  <span class="gb-touch-type">Email &middot; Send today (post AE intro)</span>
+                  <i class="ti ti-chevron-down gb-touch-chev"></i>
+                </summary>
+                <div class="gb-touch-body">
+                  <div class="gb-touch-to">To: Ryan Patel &middot; r.patel@apexdynamics.com</div>
+                  <div class="gb-touch-subj">Subject: Continuing where James Wu left off</div>
+                  <div class="gb-touch-txt">Ryan,
+
+I&rsquo;m Carmen, your Customer Success Manager at 1Password. I worked closely with James Wu on your team&rsquo;s rollout and wanted to reach out personally to introduce myself and make sure nothing fell through the cracks during the transition.
+
+I&rsquo;d love to schedule a brief intro call &mdash; 30 minutes to make sure you have full visibility into what your team has set up and where we can help as you settle in.
+
+Would this week work?
 
 &mdash; Carmen</div>
-            <div class="ge-btns">
-              <button class="ge-send" id="send-apex" onclick="markSent('apex')">Send via Gmail</button>
-              <button class="ge-edit">Edit first</button>
+                  <div class="gb-touch-acts">
+                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('apex','Ryan Patel',1)"><i class="ti ti-send"></i> Send via Gmail</button>
+                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
+                  </div>
+                </div>
+              </details>
+
+              <details class="gb-touch">
+                <summary>
+                  <span class="gb-touch-n">Touch 2</span>
+                  <span class="gb-touch-type">Email &middot; Day 5</span>
+                  <i class="ti ti-chevron-down gb-touch-chev"></i>
+                </summary>
+                <div class="gb-touch-body">
+                  <div class="gb-touch-to">To: Ryan Patel &middot; r.patel@apexdynamics.com</div>
+                  <div class="gb-touch-subj">Subject: Re: Continuing where James Wu left off</div>
+                  <div class="gb-touch-txt">Ryan, following up on my note from earlier this week. I want to make sure you have everything you need as you get up to speed on the 1Password side.
+
+Happy to make this as short as you need it.
+
+&mdash; Carmen</div>
+                  <div class="gb-touch-acts">
+                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('apex','Ryan Patel',2)"><i class="ti ti-send"></i> Send via Gmail</button>
+                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
+                  </div>
+                </div>
+              </details>
+
+              <details class="gb-touch">
+                <summary>
+                  <span class="gb-touch-n">Touch 3</span>
+                  <span class="gb-touch-type">Email &middot; Day 10</span>
+                  <i class="ti ti-chevron-down gb-touch-chev"></i>
+                </summary>
+                <div class="gb-touch-body">
+                  <div class="gb-touch-to">To: Ryan Patel &middot; r.patel@apexdynamics.com</div>
+                  <div class="gb-touch-subj">Subject: Apex Dynamics account &mdash; quick note</div>
+                  <div class="gb-touch-txt">Ryan, I&rsquo;ve reached out a couple of times. If this isn&rsquo;t the right channel or if there&rsquo;s someone else I should be speaking with at Apex, please let me know and I&rsquo;ll redirect.
+
+I want to make sure the account is in good shape &mdash; especially with the team transition. 10 minutes would be enough.
+
+&mdash; Carmen</div>
+                  <div class="gb-touch-acts">
+                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('apex','Ryan Patel',3)"><i class="ti ti-send"></i> Send via Gmail</button>
+                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <div class="gb-sec">
+              <div class="gb-sec-t"><i class="ti ti-radar-2"></i> Re-engagement Intel</div>
+              <div class="gb-intel">
+                <div class="gb-intel-l">Champion change</div><div class="gb-intel-v">James Wu &rarr; Ryan Patel</div>
+                <div class="gb-intel-l">Risk level</div><div class="gb-intel-v"><strong style="color:var(--rd-dk)">HIGH</strong> &mdash; cold intro to unknown champion near renewal</div>
+                <div class="gb-intel-l">Dust recommendation</div><div class="gb-intel-v">Do not send cold email without AE warm intro attempt first</div>
+                <div class="gb-intel-l">Timeline</div><div class="gb-intel-v">Aug 1 renewal gives 61 days &mdash; enough time if re-engagement starts today</div>
+              </div>
+            </div>
+
+            <div class="gb-foot">
+              <button class="gb-btn" type="button" onclick="gbNotifyAE('apex')"><i class="ti ti-send"></i> Notify AE &mdash; request warm intro</button>
+              <button class="gb-btn" type="button" onclick="gbPushSequence('apex')"><i class="ti ti-stack-push"></i> Push 3-touch sequence to Gainsight CTAs</button>
+              <button class="gb-btn prim" type="button" onclick="gbSendTouch('apex','Ryan Patel',1)"><i class="ti ti-send"></i> Send Touch 1 now</button>
             </div>
           </div>
         </div>
@@ -1853,12 +2219,54 @@ function doneTask(btn, id) {
   if (ds) { ds.textContent = txt; ds.className = 'ds-v ' + (tasksDone === 5 ? 'g' : tasksDone > 0 ? 'a' : ''); }
 }
 
-function markSent(id) {
-  var btn = document.getElementById('send-' + id);
-  if (btn) { btn.textContent = 'Sent via Gmail'; btn.classList.add('sent'); btn.disabled = true; }
-  var names = { meridian: 'Meridian Health Systems', creston: 'Creston Software', apex: 'Apex Dynamics' };
-  var nm = names[id] || 'Account';
-  toast(nm + ' outreach email sent via Gmail &middot; Outreach activity logged in Salesforce ✓');
+// ═══════════════════════════════════════════════════════════════════════════
+// Ghost-Buster Re-engagement Wizard helpers (v2.6.0)
+// ═══════════════════════════════════════════════════════════════════════════
+function gbSendTouch(acct, who, n) {
+  var nm = ({ meridian:'Meridian Health Systems', creston:'Creston Software', apex:'Apex Dynamics' })[acct] || acct;
+  toast('Touch ' + n + ' sent to ' + who + ' &middot; Logged in ' + nm + ' Gainsight timeline ✓');
+}
+
+function gbEdit(btn) {
+  var body = btn.closest('.gb-touch-body') || btn.closest('.gb-proto-row') || btn.parentElement.parentElement;
+  if (!body) return;
+  var txt = body.querySelector('.gb-touch-txt');
+  if (!txt) return;
+  var editing = txt.getAttribute('contenteditable') === 'true';
+  if (editing) {
+    txt.setAttribute('contenteditable', 'false');
+    btn.innerHTML = '<i class="ti ti-edit"></i> Edit first';
+    toast('Draft saved &middot; Ready to send ✓');
+  } else {
+    txt.setAttribute('contenteditable', 'true');
+    txt.focus();
+    btn.innerHTML = '<i class="ti ti-circle-check"></i> Save &amp; Send';
+  }
+}
+
+function gbCopyTouch(btn) {
+  var body = btn.closest('.gb-touch-body');
+  if (!body) return;
+  var txt = body.querySelector('.gb-touch-txt');
+  if (!txt) return;
+  var text = txt.innerText || txt.textContent || '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(function(){});
+  }
+  toast('Copied to clipboard ✓');
+}
+
+function gbPushSequence(acct) {
+  toast('3 CTAs created in Gainsight &middot; Touch 1 today &middot; Touch 2 in 5d &middot; Touch 3 in 10d ✓');
+}
+
+function gbNotifyAE(acct) {
+  var nm = ({ meridian:'Meridian Health Systems', creston:'Creston Software', apex:'Apex Dynamics' })[acct] || acct;
+  toast('Slack DM sent to AE &middot; ' + nm + ' warm intro requested ✓');
+}
+
+function gbLinkedIn(person) {
+  toast('Opening LinkedIn &mdash; ' + person + ' ✓');
 }
 
 function toggleDz() {
