@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.1.0
+**Version:** 2.2.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,28 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.2.0] — 2026-05-16
+
+CSS-only. Top three brief-strip cards (Today's Priority Stack, Next Up, Ask Dust) now render at identical height.
+
+### Fixed
+- **Top three cards equal-height across all viewport widths.** Root cause: the v1.4.0 "Phase A layout surgery" override flipped `.brief-strip { align-items: start }` and removed the `min-height` on `.bf`, so the grid no longer stretched its children to the tallest row. Restored grid stretch and pinned card body distribution:
+  - `.brief-strip` v1.4.0 override: `align-items: start` → `align-items: stretch`.
+  - `.bf` v1.4.0 override: added `height: 100%` (keeps the existing `min-height: 0` and `padding: 14px 16px`).
+  - `.bf-kv` (Next Up's 2x2 data grid): added `flex: 1; align-content: start` so the data sits at the top of the card while the `.bf-btns` row sticks to the bottom via its existing `margin-top: auto`.
+  - `.bf-qa` (Ask Dust's 3x2 chip grid): swapped `margin-top: auto` for `flex: 1; align-content: stretch` so the two chip rows expand evenly to fill the card.
+- Verified equal height in headless renders at 1280px (271/271/271), 1440px (271/271/271), and 1920px (256/256/256). Heights match within each viewport; the natural height shrinks slightly at 1920 because the wider Ask Dust column wraps less content — that's intentional.
+
+### Not touched
+- All HTML markup. All JS handlers. All copy. All other widgets (Urgent Inbox, Today's Tasks, Dark Zone, Live Signals, Calendar, Mission Briefing, notification rail, pulse strip, deck modal, agent drawers, Recipe for Success tab).
+- No new CSS classes were introduced. The fix is four property changes inside existing rules. No new color tokens, no new selectors.
+
+### Engineering
+- Reused the existing flexbox column on `.bf`. `.bf-priority` rows are inherently top-aligned (no buttons row), so they need nothing beyond the parent stretch — the card grows to match its neighbors and the rows sit at the top naturally.
+- `.bf-btns { margin-top: auto }` was already present and continues to pin the three Next Up action buttons (Prep Me / Risk Analyst / Generate Deck) to the bottom of the card.
 
 ---
 

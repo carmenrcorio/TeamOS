@@ -389,7 +389,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .bf-next-when{font-size:10px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.07em}
 .bf-next-acct{font-size:16px;font-weight:700;color:var(--tx);letter-spacing:-.02em;margin-bottom:2px}
 .bf-next-type{font-size:11px;color:var(--tx2);margin-bottom:10px}
-.bf-kv{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;margin-bottom:10px}
+.bf-kv{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;margin-bottom:10px;flex:1;align-content:start}
 .bf-kv-r{display:flex;align-items:baseline;gap:6px;font-size:10px;color:var(--tx3);min-width:0}
 .bf-kv-l{flex-shrink:0;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
 .bf-kv-v{color:var(--tx);font-weight:600;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -409,7 +409,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .bf-dust-input input::placeholder{color:var(--tx3)}
 .bf-dust-send{background:var(--tl);color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;font-weight:600}
 .bf-dust-send:hover{background:var(--tl-md)}
-.bf-qa{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:auto}
+.bf-qa{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex:1;align-content:stretch}
 .bf-qa-btn{font-size:11px;font-weight:600;padding:9px 9px;border-radius:6px;border:1px solid var(--bd);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all .1s;text-align:left;line-height:1.2;min-height:34px}
 .bf-qa-btn:hover{background:var(--surf2);border-color:var(--bd2);color:var(--tx)}
 .bf-qa-btn.muted{opacity:.8;justify-content:space-between}
@@ -543,9 +543,9 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 /* Sticky pulse strip */
 .pulse-strip{position:sticky;top:44px;z-index:40}
 
-/* Daily Command Brief — auto-height, tighter */
-.brief-strip{align-items:start;padding:18px 28px 0}
-.bf{min-height:0;padding:14px 16px}
+/* Daily Command Brief — equal-height columns, tighter padding */
+.brief-strip{align-items:stretch;padding:18px 28px 0}
+.bf{min-height:0;padding:14px 16px;height:100%}
 .bf-hd{margin-bottom:2px}
 .bf-sub{margin-bottom:8px;font-size:9px}
 
