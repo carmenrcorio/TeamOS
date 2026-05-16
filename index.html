@@ -610,6 +610,62 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 
 /* Default right panel — pre-loaded briefing wrapper */
 .rp-hd.pl{justify-content:space-between}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Global Notification Rail (v1.5.0)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.n-notif{display:flex;align-items:center;gap:12px;margin-right:16px;padding-right:14px;border-right:1px solid rgba(255,255,255,.1)}
+.n-notif-wrap{position:relative;display:inline-flex}
+.n-notif-btn{position:relative;cursor:pointer;padding:6px 8px;border-radius:8px;background:none;border:none;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:inherit;transition:background .1s;line-height:1}
+.n-notif-btn:hover{background:rgba(255,255,255,.08)}
+.n-notif-btn.on{background:rgba(255,255,255,.1)}
+.n-notif-btn i{font-size:16px;color:rgba(255,255,255,.9)}
+.n-pill{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;padding:0 5px;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;line-height:1;letter-spacing:-.02em;box-shadow:0 0 0 2px #0D0D0C;transform-origin:center}
+.n-pill.em{background:#EF4444}
+.n-pill.sl{background:#7C3AED}
+.n-pill.re{background:#0EA5E9}
+.n-pill.hidden{display:none}
+.n-pill.pulse{animation:n-pulse 300ms ease-out}
+@keyframes n-pulse{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+
+.n-pop{position:absolute;top:calc(100% + 8px);right:0;width:320px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);box-shadow:0 12px 40px rgba(0,0,0,.20);z-index:300;display:none;color:var(--tx);overflow:hidden}
+.n-pop.on{display:block}
+.n-pop.wide{width:340px}
+.n-pop-hd{padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--surf2);gap:10px}
+.n-pop-t{font-size:11px;font-weight:700;color:var(--tx);letter-spacing:.02em}
+.n-pop-mark{font-size:10px;font-weight:700;color:var(--tl);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.n-pop-mark:hover{text-decoration:underline}
+.n-pop-sub{font-size:10px;color:var(--tx3);padding:6px 14px;font-style:italic;border-bottom:1px solid var(--bd)}
+.n-row{padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;flex-direction:column;gap:5px}
+.n-row:last-child{border-bottom:none}
+.n-row.r{border-left:4px solid var(--rd);padding-left:10px}
+.n-row.g{border-left:4px solid var(--tl);padding-left:10px}
+.n-row-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.n-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:.04em;text-transform:uppercase}
+.n-tag.r{background:var(--rd-bg);color:var(--rd-dk)}
+.n-tag.a{background:var(--am-bg);color:var(--am-dk)}
+.n-tag.gy{background:var(--surf2);color:var(--tx2);border:1px solid var(--bd)}
+.n-stat{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;letter-spacing:.05em;text-transform:uppercase;color:#fff}
+.n-stat.r{background:var(--rd)}
+.n-stat.g{background:var(--tl)}
+.n-age{font-size:10px;color:var(--tx3);margin-left:auto;font-weight:500;white-space:nowrap}
+.n-from{font-size:11px;font-weight:700;color:var(--tx)}
+.n-sub{font-size:11px;color:var(--tx2);line-height:1.4;font-weight:500}
+.n-prev{font-size:11px;color:var(--tx2);line-height:1.45}
+.n-channel{font-size:10px;font-weight:700;color:var(--tx3);text-transform:lowercase;letter-spacing:.02em}
+.n-event{font-size:11px;color:var(--tx);line-height:1.4;font-weight:500}
+.n-note{font-size:10px;color:var(--tx3);line-height:1.4;font-style:italic}
+.n-btns{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+.n-btn{font-size:10px;font-weight:700;padding:5px 10px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;white-space:nowrap}
+.n-btn:hover{background:var(--surf2);border-color:var(--tx2)}
+.n-btn.prim{background:var(--tl);color:#fff;border-color:var(--tl)}
+.n-btn.prim:hover{background:var(--tl-md)}
+.n-btn i{font-size:11px}
+.n-empty{padding:24px 14px;text-align:center;font-size:11px;color:var(--tx3);font-style:italic}
+
+@media (max-width:768px){
+  .n-pop{position:fixed;top:44px;right:0;left:0;width:auto;border-radius:0;border-left:none;border-right:none}
+}
 </style>
 </head>
 <body>
@@ -618,7 +674,88 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
   <div class="n-brand"><div class="n-dot"></div>TeamOS</div>
   <div class="n-tab on" onclick="goTab('dash',this)">CSM Dashboard</div>
   <div class="n-tab" onclick="goTab('recipe',this)">Recipe for Success</div>
-  <div class="n-right"><div class="n-av">CL</div><span class="n-nm">Carmen</span></div>
+  <div class="n-right">
+    <div class="n-notif">
+
+      <div class="n-notif-wrap">
+        <button class="n-notif-btn" id="nb-em" onclick="toggleNotifPop('em',event)" aria-label="Email notifications" type="button">
+          <i class="ti ti-mail"></i>
+          <span class="n-pill em" id="np-em">3</span>
+        </button>
+        <div class="n-pop" id="npop-em">
+          <div class="n-pop-hd">
+            <span class="n-pop-t"><i class="ti ti-mail" style="color:#EF4444;font-size:13px;vertical-align:middle"></i> Gmail &middot; <span id="npop-em-count">3</span> unread</span>
+            <button class="n-pop-mark" type="button" onclick="markAllNotifRead('em')">Mark all read</button>
+          </div>
+          <div class="n-row">
+            <div class="n-row-top"><span class="n-tag r">NovaVault</span><span class="n-age">2h ago</span></div>
+            <div class="n-from">Michael Torres</div>
+            <div class="n-sub">&ldquo;Re: Contract renewal &mdash; urgent questions&rdquo;</div>
+            <div class="n-btns"><button class="n-btn prim" type="button" onclick="draftReply('nova')"><i class="ti ti-mail"></i> Draft Reply</button></div>
+          </div>
+          <div class="n-row">
+            <div class="n-row-top"><span class="n-tag a">Brightex</span><span class="n-age">4h ago</span></div>
+            <div class="n-from">Sarah Chen</div>
+            <div class="n-sub">&ldquo;Following up on our last call&rdquo;</div>
+            <div class="n-btns"><button class="n-btn prim" type="button" onclick="draftReply('brightex')"><i class="ti ti-mail"></i> Draft Reply</button></div>
+          </div>
+          <div class="n-row">
+            <div class="n-row-top"><span class="n-tag gy">Meridian</span><span class="n-age">1d ago</span></div>
+            <div class="n-from">Jennifer Ramos</div>
+            <div class="n-sub">&ldquo;Haven&rsquo;t heard back &mdash; checking in&rdquo;</div>
+            <div class="n-btns"><button class="n-btn prim" type="button" onclick="draftReply('meridian')"><i class="ti ti-mail"></i> Draft Reply</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="n-notif-wrap">
+        <button class="n-notif-btn" id="nb-sl" onclick="toggleNotifPop('sl',event)" aria-label="Slack notifications" type="button">
+          <i class="ti ti-brand-slack"></i>
+          <span class="n-pill sl" id="np-sl">1</span>
+        </button>
+        <div class="n-pop" id="npop-sl">
+          <div class="n-pop-hd">
+            <span class="n-pop-t"><i class="ti ti-brand-slack" style="color:#7C3AED;font-size:13px;vertical-align:middle"></i> Slack &middot; <span id="npop-sl-count">1</span> unread</span>
+            <button class="n-pop-mark" type="button" onclick="markAllNotifRead('sl')">Mark all read</button>
+          </div>
+          <div class="n-row">
+            <div class="n-row-top"><span class="n-channel">#cs-team</span><span class="n-tag r">NovaVault</span><span class="n-age">47m ago</span></div>
+            <div class="n-from">Maggie Spry</div>
+            <div class="n-prev">&ldquo;Hey &mdash; heads up, NovaVault&rsquo;s Michael Torres just emailed RevOps about the contract. You may want to get ahead of it before EOD.&rdquo;</div>
+            <div class="n-btns"><button class="n-btn prim" type="button" onclick="summarizeSlack()"><i class="ti ti-sparkles"></i> Summarize with Dust</button><button class="n-btn" type="button" onclick="closeNotifPops();toast('Opening Slack &middot; #cs-team ✓')"><i class="ti ti-external-link"></i> Open in Slack</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="n-notif-wrap">
+        <button class="n-notif-btn" id="nb-re" onclick="toggleNotifPop('re',event)" aria-label="Renewal activity" type="button">
+          <i class="ti ti-file-text"></i>
+          <span class="n-pill re" id="np-re">2</span>
+        </button>
+        <div class="n-pop wide" id="npop-re">
+          <div class="n-pop-hd">
+            <span class="n-pop-t"><i class="ti ti-file-text" style="color:#0EA5E9;font-size:13px;vertical-align:middle"></i> Renewal Activity &middot; Ironclad via Salesforce</span>
+            <button class="n-pop-mark" type="button" onclick="markAllNotifRead('re')">Mark all read</button>
+          </div>
+          <div class="n-pop-sub">Contract events synced from Ironclad &rarr; SFDC Contract object &middot; Updated 9:14 AM</div>
+          <div class="n-row r" id="nrow-re-nova">
+            <div class="n-row-top"><span class="n-tag r">NovaVault</span><span class="n-stat r">Past Due</span><span class="n-age">17 days elapsed</span></div>
+            <div class="n-event">Contract sent Jun 1 &middot; No signature received</div>
+            <div class="n-note">Ironclad shows counterparty status: Not Opened</div>
+            <div class="n-btns"><button class="n-btn prim" type="button" onclick="closeNotifPops();openAgentDrawer('save','nova')"><i class="ti ti-lifebuoy"></i> Open Save Play</button><button class="n-btn" type="button" onclick="closeNotifPops();toast('Opening Ironclad contract record ✓')"><i class="ti ti-external-link"></i> View in Ironclad</button></div>
+          </div>
+          <div class="n-row g" id="nrow-re-brightex">
+            <div class="n-row-top"><span class="n-tag a">Brightex</span><span class="n-stat g">Signed</span><span class="n-age">May 14</span></div>
+            <div class="n-event">Sarah Chen signed &middot; Awaiting AE counter-signature</div>
+            <div class="n-note">Ironclad workflow stage: Partially Executed</div>
+            <div class="n-btns"><button class="n-btn prim" type="button" onclick="logBrightexRenewal()"><i class="ti ti-circle-check"></i> Log in Gainsight</button><button class="n-btn" type="button" onclick="closeNotifPops();toast('Slack DM sent to AE &middot; Brightex counter-signature needed ✓')"><i class="ti ti-send"></i> Notify AE</button></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="n-av">CL</div><span class="n-nm">Carmen</span>
+  </div>
 </nav>
 
 <div class="tc on" id="tab-dash">
@@ -1272,6 +1409,18 @@ I also have a few product updates that align with the goals you shared during se
         <div class="rp-scroll" id="dust-out"></div>
       </div>
 
+      <div class="rp-view" id="view-draft">
+        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+        <div class="rp-hd"><div class="rp-t"><i class="ti ti-mail" style="color:var(--tl)"></i> <span id="draft-title">Draft Reply</span></div></div>
+        <div class="rp-scroll" id="draft-out"></div>
+      </div>
+
+      <div class="rp-view" id="view-slack-sum">
+        <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+        <div class="rp-hd"><div class="rp-t"><i class="ti ti-sparkles" style="color:var(--tl)"></i> Slack Summary</div></div>
+        <div class="rp-scroll" id="slack-sum-out"></div>
+      </div>
+
       <div class="rp-view" id="view-apex">
         <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
         <div class="rp-hd"><div class="rp-t"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster Email</div></div>
@@ -1570,6 +1719,145 @@ function askDust(e) {
 function configureAgents() {
   toast('Agent configuration requires Dust workspace connection &mdash; available in Phase 2');
 }
+
+// ── Global Notification Rail (v1.5.0) ───────────────────────────────────────
+var NOTIF = { em: 3, sl: 1, re: 2 };
+
+function toggleNotifPop(kind, e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  var pop = document.getElementById('npop-' + kind);
+  var btn = document.getElementById('nb-' + kind);
+  if (!pop || !btn) return;
+  var isOn = pop.classList.contains('on');
+  closeNotifPops();
+  if (!isOn) { pop.classList.add('on'); btn.classList.add('on'); }
+}
+
+function closeNotifPops() {
+  document.querySelectorAll('.n-pop').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.n-notif-btn').forEach(function(b){ b.classList.remove('on'); });
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.n-notif-wrap')) closeNotifPops();
+});
+
+function _setNotifPill(kind, count) {
+  NOTIF[kind] = count;
+  var pill = document.getElementById('np-' + kind);
+  if (!pill) return;
+  if (count <= 0) { pill.classList.add('hidden'); }
+  else { pill.classList.remove('hidden'); pill.textContent = count; }
+  // Header counts inside popovers (em / sl have a count node; re does not)
+  var hdrCount = document.getElementById('npop-' + kind + '-count');
+  if (hdrCount) hdrCount.textContent = count;
+}
+
+function markAllNotifRead(kind) {
+  _setNotifPill(kind, 0);
+  closeNotifPops();
+}
+
+// ── Draft Reply (from Email popover) ────────────────────────────────────────
+var DRAFT_REPLIES = {
+  nova: {
+    title: 'NovaVault · Reply to Michael Torres',
+    acct: 'NovaVault', who: 'Michael Torres, VP Security', ageLbl: '2h ago',
+    ctx: 'Contract renewal in 17 days &middot; new champion &middot; health 23. Michael escalated to RevOps. Frame this as proactive — get ahead of pricing pressure.',
+    subj: 'Re: Contract renewal — urgent questions',
+    body: "Hi Michael,\n\nThanks for flagging this directly — that's exactly the kind of conversation I want us to have before the renewal lands.\n\nI know you've stepped into this account in the middle of a transition, and I don't want the renewal deadline to force a decision you haven't had time to fully evaluate. Two things I can do right now:\n\n1. Walk you through what your team has been getting out of 1Password — security incidents prevented, vaults active, time saved on access management. Real numbers, not a pitch.\n\n2. Propose a 60-day extension at current terms so you have room to make the decision on your timeline, not Ironclad's.\n\nWould 3:30 PM today still work, or would you prefer I send the data over first and we talk tomorrow?\n\n— Carmen",
+    save: 'nova'
+  },
+  brightex: {
+    title: 'Brightex Inc · Reply to Sarah Chen',
+    acct: 'Brightex Inc', who: 'Sarah Chen, Director of IT', ageLbl: '4h ago',
+    ctx: 'Renewal in 31 days &middot; competitor evaluation flagged in Gong (May 4) &middot; health 48 down from 71. Lead with value, not pricing.',
+    subj: 'Re: Following up on our last call',
+    body: "Hi Sarah,\n\nThanks for the follow-up — and for being open about the evaluation. I'd rather make sure you have everything you need to make the right call than try to talk you out of it.\n\nA few options as you weigh things up:\n\n— I can put together a side-by-side comparison doc by end of week, focused on the criteria that matter most to your team (you mentioned SSO management and audit logging in our last call).\n\n— If timing pressure is a factor, I can request a 30-day renewal extension so the deadline doesn't force the decision.\n\n— And if it would help, our enterprise SE can join a call to walk through the specific provisioning issues your team flagged last week.\n\nWhich of these would actually move the conversation forward for you?\n\n— Carmen",
+    save: 'brightex'
+  },
+  meridian: {
+    title: 'Meridian Health Systems · Reply to Jennifer Ramos',
+    acct: 'Meridian Health Systems', who: 'Jennifer Ramos, IT Operations', ageLbl: '1d ago',
+    ctx: '73 days dark &middot; renewal in 45 days &middot; last positive Gong: SSO rollout discussion, Mar 15. Jennifer is the right point of contact — reopen on the SSO topic.',
+    subj: 'Re: Haven’t heard back — checking in',
+    body: "Hi Jennifer,\n\nApologies for the silence on my end — and thank you for the nudge. I should have reached out sooner.\n\nLast time we connected (back in March) you were in the middle of the SSO rollout and the team had just started using 1Password Business across IT and Engineering. I'd love to hear how that landed — both what's working and where you've hit any friction.\n\nI also have your renewal coming up in 45 days and I want to use that as a checkpoint, not a sales conversation: are we delivering what your team actually needs, or has something shifted?\n\nWould a 20-minute call next week work? I can come prepared with usage data so it's a quick, useful read-out.\n\n— Carmen",
+    save: 'meridian'
+  }
+};
+
+function draftReply(acct) {
+  closeNotifPops();
+  var d = DRAFT_REPLIES[acct];
+  if (!d) return;
+  var titleEl = document.getElementById('draft-title');
+  var out = document.getElementById('draft-out');
+  if (titleEl) titleEl.textContent = d.title;
+  if (!out) return;
+  var bodyHtml = (d.body || '').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  var html = ''
+    + '<div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">' + d.acct + '</div>'
+    + '<div style="font-size:11px;color:var(--tx3);margin-bottom:12px">To: ' + d.who + ' &middot; ' + d.ageLbl + '</div>'
+    + '<div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> ' + d.ctx + '</div>'
+    + '<div class="ge-subj">Subject: ' + d.subj + '</div>'
+    + '<div class="ge-body">' + bodyHtml + '</div>'
+    + '<div class="ge-btns">'
+      + '<button class="ge-send" onclick="toast(\'' + d.acct.replace(/'/g, "\\'") + ' reply sent via Gmail &middot; Outreach activity logged in Salesforce ✓\');this.textContent=\'Sent via Gmail\';this.classList.add(\'sent\');this.disabled=true">Send via Gmail</button>'
+      + '<button class="ge-edit" onclick="toast(\'Opening editable draft in Gmail...\')">Edit first</button>'
+    + '</div>';
+  out.innerHTML = html;
+  openPanel('draft', null);
+}
+
+// ── Slack popover → Dust summary panel ──────────────────────────────────────
+function summarizeSlack() {
+  closeNotifPops();
+  var out = document.getElementById('slack-sum-out');
+  if (!out) return;
+  out.innerHTML = '<div class="du-load"><i class="ti ti-loader-2"></i> <div><div>Routing to Dust agent&hellip;</div><div class="du-load-agent">Slack Summarizer agent</div></div></div>';
+  openPanel('slack-sum', null);
+  setTimeout(function() {
+    var html = ''
+      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">'
+        + '<span class="n-channel" style="font-size:11px">#cs-team</span>'
+        + '<span class="n-tag r">NovaVault</span>'
+        + '<span style="font-size:11px;color:var(--tx3);font-weight:600">Maggie Spry &middot; 47m ago</span>'
+      + '</div>'
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-quote"></i> Original message</div>'
+        + '<div class="du-card b"><div class="du-card-s" style="font-style:italic">&ldquo;Hey &mdash; heads up, NovaVault&rsquo;s Michael Torres just emailed RevOps about the contract. You may want to get ahead of it before EOD.&rdquo;</div></div>'
+      + '</div>'
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-sparkles"></i> Dust summary</div>'
+        + '<div class="du-card r"><div class="du-card-s">NovaVault&rsquo;s new champion Michael Torres has escalated contract concerns to RevOps. Recommend proactive outreach before the AE is looped in without CSM context.</div></div>'
+      + '</div>'
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-lifebuoy"></i> Recommended action</div>'
+        + '<div class="du-card r"><div class="du-card-t">Open Save Strategy &rarr; NovaVault</div><div class="du-card-s">Get ahead of the RevOps escalation. Frame the conversation around extension + context, not pricing.</div><div class="du-acts"><button class="du-btn prim" type="button" onclick="openAgentDrawer(\'save\',\'nova\')"><i class="ti ti-lifebuoy"></i> Open Save Strategy</button><button class="du-btn" type="button" onclick="draftReply(\'nova\')"><i class="ti ti-mail"></i> Draft Reply to Michael</button></div></div>'
+      + '</div>'
+      + '<div class="du-foot">Slack message routed through Dust &middot; Cross-referenced with Salesforce + Gainsight account state.</div>';
+    out.innerHTML = html;
+  }, 1500);
+}
+
+// ── Renewals popover → Log in Gainsight decrements badge ────────────────────
+function logBrightexRenewal() {
+  toast('Renewal milestone logged in Brightex Gainsight timeline ✓');
+  var row = document.getElementById('nrow-re-brightex');
+  if (row) { row.style.opacity = '0.5'; row.style.transition = 'opacity .3s'; }
+  if (NOTIF.re > 0) _setNotifPill('re', NOTIF.re - 1);
+}
+
+// ── Simulated polling: new email arrives at 90s ─────────────────────────────
+setTimeout(function() {
+  _setNotifPill('em', NOTIF.em + 1);
+  var pill = document.getElementById('np-em');
+  if (!pill) return;
+  pill.classList.remove('pulse');
+  void pill.offsetWidth; // force reflow so the animation can replay
+  pill.classList.add('pulse');
+  setTimeout(function(){ pill.classList.remove('pulse'); }, 350);
+}, 90000);
 
 function buildRecipe() {
   var scores = [

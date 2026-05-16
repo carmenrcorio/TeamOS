@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 1.4.0
+**Version:** 1.5.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,33 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [1.5.0] — 2026-05-16
+
+Nav-only feature: Global Notification Rail. Sticky across every tab and scroll position.
+
+### Added
+- Three nav-bar indicators, right-aligned before the avatar, separated by a subtle divider:
+  - 📧 Email (red pill, count 3) — Gmail unreads
+  - 💬 Slack (purple pill, count 1) — Slack DMs / channel mentions
+  - 📄 Renewals (teal pill, count 2) — Ironclad contract events via Salesforce
+- Each indicator opens a 320–340px popover anchored to its button. Only one popover open at a time; outside-click closes it. Popovers do not scroll the page. Mobile (<768px) collapses each popover to full-width below the nav. Popover `z-index: 300` clears the sticky pulse strip and nav.
+- "Mark all read" link per popover zeroes the count and hides the pill (no "0" state).
+- **Email popover**: three account-tagged rows (NovaVault / Brightex / Meridian). Each has a Draft Reply button that opens a new right-panel view (`#view-draft`) with a Ghost-Buster-style pre-written email — account context strip, subject line, full body, Send via Gmail / Edit first buttons. Send toast: "[Account] reply sent via Gmail · Outreach activity logged in Salesforce ✓".
+- **Slack popover**: one message row (Maggie Spry · #cs-team · NovaVault flag). Summarize with Dust loads a 1.5s loader then a structured summary in `#view-slack-sum` (Original message → Dust summary → Recommended action card with Open Save Strategy + Draft Reply buttons). Open in Slack toasts.
+- **Renewals popover**: subtitle "Contract events synced from Ironclad → SFDC Contract object · Updated 9:14 AM". Two rows with left accent borders:
+  - NovaVault `Past Due` (red border + red status badge): "Contract sent Jun 1 · No signature received · 17 days elapsed" + "Ironclad shows counterparty status: Not Opened". Buttons: Open Save Play (directly opens Save Strategy drawer for NovaVault via `openAgentDrawer`) and View in Ironclad (toasts).
+  - Brightex `Signed` (green border + green status badge): "Sarah Chen signed · May 14 · Awaiting AE counter-signature" + "Ironclad workflow stage: Partially Executed". Buttons: Log in Gainsight (toasts + decrements badge by 1) and Notify AE (Slack DM toast).
+- Simulated polling: at 90s after page load, the email badge increments by 1 and runs a 300ms scale pulse (1.0 → 1.3 → 1.0). No toast or sound — ambient awareness only.
+
+### Engineering
+- Single contained commit. Did not touch the Urgent Inbox, pulse strip, agent drawers, Ask Dust outputs, Mission Briefing, calendar, Dark Zone, Live Signals, tab routing, or Recipe for Success tab.
+- New module is fully namespaced (`.n-notif*`, `NOTIF` state object, `toggleNotifPop` / `closeNotifPops` / `markAllNotifRead` / `draftReply` / `summarizeSlack` / `logBrightexRenewal`). Outside-click handler scopes to `.n-notif-wrap` so it doesn't interfere with the pulse-strip popover or any other click-away logic.
+- New design tokens kept at zero. Pill colors (#EF4444 / #7C3AED / #0EA5E9) come from the spec directly — added inline; no token rename required.
+- All popover content is HTML-safe; the only user-derived string anywhere is the simulated Slack message body which is hardcoded.
+- Acceptance criteria verified: badges visible on every tab including Recipe for Success because they live inside the sticky nav.
 
 ---
 
