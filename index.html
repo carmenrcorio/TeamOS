@@ -324,13 +324,13 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .ps-btn.on{color:var(--tl)}
 .ps-btn .ps-n{font-weight:700;color:var(--tx)}
 .ps-btn .ps-n.r{color:var(--rd)}.ps-btn .ps-n.a{color:var(--am)}.ps-btn .ps-n.g{color:var(--tl)}
-.pop{position:absolute;top:calc(100% + 4px);left:0;width:320px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:0 8px 32px rgba(0,0,0,.12);z-index:200;display:none;overflow:hidden}
+.pop{position:absolute;top:calc(100% + 4px);left:0;width:320px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);box-shadow:0 8px 32px rgba(0,0,0,.12);z-index:200;display:none;overflow:hidden}
 .pop.on{display:block}
 .pop.right{left:auto;right:0}
 .pop-hd{padding:11px 14px;border-bottom:1px solid var(--bd);font-size:11px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:6px}
 .pop-row{padding:10px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:8px}
 .pop-row:last-child{border-bottom:none}
-.pop-row.done-row{background:var(--tlb);transition:background .4s}
+.pop-row.done-row{background:var(--tl-bg);transition:background .4s}
 .pop-left{flex:1;min-width:0}
 .pop-main{font-size:12px;font-weight:600;color:var(--tx);margin-bottom:2px}
 .pop-sub{font-size:10px;color:var(--tx3);margin-bottom:4px}
@@ -342,18 +342,82 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .ext.gs:hover{border-color:var(--tl);color:var(--tl)}
 .ext.go:hover{border-color:var(--am);color:var(--am)}
 .done-btn{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:none;cursor:pointer;background:var(--tl);color:#fff;font-family:inherit;transition:all .1s}
-.done-btn:hover{background:var(--tlm)}
+.done-btn:hover{background:var(--tl-md)}
 .gb-btn{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;border:none;cursor:pointer;background:var(--rd);color:#fff;font-family:inherit;transition:all .1s}
 .gb-btn:hover{background:#b91c1c}
-.pop-foot{padding:9px 14px;border-top:1px solid var(--bd);background:var(--s2)}
+.pop-foot{padding:9px 14px;border-top:1px solid var(--bd);background:var(--surf2)}
 .pop-foot-a{font-size:11px;font-weight:600;color:var(--tl);cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px}
 .pop-foot-a:hover{text-decoration:underline;text-underline-offset:3px}
 .ren-bar{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:5px}
 .ren-fill{height:100%;border-radius:3px}
 .hp-badge{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:700;margin-left:4px}
-.hp-badge.g{background:var(--tlb);color:var(--tld)}.hp-badge.a{background:var(--amb);color:var(--amd)}.hp-badge.r{background:var(--rdb);color:var(--rdd)}
+.hp-badge.g{background:var(--tl-bg);color:var(--tl-dk)}.hp-badge.a{background:var(--am-bg);color:var(--am-dk)}.hp-badge.r{background:var(--rd-bg);color:var(--rd-dk)}
 .delta{font-size:10px;font-weight:600}
 .delta.down{color:var(--rd)}.delta.up{color:var(--tl)}
+
+/* Daily Command Brief — replaces acct-strip */
+.brief-strip{padding:20px 28px 0;display:grid;grid-template-columns:1.05fr 1.15fr 1fr;gap:16px;align-items:stretch}
+.bf{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;display:flex;flex-direction:column;min-height:228px}
+.bf-hd{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.bf-ic{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.bf-ic.tl{background:var(--tl-bg);color:var(--tl-dk)}
+.bf-ic.am{background:var(--am-bg);color:var(--am-dk)}
+.bf-ic.bl{background:var(--bl-bg);color:var(--bl-dk)}
+.bf-t{font-size:13px;font-weight:700;color:var(--tx);letter-spacing:-.01em}
+.bf-sub{font-size:10px;color:var(--tx3);margin-bottom:12px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+
+/* Priority Stack */
+.bf-it{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}
+.bf-it:first-of-type{border-top:none;padding-top:4px}
+.bf-rank{font-size:11px;font-weight:700;color:var(--tx3);min-width:14px;line-height:18px;flex-shrink:0}
+.bf-mid{flex:1;min-width:0}
+.bf-top{display:flex;align-items:baseline;gap:8px;margin-bottom:3px;flex-wrap:wrap}
+.bf-nm{font-size:12px;font-weight:700;color:var(--tx);letter-spacing:-.01em}
+.bf-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:.03em;text-transform:uppercase}
+.bf-tag.r{background:var(--rd-bg);color:var(--rd-dk)}
+.bf-tag.a{background:var(--am-bg);color:var(--am-dk)}
+.bf-tag.g{background:var(--tl-bg);color:var(--tl-dk)}
+.bf-ctx{font-size:11px;color:var(--tx2);line-height:1.45}
+.bf-act{margin-top:6px;font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:opacity .1s}
+.bf-act:hover{opacity:.85}
+.bf-act.r{background:var(--rd);color:#fff}
+.bf-act.a{background:var(--am);color:#fff}
+.bf-act.g{background:var(--tl);color:#fff}
+
+/* Next Up panel */
+.bf-next-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.bf-next-when{font-size:10px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.07em}
+.bf-next-acct{font-size:16px;font-weight:700;color:var(--tx);letter-spacing:-.02em;margin-bottom:2px}
+.bf-next-type{font-size:11px;color:var(--tx2);margin-bottom:10px}
+.bf-kv{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;margin-bottom:10px}
+.bf-kv-r{display:flex;align-items:baseline;gap:6px;font-size:10px;color:var(--tx3);min-width:0}
+.bf-kv-l{flex-shrink:0;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.bf-kv-v{color:var(--tx);font-weight:600;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bf-kv-v.g{color:var(--tl)}.bf-kv-v.a{color:var(--am)}.bf-kv-v.r{color:var(--rd)}
+.bf-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:auto}
+.bf-btn{font-size:10px;font-weight:700;padding:8px 6px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .1s;line-height:1.2;text-align:center}
+.bf-btn:hover{background:var(--surf2);border-color:var(--tx2)}
+.bf-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.bf-btn.prim:hover{background:#2a2a28}
+.bf-btn:disabled{opacity:.6;cursor:wait}
+
+/* Ask Dust panel */
+.bf-dust-input{display:flex;align-items:center;gap:8px;border:1px solid var(--bd2);border-radius:8px;padding:9px 11px;background:var(--surf2);margin-bottom:10px;transition:border-color .1s}
+.bf-dust-input:focus-within{border-color:var(--tl);background:var(--surf)}
+.bf-dust-input i{color:var(--tl);font-size:14px;flex-shrink:0}
+.bf-dust-input input{flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:12px;color:var(--tx);min-width:0}
+.bf-dust-input input::placeholder{color:var(--tx3)}
+.bf-dust-send{background:var(--tl);color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;font-weight:600}
+.bf-dust-send:hover{background:var(--tl-md)}
+.bf-qa{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:auto}
+.bf-qa-btn{font-size:11px;font-weight:600;padding:8px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all .1s;text-align:left;line-height:1.25}
+.bf-qa-btn:hover{background:var(--surf2);border-color:var(--bd2);color:var(--tx)}
+.bf-qa-btn i{font-size:12px;color:var(--tl);flex-shrink:0}
+
+@media (max-width:1100px){
+  .brief-strip{grid-template-columns:1fr;gap:12px}
+  .bf{min-height:0}
+}
 </style>
 </head>
 <body>
@@ -367,43 +431,257 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 
 <div class="tc on" id="tab-dash">
 
-  <div class="acct-strip">
-    <div class="at g" onclick="pickAt('acme',this)">
-      <div class="at-hdr"><span class="at-nm">ACME CORP</span><span class="at-arr">$48K</span></div>
-      <div class="at-health">
-        <div class="h-dot g"></div>
-        <div class="h-bar"><div class="h-bar-f" style="width:82%;background:var(--tl)"></div></div>
-        <span class="h-lbl">Health</span><span class="h-sc">82</span>
-        <span class="at-pill g">Healthy</span>
+  <!-- Portfolio Pulse Strip — SPEC §5.2 -->
+  <div class="pulse-strip">
+    <div class="ps-wrap">
+      <button class="ps-btn" id="pb-calls" onclick="togglePop('calls',event)" type="button"><i class="ti ti-calendar-event"></i><span class="ps-n">3</span>&nbsp;calls today</button>
+      <div class="pop" id="pop-calls">
+        <div class="pop-hd"><i class="ti ti-calendar-event"></i> Today &middot; 3 customer calls</div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">9:00 AM &middot; Acme Corp</div>
+            <div class="pop-sub">QBR &middot; David Kim <span class="hp-badge g">H 82</span></div>
+            <div class="pop-signal">Last Gong: enterprise tier mentioned &mdash; expansion signal</div>
+          </div>
+          <div class="pop-btns">
+            <a class="ext gs" href="#" onclick="toastLink(event,'Acme in Gainsight')">Gainsight</a>
+            <a class="ext go" href="#" onclick="toastLink(event,'Acme Gong call')">Gong</a>
+          </div>
+        </div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">11:00 AM &middot; Brightex Inc</div>
+            <div class="pop-sub">Risk Review &middot; Sarah Chen <span class="hp-badge a">H 48</span></div>
+            <div class="pop-signal">Competitor flagged in last Gong &middot; champion change risk</div>
+          </div>
+          <div class="pop-btns">
+            <a class="ext gs" href="#" onclick="toastLink(event,'Brightex in Gainsight')">Gainsight</a>
+            <a class="ext go" href="#" onclick="toastLink(event,'Brightex Gong call')">Gong</a>
+          </div>
+        </div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">3:30 PM &middot; NovaVault</div>
+            <div class="pop-sub">Exec Check-in &middot; URGENT <span class="hp-badge r">H 23</span></div>
+            <div class="pop-signal">17 days to renewal &middot; new champion, last call 45d ago</div>
+          </div>
+          <div class="pop-btns">
+            <a class="ext gs" href="#" onclick="toastLink(event,'NovaVault in Gainsight')">Gainsight</a>
+            <a class="ext go" href="#" onclick="toastLink(event,'NovaVault Gong call')">Gong</a>
+          </div>
+        </div>
+        <div class="pop-foot"><a class="pop-foot-a" href="#" onclick="toastLink(event,'Calendar')">Open full calendar <i class="ti ti-arrow-right"></i></a></div>
       </div>
-      <div class="at-row">Renews Aug 12 &middot; 89 days</div>
-      <div class="at-row">0 open CTAs &middot; Last call 5d ago</div>
-      <div class="at-foot g"><i class="ti ti-microphone" style="font-size:12px"></i> QBR today 9:00 AM &rarr;</div>
     </div>
-    <div class="at am" onclick="pickAt('brightex',this)">
-      <div class="at-hdr"><span class="at-nm">BRIGHTEX INC</span><span class="at-arr">$36K</span></div>
-      <div class="at-health">
-        <div class="h-dot am"></div>
-        <div class="h-bar"><div class="h-bar-f" style="width:48%;background:var(--am)"></div></div>
-        <span class="h-lbl">Health</span><span class="h-sc">48</span>
-        <span class="at-pill am">At Risk</span>
+
+    <div class="ps-wrap">
+      <button class="ps-btn" id="pb-risk" onclick="togglePop('risk',event)" type="button"><i class="ti ti-alert-triangle" style="color:var(--am)"></i><span class="ps-n a">2</span>&nbsp;at risk</button>
+      <div class="pop" id="pop-risk">
+        <div class="pop-hd"><i class="ti ti-alert-triangle" style="color:var(--am)"></i> Accounts at risk</div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">Brightex Inc <span class="hp-badge a">H 48</span> <span class="delta down">&darr;23 / 30d</span></div>
+            <div class="pop-sub">$36K ARR &middot; Renews Jun 15 &middot; 31 days</div>
+            <div class="pop-signal">Competitor evaluation signal &middot; champion change</div>
+          </div>
+          <div class="pop-btns">
+            <a class="ext sf" href="#" onclick="toastLink(event,'Brightex in Salesforce')">SFDC</a>
+            <a class="ext gs" href="#" onclick="toastLink(event,'Brightex in Gainsight')">Gainsight</a>
+          </div>
+        </div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">NovaVault <span class="hp-badge r">H 23</span> <span class="delta down">&darr;44 / 30d</span></div>
+            <div class="pop-sub">$31K ARR &middot; Renews Jun 1 &middot; 17 days</div>
+            <div class="pop-signal">Champion lost &middot; last call 45d ago &middot; CRITICAL</div>
+          </div>
+          <div class="pop-btns">
+            <a class="ext sf" href="#" onclick="toastLink(event,'NovaVault in Salesforce')">SFDC</a>
+            <a class="ext gs" href="#" onclick="toastLink(event,'NovaVault in Gainsight')">Gainsight</a>
+          </div>
+        </div>
+        <div class="pop-foot"><a class="pop-foot-a" href="#" onclick="toastLink(event,'Risk portfolio')">Open risk portfolio <i class="ti ti-arrow-right"></i></a></div>
       </div>
-      <div class="at-row warn"><i class="ti ti-alert-triangle" style="font-size:11px"></i> Renews Jun 15 &middot; 31 days</div>
-      <div class="at-row">2 CTAs &middot; 1 overdue &middot; Competitor flagged</div>
-      <div class="at-foot am"><i class="ti ti-microphone" style="font-size:12px"></i> Risk Review 11:00 AM &rarr;</div>
     </div>
-    <div class="at rd" onclick="pickAt('nova',this)">
-      <div class="at-hdr"><span class="at-nm">NOVAVAULT</span><span class="at-arr">$31K</span></div>
-      <div class="at-health">
-        <div class="h-dot rd"></div>
-        <div class="h-bar"><div class="h-bar-f" style="width:23%;background:var(--rd)"></div></div>
-        <span class="h-lbl">Health</span><span class="h-sc">23</span>
-        <span class="at-pill rd">Critical</span>
+
+    <div class="ps-wrap">
+      <button class="ps-btn" id="pb-arr" onclick="togglePop('arr',event)" type="button"><i class="ti ti-currency-dollar" style="color:var(--rd)"></i><span class="ps-n r">$67K</span>&nbsp;ARR at risk</button>
+      <div class="pop" id="pop-arr">
+        <div class="pop-hd"><i class="ti ti-currency-dollar" style="color:var(--rd)"></i> Renewal pipeline at risk</div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">NovaVault &middot; $31K</div>
+            <div class="pop-sub">Renews Jun 1 &middot; 17 days left</div>
+            <div class="ren-bar"><div class="ren-fill" style="width:90%;background:var(--rd)"></div></div>
+          </div>
+          <div class="pop-btns">
+            <a class="ext sf" href="#" onclick="toastLink(event,'NovaVault opp in Salesforce')">SFDC</a>
+            <a class="ext gs" href="#" onclick="toastLink(event,'NovaVault renewal in Gainsight')">Gainsight</a>
+          </div>
+        </div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">Brightex Inc &middot; $36K</div>
+            <div class="pop-sub">Renews Jun 15 &middot; 31 days left</div>
+            <div class="ren-bar"><div class="ren-fill" style="width:55%;background:var(--am)"></div></div>
+          </div>
+          <div class="pop-btns">
+            <a class="ext sf" href="#" onclick="toastLink(event,'Brightex opp in Salesforce')">SFDC</a>
+            <a class="ext gs" href="#" onclick="toastLink(event,'Brightex renewal in Gainsight')">Gainsight</a>
+          </div>
+        </div>
+        <div class="pop-foot"><a class="pop-foot-a" href="#" onclick="toastLink(event,'Renewal forecast')">Open renewal forecast <i class="ti ti-arrow-right"></i></a></div>
       </div>
-      <div class="at-row crit"><i class="ti ti-flame" style="font-size:11px"></i> Renews Jun 1 &middot; 17 DAYS LEFT</div>
-      <div class="at-row crit">4 CTAs &middot; 2 overdue &middot; Last call 45d ago</div>
-      <div class="at-foot rd"><i class="ti ti-alert-circle" style="font-size:12px"></i> Exec Check-in 3:30 PM &rarr; URGENT</div>
     </div>
+
+    <div class="ps-wrap">
+      <button class="ps-btn" id="pb-ctas" onclick="togglePop('ctas',event)" type="button"><i class="ti ti-list-check" style="color:var(--rd)"></i><span class="ps-n r" id="pn-ctas">3</span>&nbsp;overdue CTAs</button>
+      <div class="pop pop-right" id="pop-ctas">
+        <div class="pop-hd"><i class="ti ti-list-check" style="color:var(--rd)"></i> Overdue CTAs</div>
+        <div class="pop-row" id="cta-row-1">
+          <div class="pop-left">
+            <div class="pop-main">Update NovaVault renewal forecast</div>
+            <div class="pop-sub">2 days overdue &middot; Gainsight</div>
+          </div>
+          <div class="pop-btns"><button class="done-btn" onclick="markCtaDone('cta-row-1',event)" type="button">Done</button></div>
+        </div>
+        <div class="pop-row" id="cta-row-2">
+          <div class="pop-left">
+            <div class="pop-main">Reply to Sarah Chen re: renewal options</div>
+            <div class="pop-sub">1 day overdue &middot; Brightex Inc</div>
+          </div>
+          <div class="pop-btns"><button class="done-btn" onclick="markCtaDone('cta-row-2',event)" type="button">Done</button></div>
+        </div>
+        <div class="pop-row" id="cta-row-3">
+          <div class="pop-left">
+            <div class="pop-main">Schedule exec sponsor save call</div>
+            <div class="pop-sub">Due today &middot; NovaVault</div>
+          </div>
+          <div class="pop-btns"><button class="done-btn" onclick="markCtaDone('cta-row-3',event)" type="button">Done</button></div>
+        </div>
+        <div class="pop-foot"><a class="pop-foot-a" href="#" onclick="toastLink(event,'Gainsight CTA queue')">Open Gainsight queue <i class="ti ti-arrow-right"></i></a></div>
+      </div>
+    </div>
+
+    <div class="ps-wrap">
+      <button class="ps-btn" id="pb-dark" onclick="togglePop('dark',event)" type="button"><i class="ti ti-ghost" style="color:var(--tx3)"></i><span class="ps-n">4</span>&nbsp;dark accounts</button>
+      <div class="pop pop-right" id="pop-dark">
+        <div class="pop-hd"><i class="ti ti-ghost" style="color:var(--tx3)"></i> Accounts gone dark</div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">NovaVault</div>
+            <div class="pop-sub">45 days silent &middot; new champion</div>
+          </div>
+          <div class="pop-btns"><button class="gb-btn" onclick="toast('Ghost-Buster draft opened for NovaVault')" type="button">Ghost-Buster</button></div>
+        </div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">Apex Studios</div>
+            <div class="pop-sub">38 days silent &middot; renews in 64d</div>
+          </div>
+          <div class="pop-btns"><button class="gb-btn" onclick="toast('Ghost-Buster draft opened for Apex Studios')" type="button">Ghost-Buster</button></div>
+        </div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">Riverbank Tech</div>
+            <div class="pop-sub">31 days silent &middot; renews in 92d</div>
+          </div>
+          <div class="pop-btns"><button class="gb-btn" onclick="toast('Ghost-Buster draft opened for Riverbank Tech')" type="button">Ghost-Buster</button></div>
+        </div>
+        <div class="pop-row">
+          <div class="pop-left">
+            <div class="pop-main">Synth Labs</div>
+            <div class="pop-sub">27 days silent &middot; renews in 118d</div>
+          </div>
+          <div class="pop-btns"><button class="gb-btn" onclick="toast('Ghost-Buster draft opened for Synth Labs')" type="button">Ghost-Buster</button></div>
+        </div>
+        <div class="pop-foot"><a class="pop-foot-a" href="#" onclick="toastLink(event,'Dark zone')">Open dark zone <i class="ti ti-arrow-right"></i></a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Command Brief — SPEC §5.1 -->
+  <div class="brief-strip">
+
+    <!-- Left: Priority Stack -->
+    <div class="bf bf-priority">
+      <div class="bf-hd"><div class="bf-ic tl"><i class="ti ti-flag-3"></i></div><div class="bf-t">Today&rsquo;s Priority Stack</div></div>
+      <div class="bf-sub">AI-ranked by health, renewal, CTAs, Gong silence</div>
+
+      <div class="bf-it">
+        <div class="bf-rank">1</div>
+        <div class="bf-mid">
+          <div class="bf-top"><span class="bf-nm">NovaVault</span><span class="bf-tag r">Critical save</span></div>
+          <div class="bf-ctx">17 days to renewal &middot; champion lost &middot; health 23 &middot; last call 45d ago</div>
+          <button class="bf-act r" onclick="agentBtn('save','nova',this)" type="button"><i class="ti ti-lifebuoy"></i> Open Save Strategy</button>
+        </div>
+      </div>
+
+      <div class="bf-it">
+        <div class="bf-rank">2</div>
+        <div class="bf-mid">
+          <div class="bf-top"><span class="bf-nm">Acme Corp</span><span class="bf-tag g">Expansion</span></div>
+          <div class="bf-ctx">Next meeting 9:00 AM QBR &middot; enterprise tier signal in last Gong</div>
+          <button class="bf-act g" onclick="agentBtn('prep','acme',this)" type="button"><i class="ti ti-bolt"></i> Prep Me</button>
+        </div>
+      </div>
+
+      <div class="bf-it">
+        <div class="bf-rank">3</div>
+        <div class="bf-mid">
+          <div class="bf-top"><span class="bf-nm">Brightex Inc</span><span class="bf-tag a">Watch</span></div>
+          <div class="bf-ctx">Competitor flagged &middot; health 71&rarr;48 in 30d &middot; renews in 31d</div>
+          <button class="bf-act a" onclick="agentBtn('risk','brightex',this)" type="button"><i class="ti ti-shield-check"></i> Risk Analyst</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Next Up -->
+    <div class="bf bf-next" id="bf-next">
+      <div class="bf-hd"><div class="bf-ic bl"><i class="ti ti-clock-hour-9"></i></div><div class="bf-t">Next Up</div></div>
+      <div class="bf-sub">Immediately next customer-facing meeting</div>
+
+      <div class="bf-next-hdr">
+        <div>
+          <div class="bf-next-acct">Acme Corp</div>
+          <div class="bf-next-type">Quarterly Business Review &middot; David Kim</div>
+        </div>
+        <div class="bf-next-when">In 38 min &middot; 9:00 AM</div>
+      </div>
+
+      <div class="bf-kv">
+        <div class="bf-kv-r"><span class="bf-kv-l">Health</span><span class="bf-kv-v g">82 &middot; Healthy</span></div>
+        <div class="bf-kv-r"><span class="bf-kv-l">Renewal</span><span class="bf-kv-v">Aug 12 &middot; 89d</span></div>
+        <div class="bf-kv-r"><span class="bf-kv-l">Open CTAs</span><span class="bf-kv-v g">0</span></div>
+        <div class="bf-kv-r"><span class="bf-kv-l">Last Gong</span><span class="bf-kv-v">5d &middot; enterprise tier mentioned</span></div>
+      </div>
+
+      <div class="bf-btns">
+        <button class="bf-btn" onclick="agentBtn('prep','acme',this)" type="button"><i class="ti ti-bolt"></i>Prep Me</button>
+        <button class="bf-btn" onclick="agentBtn('risk','acme',this)" type="button"><i class="ti ti-shield-check"></i>Risk Analyst</button>
+        <button class="bf-btn prim" onclick="openDeckModal('acme')" type="button"><i class="ti ti-layout-board"></i>Generate Deck</button>
+      </div>
+    </div>
+
+    <!-- Right: Ask Dust -->
+    <div class="bf bf-ask">
+      <div class="bf-hd"><div class="bf-ic tl"><i class="ti ti-sparkles"></i></div><div class="bf-t">Ask Dust</div></div>
+      <div class="bf-sub">Free-text agent &middot; powered by Dust API</div>
+
+      <form class="bf-dust-input" onsubmit="askDust(event)">
+        <i class="ti ti-search"></i>
+        <input id="dust-q" type="text" autocomplete="off" placeholder="Ask anything about an account, renewal, or open loop&hellip;" aria-label="Ask Dust" />
+        <button class="bf-dust-send" type="submit" aria-label="Send to Dust"><i class="ti ti-arrow-right"></i></button>
+      </form>
+
+      <div class="bf-qa">
+        <button class="bf-qa-btn" onclick="dustQuick('Prepare My Day')" type="button"><i class="ti ti-sun"></i>Prepare My Day</button>
+        <button class="bf-qa-btn" onclick="dustQuick('Draft Follow-Ups')" type="button"><i class="ti ti-mail-fast"></i>Draft Follow-Ups</button>
+        <button class="bf-qa-btn" onclick="dustQuick('Find Open Loops')" type="button"><i class="ti ti-circle-dashed"></i>Find Open Loops</button>
+        <button class="bf-qa-btn" onclick="dustQuick('Review At-Risk Renewals')" type="button"><i class="ti ti-alert-triangle"></i>Review At-Risk Renewals</button>
+      </div>
+    </div>
+
   </div>
 
   <div class="main">
@@ -817,6 +1095,20 @@ function toast(msg) {
   t.style.opacity = '1';
   clearTimeout(t._timer);
   t._timer = setTimeout(function(){ t.style.opacity = '0'; }, 4500);
+}
+
+function askDust(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var input = document.getElementById('dust-q');
+  var q = input ? input.value.trim() : '';
+  if (!q) { if (input) input.focus(); return false; }
+  toast('Routing to Dust agent: &ldquo;' + q.replace(/[<>]/g,'') + '&rdquo;');
+  if (input) input.value = '';
+  return false;
+}
+
+function dustQuick(label) {
+  toast('Dust agent: ' + label + ' &mdash; running...');
 }
 
 function buildRecipe() {

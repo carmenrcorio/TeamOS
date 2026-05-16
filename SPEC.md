@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,40 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [1.1.0] — 2026-05-16
+
+### Added
+- **Daily Command Brief (SPEC §5.1)** — replaces the three static account cards at the top of the dashboard.
+  - Panel A — Priority Stack: 3 ranked items (NovaVault critical save, Acme expansion, Brightex watch). Each item has a one-line context and one action button that opens the agent drawer (`agentBtn('save'|'prep'|'risk', ...)`).
+  - Panel B — Next Up: shows only the immediately next customer-facing meeting (Acme QBR · 9:00 AM). Includes health, renewal days, open CTAs, last Gong signal, and three agent buttons (Prep Me, Risk Analyst, Generate Deck).
+  - Panel C — Ask Dust: free-text input wired to placeholder Dust handler. Four quick-action buttons: Prepare My Day, Draft Follow-Ups, Find Open Loops, Review At-Risk Renewals.
+- **Portfolio Pulse Strip (SPEC §5.2)** — now actually rendered in markup. Sits directly below the nav. 5 clickable popovers:
+  - 📅 3 calls today — mini call list with Gong + Gainsight buttons
+  - ⚠ 2 at risk — account rows with 30-day health delta + risk signals
+  - 🔴 $67K ARR at risk — renewal pipeline bars with countdown
+  - 📋 3 overdue CTAs — inline Done button updates strip count live
+  - 👻 4 dark accounts — Ghost-Buster trigger
+- New JS handlers: `askDust(e)` and `dustQuick(label)` route Ask Dust input/quick actions through the existing toast layer.
+
+### Changed
+- Removed inline `acct-strip` markup (account cards for Acme / Brightex / NovaVault). The same accounts are still reachable via Priority Stack, Next Up, calendar events, and pulse-strip popovers.
+- Header version bumped to 1.1.0.
+
+### Fixed
+- CSS for `.pulse-strip` / `.pop` block was referencing undefined custom properties (`--rl`, `--tlb`, `--tld`, `--tlm`, `--s2`, `--amb`, `--amd`, `--rdb`, `--rdd`). Repointed each to the actual tokens defined in `:root` (`--rlg`, `--tl-bg`, `--tl-dk`, `--tl-md`, `--surf2`, `--am-bg`, `--am-dk`, `--rd-bg`, `--rd-dk`). Without this fix popovers would have rendered with broken backgrounds.
+
+### Engineering
+- No new colors introduced. All Command Brief styles bind to existing tokens from SPEC §9.1.
+- No hardcoded API keys, no `console.log` statements added.
+- Ask Dust input value is HTML-stripped before being shown in the toast (defensive — no innerHTML injection of user input).
+- All new buttons use `type="button"` to avoid implicit form submits; the Ask Dust form preventDefaults submit.
+
+### Known Issues
+- Ask Dust is wired to a toast for now; live Dust API routing still pending OAuth (SPEC §10 Phase 2).
+- Ghost-Buster buttons in the dark-accounts popover currently toast; full draft state lives in the right panel and is unchanged in this release.
 
 ---
 
