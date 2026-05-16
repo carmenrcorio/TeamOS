@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 1.8.0
+**Version:** 1.9.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,28 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [1.9.0] — 2026-05-16
+
+Two surgical fixes. (Bumped from the requested `[1.8.0]` because `[1.8.0]` was already shipped for the Tasks dropdown; treating this as the next minor.)
+
+### Changed
+- **Dark Zone moved to the left column.** Per follow-up direction, the 60-Day Dark Zone widget moved from column 2 (under Mission Briefing) to column 1, sitting directly under the Urgent Inbox card and above Today's Tasks. The DZ collapsed-by-default behavior, toggle, Ghost-Buster buttons, and per-popover routing (`openGhostBusterFromPopover`) are unchanged.
+- **Live Signals moved to the right column.** From column 2 (below the old DZ position) to column 3, sitting directly under the Calendar card. Per-row action buttons (Prep Me / Risk Analyst / Ghost-Buster) and content unchanged.
+- Center column now contains only the Mission Briefing widget (`.rp`).
+
+### Fixed
+- **Mission Briefing no longer renders empty trailing space.** Removed `height:100%`, `min-height:520px` from `.rp`; removed `flex:1` from `.rp-view`; removed `flex:1; overflow-y:auto` from `.rp-scroll`. Result: the widget is content-height under every state — pre-loaded Acme briefing, account briefing after a calendar click, Ghost-Buster email draft, Ask Dust output, Slack summary, task draft. No internal scroll bar; page scrolls naturally when content is tall.
+
+### Not touched
+- Nav, pulse strip (incl. the v1.8.0 Tasks dropdown), notification rail, agent drawers, deck modal, Ghost-Buster handlers, Ask Dust handlers, brief-strip widgets (Priority Stack / Next Up / Ask Dust), calendar event onclicks, Recipe for Success tab.
+- DZ + LS widget internals are byte-identical to v1.8.0 — only their grid-cell parents changed.
+
+### Engineering
+- Layout change executed via a single Python pass that moved the two blocks while preserving 6-space indentation. Verified `.main` still has exactly three grid children.
+- CSS surgery touched only three rules (`.rp`, `.rp-view`, `.rp-scroll`) and only dropped properties — added none.
 
 ---
 

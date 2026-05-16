@@ -161,12 +161,12 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .dz-btn{font-size:11px;font-weight:600;background:var(--tl);color:#fff;border:none;border-radius:var(--r);padding:6px 12px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background .1s}
 .dz-btn:hover{background:var(--tl-md)}
 
-.rp{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;height:100%;min-height:520px;display:flex;flex-direction:column}
-.rp-view{display:none;flex-direction:column;flex:1}
+.rp{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;display:flex;flex-direction:column}
+.rp-view{display:none;flex-direction:column}
 .rp-view.on{display:flex}
 .rp-hd{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .rp-t{font-size:11px;font-weight:700;color:var(--tx);text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:6px}
-.rp-scroll{flex:1;overflow-y:auto;padding:16px 18px}
+.rp-scroll{padding:16px 18px}
 .rp-back{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx3);cursor:pointer;padding:11px 18px;border-bottom:1px solid var(--bd);transition:.1s;flex-shrink:0}
 .rp-back:hover{color:var(--tx);background:var(--bg)}
 
@@ -1085,6 +1085,42 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
         </div>
       </div>
 
+      <div class="dz">
+        <div class="dz-hd">
+          <div style="display:flex;align-items:center;gap:10px"><div class="dz-title"><i class="ti ti-moon" style="color:var(--rd)"></i> 60-Day Dark Zone</div><span class="dz-cnt">3 accounts</span></div>
+          <button class="dz-toggle" id="dz-toggle-btn" type="button" onclick="toggleDz()">
+            <span id="dz-toggle-label">Show accounts</span>
+            <i class="ti ti-chevron-down dz-chev"></i>
+          </button>
+        </div>
+        <div class="dz-body" id="dz-body">
+          <div class="dz-acct">
+            <div class="dz-left">
+              <div class="dz-nm">Meridian Health Systems &middot; $22K</div>
+              <div class="dz-row"><span class="dz-days">73d dark</span><span class="dz-renewal">Renews Jun 30</span></div>
+              <div class="dz-last">&ldquo;Last positive: SSO rollout discussion &mdash; March 15 (Gong)&rdquo;</div>
+            </div>
+            <button class="dz-btn" onclick="openPanel('meridian',null)">Ghost-Buster</button>
+          </div>
+          <div class="dz-acct">
+            <div class="dz-left">
+              <div class="dz-nm">Creston Software &middot; $18K</div>
+              <div class="dz-row"><span class="dz-days">67d dark</span><span class="dz-renewal">Renews Aug 20</span></div>
+              <div class="dz-last">&ldquo;Last positive: Onboarding call &mdash; went quiet after Feb 28&rdquo;</div>
+            </div>
+            <button class="dz-btn" onclick="openPanel('creston',null)">Ghost-Buster</button>
+          </div>
+          <div class="dz-acct">
+            <div class="dz-left">
+              <div class="dz-nm">Apex Dynamics &middot; $15K</div>
+              <div class="dz-row"><span class="dz-days">61d dark</span><span class="dz-renewal">Renews Jul 15</span></div>
+              <div class="dz-last">&ldquo;Champion changed &mdash; Ryan Patel not yet reached (Salesforce)&rdquo;</div>
+            </div>
+            <button class="dz-btn" onclick="openPanel('apex',null)">Ghost-Buster</button>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-hd">
           <div class="card-title">
@@ -1337,40 +1373,53 @@ When works best this week?
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="dz">
-        <div class="dz-hd">
-          <div style="display:flex;align-items:center;gap:10px"><div class="dz-title"><i class="ti ti-moon" style="color:var(--rd)"></i> 60-Day Dark Zone</div><span class="dz-cnt">3 accounts</span></div>
-          <button class="dz-toggle" id="dz-toggle-btn" type="button" onclick="toggleDz()">
-            <span id="dz-toggle-label">Show accounts</span>
-            <i class="ti ti-chevron-down dz-chev"></i>
-          </button>
+    <div>
+      <div class="cal-hd">
+        <div class="cal-date">
+          Friday, May 15
+          <div class="tip-w" style="display:inline-flex;vertical-align:middle">
+            <i class="ti ti-info-circle tip-ic"></i>
+            <div class="tip-bx">Google Calendar API: filters for external domain attendees. Cross-references attendee email with Gainsight contacts. Call type detected from invite title: &ldquo;QBR&rdquo;, &ldquo;Risk&rdquo;, &ldquo;EBR&rdquo;, &ldquo;Expansion&rdquo; &rarr; routes to matching Dust agent template.</div>
+          </div>
         </div>
-        <div class="dz-body" id="dz-body">
-          <div class="dz-acct">
-            <div class="dz-left">
-              <div class="dz-nm">Meridian Health Systems &middot; $22K</div>
-              <div class="dz-row"><span class="dz-days">73d dark</span><span class="dz-renewal">Renews Jun 30</span></div>
-              <div class="dz-last">&ldquo;Last positive: SSO rollout discussion &mdash; March 15 (Gong)&rdquo;</div>
-            </div>
-            <button class="dz-btn" onclick="openPanel('meridian',null)">Ghost-Buster</button>
+        <div class="cal-hint">Click a call to open the mission briefing &rarr;</div>
+      </div>
+      <div class="cal-body">
+        <div class="ce g" id="ce-acme" onclick="openPanel('acme',this)">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">9:00 AM</span><span class="ce-dur">60 min</span></div>
+            <div class="ce-title">Acme Corp &middot; Quarterly Business Review</div>
+            <div class="ce-meta"><span class="ce-pill g">Health 82</span><span class="ce-person">David Kim +2</span></div>
           </div>
-          <div class="dz-acct">
-            <div class="dz-left">
-              <div class="dz-nm">Creston Software &middot; $18K</div>
-              <div class="dz-row"><span class="dz-days">67d dark</span><span class="dz-renewal">Renews Aug 20</span></div>
-              <div class="dz-last">&ldquo;Last positive: Onboarding call &mdash; went quiet after Feb 28&rdquo;</div>
-            </div>
-            <button class="dz-btn" onclick="openPanel('creston',null)">Ghost-Buster</button>
+          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
+        </div>
+        <div class="ce am" id="ce-brightex" onclick="openPanel('brightex',this)">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">11:00 AM</span><span class="ce-dur">60 min</span></div>
+            <div class="ce-title">Brightex Inc &middot; Risk Review</div>
+            <div class="ce-meta"><span class="ce-pill am">Health 48 &middot; At Risk</span><span class="ce-person">Sarah Chen</span></div>
           </div>
-          <div class="dz-acct">
-            <div class="dz-left">
-              <div class="dz-nm">Apex Dynamics &middot; $15K</div>
-              <div class="dz-row"><span class="dz-days">61d dark</span><span class="dz-renewal">Renews Jul 15</span></div>
-              <div class="dz-last">&ldquo;Champion changed &mdash; Ryan Patel not yet reached (Salesforce)&rdquo;</div>
-            </div>
-            <button class="dz-btn" onclick="openPanel('apex',null)">Ghost-Buster</button>
+          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
+        </div>
+        <div class="ce int">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">2:00 PM</span><span class="ce-dur">30 min</span></div>
+            <div class="ce-title">CS Team Sync &middot; Internal</div>
           </div>
+        </div>
+        <div class="ce rd" id="ce-nova" onclick="openPanel('nova',this)">
+          <div class="ce-bar"></div>
+          <div class="ce-body">
+            <div class="ce-time-row"><span class="ce-time">3:30 PM</span><span class="ce-dur">30 min</span></div>
+            <div class="ce-title">NovaVault &middot; Executive Check-in</div>
+            <div class="ce-meta"><span class="ce-pill rd">Health 23 &middot; Critical</span><span class="ce-person">Michael Torres</span></div>
+          </div>
+          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
         </div>
       </div>
 
@@ -1436,55 +1485,6 @@ When works best this week?
           </div>
         </div>
         <div class="ls-foot"><button class="ls-foot-a" type="button" onclick="toast('Full signals feed coming in Forecasting tab')">View 6 more signals <i class="ti ti-arrow-right"></i></button></div>
-      </div>
-    </div>
-
-    <div>
-      <div class="cal-hd">
-        <div class="cal-date">
-          Friday, May 15
-          <div class="tip-w" style="display:inline-flex;vertical-align:middle">
-            <i class="ti ti-info-circle tip-ic"></i>
-            <div class="tip-bx">Google Calendar API: filters for external domain attendees. Cross-references attendee email with Gainsight contacts. Call type detected from invite title: &ldquo;QBR&rdquo;, &ldquo;Risk&rdquo;, &ldquo;EBR&rdquo;, &ldquo;Expansion&rdquo; &rarr; routes to matching Dust agent template.</div>
-          </div>
-        </div>
-        <div class="cal-hint">Click a call to open the mission briefing &rarr;</div>
-      </div>
-      <div class="cal-body">
-        <div class="ce g" id="ce-acme" onclick="openPanel('acme',this)">
-          <div class="ce-bar"></div>
-          <div class="ce-body">
-            <div class="ce-time-row"><span class="ce-time">9:00 AM</span><span class="ce-dur">60 min</span></div>
-            <div class="ce-title">Acme Corp &middot; Quarterly Business Review</div>
-            <div class="ce-meta"><span class="ce-pill g">Health 82</span><span class="ce-person">David Kim +2</span></div>
-          </div>
-          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
-        </div>
-        <div class="ce am" id="ce-brightex" onclick="openPanel('brightex',this)">
-          <div class="ce-bar"></div>
-          <div class="ce-body">
-            <div class="ce-time-row"><span class="ce-time">11:00 AM</span><span class="ce-dur">60 min</span></div>
-            <div class="ce-title">Brightex Inc &middot; Risk Review</div>
-            <div class="ce-meta"><span class="ce-pill am">Health 48 &middot; At Risk</span><span class="ce-person">Sarah Chen</span></div>
-          </div>
-          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
-        </div>
-        <div class="ce int">
-          <div class="ce-bar"></div>
-          <div class="ce-body">
-            <div class="ce-time-row"><span class="ce-time">2:00 PM</span><span class="ce-dur">30 min</span></div>
-            <div class="ce-title">CS Team Sync &middot; Internal</div>
-          </div>
-        </div>
-        <div class="ce rd" id="ce-nova" onclick="openPanel('nova',this)">
-          <div class="ce-bar"></div>
-          <div class="ce-body">
-            <div class="ce-time-row"><span class="ce-time">3:30 PM</span><span class="ce-dur">30 min</span></div>
-            <div class="ce-title">NovaVault &middot; Executive Check-in</div>
-            <div class="ce-meta"><span class="ce-pill rd">Health 23 &middot; Critical</span><span class="ce-person">Michael Torres</span></div>
-          </div>
-          <div class="ce-arr"><i class="ti ti-chevron-right"></i></div>
-        </div>
       </div>
     </div>
 
