@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.2.0
+**Version:** 2.3.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,46 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.3.0] — 2026-05-16
+
+Task Brief panel fully implemented. The v1.8.0 stub (`openTaskBrief(taskId)` setting `window._activeTaskId` and closing the popover) is replaced with a full renderer that loads a complete CSM support center into the center Mission Briefing column.
+
+### Added
+- **New right-panel view `view-taskbrief`.** Mirrors the `view-dust` / `view-draft` pattern: Back button → `resetPanel()`, header with clipboard icon + "Task Brief" title, scrollable content area (`#taskbrief-out`) populated dynamically per task. Sits in the same `.rp` parent as every other view, so all existing routing (`openPanel`, `resetPanel`, `scrollPanelIntoView`) works without modification.
+- **`TASK_BRIEFS` data table.** Single source of truth for all 8 briefs, keyed by named slug (`nova-cta`, `brightex-email`, `nova-slack`, `acme-cal`, `meridian-cta`, `brightex-proj`, `jennifer-email`, `creston-cta`). Each entry declares: source chip, account pill (color-coded by risk level), age badge, large bold title, one-line context, plain-language "what's being asked" body, Dust analysis "why this matters" body, compact key/value context grid (Last Gong / Open CTAs / Health / Competitor flag / Related docs as clickable links / Team activity), suggested next step, and a list of action button descriptors. Renderer iterates buttons into proper markup with primary/secondary styling.
+- **`TASK_ID_MAP`** translates the existing `t1`..`t8` ids on the TASKS array to the named brief keys, so the Tasks dropdown HTML and renderer are untouched — clicking row `t1` opens the `nova-cta` brief, row `t2` opens `brightex-email`, etc.
+- **Action button wiring per brief** (every onclick matches the spec):
+  - Update in Gainsight → `tbToast('gs', acct)` &rarr; "Opening Gainsight CTA · [Account] ✓"
+  - Log in Gainsight → `tbToast('log-gs', acct)` &rarr; "Activity logged in [Account] Gainsight timeline ✓"
+  - Log Attempt in Gainsight → `tbToast('log-attempt', 'Meridian')` &rarr; "Re-engagement attempt logged · Meridian ✓"
+  - Notify AE → `tbToast('notify-ae', acct)` &rarr; "Slack DM sent to AE · [Account] ✓"
+  - View SLA Doc / Related-docs links → `taskDocOpen(name)` &rarr; "Opening [name] ✓"
+  - Open Save Strategy / Risk Analyst / Prep Me → existing `openAgentDrawer(...)` with the right key
+  - Draft Reply / Draft Outreach → existing `draftReply(acct)` (loads `view-draft`)
+  - Draft Follow-Up (Acme only) → `draftAcmeFollowUp()`, which lazily registers an `acme` entry in `DRAFT_REPLIES` (post-QBR recap referencing the May 10 Gong SSO signal) and reuses `draftReply('acme')` for the render
+  - Generate Risk Review Deck → `openDeckModal()`
+  - Ghost-Buster (from task brief) → new `tbGhostBuster(acct)` helper that mirrors the popover-context pattern: remembers the current briefing view in `_lastBriefingView` before calling `openPanel(acct, null)`, so the Ghost-Buster Back button returns to the right place
+- **Scroll into view on every brief open.** `openTaskBrief` calls `openPanel('taskbrief', null)`, which already chains `scrollPanelIntoView` (v2.1.0). Verified end-to-end: with the page scrolled to bottom, clicking a task row scrolls `scrollY 471 → 386` so `.rp` lands at viewport top.
+- **CSS namespace `.tb-*`** for the brief-only chrome: `.tb-hd` (chip row), `.tb-chip.src` / `.tb-pill` (account, color-coded by `r/a/g/gy/b`) / `.tb-age` (with `r`/`a` variants for overdue/warning), `.tb-title` (18px bold), `.tb-ctx` (one-line subhead), `.tb-kv` (compact 2-column grid for the context section). All section bodies reuse the existing `.du-sec`, `.du-card` (with `r/a/g/b` accent variants), `.du-acts.foot`, `.du-btn`, `.du-foot` patterns from the Ask Dust renderer — visually consistent with the rest of the right panel.
+
+### Verified end-to-end
+- All 8 task ids load the correct brief: title, source, account, and full button set match the spec for every row.
+- Back button on the task brief calls `resetPanel()` &rarr; returns to `view-default` (pre-loaded Acme QBR Mission Briefing). Confirmed.
+- Scroll-into-view fires on open; no spurious scroll when the panel is already in viewport.
+- Tasks popover closes via the existing `closePops()` call inside `openTaskBrief` before the panel paints.
+
+### Not touched
+- `TASKS` array (still `t1..t8` with the same content), `renderTasksList` (still emits the same row markup with the same `onclick="openTaskBrief('tN')"`), the Tasks dropdown HTML (`#pop-tasks`, `.tk-pop-hd`, `.tk-row`, `.tk-sev`, `.tk-src` etc).
+- `openPanel`, `resetPanel`, `scrollPanelIntoView`, `openAgentDrawer`, `agentBtn`, `closePops`, `closeNotifPops`, `openGhostBusterFromPopover`, `backFromGhostBuster`, `draftReply`, `_dustRender`, `dustQuick`, `askDust`, every Ask Dust template (incl. Coach Me), every universal-account-click handler.
+- Brief-strip widgets (Priority Stack / Next Up / Ask Dust), Urgent Inbox, Today's Tasks card, Dark Zone, Live Signals, Calendar, notification rail, pulse strip, deck modal HTML, every agent drawer, Recipe for Success tab.
+
+### Engineering
+- 100% additive: zero changes to existing functions or markup outside the new view block and the new CSS namespace. The new view block is appended after `view-apex` inside `.rp`; the new CSS sits at the end of the existing styles section.
+- No `console.log`. No hardcoded API keys. All brief content lives in the data table so future tweaks to copy don't require touching the renderer.
+- The brief is built via string concatenation into `innerHTML` of `#taskbrief-out`. All static content from the data table is already safe (no user input flows in); the only dynamic input is `taskId`, which is sanitized by the `TASK_ID_MAP` allow-list lookup.
 
 ---
 

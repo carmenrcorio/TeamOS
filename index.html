@@ -497,6 +497,28 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .du-mail-sub{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
 .du-mail-body{font-size:11px;color:var(--tx2);line-height:1.6;white-space:pre-line}
 .du-foot{font-size:10px;color:var(--tx3);padding:12px 0 4px;text-align:center;font-style:italic;border-top:1px dashed var(--bd);margin-top:12px}
+
+/* Task Brief panel (v2.3.0) */
+.tb-hd{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tb-chip{font-size:9px;font-weight:700;padding:3px 7px;border-radius:4px;letter-spacing:.05em;background:var(--surf2);color:var(--tx2);border:1px solid var(--bd);text-transform:uppercase}
+.tb-chip.src{background:var(--surf);color:var(--tx2)}
+.tb-pill{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase}
+.tb-pill.r{background:var(--rd-bg);color:var(--rd-dk)}
+.tb-pill.a{background:var(--am-bg);color:var(--am-dk)}
+.tb-pill.g{background:var(--tl-bg);color:var(--tl-dk)}
+.tb-pill.gy{background:var(--surf2);color:var(--tx2);border:1px solid var(--bd)}
+.tb-pill.b{background:var(--bl-bg);color:var(--bl-dk)}
+.tb-age{font-size:9px;font-weight:700;padding:3px 7px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase;color:var(--tx3);background:var(--surf2);border:1px solid var(--bd)}
+.tb-age.r{color:var(--rd-dk);background:var(--rd-bg);border-color:transparent}
+.tb-age.a{color:var(--am-dk);background:var(--am-bg);border-color:transparent}
+.tb-title{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em;line-height:1.25;margin-bottom:4px}
+.tb-ctx{font-size:11px;color:var(--tx2);line-height:1.5;margin-bottom:14px}
+.tb-kv{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:11px;line-height:1.5;background:var(--surf2);border-radius:var(--r);padding:11px 13px}
+.tb-kv-l{color:var(--tx3);font-weight:600;text-transform:uppercase;font-size:9px;letter-spacing:.05em;align-self:start;padding-top:2px;white-space:nowrap}
+.tb-kv-v{color:var(--tx);font-size:11px}
+.tb-kv-v a{color:var(--tl);text-decoration:none;font-weight:600}
+.tb-kv-v a:hover{text-decoration:underline}
+.tb-kv-v .sep{color:var(--tx3);margin:0 3px}
 .du-loop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:11px}
 .du-loop:last-child{border-bottom:none}
 .du-loop-l{flex:1;min-width:0}
@@ -1415,6 +1437,12 @@ When works best this week?
             </div>
           </div>
         </div>
+
+        <div class="rp-view" id="view-taskbrief">
+          <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
+          <div class="rp-hd"><div class="rp-t"><i class="ti ti-clipboard-text" style="color:var(--tl)"></i> Task Brief</div></div>
+          <div class="rp-scroll" id="taskbrief-out"></div>
+        </div>
       </div>
     </div>
 
@@ -2196,9 +2224,281 @@ function renderTasksList() {
 }
 
 // Stub — full task brief panel arrives in the next spec.
+// Map TASKS array ids (t1..t8) to the named task-brief keys.
+var TASK_ID_MAP = {
+  t1:'nova-cta', t2:'brightex-email', t3:'nova-slack', t4:'acme-cal',
+  t5:'meridian-cta', t6:'brightex-proj', t7:'jennifer-email', t8:'creston-cta'
+};
+
+// Brief content per task. Buttons declared as small descriptors that the
+// renderer turns into onclick handlers — keeps each brief readable.
+var TASK_BRIEFS = {
+  'nova-cta': {
+    src:'CTA', srcCls:'',
+    acct:'NovaVault', acctCls:'r', age:'2d overdue', ageCls:'r',
+    title:'Update champion contact record',
+    ctx:'Gainsight CTA &middot; auto-routed to the CSM after Salesforce flagged James Wu&rsquo;s departure.',
+    ask:'Update the primary champion in Gainsight from James Wu (departed) to Michael Torres (IT Director, cold intro). CTA is 2 days past due.',
+    why:'NovaVault is 17 days from renewal, health in freefall (91&rarr;67&rarr;23). Every automated Gainsight alert is routing to someone who no longer works there. This is a revenue risk disguised as an admin task.',
+    kv:[
+      ['Last Gong','Apr 28 &middot; James Wu departure confirmed, Torres introduced, no follow-up'],
+      ['Open CTAs','4 (2 overdue)'],
+      ['Health','<span style="color:var(--rd);font-weight:700">23 &middot; Critical</span> &middot; &darr; from 67 in 14d'],
+      ['Competitor flag','<span style="color:var(--rd);font-weight:700">Yes</span> &middot; last 2 calls'],
+      ['Related docs','<a href="#" onclick="taskDocOpen(event,\'NovaVault Save Play\')">NovaVault Save Play &nearr;</a><span class="sep">&middot;</span><a href="#" onclick="taskDocOpen(event,\'NovaVault Contract (Ironclad)\')">NovaVault Contract (Ironclad) &nearr;</a>'],
+      ['Team activity','AE last touched Apr 28']
+    ],
+    next:'Update the champion in Gainsight now, then trigger Save Strategy to generate cold intro outreach for Michael Torres before the contract goes further past due.',
+    nextCls:'r',
+    btns:[
+      { lbl:'Update in Gainsight', ic:'ti-external-link', prim:true,  fn:"tbToast('gs','NovaVault')" },
+      { lbl:'Open Save Strategy',  ic:'ti-lifebuoy',     prim:false, fn:"openAgentDrawer('save','nova')" }
+    ]
+  },
+  'brightex-email': {
+    src:'EMAIL', srcCls:'',
+    acct:'Brightex', acctCls:'a', age:'4h', ageCls:'a',
+    title:'Sarah Chen &mdash; SLA terms question',
+    ctx:'Gmail thread &middot; Sarah Chen, VP Ops at Brightex, reply pending.',
+    ask:'Sarah Chen (VP Ops) is asking what uptime SLA is included in Brightex&rsquo;s current tier and whether upgrading to enterprise changes the guaranteed response time.',
+    why:'Brightex renews in 31 days, health dropped 23 points in 30 days. Sarah controls the renewal decision. An unanswered SLA question this close to renewal is either a genuine blocker or a negotiation move &mdash; both require a CSM response today, not a support ticket.',
+    kv:[
+      ['Last Gong','May 10 &middot; Sarah mentioned compliance requirements and response time guarantees'],
+      ['Open CTAs','2 (1 overdue)'],
+      ['Health','<span style="color:var(--am);font-weight:700">48 &middot; At Risk</span> &middot; &darr; from 71 in 30d'],
+      ['Competitor flag','<span style="color:var(--rd);font-weight:700">Yes</span> &middot; flagged in last 2 calls'],
+      ['Related docs','<a href="#" onclick="taskDocOpen(event,\'1Password Business SLA\')">1Password Business SLA &nearr;</a><span class="sep">&middot;</span><a href="#" onclick="taskDocOpen(event,\'Brightex Renewal Deck\')">Brightex Renewal Deck &nearr;</a>'],
+      ['Team activity','Legal added Ironclad note &mdash; &ldquo;confirm SLA clause before execute&rdquo;']
+    ],
+    next:'Reply today with the specific uptime numbers for Brightex&rsquo;s tier and offer a 15-minute call to align before the renewal &mdash; do not route this to support.',
+    nextCls:'a',
+    btns:[
+      { lbl:'Draft Reply',         ic:'ti-mail',          prim:true,  fn:"draftReply('brightex')" },
+      { lbl:'Open Risk Analyst',   ic:'ti-shield-check',  prim:false, fn:"openAgentDrawer('risk','brightex')" },
+      { lbl:'View SLA Doc',        ic:'ti-external-link', prim:false, fn:"taskDocOpen(event,'1Password SLA documentation')" }
+    ]
+  },
+  'nova-slack': {
+    src:'SLACK', srcCls:'',
+    acct:'NovaVault', acctCls:'r', age:'47m', ageCls:'a',
+    title:'Maggie Spry &mdash; contract escalation flag',
+    ctx:'#cs-team Slack &middot; Maggie Spry flagged an internal escalation about Torres &rarr; RevOps.',
+    ask:'Maggie flagged in #cs-team that Michael Torres has escalated contract concerns directly to RevOps. The CSM needs to get ahead of this before the AE is looped in without CSM context.',
+    why:'NovaVault is the highest-risk account in the portfolio &mdash; 17 days to renewal, critical health, departed champion. If RevOps engages without the CSM framing the conversation first, the renewal narrative is out of the CSM&rsquo;s control.',
+    kv:[
+      ['Last Gong','Apr 28 &middot; Torres cold intro, no call since'],
+      ['Open CTAs','4 (2 overdue)'],
+      ['Health','<span style="color:var(--rd);font-weight:700">23 &middot; Critical</span>'],
+      ['Competitor flag','<span style="color:var(--rd);font-weight:700">Yes</span>'],
+      ['Related docs','<a href="#" onclick="taskDocOpen(event,\'NovaVault Contract (Ironclad)\')">NovaVault Contract (Ironclad) &nearr;</a><span class="sep">&middot;</span><a href="#" onclick="taskDocOpen(event,\'NovaVault Save Play\')">NovaVault Save Play &nearr;</a>'],
+      ['Team activity','RevOps contacted by Torres &middot; time unknown']
+    ],
+    next:'Reach out to Michael Torres directly in the next hour with a proactive touchpoint &mdash; get ahead of RevOps before EOD.',
+    nextCls:'r',
+    btns:[
+      { lbl:'Open Save Strategy', ic:'ti-lifebuoy', prim:true,  fn:"openAgentDrawer('save','nova')" },
+      { lbl:'Draft Outreach',     ic:'ti-mail',     prim:false, fn:"draftReply('nova')" },
+      { lbl:'Notify AE',          ic:'ti-send',     prim:false, fn:"tbToast('notify-ae','NovaVault')" }
+    ]
+  },
+  'acme-cal': {
+    src:'CAL', srcCls:'',
+    acct:'Acme', acctCls:'g', age:'Today', ageCls:'',
+    title:'Send QBR follow-up by EOD',
+    ctx:'Google Calendar &middot; QBR with David Kim today at 9:00 AM.',
+    ask:'After today&rsquo;s 9:00 AM QBR with David Kim, send a follow-up summarizing decisions, next steps, and open items.',
+    why:'Acme is the healthiest account (H82) with an active expansion signal &mdash; enterprise tier and SSO interest. A strong QBR follow-up keeps expansion momentum and shows David Kim the CSM runs a tight process. This is a protect-and-grow play.',
+    kv:[
+      ['Last Gong','May 10 &middot; David Kim flagged enterprise tier + SSO support'],
+      ['Open CTAs','0'],
+      ['Health','<span style="color:var(--tl);font-weight:700">82 &middot; Healthy</span>'],
+      ['Competitor flag','None'],
+      ['Related docs','<a href="#" onclick="taskDocOpen(event,\'Acme QBR Deck\')">Acme QBR Deck &nearr;</a><span class="sep">&middot;</span><a href="#" onclick="taskDocOpen(event,\'Acme Success Plan\')">Acme Success Plan &nearr;</a>'],
+      ['Team activity','AE aware of expansion signal']
+    ],
+    next:'Draft the QBR follow-up now using Prep Me output from this morning &mdash; include SSO as a named next step with a proposed timeline.',
+    nextCls:'g',
+    btns:[
+      { lbl:'Draft Follow-Up', ic:'ti-mail',      prim:true,  fn:"draftAcmeFollowUp()" },
+      { lbl:'Open Prep Me',    ic:'ti-bolt',      prim:false, fn:"openAgentDrawer('prep','acme')" },
+      { lbl:'Log in Gainsight',ic:'ti-circle-check', prim:false, fn:"tbToast('log-gs','Acme')" }
+    ]
+  },
+  'meridian-cta': {
+    src:'CTA', srcCls:'',
+    acct:'Meridian', acctCls:'gy', age:'Today', ageCls:'',
+    title:'Log re-engagement attempt',
+    ctx:'Gainsight CTA &middot; Meridian Health Systems, 73 days dark.',
+    ask:'Log a re-engagement attempt for Meridian Health Systems, currently 73 days dark with $22K ARR at stake.',
+    why:'Meridian is the longest-dark account in the portfolio. Every day without a logged attempt is a gap in the renewal narrative if this account churns. Even an unanswered outreach needs to be documented.',
+    kv:[
+      ['Last Gong','73 days ago &middot; no signal'],
+      ['Open CTAs','1'],
+      ['Health','<span style="color:var(--tx3)">Unknown</span> &middot; no recent data'],
+      ['Competitor flag','<span style="color:var(--tx3)">Unknown</span>'],
+      ['Related docs','<a href="#" onclick="taskDocOpen(event,\'Meridian Account Plan\')">Meridian Account Plan &nearr;</a>'],
+      ['Team activity','No CSM touch in 73 days']
+    ],
+    next:'Trigger Ghost-Buster to generate a personalized re-engagement email, send it, then log the attempt in Gainsight to close the CTA.',
+    nextCls:'b',
+    btns:[
+      { lbl:'Ghost-Buster',              ic:'ti-ghost',        prim:true,  fn:"tbGhostBuster('meridian')" },
+      { lbl:'Log Attempt in Gainsight',  ic:'ti-circle-check', prim:false, fn:"tbToast('log-attempt','Meridian')" }
+    ]
+  },
+  'brightex-proj': {
+    src:'PROJ', srcCls:'',
+    acct:'Brightex', acctCls:'a', age:'Due Friday', ageCls:'a',
+    title:'Renewal deck due Friday',
+    ctx:'Project task &middot; Brightex renewal presentation, internal owner CSM.',
+    ask:'Complete the Brightex renewal presentation deck by end of week.',
+    why:'Brightex renews in 31 days. Given the health drop and competitor flag, this deck needs to address risk signals directly &mdash; not be a generic renewal summary. Friday is not optional.',
+    kv:[
+      ['Last Gong','May 10 &middot; competitor mentioned, SLA question raised'],
+      ['Open CTAs','2 (1 overdue)'],
+      ['Health','<span style="color:var(--am);font-weight:700">48 &middot; At Risk</span> &middot; &darr; 23 points in 30d'],
+      ['Competitor flag','<span style="color:var(--rd);font-weight:700">Yes</span>'],
+      ['Related docs','<a href="#" onclick="taskDocOpen(event,\'Brightex Current Deck\')">Brightex Current Deck &nearr;</a><span class="sep">&middot;</span><a href="#" onclick="taskDocOpen(event,\'Brightex SLA Agreement\')">Brightex SLA Agreement &nearr;</a>'],
+      ['Team activity','AE Marcus Webb last touch Apr 28']
+    ],
+    next:'Generate the Risk Review Deck now from Mission Briefing &mdash; it pre-loads the health drop, competitor flag, and renewal timeline. Edit and finalize before Friday.',
+    nextCls:'a',
+    btns:[
+      { lbl:'Generate Risk Review Deck', ic:'ti-presentation', prim:true,  fn:"closePops();openDeckModal()" },
+      { lbl:'Open Risk Analyst',         ic:'ti-shield-check', prim:false, fn:"openAgentDrawer('risk','brightex')" }
+    ]
+  },
+  'jennifer-email': {
+    src:'EMAIL', srcCls:'',
+    acct:'Meridian', acctCls:'gy', age:'1d', ageCls:'',
+    title:'Jennifer Ramos &mdash; checking in',
+    ctx:'Gmail &middot; Jennifer Ramos at Meridian, first inbound in 73 days.',
+    ask:'Jennifer Ramos at Meridian sent a check-in email with no specific ask. First inbound signal from Meridian in 73 days.',
+    why:'An unsolicited inbound from a dark account is the highest-value re-engagement signal possible. Jennifer reaching out &mdash; even casually &mdash; means someone on the customer side is still paying attention. This is the opening.',
+    kv:[
+      ['Last Gong','73 days ago'],
+      ['Health','<span style="color:var(--tx3)">Unknown</span>'],
+      ['Competitor flag','<span style="color:var(--tx3)">Unknown</span>'],
+      ['Related docs','<a href="#" onclick="taskDocOpen(event,\'Meridian Account Plan\')">Meridian Account Plan &nearr;</a>'],
+      ['Team activity','No CSM touch in 73 days']
+    ],
+    next:'Reply within the hour &mdash; not tomorrow. Reference something specific from the last conversation and propose a 20-minute reconnect this week.',
+    nextCls:'g',
+    btns:[
+      { lbl:'Draft Reply',        ic:'ti-mail',          prim:true,  fn:"draftReply('meridian')" },
+      { lbl:'Log in Gainsight',   ic:'ti-circle-check',  prim:false, fn:"tbToast('log-gs','Meridian')" },
+      { lbl:'Open Ghost-Buster',  ic:'ti-ghost',         prim:false, fn:"tbGhostBuster('meridian')" }
+    ]
+  },
+  'creston-cta': {
+    src:'CTA', srcCls:'',
+    acct:'Creston', acctCls:'gy', age:'Low', ageCls:'',
+    title:'Update health score rationale',
+    ctx:'Gainsight CTA &middot; CS Ops flagged Creston&rsquo;s health rationale as missing context.',
+    ask:'Add a rationale note to Gainsight explaining Creston Software&rsquo;s current health score, flagged by CS Ops as missing context.',
+    why:'Creston is 67 days dark with $18K ARR. Without a rationale note the health score is an uncontextualized number &mdash; useless for forecasting and a gap in the audit trail if this account churns.',
+    kv:[
+      ['Last Gong','67 days ago'],
+      ['Open CTAs','1'],
+      ['Health','<span style="color:var(--tx3)">Unknown</span> &middot; no recent data'],
+      ['Competitor flag','<span style="color:var(--tx3)">Unknown</span>'],
+      ['Related docs','<a href="#" onclick="taskDocOpen(event,\'Creston Account Plan\')">Creston Account Plan &nearr;</a>'],
+      ['Team activity','CS Ops flagged missing rationale']
+    ],
+    next:'Add two sentences in Gainsight acknowledging the dark period and the planned re-engagement approach. That closes the CTA and gives CS Ops what they need.',
+    nextCls:'b',
+    btns:[
+      { lbl:'Update in Gainsight', ic:'ti-external-link', prim:true,  fn:"tbToast('gs','Creston')" },
+      { lbl:'Ghost-Buster',        ic:'ti-ghost',         prim:false, fn:"tbGhostBuster('creston')" }
+    ]
+  }
+};
+
+// Toast helper for task-brief action buttons.
+function tbToast(kind, acct) {
+  var msg = {
+    'gs':            'Opening Gainsight CTA &middot; ' + acct + ' ✓',
+    'log-gs':        'Activity logged in ' + acct + ' Gainsight timeline ✓',
+    'log-attempt':   'Re-engagement attempt logged &middot; ' + acct + ' ✓',
+    'notify-ae':     'Slack DM sent to AE &middot; ' + acct + ' ✓'
+  }[kind] || (acct + ' ✓');
+  toast(msg);
+}
+
+function taskDocOpen(e, name) {
+  if (e && e.preventDefault) e.preventDefault();
+  toast('Opening ' + name + ' ✓');
+}
+
+// Ghost-Buster from inside a task brief — same close+settle pattern.
+function tbGhostBuster(acct) {
+  var current = document.querySelector('.rp-view.on');
+  if (current) {
+    var id = current.id;
+    if (id === 'view-default' || id === 'view-acme' || id === 'view-brightex' || id === 'view-nova') {
+      _lastBriefingView = id;
+    }
+  }
+  openPanel(acct, null);
+}
+
 function openTaskBrief(taskId) {
   window._activeTaskId = taskId;
   closePops();
+  var key = TASK_ID_MAP[taskId] || taskId;
+  var b = TASK_BRIEFS[key];
+  var out = document.getElementById('taskbrief-out');
+  if (!b || !out) return;
+  var kvRows = b.kv.map(function(row){
+    return '<div class="tb-kv-l">' + row[0] + '</div><div class="tb-kv-v">' + row[1] + '</div>';
+  }).join('');
+  var btnRow = b.btns.map(function(bn){
+    var cls = 'du-btn' + (bn.prim ? ' prim' : '');
+    return '<button class="' + cls + '" type="button" onclick="' + bn.fn + '"><i class="ti ' + bn.ic + '"></i> ' + bn.lbl + '</button>';
+  }).join('');
+  var html = ''
+    + '<div class="tb-hd">'
+      + '<span class="tb-chip src">' + b.src + '</span>'
+      + '<span class="tb-pill ' + b.acctCls + '">' + b.acct + '</span>'
+      + '<span class="tb-age ' + b.ageCls + '">' + b.age + '</span>'
+    + '</div>'
+    + '<div class="tb-title">' + b.title + '</div>'
+    + '<div class="tb-ctx">' + b.ctx + '</div>'
+    + '<div class="du-sec">'
+      + '<div class="du-sec-t"><i class="ti ti-message-circle-question"></i> What&rsquo;s being asked</div>'
+      + '<div class="du-card"><div class="du-card-s">' + b.ask + '</div></div>'
+    + '</div>'
+    + '<div class="du-sec">'
+      + '<div class="du-sec-t"><i class="ti ti-sparkles"></i> Why this matters &middot; Dust analysis</div>'
+      + '<div class="du-card b"><div class="du-card-s">' + b.why + '</div></div>'
+    + '</div>'
+    + '<div class="du-sec">'
+      + '<div class="du-sec-t"><i class="ti ti-database"></i> Relevant context</div>'
+      + '<div class="tb-kv">' + kvRows + '</div>'
+    + '</div>'
+    + '<div class="du-sec">'
+      + '<div class="du-sec-t"><i class="ti ti-target"></i> Suggested next step</div>'
+      + '<div class="du-card ' + (b.nextCls || 'g') + '"><div class="du-card-s">' + b.next + '</div></div>'
+    + '</div>'
+    + '<div class="du-acts foot">' + btnRow + '</div>'
+    + '<div class="du-foot">Dust analysis &middot; sourced from Gainsight &middot; Gong &middot; Gmail &middot; Updated 9:14 AM</div>';
+  out.innerHTML = html;
+  openPanel('taskbrief', null);
+}
+
+// Acme QBR follow-up draft — loads via the existing view-draft mechanism.
+function draftAcmeFollowUp() {
+  // Inject an Acme-specific entry into DRAFT_REPLIES on the fly and reuse the
+  // existing draftReply renderer.
+  DRAFT_REPLIES.acme = DRAFT_REPLIES.acme || {
+    title:'Acme Corp &middot; QBR follow-up',
+    acct:'Acme Corp', who:'David Kim, VP IT', ageLbl:'Draft &middot; QBR today',
+    ctx:'Post-QBR recap. Reinforce SSO + enterprise-tier momentum from May 10 Gong. Anchor next step to a named timeline so David Kim can socialize internally.',
+    subj:'Re: QBR recap &mdash; SSO pilot timing + expansion next steps',
+    body:"Hi David,\n\nThanks for the time this morning &mdash; great session. Quick recap of where we landed and what I&rsquo;m driving forward on our side:\n\n1. SSO pilot &mdash; you flagged enterprise tier interest in our last call and we agreed today to scope an SSO pilot. I&rsquo;ll have our IT integration doc and a 2-week pilot proposal in your inbox by Wednesday.\n\n2. Expansion sizing &mdash; we agreed to circle back on user counts and tier pricing after you&rsquo;ve walked the SSO doc through your security review.\n\n3. Renewal &mdash; on track for Aug 12. No changes to terms unless the expansion shifts the conversation.\n\nAnything I&rsquo;m missing? Happy to jump on a 15-minute call later this week if useful.\n\n&mdash; Carmen",
+    save:'acme'
+  };
+  draftReply('acme');
 }
 
 renderTasksList();
