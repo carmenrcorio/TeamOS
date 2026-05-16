@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.0.0
+**Version:** 2.1.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,29 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.1.0] — 2026-05-16
+
+Three reported bugs investigated. One is a real bug and is fixed; the other two were observed symptoms of the same root cause and resolve automatically with the same fix.
+
+### Fixed
+- **Mission Briefing panel scrolls into view on every content update.** Root cause for the reported "nothing happens" feel across multiple buttons. When the user was scrolled down (looking at the calendar, Live Signals, Tasks, etc.) and fired a panel-changing action, the panel content updated but the viewport didn't move — so the user saw nothing happen and assumed the button was broken. Added a `scrollPanelIntoView()` helper that checks the `.rp` panel's `getBoundingClientRect().top`. If the panel is above the viewport (`top < 0`) or sits past 80% of the viewport height (i.e. the user is scrolled high above it), it calls `rp.scrollIntoView({ behavior:'smooth', block:'start' })`. If the panel is already on-screen, the helper is a no-op — no spurious scroll jumps. Wired into `openPanel` and `resetPanel`; everything else (`draftReply`, `summarizeSlack`, `openGhostBusterFromPopover`, `backFromGhostBuster`, `_dustRender`, calendar event onclicks, Tasks dropdown stub) inherits the scroll automatically because every path routes through one of those two functions.
+- **Gmail dropdown Draft Reply now uses the close → wait → render pattern.** `draftReply(acct)` previously called `closeNotifPops()` then immediately rebuilt the `view-draft` content and called `openPanel('draft', null)` in a single synchronous frame. With Bug 2's scroll fix this would technically work, but the popover close animation could overlap with the panel-content paint, contributing to the "nothing happened" perception. Wrapped the body of `draftReply` after `closeNotifPops()` in a `setTimeout(..., 100)` so the popover gets a beat to close before the panel updates and scrolls. Same pattern as `openGhostBusterFromPopover`. All three rows (NovaVault → `draftReply('nova')`, Brightex → `draftReply('brightex')`, Meridian → `draftReply('meridian')`) already routed to the function correctly — the wiring was never broken. Verified end-to-end in a headless render: each row closes the popover, loads `view-draft` with the correct account title, and scrolls the panel to the top of the viewport.
+
+### Investigated, no code change
+- **Bug 1 — "Calendar events not rendering."** Could not reproduce. A headless render of the current build (v2.0.0) showed all four `.ce` blocks painting at correct dimensions and colors: `ce-acme` 236×106 green, `ce-brightex` 236×89 amber, internal CS Team Sync 236×70 gray (no chevron, not clickable), `ce-nova` 236×130 red. `cal-body` was 270×459 with 4 children, `display:flex`, no clipping, no `overflow:hidden` cutting events. CSS chain (`.cal-body` → `.ce` → `.ce-bar` + `.ce-body`) is intact and was last modified in v1.4.0 — no v1.5.0/1.6.0/1.7.0/1.8.0/1.9.0/2.0.0 commit touched it. The reported symptom (the whole calendar reading as blank space) is most plausibly explained by the scroll bug: clicking an event fired `openPanel` but the panel updated off-screen, making the calendar look unresponsive. With the v2.1.0 scroll fix the click → briefing flow surfaces visibly. **No CSS or HTML change for the calendar was needed and none was made.**
+- **Bug 3 — "Gmail Draft Reply not opening panel."** Could not reproduce either. Headless click on each row (`button[onclick="draftReply('nova'|'brightex'|'meridian')"]`) loaded `view-draft` with the correct title (`NovaVault · Reply to Michael Torres`, `Brightex Inc · Reply to Sarah Chen`, `Meridian Health Systems · Reply to Jennifer Ramos`) and closed the popover (`popOpen: false`). All three keys exist in `DRAFT_REPLIES`. The wiring was correct; the symptom was the same off-screen-update problem as Bugs 1. The 100ms wait added above is a defensive polish (per the spec's recommended pattern), not a functional repair.
+
+### Not touched
+- Calendar HTML, calendar CSS (`.cal-hd`, `.cal-body`, `.ce`, `.ce-bar`, `.ce-body`, `.ce-arr`, `.ce-pill`), Mission Briefing layout (`.rp`, `.rp-view`, `.rp-scroll`), Live Signals widget, Dark Zone widget, pulse strip, notification rail HTML, every agent drawer, deck modal, Ghost-Buster handlers, Back button, all Ask Dust templates (incl. v2.0.0 Coach Me), Custom Agents dropdown, universal account-click handlers, Recipe for Success tab.
+- `closeNotifPops`, `closePops`, `openGhostBusterFromPopover`, `backFromGhostBuster`, `openAgentDrawer`, `agentBtn`, `_dustRender`, `dustQuick`, `askDust`, `acctClick*`, `togglePop`, `toggleNotifPop` — no signature or body changes.
+
+### Engineering
+- `scrollPanelIntoView` uses `getBoundingClientRect().top` rather than `IntersectionObserver` — the call site is synchronous and one-shot, and IO would add an async tick for no benefit here.
+- Verified the fix with a Playwright check covering three scenarios: (a) scrolled-down + calendar click → page scrolls back to bring `.rp` to `top=0`; (b) scrolled-down + Gmail Draft Reply for Meridian → popover closes, `view-draft` loads with correct title, panel scrolls into view; (c) panel already in viewport + calendar click → no spurious scroll (`scrollY` unchanged at 386).
+- No new CSS rules. No new event handlers. No new global state.
 
 ---
 

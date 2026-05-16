@@ -1553,6 +1553,22 @@ function openPanel(id, ceEl) {
   document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
   document.getElementById('view-' + id).classList.add('on');
   if (ceEl) ceEl.classList.add('sel');
+  scrollPanelIntoView();
+}
+
+// Bring Mission Briefing into view after any panel content update.
+// Only scrolls when the panel is not currently visible — avoids unwanted
+// scroll jumps when the user already has the panel in their viewport.
+function scrollPanelIntoView() {
+  var rp = document.querySelector('.rp');
+  if (!rp) return;
+  var r = rp.getBoundingClientRect();
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  // Panel is "out of view" if its top is above the fold OR its top sits
+  // beyond ~80% of the viewport (i.e. user is scrolled above the panel).
+  if (r.top < 0 || r.top > vh * 0.8) {
+    rp.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
 }
 
 // ── Universal account click (v2.0.0) ────────────────────────────────────────
@@ -1611,6 +1627,7 @@ function resetPanel() {
   document.querySelectorAll('.rp-view').forEach(function(v){ v.classList.remove('on'); });
   document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
   document.getElementById('view-default').classList.add('on');
+  scrollPanelIntoView();
 }
 
 // ── Ghost-Buster trigger from pulse strip popover (v1.7.0 bug fix) ──────────
@@ -1986,25 +2003,29 @@ var DRAFT_REPLIES = {
 
 function draftReply(acct) {
   closeNotifPops();
-  var d = DRAFT_REPLIES[acct];
-  if (!d) return;
-  var titleEl = document.getElementById('draft-title');
-  var out = document.getElementById('draft-out');
-  if (titleEl) titleEl.textContent = d.title;
-  if (!out) return;
-  var bodyHtml = (d.body || '').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-  var html = ''
-    + '<div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">' + d.acct + '</div>'
-    + '<div style="font-size:11px;color:var(--tx3);margin-bottom:12px">To: ' + d.who + ' &middot; ' + d.ageLbl + '</div>'
-    + '<div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> ' + d.ctx + '</div>'
-    + '<div class="ge-subj">Subject: ' + d.subj + '</div>'
-    + '<div class="ge-body">' + bodyHtml + '</div>'
-    + '<div class="ge-btns">'
-      + '<button class="ge-send" onclick="toast(\'' + d.acct.replace(/'/g, "\\'") + ' reply sent via Gmail &middot; Outreach activity logged in Salesforce ✓\');this.textContent=\'Sent via Gmail\';this.classList.add(\'sent\');this.disabled=true">Send via Gmail</button>'
-      + '<button class="ge-edit" onclick="toast(\'Opening editable draft in Gmail...\')">Edit first</button>'
-    + '</div>';
-  out.innerHTML = html;
-  openPanel('draft', null);
+  // Defer the panel update so the popover close animation settles before
+  // the panel paints + scrolls — prevents the "nothing happened" feel.
+  setTimeout(function() {
+    var d = DRAFT_REPLIES[acct];
+    if (!d) return;
+    var titleEl = document.getElementById('draft-title');
+    var out = document.getElementById('draft-out');
+    if (titleEl) titleEl.textContent = d.title;
+    if (!out) return;
+    var bodyHtml = (d.body || '').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    var html = ''
+      + '<div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px">' + d.acct + '</div>'
+      + '<div style="font-size:11px;color:var(--tx3);margin-bottom:12px">To: ' + d.who + ' &middot; ' + d.ageLbl + '</div>'
+      + '<div class="ge-ctx"><i class="ti ti-sparkles" style="font-size:11px"></i> ' + d.ctx + '</div>'
+      + '<div class="ge-subj">Subject: ' + d.subj + '</div>'
+      + '<div class="ge-body">' + bodyHtml + '</div>'
+      + '<div class="ge-btns">'
+        + '<button class="ge-send" onclick="toast(\'' + d.acct.replace(/'/g, "\\'") + ' reply sent via Gmail &middot; Outreach activity logged in Salesforce ✓\');this.textContent=\'Sent via Gmail\';this.classList.add(\'sent\');this.disabled=true">Send via Gmail</button>'
+        + '<button class="ge-edit" onclick="toast(\'Opening editable draft in Gmail...\')">Edit first</button>'
+      + '</div>';
+    out.innerHTML = html;
+    openPanel('draft', null);
+  }, 100);
 }
 
 // ── Slack popover → Dust summary panel ──────────────────────────────────────
