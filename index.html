@@ -2475,6 +2475,91 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .rs-dark-acts{display:flex;gap:7px;flex-wrap:wrap}
 .rs-dark-status{font-size:10px;font-weight:700;padding:4px 24px 4px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:#1F2937;font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238A8A86' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 7px center}
 
+/* ─── v4.9.0 additions ──────────────────────────────────────────────────── */
+/* FIX 8 — source chip + timestamp on every signal */
+.rs-sig-refresh{font-size:11px;color:#374151;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.rs-sig-refresh i{font-size:13px;color:var(--tl)}
+.rs-sig-row{align-items:stretch}
+.rs-sig-meta{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:5px}
+.rs-sig-src{font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;line-height:1.5;display:inline-flex;align-items:center;gap:3px}
+.rs-sig-src::before{content:'•';margin-right:1px;opacity:.7}
+.rs-sig-time{font-size:10px;color:#6B7280;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.rs-sig-time i{font-size:11px}
+
+/* FIX 9 — health-trend arrow on matrix bubble + trend key + warning ring */
+.rs-mx-trend{position:absolute;font-size:10px;font-weight:800;color:#111827;background:rgba(255,255,255,.92);padding:1px 4px;border-radius:3px;line-height:1.2;letter-spacing:-.03em;pointer-events:none;top:auto;bottom:calc(100% + 1px);right:-4px;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.rs-mx-trend.rs-trend-up{color:#065F46}
+.rs-mx-trend.rs-trend-flat{color:#374151}
+.rs-mx-trend.rs-trend-down{color:#9A3412}
+.rs-mx-trend.rs-trend-dd{color:#7F1D1D}
+.rs-mx-trend.rs-trend-un{color:#6B7280}
+.rs-mx-dot.warn-ring{border-style:dashed;border-color:#DC2626}
+.rs-mx-dot.pulse-ring{animation:rs-mx-pulse 1s ease-out infinite}
+@keyframes rs-mx-pulse{0%{box-shadow:0 0 0 0 rgba(20,184,166,.55), 0 2px 8px rgba(0,0,0,.18)}70%{box-shadow:0 0 0 14px rgba(20,184,166,0), 0 2px 8px rgba(0,0,0,.18)}100%{box-shadow:0 0 0 0 rgba(20,184,166,0), 0 2px 8px rgba(0,0,0,.18)}}
+.rs-trend-key{display:flex;gap:14px;font-size:10px;color:#374151;font-weight:600;margin-top:10px;flex-wrap:wrap;padding-top:10px;border-top:1px dashed var(--bd)}
+.rs-trend-key-l{font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em;margin-right:6px}
+.rs-trend-key-i{display:inline-flex;align-items:center;gap:5px}
+.rs-trend-key-i b{font-weight:800;font-size:11px}
+.rs-trend-key-i.up b{color:#065F46}
+.rs-trend-key-i.flat b{color:#374151}
+.rs-trend-key-i.down b{color:#9A3412}
+.rs-trend-key-i.dd b{color:#7F1D1D}
+.rs-trend-key-i.un b{color:#6B7280}
+
+/* FIX 10 — expandable Save Play step accordion */
+.rs-pl-step{flex-wrap:wrap}
+.rs-pl-step-head{display:flex;align-items:center;gap:10px;width:100%}
+.rs-pl-step-toggle{margin-left:auto;background:transparent;border:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--tl-dk);cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:2px 4px;border-radius:4px}
+.rs-pl-step-toggle:hover{background:var(--tl-bg)}
+.rs-pl-step-toggle .ti{transition:transform .15s}
+.rs-pl-step-toggle[aria-expanded="true"] .ti{transform:rotate(180deg)}
+.rs-pl-step-body{flex-basis:100%;margin-top:10px;padding:10px 12px;background:#fff;border:1px solid var(--bd);border-radius:6px;display:none}
+.rs-pl-step-body.on{display:block}
+.rs-pl-step-block{margin-bottom:9px}
+.rs-pl-step-block:last-child{margin-bottom:0}
+.rs-pl-step-block-l{font-size:9px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.rs-pl-step-block-b{font-size:12px;color:#1F2937;font-weight:500;line-height:1.55;white-space:pre-wrap}
+.rs-pl-step-block.say .rs-pl-step-block-b{font-style:italic;background:var(--surf2);padding:8px 10px;border-radius:5px;border-left:3px solid var(--tl)}
+
+/* FIX 3 — inline Save Play note form */
+.rs-note-form{margin-top:10px;background:var(--surf2);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;display:none;flex-direction:column;gap:8px}
+.rs-note-form.on{display:flex}
+.rs-note-form textarea{font-family:inherit;font-size:12px;color:#1F2937;border:1px solid var(--bd2);border-radius:5px;padding:8px 10px;background:var(--surf);resize:vertical;min-height:62px;line-height:1.5}
+.rs-note-form textarea:focus-visible{outline:2px solid var(--tl);outline-offset:1px;border-color:var(--tl)}
+.rs-note-form-btns{display:flex;gap:7px;justify-content:flex-end}
+.rs-note-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.rs-note-row{background:var(--surf2);border:1px solid var(--bd);border-left:3px solid var(--tl);border-radius:5px;padding:7px 10px;font-size:12px;color:#1F2937;line-height:1.45}
+.rs-note-row .rs-note-ts{font-size:10px;color:#6B7280;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+
+/* FIX 2 — Brightex draft reply mail modal (reuses cm-modal-ov for chrome) */
+.rs-mail{display:flex;flex-direction:column;gap:10px;padding:6px 2px}
+.rs-mail-row{display:flex;align-items:center;gap:10px;font-size:12px;color:#1F2937;font-weight:600}
+.rs-mail-row label{font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em;min-width:60px}
+.rs-mail-row span{flex:1;color:#111827;font-weight:700}
+.rs-mail textarea{font-family:inherit;font-size:13px;color:#1F2937;border:1px solid var(--bd2);border-radius:6px;padding:11px 12px;background:var(--surf);min-height:200px;resize:vertical;line-height:1.55;width:100%;box-sizing:border-box}
+.rs-mail textarea:focus-visible{outline:2px solid var(--tl);outline-offset:1px;border-color:var(--tl)}
+.rs-mail-hint{font-size:10px;color:#6B7280;font-weight:600;margin-top:3px}
+
+/* FIX 6 — slide-over panel for tasks / overdue CTAs */
+.rs-slide-ov{position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:9550;opacity:0;pointer-events:none;transition:opacity .15s;display:flex;justify-content:flex-end}
+.rs-slide-ov.on{opacity:1;pointer-events:auto}
+.rs-slide{width:360px;max-width:100vw;height:100%;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 32px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .18s ease-out;display:flex;flex-direction:column}
+.rs-slide-ov.on .rs-slide{transform:translateX(0)}
+.rs-slide-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--bd);gap:10px}
+.rs-slide-t{font-size:15px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.rs-slide-x{font-family:inherit;font-size:20px;line-height:1;background:transparent;border:none;color:#6B7280;cursor:pointer;padding:6px 8px;border-radius:5px;min-width:44px;min-height:44px}
+.rs-slide-x:hover{background:var(--surf2);color:var(--tx)}
+.rs-slide-x:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.rs-slide-body{flex:1;overflow:auto;padding:14px 18px}
+.rs-slide-row{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--bd)}
+.rs-slide-row:last-child{border-bottom:none}
+.rs-slide-row-body{flex:1;min-width:0}
+.rs-slide-row-t{font-size:12px;color:#111827;font-weight:700;line-height:1.4}
+.rs-slide-row-s{font-size:11px;color:#6B7280;font-weight:600;margin-top:3px}
+.rs-slide-mc{font-size:11px;font-weight:700;padding:6px 10px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;min-height:32px}
+.rs-slide-mc:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.rs-slide-mc.done{opacity:.55;text-decoration:line-through;pointer-events:none}
+
 /* ═════════════════════════════════════════════════════════════════════════
    v4.2.0 — Forecasting (replaces Coming Soon for #tab-forecast)
    ═════════════════════════════════════════════════════════════════════════ */
@@ -2788,7 +2873,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
      so it remains visible across every tab (Dashboard / Recipe / Enablement). -->
 <div class="pulse-strip" role="navigation" aria-label="Portfolio pulse">
     <div class="ps-wrap">
-      <button class="ps-btn" id="pb-calls" onclick="togglePop('calls',event)" type="button"><i class="ti ti-calendar-event"></i><span class="ps-n">3</span>&nbsp;calls today</button>
+      <button class="ps-btn" id="pb-calls" onclick="rsKpiCalls()" type="button" aria-label="3 calls today — open CSM Dashboard Next Up"><i class="ti ti-calendar-event"></i><span class="ps-n">3</span>&nbsp;calls today</button>
       <div class="pop" id="pop-calls">
         <div class="pop-hd"><i class="ti ti-calendar-event"></i> Today &middot; 3 customer calls</div>
         <div class="pop-row">
@@ -2829,7 +2914,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
 
     <div class="ps-wrap">
-      <button class="ps-btn" id="pb-risk" onclick="togglePop('risk',event)" type="button"><i class="ti ti-alert-triangle" style="color:var(--am)"></i><span class="ps-n a">2</span>&nbsp;at risk</button>
+      <button class="ps-btn" id="pb-risk" onclick="rsKpiRisk()" type="button" aria-label="2 accounts at risk — open Risk Matrix"><i class="ti ti-alert-triangle" style="color:var(--am)"></i><span class="ps-n a">2</span>&nbsp;at risk</button>
       <div class="pop" id="pop-risk">
         <div class="pop-hd"><i class="ti ti-alert-triangle" style="color:var(--am)"></i> Accounts at risk</div>
         <div class="pop-row">
@@ -2859,7 +2944,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
 
     <div class="ps-wrap">
-      <button class="ps-btn" id="pb-arr" onclick="togglePop('arr',event)" type="button"><i class="ti ti-currency-dollar" style="color:var(--rd)"></i><span class="ps-n r">$67K</span>&nbsp;ARR at risk</button>
+      <button class="ps-btn" id="pb-arr" onclick="rsKpiARR()" type="button" aria-label="$67K ARR at risk — open All Signals filtered Critical and High"><i class="ti ti-currency-dollar" style="color:var(--rd)"></i><span class="ps-n r">$67K</span>&nbsp;ARR at risk</button>
       <div class="pop" id="pop-arr">
         <div class="pop-hd"><i class="ti ti-currency-dollar" style="color:var(--rd)"></i> Renewal pipeline at risk</div>
         <div class="pop-row">
@@ -2889,7 +2974,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
 
     <div class="ps-wrap">
-      <button class="ps-btn" id="pb-ctas" onclick="togglePop('ctas',event)" type="button"><i class="ti ti-list-check" style="color:var(--rd)"></i><span class="ps-n r" id="pn-ctas">3</span>&nbsp;overdue CTAs</button>
+      <button class="ps-btn" id="pb-ctas" onclick="rsKpiCTAs()" type="button" aria-label="3 overdue CTAs — open slide-over panel"><i class="ti ti-list-check" style="color:var(--rd)"></i><span class="ps-n r" id="pn-ctas">3</span>&nbsp;overdue CTAs</button>
       <div class="pop pop-right" id="pop-ctas">
         <div class="pop-hd"><i class="ti ti-list-check" style="color:var(--rd)"></i> Overdue CTAs</div>
         <div class="pop-row" id="cta-row-1">
@@ -2918,7 +3003,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
 
     <div class="ps-wrap">
-      <button class="ps-btn" id="pb-dark" onclick="togglePop('dark',event)" type="button"><i class="ti ti-ghost" style="color:var(--tx3)"></i><span class="ps-n">3</span>&nbsp;dark accounts</button>
+      <button class="ps-btn" id="pb-dark" onclick="rsKpiDark()" type="button" aria-label="3 dark accounts — open Dark Zone"><i class="ti ti-ghost" style="color:var(--tx3)"></i><span class="ps-n">3</span>&nbsp;dark accounts</button>
       <div class="pop pop-right" id="pop-dark">
         <div class="pop-hd"><i class="ti ti-ghost" style="color:var(--tx3)"></i> 60-day Dark Zone</div>
         <div class="pop-row">
@@ -2947,7 +3032,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
 
     <div class="ps-wrap">
-      <button class="ps-btn" id="pb-tasks" onclick="togglePop('tasks',event)" type="button"><i class="ti ti-menu-2"></i><span class="ps-n" id="pn-tasks">8</span>&nbsp;tasks</button>
+      <button class="ps-btn" id="pb-tasks" onclick="rsKpiTasks()" type="button" aria-label="8 tasks — open slide-over panel"><i class="ti ti-menu-2"></i><span class="ps-n" id="pn-tasks">8</span>&nbsp;tasks</button>
       <div class="pop pop-right tk-pop" id="pop-tasks">
         <div class="tk-pop-hd">
           <div class="tk-pop-title"><i class="ti ti-menu-2"></i> Tasks <span class="tk-pop-count">&middot; <span id="tk-pop-count-n">8</span> items</span></div>
@@ -3990,14 +4075,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   <div class="cm-drawer-ov" id="cm-cv-ov" onclick="cmCampViewClose(event)" aria-hidden="true"></div>
   <aside class="cm-drawer" id="cm-cv-drawer" role="dialog" aria-modal="true" aria-label="Campaign detail" aria-hidden="true"></aside>
 
-  <!-- v4.4.0 — Generic modal overlay (Add Contact, Template Builder, Schedule,
-       Send Confirm, Reply, Quota). Render target is #cm-modal-content. -->
-  <div class="cm-modal-ov" id="cm-modal-ov" onclick="cmCloseModal(event)" aria-hidden="true">
-    <div class="cm-modal" id="cm-modal" role="dialog" aria-modal="true" aria-labelledby="cm-modal-title" onclick="event.stopPropagation()">
-      <div class="cm-modal-hd"><div class="cm-modal-title" id="cm-modal-title">—</div><button class="cm-modal-close" type="button" onclick="cmCloseModal()" aria-label="Close">&times;</button></div>
-      <div class="cm-modal-body" id="cm-modal-body"></div>
-      <div class="cm-modal-foot" id="cm-modal-foot"></div>
-    </div>
+</div>
+
+<!-- v4.4.0 → v4.9.0 — Generic modal overlay (Add Contact, Template Builder,
+     Schedule, Send Confirm, Reply, Quota, Brightex SLA Draft Reply). Hoisted
+     out of #tab-campaign in v4.9.0 so the same modal can be opened from any
+     tab (Risk & Signals FIX 2 needs this). -->
+<div class="cm-modal-ov" id="cm-modal-ov" onclick="cmCloseModal(event)" aria-hidden="true">
+  <div class="cm-modal" id="cm-modal" role="dialog" aria-modal="true" aria-labelledby="cm-modal-title" onclick="event.stopPropagation()">
+    <div class="cm-modal-hd"><div class="cm-modal-title" id="cm-modal-title">—</div><button class="cm-modal-close" type="button" onclick="cmCloseModal()" aria-label="Close">&times;</button></div>
+    <div class="cm-modal-body" id="cm-modal-body"></div>
+    <div class="cm-modal-foot" id="cm-modal-foot"></div>
   </div>
 </div>
 
@@ -4006,6 +4094,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
      compose so we only need a separate drawer here. -->
 <div class="fc-acct-drawer-ov" id="fc-acct-drawer-ov" onclick="fcCloseAcctDrawer(event)" aria-hidden="true"></div>
 <aside class="fc-acct-drawer" id="fc-acct-drawer" role="dialog" aria-modal="true" aria-label="Account snapshot" aria-hidden="true"></aside>
+
+<!-- v4.9.0 — Slide-over panel reused by top-bar KPI buttons (FIX 6).
+     role=dialog, aria-modal="false" because this layer is non-blocking
+     (the user can still click the underlying tabs). Escape closes via
+     the global keydown handler. -->
+<div class="rs-slide-ov" id="rs-slide-ov" onclick="rsCloseSlide(event)" aria-hidden="true">
+  <aside class="rs-slide" id="rs-slide" role="dialog" aria-modal="false" aria-labelledby="rs-slide-t" onclick="event.stopPropagation()">
+    <div class="rs-slide-hd"><div class="rs-slide-t" id="rs-slide-t">—</div><button class="rs-slide-x" type="button" onclick="rsCloseSlide()" aria-label="Close panel">&times;</button></div>
+    <div class="rs-slide-body" id="rs-slide-body"></div>
+  </aside>
+</div>
 
 <div class="tc" id="tab-analytics">
   <div class="cs-pg">
@@ -4654,6 +4753,10 @@ function toast(msg) {
 // First open layer Escape consumes is what closes; nothing further fires.
 document.addEventListener('keydown', function(e){
   if (e.key !== 'Escape') return;
+  // v4.9.0 — Slide-over panel (top-bar KPI Tasks / Overdue CTAs) has highest
+  // Escape precedence because it sits above the rest of the chrome.
+  var slideOv = document.getElementById('rs-slide-ov');
+  if (slideOv && slideOv.classList.contains('on') && typeof rsCloseSlide === 'function') { rsCloseSlide(); e.preventDefault(); return; }
   var modalOv = document.getElementById('cm-modal-ov');
   if (modalOv && modalOv.classList.contains('on') && typeof cmCloseModal === 'function') { cmCloseModal(); e.preventDefault(); return; }
   var cvDrawer = document.getElementById('cm-cv-drawer');
@@ -11475,34 +11578,73 @@ cmRenderCampaigns();
 // Gainsight sync.
 // ═══════════════════════════════════════════════════════════════════════════
 var RS_ACCOUNTS = [
-  { key:'nova',     name:'NovaVault',              health:23,  daysOut:17, arr:31, arrLabel:'$31K', renewal:'Jun 1',  band:'r',  champion:'Michael Torres (cold intro)',  gong:'Apr 28 · champion departure' },
-  { key:'brightex', name:'Brightex Inc',           health:48,  daysOut:31, arr:36, arrLabel:'$36K', renewal:'Jun 15', band:'a',  champion:'Sarah Chen',                   gong:'May 10 · SLA question' },
-  { key:'acme',     name:'Acme Corp',              health:82,  daysOut:89, arr:48, arrLabel:'$48K', renewal:'Aug 12', band:'g',  champion:'David Kim',                    gong:'May 10 · SSO interest' },
-  { key:'meridian', name:'Meridian Health Systems',health:42,  daysOut:45, arr:22, arrLabel:'$22K', renewal:'Jun 30', band:'gy', champion:'Jennifer Ramos',               gong:'73d ago',     unknown:true, daysDark:73 },
-  { key:'creston',  name:'Creston Software',       health:38,  daysOut:60, arr:18, arrLabel:'$18K', renewal:'Jul 15', band:'gy', champion:'Marcus Webb (dormant)',        gong:'67d ago',     unknown:true, daysDark:67 },
-  { key:'apex',     name:'Apex Dynamics',          health:40,  daysOut:77, arr:15, arrLabel:'$15K', renewal:'Aug 1',  band:'gy', champion:'Ryan Patel (new)',             gong:'61d ago',     unknown:true, daysDark:61 }
+  // v4.9.0 — Health-trend velocity per account (FIX 9). `trend` is one of
+  // 'up' / 'flat' / 'down' / 'downdown' / 'unknown'. `trendDelta` is the human
+  // string rendered under the matrix legend ("−23pts / 30d") and on hover.
+  { key:'nova',     name:'NovaVault',              health:23,  daysOut:17, arr:31, arrLabel:'$31K', renewal:'Jun 1',  band:'r',  champion:'Michael Torres (cold intro)',  gong:'Apr 28 · champion departure', trend:'downdown', trendDelta:'−22pts / 30d', warnRing:false },
+  { key:'brightex', name:'Brightex Inc',           health:48,  daysOut:31, arr:36, arrLabel:'$36K', renewal:'Jun 15', band:'a',  champion:'Sarah Chen',                   gong:'May 10 · SLA question',       trend:'downdown', trendDelta:'−23pts / 30d', warnRing:true },
+  { key:'acme',     name:'Acme Corp',              health:82,  daysOut:89, arr:48, arrLabel:'$48K', renewal:'Aug 12', band:'g',  champion:'David Kim',                    gong:'May 10 · SSO interest',       trend:'up',       trendDelta:'+4pts / 30d',  warnRing:false },
+  { key:'meridian', name:'Meridian Health Systems',health:42,  daysOut:45, arr:22, arrLabel:'$22K', renewal:'Jun 30', band:'gy', champion:'Jennifer Ramos',               gong:'73d ago',     unknown:true, daysDark:73, trend:'unknown', trendDelta:'No recent data', warnRing:false },
+  { key:'creston',  name:'Creston Software',       health:38,  daysOut:60, arr:18, arrLabel:'$18K', renewal:'Jul 15', band:'gy', champion:'Marcus Webb (dormant)',        gong:'67d ago',     unknown:true, daysDark:67, trend:'unknown', trendDelta:'No recent data', warnRing:false },
+  { key:'apex',     name:'Apex Dynamics',          health:40,  daysOut:77, arr:15, arrLabel:'$15K', renewal:'Aug 1',  band:'gy', champion:'Ryan Patel (new)',             gong:'61d ago',     unknown:true, daysDark:61, trend:'unknown', trendDelta:'No recent data', warnRing:false }
 ];
 
+// v4.9.0 — Trend velocity arrows for matrix bubbles (FIX 9).
+var RS_TREND = {
+  up:       { arrow:'↑',  cl:'rs-trend-up',   lbl:'Improving' },
+  flat:     { arrow:'→',  cl:'rs-trend-flat', lbl:'Stable' },
+  down:     { arrow:'↓',  cl:'rs-trend-down', lbl:'Declining' },
+  downdown: { arrow:'↓↓', cl:'rs-trend-dd',   lbl:'Sharp decline' },
+  unknown:  { arrow:'?',  cl:'rs-trend-un',   lbl:'Unknown (dark)' }
+};
+
+// v4.9.0 — Per-signal source + updated timestamps for FIX 8. Severities for
+// signals 7 / 9 / 11 elevated from watch → high (FIX 7). Signal 5 desc names
+// Okta as the competitor (FIX 7).
 var RS_SIGNALS = [
-  { id:1,  sev:'crit',  acct:'nova',     acctName:'NovaVault',   desc:'Champion departed — James Wu left, Michael Torres cold intro',                       ctx:'17d to renewal · $31K ARR', action:'save',    actionLabel:'Open Save Strategy' },
-  { id:2,  sev:'crit',  acct:'nova',     acctName:'NovaVault',   desc:'Contract not opened — sent Jun 1, 0 views, 17 days elapsed',                         ctx:'Ironclad: Not Opened',      action:'save',    actionLabel:'Open Save Play' },
-  { id:3,  sev:'crit',  acct:'nova',     acctName:'NovaVault',   desc:'45 days Gong silence — no call since Apr 28 champion call',                          ctx:'45d since last touch',      action:'gb',      actionLabel:'Ghost-Buster' },
-  { id:4,  sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'Health score drop — 71 → 48 in 30 days (−23 points)',                                ctx:'31d to renewal · $36K ARR', action:'risk',    actionLabel:'Run Risk Analyst' },
-  { id:5,  sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'Competitor flagged in last 2 Gong calls — alternative vendor mentioned by Sarah Chen',ctx:'Last Gong: May 10',         action:'save',    actionLabel:'Open Save Strategy' },
-  { id:6,  sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'SLA question unanswered — Sarah Chen emailed 4h ago, no reply from CSM',             ctx:'Inbox · 4h overdue',        action:'draft',   actionLabel:'Draft Reply' },
-  { id:7,  sev:'watch', acct:'meridian', acctName:'Meridian',    desc:'73 days dark — no Gong call, no CSM touch since March',                              ctx:'Inbound: Jennifer emailed yesterday', action:'gb', actionLabel:'Ghost-Buster' },
-  { id:8,  sev:'watch', acct:'creston',  acctName:'Creston',     desc:'67 days dark — passive neglect, health was 76 at last contact',                      ctx:'67d since last touch',      action:'gb',      actionLabel:'Ghost-Buster' },
-  { id:9,  sev:'watch', acct:'apex',     acctName:'Apex',        desc:'Champion change — James Wu departed, Ryan Patel new IT Director, no intro made',     ctx:'77d to renewal',            action:'champion',actionLabel:'Champion Change Protocol' },
-  { id:10, sev:'opp',   acct:'acme',     acctName:'Acme',        desc:'Expansion signal — David Kim flagged enterprise tier + SSO interest unprompted',     ctx:'89d to renewal · $48K ARR', action:'prep',    actionLabel:'Open Prep Me' },
-  { id:11, sev:'watch', acct:'brightex', acctName:'Brightex',    desc:'Support ticket spike — 3 tickets opened in last 7 days, above normal baseline',     ctx:'Zendesk · last 7d',         action:'risk',    actionLabel:'Run Risk Analyst' }
+  { id:1,  sev:'crit',  acct:'nova',     acctName:'NovaVault',   desc:'Champion departed — James Wu left, Michael Torres cold intro',                       ctx:'17d to renewal · $31K ARR', action:'save',    actionLabel:'Open Save Strategy',         src:'GAINSIGHT', updated:'2h ago' },
+  { id:2,  sev:'crit',  acct:'nova',     acctName:'NovaVault',   desc:'Contract not opened — sent Jun 1, 0 views, 17 days elapsed',                         ctx:'Ironclad: Not Opened',      action:'save',    actionLabel:'Open Save Play',             src:'IRONCLAD',  updated:'17d ago' },
+  { id:3,  sev:'crit',  acct:'nova',     acctName:'NovaVault',   desc:'45 days Gong silence — no call since Apr 28 champion call',                          ctx:'45d since last touch',      action:'gb',      actionLabel:'Ghost-Buster',               src:'GONG',      updated:'45d ago' },
+  { id:4,  sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'Health score drop — 71 → 48 in 30 days (−23 points)',                                ctx:'31d to renewal · $36K ARR', action:'risk',    actionLabel:'Run Risk Analyst',           src:'GAINSIGHT', updated:'Today · 6:14 AM' },
+  { id:5,  sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'Competitor flagged in last 2 Gong calls — Okta mentioned as alternative by Sarah Chen',ctx:'Last Gong: May 10',        action:'save',    actionLabel:'Open Save Strategy',         src:'GONG',      updated:'7d ago' },
+  { id:6,  sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'SLA question unanswered — Sarah Chen emailed 4h ago, no reply from CSM',             ctx:'Inbox · 4h overdue',        action:'draft',   actionLabel:'Draft Reply',                src:'INBOX',     updated:'4h ago' },
+  { id:7,  sev:'high',  acct:'meridian', acctName:'Meridian',    desc:'73 days dark — no Gong call, no CSM touch since March',                              ctx:'Inbound: Jennifer emailed yesterday', action:'gb', actionLabel:'Ghost-Buster',          src:'GAINSIGHT', updated:'Yesterday' },
+  { id:8,  sev:'watch', acct:'creston',  acctName:'Creston',     desc:'67 days dark — passive neglect, health was 76 at last contact',                      ctx:'67d since last touch',      action:'gb',      actionLabel:'Ghost-Buster',               src:'GAINSIGHT', updated:'67d ago' },
+  { id:9,  sev:'high',  acct:'apex',     acctName:'Apex',        desc:'Champion change — James Wu departed, Ryan Patel new IT Director, no intro made',     ctx:'77d to renewal',            action:'champion',actionLabel:'Champion Change Protocol',   src:'GAINSIGHT', updated:'3d ago' },
+  { id:10, sev:'opp',   acct:'acme',     acctName:'Acme',        desc:'Expansion signal — David Kim flagged enterprise tier + SSO interest unprompted',     ctx:'89d to renewal · $48K ARR', action:'prep',    actionLabel:'Open Prep Me',               src:'GONG',      updated:'7d ago' },
+  { id:11, sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'Support ticket spike — 3 tickets opened in last 7 days, above normal baseline',      ctx:'Zendesk · last 7d',         action:'risk',    actionLabel:'Run Risk Analyst',           src:'ZENDESK',   updated:'Today · 7:42 AM' }
 ];
 
+// v4.9.0 — Source chip palette (FIX 8).
+var RS_SOURCE_STYLE = {
+  GAINSIGHT: { bg:'#CCFBF1', fg:'#0F766E' },
+  GONG:      { bg:'#EDE9FE', fg:'#5B21B6' },
+  IRONCLAD:  { bg:'#DBEAFE', fg:'#1E3A8A' },
+  INBOX:     { bg:'#F1F5F9', fg:'#334155' },
+  ZENDESK:   { bg:'#FFEDD5', fg:'#9A3412' }
+};
+
+// v4.9.0 — Each step now carries an expandable accordion body (FIX 10) with
+// WHAT TO DO / WHAT TO SAY / EXPECTED OUTCOME. The `body` field is optional —
+// steps without one render as a static row (no accordion toggle).
 var RS_PLAYS = [
   { acct:'nova',     name:'NovaVault Save Play',  status:'EMERGENCY', statusCls:'',         started:'May 15', day:2, arr:'$31K', renewal:'Jun 1',
     steps:[
       { s:'done',    n:1, t:'Champion change logged in Gainsight',                meta:'Done (May 15)' },
-      { s:'in-prog', n:2, t:'Cold intro to Michael Torres',                       meta:'In progress · Touch 1 sent' },
-      { s:'pending', n:3, t:'Executive sponsor call',                             meta:'Scheduled for May 20' },
+      { s:'in-prog', n:2, t:'Cold intro to Michael Torres',                       meta:'In progress · Touch 1 sent',
+        body:{
+          doIt:'Send the cold intro email to Michael Torres referencing the SSO rollout James Wu owned. Lead with continuity, not pitch.',
+          say:'Hi Michael — I worked with James for the past 18 months on your SSO rollout. He told me you were stepping in to own IT before he left. I want to make sure the renewal conversation lands on your desk with the full context, not as a surprise. Could we grab 20 minutes this week so I can walk you through where your team is in the rollout?',
+          outcome:'Touch 1 reply by May 18. If no reply by then, schedule Touch 2 (AE warm intro request through David Kim relationship).'
+        }
+      },
+      { s:'pending', n:3, t:'Executive sponsor call',                             meta:'Scheduled for May 20',
+        body:{
+          doIt:'Get Sarah Bookman (VP CS) on the call with Torres. Executive sponsor brings weight a CSM cold intro cannot.',
+          say:'Michael, I asked Sarah Bookman, our VP of Customer Success, to join this call. She wants to personally make sure the renewal lands smoothly given the leadership change on your side. Sarah will share what we are seeing in your usage and what other teams in your size band have done in the same transition.',
+          outcome:'Torres engages with the renewal frame on this call. Soft-commit to a renewal discussion before May 28.'
+        }
+      },
       { s:'pending', n:4, t:'Contract re-engagement',                             meta:'Pending Torres response' },
       { s:'pending', n:5, t:'Renewal conversation',                               meta:'Target: May 28' }
     ],
@@ -11512,13 +11654,38 @@ var RS_PLAYS = [
     steps:[
       { s:'done',    n:1, t:'Risk CTA created in Gainsight',                       meta:'Done (May 14)' },
       { s:'done',    n:2, t:'SLA question identified',                             meta:'Done (May 10 Gong + email)' },
-      { s:'in-prog', n:3, t:'Draft SLA response',                                  meta:'In progress' },
-      { s:'pending', n:4, t:'Renewal conversation with Sarah Chen',                meta:'Pending' },
-      { s:'pending', n:5, t:'Renewal close',                                       meta:'Target: Jun 10' }
+      { s:'in-prog', n:3, t:'Draft SLA response',                                  meta:'In progress',
+        body:{
+          doIt:'Reply to Sarah Chen with the specific uptime numbers for Brightex’s tier, then offer a 15-minute call to align before the renewal.',
+          say:'Sarah — short answer: your tier guarantees 99.9% uptime with 4-hour response on Sev-1. The enterprise tier moves response to 1-hour and adds a named CSM contact. I can walk you through the contractual differences and what your team has actually been hitting over the past 90 days. Can we grab 15 minutes Thursday?',
+          outcome:'SLA question closed. Sarah books a 15-minute call. Competitor frame neutralized before the renewal conversation.'
+        }
+      },
+      { s:'pending', n:4, t:'Renewal conversation with Sarah Chen',                meta:'Pending',
+        body:{
+          doIt:'Open the renewal conversation with value already established. Reference the SLA call as proof Brightex’s questions get answered, then move to commercial.',
+          say:'Sarah — between the SLA question last week and the support ticket pattern we discussed, I have a clearer picture of where the rough edges are. Before we talk renewal terms, I want to walk you through what we are doing about each of those — and where we think Brightex sits relative to peers in your size band.',
+          outcome:'Soft-commit on renewal intent. Surface the Okta evaluation explicitly so we know what we are negotiating against.'
+        }
+      },
+      { s:'pending', n:5, t:'Renewal close',                                       meta:'Target: Jun 10',
+        body:{
+          doIt:'Close on the renewal terms with a 12-month commit. If competitor frame holds, escalate to VP CS for a 24-month deal with locked pricing.',
+          say:'Sarah — based on everything we have walked through, here is what I am proposing for renewal: 12 months at current pricing, with the SLA call codified as a quarterly review. If you want to lock in pricing through next year as well, we have a 24-month option that keeps your rate flat.',
+          outcome:'Renewal signed by Jun 10. Locked at current pricing or 24-month at flat rate. Save Play marked complete.'
+        }
+      }
     ],
     signals:['Health: 48 (↓ from 71)','Competitor: flagged ×2','SLA question: unanswered','Champion: Sarah Chen (intact)']
   }
 ];
+
+// v4.9.0 — Per-card "Add note" inline form state + persisted save-play notes
+// per account (in-memory; Phase 2 will push to Gainsight). Also tracks which
+// Save Play steps are currently expanded.
+var RS_PLAY_NOTES = {};   // { acct: [{ text, ts }] }
+var RS_PLAY_NOTE_OPEN = {}; // { acct: bool } — is the inline note form open?
+var RS_PLAY_STEP_OPEN = {}; // { acct: { stepNum: bool } } — accordion state
 
 var RS_CHAMPS_CHANGES = [
   { acct:'nova', acctName:'NovaVault', risk:'crit', riskLabel:'CRITICAL', renewalDays:17,
@@ -11583,11 +11750,18 @@ function rsRenderMatrix() {
     var y = Math.max(0, Math.min(100, a.health));
     var size = 26 + Math.min(28, a.arr * 0.55); // 26-54px range; ARR sized
     var sel = (RS_MX_SEL === a.key) ? ' sel' : '';
+    var warn = a.warnRing ? ' warn-ring' : '';
+    var pulse = (window._rsPulseSet && window._rsPulseSet[a.key]) ? ' pulse-ring' : '';
     var initials = a.name.split(' ').filter(Boolean).slice(0,2).map(function(w){return w[0];}).join('');
-    return '<button class="rs-mx-dot ' + a.band + sel + '" type="button" '
+    // v4.9.0 — trend velocity indicator (FIX 9). Skipped for unknown when arrow is "?".
+    var tr = RS_TREND[a.trend || 'unknown'];
+    var trendHtml = tr ? '<span class="rs-mx-trend ' + tr.cl + '" aria-label="Health trend: ' + rsEscape(tr.lbl + ' · ' + (a.trendDelta || '')) + '">' + tr.arrow + '</span>' : '';
+    var trendAria = tr ? ', trend ' + tr.lbl + ' ' + (a.trendDelta || '') : '';
+    return '<button class="rs-mx-dot ' + a.band + sel + warn + pulse + '" type="button" data-acct="' + a.key + '" '
       + 'style="left:' + x + '%;top:' + (100 - y) + '%;width:' + size + 'px;height:' + size + 'px;font-size:' + Math.max(10, Math.round(size/3.2)) + 'px" '
-      + 'onclick="rsMxSelect(\'' + a.key + '\')" aria-label="' + rsEscape(a.name + ' — Health ' + (a.unknown ? 'Unknown' : a.health) + ', ' + a.daysOut + ' days to renewal, ' + a.arrLabel + ' ARR') + '">' + initials
+      + 'onclick="rsMxSelect(\'' + a.key + '\')" aria-label="' + rsEscape(a.name + ' — Health ' + (a.unknown ? 'Unknown' : a.health) + ', ' + a.daysOut + ' days to renewal, ' + a.arrLabel + ' ARR' + trendAria) + '">' + initials
       + '<span class="rs-mx-lbl">' + rsEscape(a.name) + '</span>'
+      + trendHtml
     + '</button>';
   }).join('');
   var atRisk = RS_ACCOUNTS.filter(function(a){return a.band === 'r' || a.band === 'a';});
@@ -11617,6 +11791,7 @@ function rsRenderMatrix() {
     +       '</div>'
     +       '<div class="rs-mx-axis-x" style="margin-left:30px">Days to renewal →</div>'
     +       '<div class="rs-mx-legend"><span class="rs-mx-legend-d r">Critical</span><span class="rs-mx-legend-d a">At-Risk</span><span class="rs-mx-legend-d g">Healthy</span><span class="rs-mx-legend-d gy">Unknown (dark)</span><span style="color:#6B7280">· Circle size = ARR</span></div>'
+    +       '<div class="rs-trend-key" aria-label="Health trend key"><span class="rs-trend-key-l">Trend</span><span class="rs-trend-key-i up"><b>↑</b> Improving</span><span class="rs-trend-key-i flat"><b>→</b> Stable</span><span class="rs-trend-key-i down"><b>↓</b> Declining</span><span class="rs-trend-key-i dd"><b>↓↓</b> Sharp decline</span><span class="rs-trend-key-i un"><b>?</b> Unknown (dark)</span><span style="color:#6B7280">· Red dashed ring = at-risk warning</span></div>'
     +     '</div>'
     +   '</div>'
     +   '<div class="rs-mx-detail" id="rs-mx-detail"></div>'
@@ -11629,7 +11804,17 @@ function rsRenderMatrix() {
     + '</div>';
   rsMxRenderDetail();
 }
-function rsMxSelect(key) { RS_MX_SEL = key; rsRenderMatrix(); }
+// v4.9.0 — FIX 5: don't re-render the whole matrix on dot click. Toggling
+// `.sel` directly + repainting only the detail panel keeps the buttons in
+// the panel from being torn down between mousedown / click, which was the
+// source of the "Open Save Strategy needs two clicks" bug.
+function rsMxSelect(key) {
+  RS_MX_SEL = key;
+  document.querySelectorAll('#rs-sec-matrix .rs-mx-dot').forEach(function(d){
+    d.classList.toggle('sel', d.getAttribute('data-acct') === key);
+  });
+  rsMxRenderDetail();
+}
 function rsMxRenderDetail() {
   var box = document.getElementById('rs-mx-detail');
   if (!box) return;
@@ -11674,7 +11859,13 @@ function rsRenderSignals() {
     +   '<option value="severity"' + (RS_SIG_SORT === 'severity' ? ' selected' : '') + '>Severity</option>'
     +   '<option value="arr"' + (RS_SIG_SORT === 'arr' ? ' selected' : '') + '>ARR at risk</option>'
     + '</select>';
-  var rows = RS_SIGNALS.filter(function(s){ return RS_SIG_FILTER === 'all' || s.sev === RS_SIG_FILTER; });
+  // v4.9.0 — `critHigh` is a synthetic filter wired by the top-bar "ARR at
+  // risk" KPI button (FIX 6) — matches both crit AND high signals.
+  var rows = RS_SIGNALS.filter(function(s){
+    if (RS_SIG_FILTER === 'all') return true;
+    if (RS_SIG_FILTER === 'critHigh') return s.sev === 'crit' || s.sev === 'high';
+    return s.sev === RS_SIG_FILTER;
+  });
   var sevOrder = { crit:0, high:1, watch:2, opp:3 };
   if (RS_SIG_SORT === 'severity') rows = rows.slice().sort(function(a,b){ return sevOrder[a.sev] - sevOrder[b.sev]; });
   if (RS_SIG_SORT === 'arr') {
@@ -11686,30 +11877,41 @@ function rsRenderSignals() {
   // (e.g. text="Critical") resolve. Visual styling stays uppercased via CSS.
   var sevLabel = { crit:'Critical', high:'High', watch:'Watch', opp:'Opportunity' };
   var listHtml = rows.length ? rows.map(function(s){
+    // v4.9.0 — source chip + last-updated timestamp (FIX 8). Color comes from
+    // the RS_SOURCE_STYLE map so each upstream system reads at a glance.
+    var srcKey = s.src || 'GAINSIGHT';
+    var srcStyle = RS_SOURCE_STYLE[srcKey] || RS_SOURCE_STYLE.GAINSIGHT;
+    var srcChip = '<span class="rs-sig-src" style="background:' + srcStyle.bg + ';color:' + srcStyle.fg + '" aria-label="Signal source: ' + rsEscape(srcKey) + '">' + rsEscape(srcKey) + '</span>';
+    var timeChip = '<span class="rs-sig-time" aria-label="Last updated: ' + rsEscape(s.updated || '') + '"><i class="ti ti-clock" aria-hidden="true"></i> Last updated: ' + rsEscape(s.updated || '—') + '</span>';
     return '<div class="rs-sig-row ' + s.sev + '">'
       + '<span class="rs-sig-sev rs-sev ' + s.sev + '">' + sevIcon[s.sev] + ' ' + sevLabel[s.sev] + '</span>'
       + '<div class="rs-sig-mid">'
       +   '<span class="rs-sig-acct acct-lk" onclick="rsOpenMB(\'' + s.acct + '\')">' + rsEscape(s.acctName) + '</span>'
       +   '<div class="rs-sig-desc">' + rsEscape(s.desc) + '</div>'
       +   '<div class="rs-sig-context">' + rsEscape(s.ctx) + '</div>'
+      +   '<div class="rs-sig-meta">' + srcChip + timeChip + '</div>'
       + '</div>'
-      + '<div class="rs-sig-actions"><button class="rs-btn" type="button" onclick="rsSigAction(\'' + s.action + '\',\'' + s.acct + '\')">' + rsEscape(s.actionLabel) + '</button></div>'
+      + '<div class="rs-sig-actions"><button class="rs-btn" type="button" onclick="rsSigAction(\'' + s.action + '\',\'' + s.acct + '\',' + s.id + ')">' + rsEscape(s.actionLabel) + '</button></div>'
     + '</div>';
   }).join('') : '<div class="rs-mx-detail-empty" style="background:var(--surf);border:1px solid var(--bd);border-radius:8px">No signals match this filter.</div>';
   sec.innerHTML = ''
     + '<div class="rs-hd"><div class="rs-hd-t">📡 Live Signals · ' + RS_SIGNALS.length + ' signals</div></div>'
+    + '<div class="rs-sig-refresh" id="rs-sig-refresh"><i class="ti ti-refresh" aria-hidden="true"></i> Last refreshed: Today · 9:00 AM · Gainsight API</div>'
     + '<div class="rs-filters">' + chips + sortSel + '</div>'
     + '<div class="rs-sig-list">' + listHtml + '</div>';
 }
 function rsSigFilter(f) { RS_SIG_FILTER = f; rsRenderSignals(); }
 function rsSigSort(s)   { RS_SIG_SORT = s;   rsRenderSignals(); }
-function rsSigAction(kind, acct) {
+function rsSigAction(kind, acct, sigId) {
   switch (kind) {
     case 'save':     rsOpenSave(acct); break;
     case 'risk':     rsRunRisk(acct); break;
     case 'prep':     rsRunPrep(acct); break;
     case 'gb':       rsOpenGB(acct); break;
-    case 'draft':    if (typeof draftReply === 'function') draftReply(acct); else toast('Draft Reply · ' + rsEscape(acct) + ' ✓'); break;
+    // v4.9.0 — Brightex SLA Draft Reply now routes to a real compose modal
+    // (FIX 2). All other accounts (e.g. Meridian) keep the existing
+    // draftReply panel.
+    case 'draft':    if (acct === 'brightex') rsDraftReplyBrightex(); else if (typeof draftReply === 'function') draftReply(acct); else toast('Draft Reply · ' + rsEscape(acct) + ' ✓'); break;
     case 'champion': rsShow('champions'); toast('Opening Champion Change Protocol · ' + rsEscape(acct) + ' ✓'); break;
     default: toast('Action: ' + kind + ' · ' + rsEscape(acct) + ' ✓');
   }
@@ -11727,10 +11929,40 @@ function rsRenderPlays() {
 }
 function rsPlayCardHTML(p) {
   var stepIc = { done:'✅', 'in-prog':'⏳', pending:'○' };
+  var openMap = RS_PLAY_STEP_OPEN[p.acct] || {};
   var steps = p.steps.map(function(st){
-    return '<div class="rs-play-step rs-pl-step ' + st.s + '"><span class="rs-play-step-ic">' + stepIc[st.s] + '</span><span class="rs-play-step-t">Step ' + st.n + ':</span><span>' + rsEscape(st.t) + '</span><span class="rs-play-step-meta">' + rsEscape(st.meta) + '</span></div>';
+    var hasBody = !!st.body;
+    var open = !!openMap[st.n];
+    var headId = 'rs-pl-' + p.acct + '-step-' + st.n;
+    var bodyId = headId + '-body';
+    var toggleBtn = hasBody
+      ? '<button class="rs-pl-step-toggle" type="button" id="' + headId + '" aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="' + bodyId + '" onclick="rsPlayStepToggle(\'' + p.acct + '\',' + st.n + ')">' + (open ? 'Hide' : 'Show') + ' talk track <i class="ti ti-chevron-down" aria-hidden="true"></i></button>'
+      : '';
+    var bodyHtml = '';
+    if (hasBody) {
+      bodyHtml = ''
+        + '<div class="rs-pl-step-body' + (open ? ' on' : '') + '" id="' + bodyId + '" role="region" aria-labelledby="' + headId + '">'
+        +   '<div class="rs-pl-step-block"><div class="rs-pl-step-block-l">What to do</div><div class="rs-pl-step-block-b">' + rsEscape(st.body.doIt) + '</div></div>'
+        +   '<div class="rs-pl-step-block say"><div class="rs-pl-step-block-l">What to say</div><div class="rs-pl-step-block-b">' + rsEscape(st.body.say) + '</div></div>'
+        +   '<div class="rs-pl-step-block"><div class="rs-pl-step-block-l">Expected outcome</div><div class="rs-pl-step-block-b">' + rsEscape(st.body.outcome) + '</div></div>'
+        + '</div>';
+    }
+    return '<div class="rs-play-step rs-pl-step ' + st.s + '">'
+      + '<div class="rs-pl-step-head">'
+      +   '<span class="rs-play-step-ic">' + stepIc[st.s] + '</span>'
+      +   '<span class="rs-play-step-t">Step ' + st.n + ':</span>'
+      +   '<span>' + rsEscape(st.t) + '</span>'
+      +   '<span class="rs-play-step-meta">' + rsEscape(st.meta) + '</span>'
+      +   toggleBtn
+      + '</div>'
+      + bodyHtml
+    + '</div>';
   }).join('');
   var sigs = p.signals.map(function(s){ return '<div>' + rsEscape(s) + '</div>'; }).join('');
+  var notes = (RS_PLAY_NOTES[p.acct] || []).map(function(n){
+    return '<div class="rs-note-row" role="listitem"><div class="rs-note-ts">' + rsEscape(n.ts) + '</div>' + rsEscape(n.text) + '</div>';
+  }).join('');
+  var noteFormOpen = !!RS_PLAY_NOTE_OPEN[p.acct];
   return '<div class="rs-play-card ' + (p.statusCls || '') + '">'
     + '<div class="rs-play-hd">'
     +   '<div><div class="rs-play-nm">' + rsEscape(p.name) + ' — ACTIVE</div><div class="rs-play-meta" style="margin-top:3px"><span>Started: ' + p.started + '</span><span class="sep">·</span><span>Day ' + p.day + ' of play</span><span class="sep">·</span><span>ARR at stake: <b>' + p.arr + '</b></span><span class="sep">·</span><span>Renewal: ' + p.renewal + '</span></div></div>'
@@ -11744,6 +11976,15 @@ function rsPlayCardHTML(p) {
     +   '<button class="rs-btn" type="button" onclick="rsPlayPush(\'' + p.acct + '\')"><i class="ti ti-cloud-upload"></i> Push to Gainsight</button>'
     +   '<button class="rs-btn danger" type="button" onclick="rsPlayEscalate(\'' + p.acct + '\')"><i class="ti ti-arrow-up-circle"></i> Escalate to TL</button>'
     + '</div>'
+    // v4.9.0 — inline Add Note form (FIX 3) + log of saved notes for this play
+    + '<form class="rs-note-form' + (noteFormOpen ? ' on' : '') + '" id="rs-note-form-' + p.acct + '" onsubmit="rsPlayNoteSave(event,\'' + p.acct + '\')">'
+    +   '<textarea id="rs-note-ta-' + p.acct + '" rows="3" placeholder="Note for this save play…" aria-label="Save play note for ' + rsEscape(p.name) + '"></textarea>'
+    +   '<div class="rs-note-form-btns">'
+    +     '<button type="button" class="rs-btn" onclick="rsPlayNoteCancel(\'' + p.acct + '\')">Cancel</button>'
+    +     '<button type="submit" class="rs-btn prim">Save Note</button>'
+    +   '</div>'
+    + '</form>'
+    + '<div class="rs-note-list" role="list" aria-label="Saved notes">' + notes + '</div>'
   + '</div>';
 }
 function rsPlayUpdate(acct) {
@@ -11754,11 +11995,57 @@ function rsPlayUpdate(acct) {
   rsRenderPlays();
   toast('Step ' + (nextStep ? nextStep.n : '') + ' updated · ' + rsEscape(p.name) + ' ✓');
 }
-function rsPlayNote(acct) { toast('Note added to ' + rsEscape(acct) + ' save play · Gainsight ✓'); }
+// v4.9.0 — FIX 10: toggle a single Save Play step's talk-track accordion. Uses
+// direct class flip + aria-expanded swap rather than re-rendering the card,
+// so focus stays on the toggle button and the textarea state below isn't
+// lost mid-edit.
+function rsPlayStepToggle(acct, n) {
+  RS_PLAY_STEP_OPEN[acct] = RS_PLAY_STEP_OPEN[acct] || {};
+  var nowOpen = !RS_PLAY_STEP_OPEN[acct][n];
+  RS_PLAY_STEP_OPEN[acct][n] = nowOpen;
+  var headId = 'rs-pl-' + acct + '-step-' + n;
+  var head = document.getElementById(headId);
+  var body = document.getElementById(headId + '-body');
+  if (head) { head.setAttribute('aria-expanded', nowOpen ? 'true' : 'false'); head.innerHTML = (nowOpen ? 'Hide' : 'Show') + ' talk track <i class="ti ti-chevron-down" aria-hidden="true"></i>'; }
+  if (body) body.classList.toggle('on', nowOpen);
+}
+// v4.9.0 — FIX 3: reveal inline note textarea, focus it, scroll into view.
+function rsPlayNote(acct) {
+  RS_PLAY_NOTE_OPEN[acct] = true;
+  rsRenderPlays();
+  setTimeout(function(){
+    var ta = document.getElementById('rs-note-ta-' + acct);
+    if (ta) { try { ta.focus(); } catch(_) {} ta.scrollIntoView({ behavior:'smooth', block:'center' }); }
+  }, 40);
+}
+function rsPlayNoteCancel(acct) {
+  RS_PLAY_NOTE_OPEN[acct] = false;
+  rsRenderPlays();
+}
+function rsPlayNoteSave(ev, acct) {
+  if (ev && ev.preventDefault) ev.preventDefault();
+  var ta = document.getElementById('rs-note-ta-' + acct);
+  var text = ta ? (ta.value || '').trim() : '';
+  if (!text) {
+    if (ta) try { ta.focus(); } catch(_) {}
+    return false;
+  }
+  RS_PLAY_NOTES[acct] = RS_PLAY_NOTES[acct] || [];
+  var d = new Date();
+  var ts = d.toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+  RS_PLAY_NOTES[acct].push({ text:text, ts:ts });
+  RS_PLAY_NOTE_OPEN[acct] = false;
+  rsRenderPlays();
+  var p = RS_PLAYS.find(function(x){return x.acct===acct;});
+  toast('Note saved · ' + rsEscape(p ? p.name.replace(/ Save Play$/, '') : acct) + ' · Gainsight timeline ✓');
+  return false;
+}
 function rsPlayPush(acct) { toast('Save play updated · Gainsight ✓'); }
+// v4.9.0 — FIX 4: Escalate fires the spec's exact toast wording.
 function rsPlayEscalate(acct) {
   var p = RS_PLAYS.find(function(x){return x.acct===acct;});
-  toast('Situation brief sent to Team Lead · ' + rsEscape(p ? p.name : acct) + ' · Dust summary attached ✓');
+  var label = p ? p.name.replace(/ Save Play$/, '') : acct;
+  toast('Situation brief sent to Team Lead · ' + rsEscape(label) + ' · Dust summary attached ✓');
 }
 function rsStartPlay() { toast('Save play started · New account · Created in Gainsight ✓'); }
 
@@ -11850,9 +12137,242 @@ function rsOpenMB(acct) {
 function rsRunRisk(acct) { if (typeof openAgentDrawer === 'function') openAgentDrawer('risk', acct); else toast('Risk Analyst · ' + rsEscape(acct) + ' ✓'); }
 function rsRunPrep(acct) { if (typeof openAgentDrawer === 'function') openAgentDrawer('prep', acct); else toast('Prep Me · ' + rsEscape(acct) + ' ✓'); }
 function rsOpenSave(acct){ if (typeof openAgentDrawer === 'function') openAgentDrawer('save', acct); else toast('Save Strategy · ' + rsEscape(acct) + ' ✓'); }
-function rsOpenGB(acct)  {
-  if (typeof openGhostBusterFromPopover === 'function') { try { openGhostBusterFromPopover(acct); return; } catch (_) {} }
-  toast('Ghost-Buster · ' + rsEscape(acct) + ' ✓');
+// v4.9.0 — FIX 1: Ghost-Buster broken in 5 places (All Signals signal 3 +
+// signals 7-8-9, Champions NovaVault "View Ghost-Buster", Dark Zone
+// Meridian / Creston / Apex). Root cause: openGhostBusterFromPopover toggles
+// the view-{acct} class inside #tab-dash, but the user is on the Risk &
+// Signals (or other) tab so the view never paints. Switch to the dashboard
+// tab first, then defer the openPanel call so the tab swap is visible.
+function rsOpenGB(acct) {
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'dash\'"]');
+    if (tab) goTab('dash', tab);
+  }
+  setTimeout(function(){
+    if (typeof openGhostBusterFromPopover === 'function') {
+      try { openGhostBusterFromPopover(acct); return; } catch (_) {}
+    }
+    if (typeof openPanel === 'function' && document.getElementById('view-' + acct)) {
+      try { openPanel(acct, null); return; } catch (_) {}
+    }
+    toast('Ghost-Buster · ' + rsEscape(acct) + ' ✓');
+  }, 80);
+}
+// v4.9.0 — Global alias so external selectors / specs that say
+// `openGhostBuster('account-key')` (e.g. the QA toolbar) resolve. Routes
+// through the same tab-switch-first path.
+window.openGhostBuster = function(acct) { rsOpenGB(acct); };
+
+// ═════════════════════════════════════════════════════════════════════════
+// v4.9.0 — FIX 2: Brightex SLA Draft Reply email compose modal
+// ═════════════════════════════════════════════════════════════════════════
+var RS_DRAFT_BRIGHTEX_BODY = ''
+  + 'Hi Sarah,\n\n'
+  + 'Quick answer to your SLA question: Brightex’s current tier guarantees 99.9% uptime with a 4-hour response on Sev-1 incidents. The enterprise tier moves response to 1-hour and adds a named-CSM escalation path.\n\n'
+  + 'Rather than just sending the contract language, I’d like to walk you through what your team has actually been hitting over the past 90 days — and what the rough edges have been on the support side. That context matters more than the line items.\n\n'
+  + 'Could we grab 15 minutes Thursday? I’ll come prepared with the data. {{meeting_link}}\n\n'
+  + 'Carmen';
+
+function rsDraftReplyBrightex() {
+  if (typeof cmOpenModal !== 'function') { toast('Draft Reply · brightex ✓'); return; }
+  var body = ''
+    + '<div class="rs-mail" role="group" aria-label="Email compose">'
+    +   '<div class="rs-mail-row"><label>To</label><span>sarah.chen@brightex.com</span></div>'
+    +   '<div class="rs-mail-row"><label>From</label><span>carmen@1password.com</span></div>'
+    +   '<div class="rs-mail-row"><label>Subject</label><span>Re: SLA question — Brightex</span></div>'
+    +   '<label class="rs-mail-hint" for="rs-mail-body">Draft body · edit before sending. {{meeting_link}} expands at send time.</label>'
+    +   '<textarea id="rs-mail-body" aria-label="Email body" spellcheck="true">' + rsEscape(RS_DRAFT_BRIGHTEX_BODY) + '</textarea>'
+    + '</div>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn" type="button" onclick="rsMailCopy()">Copy Draft</button>'
+    + '<button class="cm-btn prim" type="button" onclick="rsMailMarkSent()">Mark as Sent</button>';
+  cmOpenModal('Draft reply · Brightex SLA question', body, foot, { wide:true });
+}
+function rsMailCopy() {
+  var ta = document.getElementById('rs-mail-body');
+  if (!ta) return;
+  var txt = ta.value || '';
+  var copied = false;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try { navigator.clipboard.writeText(txt); copied = true; } catch (_) {}
+  }
+  if (!copied) {
+    try { ta.select(); document.execCommand('copy'); copied = true; } catch (_) {}
+  }
+  toast('Draft copied to clipboard · Brightex ✓');
+}
+function rsMailMarkSent() {
+  if (typeof cmCloseModal === 'function') cmCloseModal();
+  toast('Reply sent · Brightex · Gainsight logged ✓');
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// v4.9.0 — FIX 6: Top-bar KPI buttons now navigate / open slide-overs
+// ═════════════════════════════════════════════════════════════════════════
+// Each handler hides any open popover (the existing togglePop'd popovers)
+// before performing its action, so the click never feels like "highlight
+// only — nothing happened" — which was the user-reported bug.
+function _rsClearPops() { if (typeof closePops === 'function') closePops(); }
+
+// "calls today" → CSM Dashboard + scroll to Next Up
+function rsKpiCalls() {
+  _rsClearPops();
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'dash\'"]');
+    if (tab) goTab('dash', tab);
+  }
+  setTimeout(function(){
+    // The "Next Up" section in the CSM Dashboard lives inside view-default.
+    var nu = document.getElementById('nextup') || document.querySelector('#tab-dash .nu') || document.querySelector('#tab-dash .next-up');
+    if (!nu) {
+      // Fallback: find any heading whose text contains "Next Up".
+      var hs = document.querySelectorAll('#tab-dash h1, #tab-dash h2, #tab-dash h3, #tab-dash .sec-t, #tab-dash .rp-hd');
+      for (var i=0;i<hs.length;i++) { if (/next up/i.test(hs[i].textContent || '')) { nu = hs[i]; break; } }
+    }
+    if (nu && nu.scrollIntoView) nu.scrollIntoView({ behavior:'smooth', block:'start' });
+    toast('CSM Dashboard · Next Up · 3 calls today');
+  }, 80);
+}
+
+// "at risk" → Risk Matrix + pulse teal ring on 2 at-risk bubbles for 3s
+function rsKpiRisk() {
+  _rsClearPops();
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'risk\'"]');
+    if (tab) goTab('risk', tab);
+  }
+  setTimeout(function(){
+    rsShow('matrix');
+    // v4.9.0 — pulse ring on the 2 currently-at-risk accounts (nova + brightex).
+    window._rsPulseSet = { nova:true, brightex:true };
+    rsRenderMatrix();
+    setTimeout(function(){
+      window._rsPulseSet = null;
+      // Only re-render if user is still on the matrix sub-section.
+      var matrixSec = document.getElementById('rs-sec-matrix');
+      if (matrixSec && matrixSec.classList.contains('on')) rsRenderMatrix();
+    }, 3000);
+    toast('Risk Matrix · 2 accounts at risk');
+  }, 80);
+}
+
+// "ARR at risk" → All Signals filtered to Critical + High
+function rsKpiARR() {
+  _rsClearPops();
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'risk\'"]');
+    if (tab) goTab('risk', tab);
+  }
+  setTimeout(function(){
+    RS_SIG_FILTER = 'critHigh';
+    rsShow('signals');
+    toast('All Signals · Critical + High · $67K ARR at risk');
+  }, 80);
+}
+
+// "dark accounts" → Dark Zone sub-section
+function rsKpiDark() {
+  _rsClearPops();
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'risk\'"]');
+    if (tab) goTab('risk', tab);
+  }
+  setTimeout(function(){
+    rsShow('dark');
+    toast('Dark Zone · 3 accounts · $55K ARR');
+  }, 80);
+}
+
+// "overdue CTAs" → slide-over panel with 3 CTAs + Mark complete buttons
+var RS_OVERDUE_CTAS = [
+  { id:'ovc-1', acct:'NovaVault', acctKey:'nova',     title:'Update NovaVault renewal forecast',        sub:'2 days overdue · Gainsight', done:false },
+  { id:'ovc-2', acct:'Brightex',  acctKey:'brightex', title:'Reply to Sarah Chen re: renewal options',  sub:'1 day overdue · Brightex',   done:false },
+  { id:'ovc-3', acct:'NovaVault', acctKey:'nova',     title:'Schedule exec sponsor save call',          sub:'Due today · NovaVault',      done:false }
+];
+function rsKpiCTAs() {
+  _rsClearPops();
+  rsOpenSlide('Overdue CTAs · ' + RS_OVERDUE_CTAS.filter(function(c){return !c.done;}).length + ' open', rsRenderCTASlide());
+}
+function rsRenderCTASlide() {
+  var rows = RS_OVERDUE_CTAS.map(function(c){
+    var btnCls = 'rs-slide-mc' + (c.done ? ' done' : '');
+    return '<div class="rs-slide-row" id="ovc-row-' + c.id + '">'
+      + '<div class="rs-slide-row-body"><div class="rs-slide-row-t">' + rsEscape(c.title) + '</div><div class="rs-slide-row-s">' + rsEscape(c.sub) + '</div></div>'
+      + '<button class="' + btnCls + '" type="button" onclick="rsCTAComplete(\'' + c.id + '\')">' + (c.done ? 'Done' : 'Mark complete') + '</button>'
+    + '</div>';
+  }).join('');
+  return rows || '<div class="rs-slide-row-s">All clear — no overdue CTAs.</div>';
+}
+function rsCTAComplete(id) {
+  var c = RS_OVERDUE_CTAS.find(function(x){return x.id===id;});
+  if (!c) return;
+  c.done = true;
+  // Update the body in place + refresh the count + bump pn-ctas badge.
+  var body = document.getElementById('rs-slide-body');
+  if (body) body.innerHTML = rsRenderCTASlide();
+  var t = document.getElementById('rs-slide-t');
+  var openN = RS_OVERDUE_CTAS.filter(function(x){return !x.done;}).length;
+  if (t) t.textContent = 'Overdue CTAs · ' + openN + ' open';
+  var pn = document.getElementById('pn-ctas');
+  if (pn) pn.textContent = openN;
+  toast('CTA marked complete · ' + rsEscape(c.acct) + ' · Gainsight ✓');
+}
+
+// "tasks" → slide-over panel listing tasks (reuses TASKS data)
+function rsKpiTasks() {
+  _rsClearPops();
+  var openN = (typeof TASKS !== 'undefined' ? TASKS : []).filter(function(t){return !t.done;}).length;
+  rsOpenSlide('Tasks · ' + openN + ' open', rsRenderTaskSlide());
+}
+function rsRenderTaskSlide() {
+  if (typeof TASKS === 'undefined' || !TASKS.length) return '<div class="rs-slide-row-s">No tasks.</div>';
+  return TASKS.map(function(t){
+    var subBits = [];
+    if (t.src) subBits.push(t.src);
+    if (t.acct) subBits.push(t.acct);
+    if (t.age) subBits.push(t.age);
+    var sub = subBits.join(' · ');
+    var btnCls = 'rs-slide-mc' + (t.done ? ' done' : '');
+    return '<div class="rs-slide-row" id="tsk-row-' + t.id + '">'
+      + '<div class="rs-slide-row-body"><div class="rs-slide-row-t">' + rsEscape(t.title) + '</div><div class="rs-slide-row-s">' + rsEscape(sub) + '</div></div>'
+      + '<button class="' + btnCls + '" type="button" onclick="rsTaskComplete(\'' + t.id + '\')">' + (t.done ? 'Done' : 'Mark complete') + '</button>'
+    + '</div>';
+  }).join('');
+}
+function rsTaskComplete(id) {
+  if (typeof TASKS === 'undefined') return;
+  var t = TASKS.find(function(x){return x.id===id;});
+  if (!t) return;
+  t.done = true;
+  var body = document.getElementById('rs-slide-body');
+  if (body) body.innerHTML = rsRenderTaskSlide();
+  var titleEl = document.getElementById('rs-slide-t');
+  var openN = TASKS.filter(function(x){return !x.done;}).length;
+  if (titleEl) titleEl.textContent = 'Tasks · ' + openN + ' open';
+  // Keep the top-bar badge + popover count in sync.
+  if (typeof renderTasksList === 'function') renderTasksList();
+  toast('Task complete · ' + rsEscape(t.acct || t.title) + ' ✓');
+}
+
+function rsOpenSlide(title, html) {
+  var ov = document.getElementById('rs-slide-ov');
+  var t  = document.getElementById('rs-slide-t');
+  var b  = document.getElementById('rs-slide-body');
+  if (!ov || !t || !b) return;
+  t.textContent = title;
+  b.innerHTML = html || '';
+  ov.classList.add('on');
+  ov.setAttribute('aria-hidden', 'false');
+  setTimeout(function(){
+    var x = document.querySelector('#rs-slide .rs-slide-x');
+    if (x) try { x.focus(); } catch(_) {}
+  }, 50);
+}
+function rsCloseSlide(e) {
+  if (e && e.target && e.target.id !== 'rs-slide-ov' && e.type === 'click') return;
+  var ov = document.getElementById('rs-slide-ov');
+  if (ov) { ov.classList.remove('on'); ov.setAttribute('aria-hidden','true'); }
 }
 
 // Pre-render default section so opening the tab is instant.

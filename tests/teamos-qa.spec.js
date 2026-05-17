@@ -954,3 +954,274 @@ test.describe('v4.8.0 Campaign Manager fixes', () => {
     expect(acmeMeta).toMatch(/\$48K/);
   });
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.9.0 — RISK & SIGNALS FOLLOW-UP FIXES (FIX 1–10)
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.9.0 Risk & Signals fixes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('risk', document.querySelector('[onclick*="goTab(\'risk\'"]')));
+    await page.waitForTimeout(150);
+  });
+
+  test('FIX 1: rsOpenGB switches to dashboard tab + opens view-{acct}', async ({ page }) => {
+    await page.evaluate(() => rsOpenGB('meridian'));
+    await page.waitForTimeout(200);
+    await expect(page.locator('#tab-dash')).toHaveClass(/on/);
+    const onView = await page.evaluate(() => {
+      const v = document.querySelector('#view-meridian');
+      return !!(v && v.classList.contains('on'));
+    });
+    expect(onView).toBe(true);
+  });
+
+  test('FIX 1: openGhostBuster global alias routes through rsOpenGB', async ({ page }) => {
+    const exists = await page.evaluate(() => typeof window.openGhostBuster === 'function');
+    expect(exists).toBe(true);
+    await page.evaluate(() => window.openGhostBuster('creston'));
+    await page.waitForTimeout(200);
+    const onView = await page.evaluate(() => {
+      const v = document.querySelector('#view-creston');
+      return !!(v && v.classList.contains('on'));
+    });
+    expect(onView).toBe(true);
+  });
+
+  test('FIX 2: Brightex Draft Reply opens email compose modal', async ({ page }) => {
+    await page.evaluate(() => rsDraftReplyBrightex());
+    await page.waitForTimeout(200);
+    await expect(page.locator('#cm-modal-ov.on')).toBeVisible();
+    const role = await page.locator('#cm-modal').getAttribute('role');
+    expect(role).toBe('dialog');
+    const aria = await page.locator('#cm-modal').getAttribute('aria-modal');
+    expect(aria).toBe('true');
+    const body = await page.locator('#cm-modal-body').textContent();
+    expect(body).toContain('sarah.chen@brightex.com');
+    expect(body).toContain('Re: SLA question — Brightex');
+    expect(body).toContain('{{meeting_link}}');
+    // 3 footer buttons: Cancel · Copy Draft · Mark as Sent
+    expect(await page.locator('#cm-modal-foot button').count()).toBe(3);
+  });
+
+  test('FIX 2: Mark as Sent fires the spec toast + closes the modal', async ({ page }) => {
+    await page.evaluate(() => rsDraftReplyBrightex());
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsMailMarkSent());
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-modal-ov.on')).toHaveCount(0);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Reply sent · Brightex · Gainsight logged/);
+  });
+
+  test('FIX 2: Escape closes the Brightex draft modal', async ({ page }) => {
+    await page.evaluate(() => rsDraftReplyBrightex());
+    await page.waitForTimeout(150);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-modal-ov.on')).toHaveCount(0);
+  });
+
+  test('FIX 3: Add Note reveals inline textarea + Save adds a note row', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsPlayNote('nova'));
+    await page.waitForTimeout(150);
+    await expect(page.locator('#rs-note-form-nova.on')).toBeVisible();
+    await expect(page.locator('#rs-note-ta-nova')).toBeVisible();
+    await page.evaluate(() => { document.getElementById('rs-note-ta-nova').value = 'QA note — Torres callback Tuesday'; });
+    await page.evaluate(() => rsPlayNoteSave(null, 'nova'));
+    await page.waitForTimeout(150);
+    // Form collapsed
+    await expect(page.locator('#rs-note-form-nova.on')).toHaveCount(0);
+    // Note row appears
+    const rows = await page.locator('.rs-play-card .rs-note-row').count();
+    expect(rows).toBeGreaterThanOrEqual(1);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Note saved/);
+    expect(t).toMatch(/Gainsight timeline/);
+  });
+
+  test('FIX 4: Escalate to TL fires the spec toast wording', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsPlayEscalate('brightex'));
+    await page.waitForTimeout(100);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Situation brief sent to Team Lead · Brightex · Dust summary attached/);
+  });
+
+  test('FIX 5: clicking matrix dot does not tear down the detail panel buttons', async ({ page }) => {
+    // Select NovaVault. Then assert the Open Save Play button is still present
+    // in the SAME panel without an intervening render of the dots.
+    await page.evaluate(() => rsMxSelect('nova'));
+    await page.waitForTimeout(100);
+    const before = await page.evaluate(() => document.querySelector('#rs-mx-detail .rs-mx-acts').outerHTML);
+    // Click immediately on the Save Play button (single click).
+    await page.click('#rs-mx-detail .rs-mx-acts .rs-btn:has-text("Open Save Play")');
+    await page.waitForTimeout(200);
+    // The agent drawer should now be open.
+    await expect(page.locator('#drawer.on')).toBeVisible();
+    const titleEl = await page.locator('#drawer-title').textContent();
+    expect(titleEl).toMatch(/Save Strategy|NovaVault/i);
+    expect(before).toMatch(/Open Save Play/);
+  });
+
+  test('FIX 6: calls today KPI navigates to CSM Dashboard', async ({ page }) => {
+    // Make sure we start somewhere else so the navigation is observable.
+    await page.evaluate(() => goTab('risk', document.querySelector('[onclick*="goTab(\'risk\'"]')));
+    await page.evaluate(() => rsKpiCalls());
+    await page.waitForTimeout(150);
+    await expect(page.locator('#tab-dash')).toHaveClass(/on/);
+  });
+
+  test('FIX 6: at-risk KPI opens Risk Matrix + pulses 2 bubbles', async ({ page }) => {
+    await page.evaluate(() => goTab('dash', document.querySelector('[onclick*="goTab(\'dash\'"]')));
+    await page.evaluate(() => rsKpiRisk());
+    await page.waitForTimeout(200);
+    await expect(page.locator('#tab-risk')).toHaveClass(/on/);
+    await expect(page.locator('#rs-sec-matrix.on')).toBeVisible();
+    expect(await page.locator('.rs-mx-dot.pulse-ring').count()).toBe(2);
+  });
+
+  test('FIX 6: ARR at risk KPI sets critHigh filter on All Signals', async ({ page }) => {
+    await page.evaluate(() => rsKpiARR());
+    await page.waitForTimeout(200);
+    await expect(page.locator('#rs-sec-signals.on')).toBeVisible();
+    const filter = await page.evaluate(() => RS_SIG_FILTER);
+    expect(filter).toBe('critHigh');
+    // critHigh = 3 critical + 6 high (after FIX 7 elevation) = 9 rows.
+    expect(await page.locator('.rs-sig-row').count()).toBe(9);
+  });
+
+  test('FIX 6: overdue CTAs KPI opens slide-over with 3 rows + Mark complete', async ({ page }) => {
+    await page.evaluate(() => rsKpiCTAs());
+    await page.waitForTimeout(150);
+    await expect(page.locator('#rs-slide-ov.on')).toBeVisible();
+    const role = await page.locator('#rs-slide').getAttribute('role');
+    expect(role).toBe('dialog');
+    const aria = await page.locator('#rs-slide').getAttribute('aria-modal');
+    expect(aria).toBe('false');
+    expect(await page.locator('#rs-slide-body .rs-slide-row').count()).toBe(3);
+    await page.evaluate(() => rsCTAComplete('ovc-1'));
+    await page.waitForTimeout(100);
+    expect(await page.locator('#rs-slide-body .rs-slide-mc.done').count()).toBe(1);
+  });
+
+  test('FIX 6: dark accounts KPI navigates to Dark Zone', async ({ page }) => {
+    await page.evaluate(() => goTab('dash', document.querySelector('[onclick*="goTab(\'dash\'"]')));
+    await page.evaluate(() => rsKpiDark());
+    await page.waitForTimeout(200);
+    await expect(page.locator('#tab-risk')).toHaveClass(/on/);
+    await expect(page.locator('#rs-sec-dark.on')).toBeVisible();
+  });
+
+  test('FIX 6: tasks KPI opens slide-over backed by TASKS data', async ({ page }) => {
+    await page.evaluate(() => rsKpiTasks());
+    await page.waitForTimeout(150);
+    await expect(page.locator('#rs-slide-ov.on')).toBeVisible();
+    expect(await page.locator('#rs-slide-body .rs-slide-row').count()).toBe(8);
+  });
+
+  test('FIX 6: Escape closes the slide-over panel', async ({ page }) => {
+    await page.evaluate(() => rsKpiTasks());
+    await page.waitForTimeout(100);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(150);
+    await expect(page.locator('#rs-slide-ov.on')).toHaveCount(0);
+  });
+
+  test('FIX 7: signals 7, 9, 11 are HIGH (elevated from WATCH)', async ({ page }) => {
+    const sevs = await page.evaluate(() => [7,9,11].map(id => RS_SIGNALS.find(s => s.id === id).sev));
+    expect(sevs).toEqual(['high','high','high']);
+  });
+
+  test('FIX 7: signal 5 names Okta explicitly', async ({ page }) => {
+    const desc = await page.evaluate(() => RS_SIGNALS.find(s => s.id === 5).desc);
+    expect(desc).toMatch(/Okta/);
+  });
+
+  test('FIX 8: every signal has a source chip + last-updated timestamp', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('.rs-sig-row').count()).toBe(11);
+    expect(await page.locator('.rs-sig-src').count()).toBe(11);
+    expect(await page.locator('.rs-sig-time').count()).toBe(11);
+    // Refresh header
+    const hd = await page.locator('#rs-sig-refresh').textContent();
+    expect(hd).toMatch(/Last refreshed: Today · 9:00 AM · Gainsight API/);
+  });
+
+  test('FIX 8: source chips cover all 5 source systems', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(150);
+    const labels = await page.locator('.rs-sig-src').allTextContents();
+    const set = new Set(labels.map(s => s.trim()));
+    ['GAINSIGHT','GONG','IRONCLAD','INBOX','ZENDESK'].forEach(k => expect(set.has(k)).toBe(true));
+  });
+
+  test('FIX 9: matrix bubbles render trend velocity arrows', async ({ page }) => {
+    expect(await page.locator('.rs-mx-trend').count()).toBe(6);
+    const novaTrend = await page.locator('.rs-mx-dot[data-acct="nova"] .rs-mx-trend').textContent();
+    expect(novaTrend).toContain('↓↓');
+    const acmeTrend = await page.locator('.rs-mx-dot[data-acct="acme"] .rs-mx-trend').textContent();
+    expect(acmeTrend).toContain('↑');
+  });
+
+  test('FIX 9: Brightex bubble carries the warn-ring dashed border', async ({ page }) => {
+    await expect(page.locator('.rs-mx-dot[data-acct="brightex"].warn-ring')).toHaveCount(1);
+  });
+
+  test('FIX 9: trend legend renders below the matrix', async ({ page }) => {
+    await expect(page.locator('.rs-trend-key')).toBeVisible();
+    const txt = await page.locator('.rs-trend-key').textContent();
+    expect(txt).toMatch(/Improving/);
+    expect(txt).toMatch(/Sharp decline/);
+  });
+
+  test('FIX 10: NovaVault Step 2 expands into WHAT TO DO / SAY / OUTCOME', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsPlayStepToggle('nova', 2));
+    await page.waitForTimeout(100);
+    const body = await page.locator('#rs-pl-nova-step-2-body').textContent();
+    expect(body).toMatch(/What to do/);
+    expect(body).toMatch(/What to say/);
+    expect(body).toMatch(/Expected outcome/);
+    expect(body).toMatch(/Michael Torres/);
+    const exp = await page.locator('#rs-pl-nova-step-2').getAttribute('aria-expanded');
+    expect(exp).toBe('true');
+  });
+
+  test('FIX 10: aria-expanded flips on Brightex Step 3 toggle', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(150);
+    const before = await page.locator('#rs-pl-brightex-step-3').getAttribute('aria-expanded');
+    expect(before).toBe('false');
+    await page.evaluate(() => rsPlayStepToggle('brightex', 3));
+    await page.waitForTimeout(100);
+    const after = await page.locator('#rs-pl-brightex-step-3').getAttribute('aria-expanded');
+    expect(after).toBe('true');
+    await expect(page.locator('#rs-pl-brightex-step-3-body.on')).toBeVisible();
+  });
+
+  test('regression: All Signals still lists 11 signals + 11 severity badges', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(150);
+    expect(await page.locator('.rs-sev').count()).toBe(11);
+  });
+
+  test('regression: Critical filter narrows to 3 signals', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsSigFilter('crit'));
+    await page.waitForTimeout(100);
+    expect(await page.locator('.rs-sig-row').count()).toBe(3);
+  });
+
+  test('regression: Save Plays still renders 2 cards with 5 steps each', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(150);
+    expect(await page.locator('.rs-play-card').count()).toBe(2);
+    expect(await page.locator('.rs-pl-step').count()).toBe(10);
+  });
+});

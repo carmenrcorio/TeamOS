@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.8.0
+**Version:** 4.9.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,53 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.9.0] — 2026-05-17
+
+Risk & Signals follow-up — 10 fixes. **Result: 113/113 chromium tests passing.** All 14 broken interactions called out in the QA browser-extension audit are now wired to real operations.
+
+### Fixed
+
+**FIX 1 — Ghost-Buster wired across all 5 entry points.** `rsOpenGB(acct)` previously called `openGhostBusterFromPopover` which only toggles the `view-{acct}` class inside `#tab-dash`. From any other tab the panel flipped invisibly. The handler now calls `goTab('dash', …)` first, defers 80 ms, then opens the panel — All Signals signal 3 NovaVault, Champions NovaVault "View Ghost-Buster", and Dark Zone Meridian / Creston / Apex all land on the correct dashboard view. Added a `window.openGhostBuster(acct)` global alias that routes through the same path so external QA selectors resolve.
+
+**FIX 2 — Brightex SLA Draft Reply opens a real email compose modal.** `rsDraftReplyBrightex()` mounts into the generic `#cm-modal-ov` chrome (role=dialog, aria-modal=true, focus trap via initial autofocus). Modal carries: TO `sarah.chen@brightex.com`, FROM `carmen@1password.com`, SUBJECT `Re: SLA question — Brightex`, an editable `<textarea>` pre-filled with the spec body (uptime numbers + 15-minute call offer) including the `{{meeting_link}}` placeholder. Footer: [Cancel] [Copy Draft] [Mark as Sent]. Copy Draft uses `navigator.clipboard.writeText` with `document.execCommand('copy')` fallback. Mark as Sent fires the spec toast `Reply sent · Brightex · Gainsight logged ✓` and closes the modal. Escape closes — the global keydown handler hits `cm-modal-ov` after the new slide-over check.
+
+**FIX 3 — Add Note inline form on Save Plays.** `rsPlayNote(acct)` previously toasted only. Now it flips `RS_PLAY_NOTE_OPEN[acct]`, re-renders the card, reveals an inline `<form class="rs-note-form on">` with a 3-row textarea + [Cancel] [Save Note] buttons, focuses the textarea, and scrolls into view. On submit `rsPlayNoteSave` validates non-empty, appends `{ text, ts }` to `RS_PLAY_NOTES[acct]`, collapses the form, and re-renders so the saved note appears as a `.rs-note-row` below. Toast: `Note saved · <Account> · Gainsight timeline ✓`.
+
+**FIX 4 — Escalate to TL fires the spec toast wording.** `rsPlayEscalate(acct)` strips the trailing " Save Play" from the play name so the toast reads `Situation brief sent to Team Lead · NovaVault · Dust summary attached ✓` rather than the longer card name.
+
+**FIX 5 — Save Strategy opens on a single click.** `rsMxSelect` no longer calls `rsRenderMatrix()`. Instead it toggles the `.sel` class directly on the relevant `.rs-mx-dot` and calls only `rsMxRenderDetail()`. The detail panel's action buttons are no longer torn down between mousedown and click, eliminating the "needs two clicks" race. The matrix dots also picked up a `data-acct` attribute so the toggle can target without re-rendering.
+
+**FIX 6 — All 6 top-bar KPI buttons now perform real operations.** `togglePop` removed from `#pb-calls`, `#pb-risk`, `#pb-arr`, `#pb-ctas`, `#pb-dark`, `#pb-tasks` (cft + train kept the popover). New handlers:
+- `rsKpiCalls()` → CSM Dashboard + scroll to Next Up.
+- `rsKpiRisk()` → Risk & Signals → Risk Matrix; pulses a teal ring (`.rs-mx-dot.pulse-ring`) on `nova` + `brightex` for 3 s via `window._rsPulseSet`.
+- `rsKpiARR()` → Risk & Signals → All Signals with a new synthetic `critHigh` filter that matches both `crit` and `high` (9 rows after FIX 7).
+- `rsKpiCTAs()` → opens a 360 px slide-over (`#rs-slide-ov`, role=dialog, aria-modal=false) listing the 3 demo CTAs with [Mark complete] buttons backed by `RS_OVERDUE_CTAS`.
+- `rsKpiDark()` → Risk & Signals → Dark Zone.
+- `rsKpiTasks()` → slide-over reusing the existing `TASKS` array; clicking [Mark complete] flips `t.done` and re-syncs the top-bar badge via `renderTasksList()`.
+Each handler runs `closePops()` first so any stray popover collapses, and toasts the navigation so non-visual users get confirmation.
+
+**FIX 7 — Signal severities corrected.** Signals 7 (Meridian dark zone), 9 (Apex champion change), and 11 (Brightex support spike) all promoted `watch → high`. Signal 5 description now names the competitor explicitly: `Okta mentioned as alternative by Sarah Chen`.
+
+**FIX 8 — Source chip + last-updated timestamp on every signal.** Each `RS_SIGNALS` entry gained `src` (one of `GAINSIGHT`/`GONG`/`IRONCLAD`/`INBOX`/`ZENDESK`) and `updated` (human string). The signal row now renders a `.rs-sig-meta` strip carrying a colored `.rs-sig-src` chip (palette per `RS_SOURCE_STYLE`) + a `.rs-sig-time` clock-icon timestamp. A `.rs-sig-refresh` header above the list reads `Last refreshed: Today · 9:00 AM · Gainsight API`. Chip + timestamp both carry aria-labels.
+
+**FIX 9 — Health-trend velocity indicators on Risk Matrix bubbles.** `RS_ACCOUNTS` entries gained `trend` (`up`/`flat`/`down`/`downdown`/`unknown`), `trendDelta` (human string), and `warnRing` (boolean). `rsRenderMatrix` paints a small floating `.rs-mx-trend` chip on each bubble carrying the arrow per `RS_TREND`. Brightex (`warnRing:true`) gets a dashed `#DC2626` border (`.rs-mx-dot.warn-ring`). A `.rs-trend-key` legend renders below the existing color legend with all 5 states + a note about the red dashed ring. Bubble aria-labels extended with the trend phrase + delta.
+
+**FIX 10 — Save Play steps are expandable accordions.** Each step in `RS_PLAYS` can carry an optional `body` field with `doIt` / `say` / `outcome` strings. The step head now includes a `<button class="rs-pl-step-toggle">` with `aria-expanded` + `aria-controls`. Toggle flips `RS_PLAY_STEP_OPEN[acct][stepNum]`, swaps the button text + chevron, and adds `.on` to the body div in-place (no card re-render — preserves focus + textarea state). Body shows WHAT TO DO / WHAT TO SAY (italic, teal left rule) / EXPECTED OUTCOME. NovaVault Step 2 carries the Michael Torres cold intro talk track; Step 3 the executive sponsor call. Brightex Steps 3/4/5 carry SLA reply, renewal conversation, and renewal close talk tracks.
+
+### Engineering notes
+- `#cm-modal-ov` hoisted out of `#tab-campaign` to the body level so the same modal renders from any tab (the Brightex draft modal opens from Risk & Signals). Existing campaign tests (`Add Contact`, `Send Confirmation`, `Escape`) still pass — they reference the modal by id, not by ancestor.
+- Slide-over panel `#rs-slide-ov` lives at body level with its own Escape handler chained ahead of `cm-modal-ov`. Slide-over is aria-modal="false" so the underlying tabs remain interactive — different blast radius from a true modal.
+- New synthetic `critHigh` filter: handled inline in `rsRenderSignals`'s filter predicate. Doesn't appear in the visible chip list — only the KPI button can set it.
+- `RS_PLAY_NOTE_OPEN` / `RS_PLAY_STEP_OPEN` / `RS_PLAY_NOTES` are in-memory only. Phase 2 will push notes to the Gainsight timeline; the toast wording matches that intent.
+
+### Test coverage
+- **113 / 113 chromium passing** (was 86 in v4.8.0). 27 new tests added under a `v4.9.0 Risk & Signals fixes` describe — one or more per FIX plus 3 regression checks (11 signal rows, 3 Critical signals, 2 Save Play cards × 5 steps).
+
+### Spec label
+Shipped as `[4.9.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 
