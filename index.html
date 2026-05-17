@@ -933,16 +933,14 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .ah-clear{background:none;border:none;font-size:10px;color:var(--tx3);cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:2px}
 .ah-clear:hover{color:var(--tx2)}
 
-/* Quick Launch Matrix */
-.ah-matrix{display:grid;grid-template-columns:auto repeat(3,1fr);gap:5px 8px;align-items:center}
-.ah-col-hd{font-size:10px;font-weight:700;text-align:center;padding:4px 0;letter-spacing:-.01em}
-.ah-col-hd.nova{color:var(--rd-dk)}
-.ah-col-hd.acme{color:var(--tl-dk)}
-.ah-col-hd.bx{color:var(--am-dk)}
-.ah-row-l{font-size:11px;font-weight:600;color:var(--tx2);text-transform:none;display:flex;align-items:center;gap:5px;padding-right:8px;white-space:nowrap}
-.ah-row-l i{font-size:12px}
-.ah-run{font-size:10px;font-weight:700;padding:5px 0;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .1s;text-align:center}
-.ah-run:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk);opacity:.9}
+/* v3.2.4 — Agents · [active account]. 2×2 grid replaces the Quick Launch
+   Matrix. Buttons mirror the .mb-btn dashboard agent styling: outlined,
+   icon + label, teal on hover. */
+.ah-agents-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ah-agent-btn{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;padding:9px 11px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;transition:all .12s;text-align:left;width:100%;letter-spacing:-.01em}
+.ah-agent-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.ah-agent-btn i{font-size:14px;flex-shrink:0}
+.ah-agent-btn .ah-agent-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 
 /* Recent Outputs Log */
 .ah-recent-row{display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:3px;padding:9px 0;border-bottom:1px solid var(--bd);align-items:center}
@@ -2535,33 +2533,15 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
           <div class="ah-note-confirm" id="ah-note-confirm"></div>
         </div>
 
+        <!-- v3.2.4 — Agents · [active account]. 2×2 grid that fires for whichever
+             account the Agent Hub is currently scoped to. -->
         <div class="ah-sec">
-          <div class="ah-sec-t">Quick Launch Matrix</div>
-          <div class="ah-matrix">
-            <div></div>
-            <div class="ah-col-hd nova">NovaVault</div>
-            <div class="ah-col-hd acme">Acme Corp</div>
-            <div class="ah-col-hd bx">Brightex</div>
-
-            <div class="ah-row-l"><i class="ti ti-bolt" style="color:var(--tl)"></i> Prep Me</div>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('prep','nova')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('prep','acme')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('prep','brightex')">Run</button>
-
-            <div class="ah-row-l"><i class="ti ti-shield-check" style="color:var(--am)"></i> Risk Analyst</div>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('risk','nova')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('risk','acme')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('risk','brightex')">Run</button>
-
-            <div class="ah-row-l"><i class="ti ti-lifebuoy" style="color:var(--rd)"></i> Save Strategy</div>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('save','nova')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('save','acme')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('save','brightex')">Run</button>
-
-            <div class="ah-row-l"><i class="ti ti-checks" style="color:var(--tl)"></i> Next Steps</div>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('next','nova')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('next','acme')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('next','brightex')">Run</button>
+          <div class="ah-sec-t">Agents &middot; <span id="ah-agents-acct">ACME CORP</span></div>
+          <div class="ah-agents-grid">
+            <button class="ah-agent-btn" type="button" onclick="_ahFireAgent('prep')"><i class="ti ti-bolt" style="color:var(--tl)"></i><span class="ah-agent-l">Prep Me</span></button>
+            <button class="ah-agent-btn" type="button" onclick="_ahFireAgent('risk')"><i class="ti ti-shield-check" style="color:var(--am)"></i><span class="ah-agent-l">Risk Analyst</span></button>
+            <button class="ah-agent-btn" type="button" onclick="_ahFireAgent('save')"><i class="ti ti-lifebuoy" style="color:var(--rd)"></i><span class="ah-agent-l">Save Strategy</span></button>
+            <button class="ah-agent-btn" type="button" onclick="_ahFireAgent('next')"><i class="ti ti-checks" style="color:var(--tl)"></i><span class="ah-agent-l">Next Steps</span></button>
           </div>
         </div>
 
@@ -7726,6 +7706,12 @@ document.addEventListener('click', function(e){
   }
 });
 
+// v3.2.4 — fire one of the 4 hub agents for the currently-scoped account.
+function _ahFireAgent(kind) {
+  var key = _ahNoteAcct || 'acme';
+  if (typeof openAgentDrawer === 'function') openAgentDrawer(kind, key);
+}
+
 function _updateAgentHubAccount(viewId) {
   var hdr = document.getElementById('ah-doc-acct');
   var box = document.getElementById('ah-docs');
@@ -7744,6 +7730,11 @@ function _updateAgentHubAccount(viewId) {
   _ahRenderSnapshot(key);
   _ahRenderQuickLinks(key);
   _ahRenderNotePlaceholder(key);
+
+  // v3.2.4 — refresh the "Agents · [account]" section header so the CSM
+  // always sees which account the 4 hub agents will fire for.
+  var agentsAcct = document.getElementById('ah-agents-acct');
+  if (agentsAcct) agentsAcct.textContent = ((AH_SNAP[key] && AH_SNAP[key].lbl) || ACCT_LBL[key] || '').toUpperCase();
 
   // Existing v2.5.0 behavior — Recent Docs section
   hdr.textContent = (ACCT_LBL[key] || '').toUpperCase();

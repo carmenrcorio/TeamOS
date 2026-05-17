@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.2.4
+**Version:** 3.2.5
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,33 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.2.5] — 2026-05-17
+
+Agent Hub — Quick Launch Matrix replaced with account-scoped agent buttons. The fixed NovaVault / Acme Corp / Brightex columns broke the account-contextual model the rest of the hub already uses; this change funnels all four agents through the active Agent Hub account selected in the search above.
+
+### Fixed — Quick Launch Matrix removed
+- The 4-row × 3-column matrix with hard-coded account columns is gone. The HTML grid, the column headers (`.ah-col-hd`), the row label cells (`.ah-row-l`), and all twelve `Run` buttons are deleted.
+- Obsolete CSS (`.ah-matrix`, `.ah-col-hd*`, `.ah-row-l`, `.ah-run`) removed.
+
+### Added — Agents · [active account] 2×2 grid
+- Replaces the matrix in the same Agent Hub slot: Prep Me · Risk Analyst (top row), Save Strategy · Next Steps (bottom row).
+- Section header reads `AGENTS · [CURRENT ACCOUNT NAME]` and re-renders whenever the Agent Hub account is switched via the search input.
+- Buttons match the rest of the dashboard agent button language: outlined, icon + label, full-width within their grid cell, teal on hover. No more plain `Run` text boxes.
+- Each button calls `_ahFireAgent(kind)` which resolves `openAgentDrawer(kind, _ahNoteAcct)` against the currently-active hub account key (`acme | brightex | nova | meridian | creston | apex`).
+
+### Section order
+1. Account Search · 2. Account Snapshot · 3. Quick Links · 4. Quick Note · 5. Agents · [account] · 6. Recent Outputs · Session Log · 7. Recent Docs · [account].
+
+### Account switch behavior
+All account-scoped surfaces refresh together when the CSM selects a different account from the search: current-account pill, snapshot grid, summary sentence, Quick Links toast text, Last Gong dark-account warning, Quick Note placeholder, Agents section header, the 4 agent buttons' target account, and Recent Docs. Recent Outputs · Session Log stays untouched — it tracks session history regardless of account.
+
+### Implementation notes
+- The `_ahFireAgent` helper reads `_ahNoteAcct` (the single source of truth for the Agent Hub's active account) so the four buttons are always in sync with the rest of the hub without any per-button bookkeeping.
+- `_updateAgentHubAccount` extended to refresh `#ah-agents-acct` alongside the existing pill / snapshot / quick links / note / Recent Docs updates.
+- Spec label note: the user requested this entry as `[3.2.4]`; shipped as `[3.2.5]` to preserve monotonic versioning above the existing 3.2.4 entry.
 
 ---
 
