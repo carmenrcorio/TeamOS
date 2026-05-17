@@ -5,11 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- v3.4.0 — Enterprise security meta tags. CSP matches actual origins:
      Tabler webfont (CSS + .woff2) loads from cdn.jsdelivr.net; Anthropic
-     API is server-proxied via /api/anthropic so connect-src stays 'self'. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.anthropic.com; frame-ancestors 'none';">
+     API is server-proxied via /api/anthropic so connect-src stays 'self'.
+     X-Frame-Options and CSP frame-ancestors are NOT set here — browsers
+     ignore both when delivered via <meta>. They are served as real HTTP
+     response headers via /vercel.json (added in v3.4.1). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.anthropic.com;">
 <meta name="referrer" content="strict-origin">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="X-Frame-Options" content="DENY">
 <title>TeamOS &middot; CSM Dashboard</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
