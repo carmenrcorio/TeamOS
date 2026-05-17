@@ -2114,6 +2114,49 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cm-card-confirm-btn.yes{background:var(--rd);color:#fff}
 .cm-card-confirm-btn.no{background:var(--surf);color:var(--rd-dk)}
 .cm-camp-card.archiving{transition:max-height .3s ease,opacity .3s ease,margin .3s ease,padding .3s ease;max-height:600px;overflow:hidden}
+
+/* v4.8.0 — Paused status pill (new status state). */
+.cm-pill.status.paused{background:#FEF3C7;color:#78350F;border:1px solid #FCD34D}
+.cm-camp-card .cm-card-confirm.pause{background:var(--am-bg);border-color:var(--am);color:var(--am-dk)}
+.cm-camp-card .cm-card-confirm.pause .cm-card-confirm-btn{border-color:var(--am)}
+.cm-camp-card .cm-card-confirm.pause .cm-card-confirm-btn.yes{background:var(--am);color:#fff}
+.cm-card-confirm.drawer-confirm{margin:0 22px 12px}
+
+/* v4.8.0 — 0-count segment-chip empty-state tooltip */
+.cm-seg-empty-pop{position:absolute;top:calc(100% + 6px);left:0;min-width:280px;background:#111827;color:#fff;font-size:11px;font-weight:500;line-height:1.6;padding:10px 13px;border-radius:7px;z-index:200;box-shadow:0 12px 28px rgba(0,0,0,.32);display:none}
+.cm-seg-empty-pop.on{display:block}
+.cm-seg-chip{position:relative}
+
+/* v4.8.0 — EBR context note in Step 2 */
+.cm-wiz-ctx-note{font-size:11px;font-weight:600;color:#3730A3;background:#EEF2FF;border:1px solid #C7D2FE;border-left:3px solid #4F46E5;border-radius:6px;padding:8px 11px;margin-bottom:10px;line-height:1.55}
+.cm-wiz-ctx-note b{color:#111827;font-weight:800}
+.cm-wiz-display-chip{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:4px 10px;border-radius:5px;background:var(--bg);color:#1F2937;border:1px solid var(--bd2);margin-left:8px;letter-spacing:.02em;text-transform:uppercase}
+.cm-wiz-display-chip.ebr{background:#EEF2FF;color:#4F46E5;border-color:#C7D2FE}
+
+/* v4.8.0 — Account meta line in Step 2 group header (right-aligned) */
+.cm-wiz-grp-meta{font-size:10px;color:#4B5563;font-weight:600;letter-spacing:.01em}
+.cm-wiz-grp-meta b{color:#111827;font-weight:700}
+.cm-wiz-grp-hd{justify-content:space-between}
+.cm-wiz-grp-hd-r{display:flex;align-items:center;gap:12px}
+
+/* v4.8.0 — Editable preview body + contact switcher in Step 3 / Step 5 */
+.cm-prev-switcher{display:flex;align-items:center;justify-content:space-between;background:var(--surf2);border:1px solid var(--bd);border-radius:7px;padding:7px 12px;margin-bottom:8px;font-size:12px;font-weight:600;color:#1F2937}
+.cm-prev-switcher-l{font-weight:700;color:#111827}
+.cm-prev-switcher-nav{display:flex;align-items:center;gap:6px}
+.cm-prev-switcher-btn{font-size:13px;font-weight:700;width:28px;height:28px;border-radius:5px;background:var(--surf);border:1px solid var(--bd2);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;justify-content:center}
+.cm-prev-switcher-btn:hover:not([disabled]){background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.cm-prev-switcher-btn[disabled]{opacity:.4;cursor:not-allowed}
+.cm-prev-switcher-count{font-size:11px;color:#374151;font-weight:600;min-width:60px;text-align:center}
+.cm-prev-edit{width:100%;min-height:240px;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:12px;line-height:1.65;color:#1F2937;background:var(--surf);border:1px solid var(--bd2);border-radius:7px;padding:12px 14px;outline:none;resize:vertical;box-sizing:border-box;font-weight:500;white-space:pre-wrap}
+.cm-prev-edit:focus{border-color:var(--tl)}
+.cm-prev-reset{font-size:11px;color:#6B7280;background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;text-decoration:underline;text-underline-offset:2px;padding:4px 0;margin-top:4px}
+.cm-prev-reset:hover{color:#0F6E51}
+
+/* v4.8.0 — SSO/SCIM/ARR/last-active rows in contact detail panel */
+.cm-detail-kv .kv-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.04em;text-transform:uppercase}
+.cm-detail-kv .kv-pill.deployed,.cm-detail-kv .kv-pill.active{background:var(--tl-bg);color:var(--tl-dk)}
+.cm-detail-kv .kv-pill.notdeployed,.cm-detail-kv .kv-pill.notactive{background:var(--bg);color:#6B7280;border:1px solid var(--bd2)}
+.cm-detail-kv .kv-pill.departed{background:var(--rd-bg);color:var(--rd-dk)}
 .cm-camp-card.archived-out{max-height:0;opacity:0;margin:0;padding-top:0;padding-bottom:0;border:none}
 
 /* Generic centered modal — reused by Add Contact, Template Builder,
@@ -9580,19 +9623,23 @@ if ('serviceWorker' in navigator) {
 // ═══════════════════════════════════════════════════════════════════════════
 var CM_TEMPLATES_KEY = 'teamos_templates';
 
+// v4.8.0 — contact records gain sso / scim / arr / lastActive fields so the
+// segment logic (No SSO / SSO Active / SSO + SCIM) is grounded in the same
+// data the contact detail panel shows. ARR is the account-level ARR shared
+// by all contacts at that account.
 var CM_CONTACTS = [
-  {id:'c1',  fn:'David',    ln:'Kim',     role:'Head of IT Security',  email:'david.kim@acmecorp.com',   acct:'Acme Corp',              acctKey:'acme',     seq:null,                       seqStatus:'',                                 lastTouch:'May 10',     lastGong:'May 10 · SSO interest',        renewal:'Aug 12 · 89d',  note:''},
-  {id:'c2',  fn:'Rachel',   ln:'Torres',  role:'IT Manager',           email:'r.torres@acmecorp.com',    acct:'Acme Corp',              acctKey:'acme',     seq:null,                       seqStatus:'',                                 lastTouch:'Apr 22',     lastGong:'Apr 22 · routine check-in',    renewal:'Aug 12 · 89d',  note:''},
-  {id:'c3',  fn:'Sarah',    ln:'Chen',    role:'VP Operations',        email:'sarah.chen@brightex.com',  acct:'Brightex Inc',           acctKey:'brightex', seq:'Renewal Check-in',         seqStatus:'Touch 1 sent · No reply · 4h',     lastTouch:'May 10',     lastGong:'May 10 · SLA question',        renewal:'Jun 15 · 31d',  note:''},
-  {id:'c4',  fn:'Marcus',   ln:'Webb',    role:'Head of Procurement',  email:'m.webb@brightex.com',      acct:'Brightex Inc',           acctKey:'brightex', seq:null,                       seqStatus:'',                                 lastTouch:'Apr 28',     lastGong:'Apr 28 · pricing inquiry',     renewal:'Jun 15 · 31d',  note:''},
-  {id:'c5',  fn:'Michael',  ln:'Torres',  role:'IT Director',          email:'m.torres@novavault.com',   acct:'NovaVault',              acctKey:'nova',     seq:'Re-engagement',            seqStatus:'Touch 1 pending',                  lastTouch:'Never',      lastGong:'No data',                      renewal:'Jun 1 · 17d',   note:''},
-  {id:'c6',  fn:'James',    ln:'Wu',      role:'Former champion',      email:'j.wu@novavault.com',       acct:'NovaVault',              acctKey:'nova',     seq:'departed',                 seqStatus:'⚠ Departed · Do not contact',      lastTouch:'Apr 28',     lastGong:'Apr 28 · departure announced', renewal:'Jun 1 · 17d',   note:'Departed Apr 28'},
-  {id:'c7',  fn:'Jennifer', ln:'Ramos',   role:'IT Manager',           email:'j.ramos@meridian.com',     acct:'Meridian Health Systems',acctKey:'meridian', seq:null,                       seqStatus:'',                                 lastTouch:'73d ago',    lastGong:'73d ago',                      renewal:'Jun 30 · 45d',  note:'Inbound email yesterday — re-engage today'},
-  {id:'c8',  fn:'Marcus',   ln:'Webb',    role:'VP Engineering',       email:'m.webb@creston.com',       acct:'Creston Software',       acctKey:'creston',  seq:null,                       seqStatus:'',                                 lastTouch:'67d ago',    lastGong:'67d ago',                      renewal:'Jul 15 · 60d',  note:''},
-  {id:'c9',  fn:'Ryan',     ln:'Patel',   role:'IT Director (new)',    email:'r.patel@apex.com',         acct:'Apex Dynamics',          acctKey:'apex',     seq:null,                       seqStatus:'',                                 lastTouch:'Never',      lastGong:'No data',                      renewal:'Aug 1 · 77d',   note:'Warm intro from AE recommended'},
-  {id:'c10', fn:'James',    ln:'Wu',      role:'Former champion',      email:'j.wu@apex.com',            acct:'Apex Dynamics',          acctKey:'apex',     seq:'departed',                 seqStatus:'⚠ Departed · Do not contact',      lastTouch:'61d ago',    lastGong:'No data',                      renewal:'Aug 1 · 77d',   note:'Departed — do not contact'},
-  {id:'c11', fn:'Jennifer', ln:'Moss',    role:'Head of IT',           email:'j.moss@klaxton.com',       acct:'Klaxton Labs',           acctKey:'klaxton',  seq:null,                       seqStatus:'',                                 lastTouch:'May 6',      lastGong:'May 6 · adoption review',      renewal:'Sep 20',        note:''},
-  {id:'c12', fn:'Derek',    ln:'Chan',    role:'VP Engineering',       email:'d.chan@pinnacle.com',      acct:'Pinnacle Systems',       acctKey:'pinnacle', seq:null,                       seqStatus:'',                                 lastTouch:'Apr 30',     lastGong:'Apr 30 · roadmap discussion',  renewal:'Oct 5',         note:''}
+  {id:'c1',  fn:'David',    ln:'Kim',     role:'Head of IT Security',  email:'david.kim@acmecorp.com',   acct:'Acme Corp',              acctKey:'acme',     seq:null,                       seqStatus:'',                                 lastTouch:'May 10',     lastGong:'May 10 · SSO interest',        renewal:'Aug 12 · 89d',  note:'',                                          sso:'Deployed',     scim:'Active',     arr:48, lastActive:'May 15'},
+  {id:'c2',  fn:'Rachel',   ln:'Torres',  role:'IT Manager',           email:'r.torres@acmecorp.com',    acct:'Acme Corp',              acctKey:'acme',     seq:null,                       seqStatus:'',                                 lastTouch:'Apr 22',     lastGong:'Apr 22 · routine check-in',    renewal:'Aug 12 · 89d',  note:'',                                          sso:'Deployed',     scim:'Active',     arr:48, lastActive:'May 12'},
+  {id:'c3',  fn:'Sarah',    ln:'Chen',    role:'VP Operations',        email:'sarah.chen@brightex.com',  acct:'Brightex Inc',           acctKey:'brightex', seq:'Renewal Check-in',         seqStatus:'Touch 1 sent · No reply · 4h',     lastTouch:'May 10',     lastGong:'May 10 · SLA question',        renewal:'Jun 15 · 31d',  note:'',                                          sso:'Deployed',     scim:'Not Active', arr:36, lastActive:'Apr 20'},
+  {id:'c4',  fn:'Marcus',   ln:'Webb',    role:'Head of Procurement',  email:'m.webb@brightex.com',      acct:'Brightex Inc',           acctKey:'brightex', seq:null,                       seqStatus:'',                                 lastTouch:'Apr 28',     lastGong:'Apr 28 · pricing inquiry',     renewal:'Jun 15 · 31d',  note:'',                                          sso:'Deployed',     scim:'Not Active', arr:36, lastActive:'Mar 8'},
+  {id:'c5',  fn:'Michael',  ln:'Torres',  role:'IT Director',          email:'m.torres@novavault.com',   acct:'NovaVault',              acctKey:'nova',     seq:'Re-engagement',            seqStatus:'Touch 1 pending',                  lastTouch:'Never',      lastGong:'No data',                      renewal:'Jun 1 · 17d',   note:'',                                          sso:'Not Deployed', scim:'Not Active', arr:31, lastActive:'Never'},
+  {id:'c6',  fn:'James',    ln:'Wu',      role:'Former champion',      email:'j.wu@novavault.com',       acct:'NovaVault',              acctKey:'nova',     seq:'departed',                 seqStatus:'⚠ Departed · Do not contact',      lastTouch:'Apr 28',     lastGong:'Apr 28 · departure announced', renewal:'Jun 1 · 17d',   note:'Departed Apr 28',                           sso:'Departed',     scim:'Departed',   arr:31, lastActive:'Departed'},
+  {id:'c7',  fn:'Jennifer', ln:'Ramos',   role:'IT Manager',           email:'j.ramos@meridian.com',     acct:'Meridian Health Systems',acctKey:'meridian', seq:null,                       seqStatus:'',                                 lastTouch:'73d ago',    lastGong:'73d ago',                      renewal:'Jun 30 · 45d',  note:'Inbound email yesterday — re-engage today', sso:'Not Deployed', scim:'Not Active', arr:22, lastActive:'Jan 5'},
+  {id:'c8',  fn:'Marcus',   ln:'Webb',    role:'VP Engineering',       email:'m.webb@creston.com',       acct:'Creston Software',       acctKey:'creston',  seq:null,                       seqStatus:'',                                 lastTouch:'67d ago',    lastGong:'67d ago',                      renewal:'Jul 15 · 60d',  note:'',                                          sso:'Not Deployed', scim:'Not Active', arr:18, lastActive:'Feb 14'},
+  {id:'c9',  fn:'Ryan',     ln:'Patel',   role:'IT Director (new)',    email:'r.patel@apex.com',         acct:'Apex Dynamics',          acctKey:'apex',     seq:null,                       seqStatus:'',                                 lastTouch:'Never',      lastGong:'No data',                      renewal:'Aug 1 · 77d',   note:'Warm intro from AE recommended',            sso:'Not Deployed', scim:'Not Active', arr:15, lastActive:'Never'},
+  {id:'c10', fn:'James',    ln:'Wu',      role:'Former champion',      email:'j.wu@apex.com',            acct:'Apex Dynamics',          acctKey:'apex',     seq:'departed',                 seqStatus:'⚠ Departed · Do not contact',      lastTouch:'61d ago',    lastGong:'No data',                      renewal:'Aug 1 · 77d',   note:'Departed — do not contact',                 sso:'Departed',     scim:'Departed',   arr:15, lastActive:'Departed'},
+  {id:'c11', fn:'Jennifer', ln:'Moss',    role:'Head of IT',           email:'j.moss@klaxton.com',       acct:'Klaxton Labs',           acctKey:'klaxton',  seq:null,                       seqStatus:'',                                 lastTouch:'May 6',      lastGong:'May 6 · adoption review',      renewal:'Sep 20',        note:'',                                          sso:'Not Deployed', scim:'Not Active', arr:14, lastActive:'May 6'},
+  {id:'c12', fn:'Derek',    ln:'Chan',    role:'VP Engineering',       email:'d.chan@pinnacle.com',      acct:'Pinnacle Systems',       acctKey:'pinnacle', seq:null,                       seqStatus:'',                                 lastTouch:'Apr 30',     lastGong:'Apr 30 · roadmap discussion',  renewal:'Oct 5',         note:'',                                          sso:'Not Deployed', scim:'Not Active', arr:14, lastActive:'Apr 30'}
 ];
 
 var CM_TEMPLATES_DEFAULT = [
@@ -9630,6 +9677,10 @@ var CM_CAMPAIGNS = [
 
 var CM_CONTACT_FILTER = 'all';
 var CM_CAMP_FILTER = 'all';
+// v4.8.0 — Currently-viewed campaign id (null when the drawer is closed).
+// Declared explicitly so cmCampInDrawer can read it before the first
+// cmCampView call (previously it was implicitly created on assignment).
+var CM_VIEW_ID = null;
 var CM_TPL_FILTER = 'all';
 var CM_CONTACT_SEL = null;
 var CM_TPL_SEL = null;
@@ -9721,16 +9772,29 @@ function cmRenderSegments() {
     +   '<div class="cm-seg-hd">🧠 AI Account Segments <span class="cm-seg-hd-sub">Your book, organized by engagement + product adoption</span></div>'
     +   '<div class="cm-seg-row">'
     +     CM_SEGMENTS.map(function(s){
+            // v4.8.0 — 0-count chips remain clickable so we can show an
+            // empty-state tooltip instead of being silent. Visual "disabled"
+            // styling stays.
             var dis = s.count === 0 ? ' disabled' : '';
-            var onclick = s.count === 0 ? '' : ' onclick="cmSegmentClick(\'' + s.key + '\')"';
-            return '<button class="cm-seg-chip ' + s.color + dis + '" type="button"' + onclick + ' title="' + cmEscape(s.tip) + '" aria-label="' + cmEscape(s.lbl + ' — ' + s.count + ' accounts · ' + s.tip) + '"><span>' + s.ic + '</span> ' + cmEscape(s.lbl) + ' <span class="cm-seg-count">' + s.count + '</span></button>';
+            return '<button class="cm-seg-chip ' + s.color + dis + '" type="button" onclick="cmSegmentClick(\'' + s.key + '\',event)" title="' + cmEscape(s.tip) + '" aria-label="' + cmEscape(s.lbl + ' — ' + s.count + ' accounts · ' + s.tip) + '"><span>' + s.ic + '</span> ' + cmEscape(s.lbl) + ' <span class="cm-seg-count">' + s.count + '</span><div class="cm-seg-empty-pop" id="cm-seg-empty-' + s.key + '" role="tooltip">No accounts match this segment yet. As accounts are tagged with SSO/SCIM status in Gainsight, they\'ll appear here automatically.</div></button>';
           }).join('')
     +   '</div>'
     + '</div>';
 }
-function cmSegmentClick(key) {
+// v4.8.0 — Empty-state tooltip for 0-count segments. Toggles a popover on
+// the chip itself (positioned via .cm-seg-empty-pop absolute under chip).
+// Clicking elsewhere closes the popover via the document-level click handler.
+function cmSegmentClick(key, ev) {
   var seg = CM_SEGMENTS.find(function(x){return x.key===key;});
-  if (!seg || seg.count === 0) return;
+  if (!seg) return;
+  // Close any other open empty-state popover first.
+  document.querySelectorAll('.cm-seg-empty-pop.on').forEach(function(p){ p.classList.remove('on'); });
+  if (seg.count === 0) {
+    if (ev && ev.stopPropagation) ev.stopPropagation();
+    var pop = document.getElementById('cm-seg-empty-' + key);
+    if (pop) pop.classList.add('on');
+    return;
+  }
   // Open wizard at Step 2 with contacts pre-checked and the matching Health
   // Score + Renewal Window filters pre-set. The template still pre-selects at
   // Step 3 (template grid card shown as selected with the "AI recommended"
@@ -9827,17 +9891,59 @@ function cmCampViewClose(e) {
   if (drawer) { drawer.classList.remove('on'); drawer.setAttribute('aria-hidden','true'); }
   if (ov) ov.classList.remove('on');
 }
+// v4.8.0 — Pause is a 2-step interaction. Step 1 surfaces an inline confirm
+// strip inside the drawer footer ("Pause this campaign? Contacts will not
+// receive pending touches until you resume."). Step 2 mutates the status to
+// 'paused' and re-renders the drawer with a "Resume Campaign" button. Resume
+// is single-click — no confirmation needed to un-pause.
 function cmCampPause(id) {
   var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
   if (!c) return;
-  c.status = (c.status === 'active') ? 'draft' : 'active';
+  if (c.status === 'paused') { cmCampResume(id); return; }
+  // Show the confirm strip in the drawer footer; do not mutate state yet.
+  var drawer = document.getElementById('cm-cv-drawer');
+  if (!drawer) return;
+  var foot = drawer.querySelector('.cm-drawer-foot');
+  if (!foot) return;
+  // Avoid stacking duplicate confirm strips.
+  if (foot.previousElementSibling && foot.previousElementSibling.classList.contains('cm-card-confirm')) return;
+  var confirm = document.createElement('div');
+  confirm.className = 'cm-card-confirm pause on drawer-confirm';
+  confirm.setAttribute('role', 'alert');
+  confirm.innerHTML = '<span>Pause this campaign? Contacts will not receive pending touches until you resume.</span>'
+    + '<span class="cm-card-confirm-acts">'
+    +   '<button class="cm-card-confirm-btn no" type="button" onclick="cmCampPauseCancel()">Cancel</button>'
+    +   '<button class="cm-card-confirm-btn yes" type="button" onclick="cmCampPauseConfirm(\'' + id + '\')">Pause</button>'
+    + '</span>';
+  foot.parentNode.insertBefore(confirm, foot);
+}
+function cmCampPauseCancel() {
+  var drawer = document.getElementById('cm-cv-drawer');
+  if (!drawer) return;
+  var strip = drawer.querySelector('.cm-card-confirm.pause');
+  if (strip) strip.remove();
+}
+function cmCampPauseConfirm(id) {
+  var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+  if (!c) return;
+  c.status = 'paused';
   cmRenderCampaigns();
-  // Re-render the drawer if it's open.
   if (CM_VIEW_ID === id) {
     var drawer = document.getElementById('cm-cv-drawer');
     if (drawer) drawer.innerHTML = cmRenderCampaignView(id);
   }
-  toast('Campaign &ldquo;' + cmEscape(c.name) + '&rdquo; ' + (c.status === 'active' ? 'resumed' : 'paused') + ' ✓');
+  toast('Campaign paused · Pending touches halted ✓');
+}
+function cmCampResume(id) {
+  var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+  if (!c) return;
+  c.status = 'active';
+  cmRenderCampaigns();
+  if (CM_VIEW_ID === id) {
+    var drawer = document.getElementById('cm-cv-drawer');
+    if (drawer) drawer.innerHTML = cmRenderCampaignView(id);
+  }
+  toast('Campaign resumed · ' + cmEscape(c.name) + ' ✓');
 }
 
 // Fixed per-contact sequence statuses for demo coherence — each campaign
@@ -9925,19 +10031,65 @@ function cmRenderCampaignView(id) {
     +   '</div>'
     + '</div>'
     + '<div class="cm-drawer-foot">'
-    +   '<button class="cm-btn" type="button" onclick="cmCampPause(\'' + c.id + '\')"><i class="ti ti-' + (c.status === 'active' ? 'player-pause' : 'player-play') + '"></i> ' + (c.status === 'active' ? 'Pause Campaign' : 'Resume Campaign') + '</button>'
+    +   '<button class="cm-btn" type="button" onclick="cmCampPause(\'' + c.id + '\')"><i class="ti ti-' + (c.status === 'paused' ? 'player-play' : 'player-pause') + '"></i> ' + (c.status === 'paused' ? 'Resume Campaign' : 'Pause Campaign') + '</button>'
     +   '<button class="cm-btn" type="button" onclick="cmCampArchive(\'' + c.id + '\')"><i class="ti ti-archive"></i> Archive</button>'
     +   '<button class="cm-btn" type="button" onclick="cmCampExport(\'' + c.id + '\')"><i class="ti ti-copy"></i> Export List</button>'
     + '</div>';
 }
+// v4.8.0 — Real CSV download via Blob + <a download>. Filename:
+// "<campaign-name>-contacts-YYYY-MM-DD.csv". Pulls per-contact sequence
+// status from the same CM_CONTACT_STATUS_STATES cycle the detail panel uses
+// so the CSV mirrors what the CSM sees in the drawer.
+function cmCsvEscape(v) {
+  var s = String(v == null ? '' : v);
+  if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
 function cmCampExport(id) {
-  toast('Contact list copied ✓');
-  // Also write to clipboard when available.
   var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
-  if (!c || !navigator.clipboard) return;
-  var pool = (c.contactIds && c.contactIds.length) ? c.contactIds.map(function(cid){ return CM_CONTACTS.find(function(x){return x.id===cid;}); }).filter(Boolean) : CM_CONTACTS.slice(0, c.contactCount);
-  var txt = pool.map(function(cn){ return cn.fn + ' ' + cn.ln + ' <' + cn.email + '>'; }).join('\n');
-  try { navigator.clipboard.writeText(txt); } catch (_) {}
+  if (!c) return;
+  var pool = (c.contactIds && c.contactIds.length)
+    ? c.contactIds.map(function(cid){ return CM_CONTACTS.find(function(x){return x.id===cid;}); }).filter(Boolean)
+    : CM_CONTACTS.slice(0, Math.min(c.contactCount, CM_CONTACTS.length));
+  if (pool.length < c.contactCount) {
+    var have = {}; pool.forEach(function(x){ have[x.id] = true; });
+    for (var i = 0; i < CM_CONTACTS.length && pool.length < c.contactCount; i++) {
+      if (!have[CM_CONTACTS[i].id] && CM_CONTACTS[i].seq !== 'departed') pool.push(CM_CONTACTS[i]);
+    }
+  }
+  var rows = [['Contact','Account','Email','Touch Reached','Status','Last Activity']];
+  pool.forEach(function(cn, i){
+    var s = CM_CONTACT_STATUS_STATES[i % CM_CONTACT_STATUS_STATES.length];
+    var parts = s.txt.split(' · ');
+    rows.push([
+      cn.fn + ' ' + cn.ln,
+      cn.acct,
+      cn.email,
+      parts[0] || '',
+      parts[1] || '',
+      parts[2] || ''
+    ]);
+  });
+  var csv = rows.map(function(r){ return r.map(cmCsvEscape).join(','); }).join('\r\n');
+  var now = new Date();
+  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+  var stamp = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
+  var safeName = (c.name || 'campaign').replace(/[^a-z0-9-]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase();
+  var filename = safeName + '-contacts-' + stamp + '.csv';
+  try {
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    a.setAttribute('aria-label', 'Download contact list as CSV');
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+  } catch (e) {
+    // Fallback for browsers without Blob support — copy CSV to clipboard.
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv);
+  }
+  toast('Contact list exported · ' + pool.length + ' contacts · CSV ✓');
 }
 
 // v4.4.0 — Duplicate creates a real DRAFT card with "Copy of …" name.
@@ -9959,33 +10111,67 @@ function cmCampDuplicate(id) {
 
 // v4.4.0 — Archive shows an inline confirm strip on the card; on confirm the
 // card slides out via CSS (max-height + opacity transition) and re-renders.
+// v4.8.0 — Archive flow unified across card + drawer. Precedence: if the
+// detail drawer is open we always route through the drawer path, even when a
+// matching card exists in the list behind it. This matches the user's mental
+// model — confirming in the drawer should close the drawer cleanly.
+function cmCampInDrawer(id) {
+  var drawer = document.getElementById('cm-cv-drawer');
+  return CM_VIEW_ID === id && drawer && drawer.classList.contains('on');
+}
 function cmCampArchive(id) {
-  var card = document.querySelector('.cm-camp-card[data-id="' + id + '"]');
-  if (!card) {
-    // Drawer context — open confirm modal instead.
-    var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
-    if (c) { c.status = 'archived'; cmRenderCampaigns(); cmCampViewClose(); toast('Campaign archived ✓'); }
+  if (cmCampInDrawer(id)) {
+    var drawer = document.getElementById('cm-cv-drawer');
+    var foot = drawer.querySelector('.cm-drawer-foot');
+    if (!foot) return;
+    if (foot.previousElementSibling && foot.previousElementSibling.classList.contains('cm-card-confirm')) return;
+    var confirm = document.createElement('div');
+    confirm.className = 'cm-card-confirm on drawer-confirm';
+    confirm.setAttribute('role', 'alert');
+    confirm.innerHTML = '<span>Archive this campaign? It will be hidden from the active list.</span>'
+      + '<span class="cm-card-confirm-acts">'
+      +   '<button class="cm-card-confirm-btn no" type="button" onclick="cmCampArchiveCancel(\'' + id + '\')">Cancel</button>'
+      +   '<button class="cm-card-confirm-btn yes" type="button" onclick="cmCampArchiveConfirm(\'' + id + '\')">Yes, archive</button>'
+      + '</span>';
+    foot.parentNode.insertBefore(confirm, foot);
     return;
   }
-  var confirm = card.querySelector('.cm-card-confirm');
-  if (confirm) confirm.classList.add('on');
+  var card = document.querySelector('.cm-camp-card[data-id="' + id + '"]');
+  if (card) {
+    var conf = card.querySelector('.cm-card-confirm');
+    if (conf) conf.classList.add('on');
+  }
 }
 function cmCampArchiveConfirm(id) {
+  if (cmCampInDrawer(id)) {
+    var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+    if (c) c.status = 'archived';
+    cmCampViewClose();
+    cmRenderCampaigns();
+    toast('Campaign archived ✓');
+    return;
+  }
   var card = document.querySelector('.cm-camp-card[data-id="' + id + '"]');
   if (card) {
     card.classList.add('archiving');
     setTimeout(function(){ card.classList.add('archived-out'); }, 10);
     setTimeout(function(){
-      var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
-      if (c) c.status = 'archived';
+      var c2 = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+      if (c2) c2.status = 'archived';
       cmRenderCampaigns();
       toast('Campaign archived ✓');
     }, 350);
   }
 }
 function cmCampArchiveCancel(id) {
+  if (cmCampInDrawer(id)) {
+    var drawer = document.getElementById('cm-cv-drawer');
+    var strip = drawer.querySelector('.cm-card-confirm');
+    if (strip) strip.remove();
+    return;
+  }
   var card = document.querySelector('.cm-camp-card[data-id="' + id + '"]');
-  if (card) { var confirm = card.querySelector('.cm-card-confirm'); if (confirm) confirm.classList.remove('on'); }
+  if (card) { var conf = card.querySelector('.cm-card-confirm'); if (conf) conf.classList.remove('on'); }
 }
 function cmCampSend(id) {
   var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
@@ -10141,7 +10327,11 @@ function cmFilteredContacts() {
     if (q && (c.fn + ' ' + c.ln + ' ' + c.acct + ' ' + c.email).toLowerCase().indexOf(q) === -1) return false;
     switch (CM_CONTACT_FILTER) {
       case 'all':     return true;
-      case 'active':  return c.seq !== 'departed' && c.seqStatus.indexOf('Unsubscribed') === -1;
+      // v4.8.0 — Active = currently enrolled in a sequence OR has replied
+      // (i.e., the sequence had an outcome). "Not enrolled" contacts are
+      // explicitly excluded — the previous predicate matched anything that
+      // wasn't departed or unsubscribed, which let the entire book through.
+      case 'active':  return (!!c.seq && c.seq !== 'departed') || /replied/i.test(c.seqStatus);
       case 'dark':    return ['meridian','creston','apex'].indexOf(c.acctKey) !== -1;
       case 'inseq':   return c.seq && c.seq !== 'departed';
       case 'replied': return /replied/i.test(c.seqStatus);
@@ -10203,9 +10393,16 @@ function cmRenderContactDetail() {
     +     '<div class="cm-detail-tags"><span class="cm-cnt-tag ' + c.acctKey + '">' + cmEscape(c.acct) + '</span>' + (c.seq === 'departed' ? '<span class="cm-cnt-seq warn">Departed</span>' : (c.seq ? '<span class="cm-cnt-seq in">In sequence · ' + cmEscape(c.seq) + '</span>' : '<span class="cm-cnt-seq">Not enrolled</span>')) + '</div>'
     +   '</div>'
     + '</div>'
+    // v4.8.0 — Contact-info section surfaces SSO / SCIM / ARR / last-active.
+    // These fields drive the segment logic; making them visible closes the
+    // loop between "AI Segments" and the contact context.
     + '<div class="cm-detail-sec"><div class="cm-detail-sec-t">Contact info</div>'
     +   '<div class="cm-detail-kv">'
     +     '<div>Email</div><div>' + cmEscape(c.email) + '</div>'
+    +     '<div>SSO Status</div><div><span class="kv-pill ' + (c.sso || '').toLowerCase().replace(/[^a-z]/g, '') + '">' + cmEscape(c.sso || 'Unknown') + '</span></div>'
+    +     '<div>SCIM Status</div><div><span class="kv-pill ' + (c.scim || '').toLowerCase().replace(/[^a-z]/g, '') + '">' + cmEscape(c.scim || 'Unknown') + '</span></div>'
+    +     '<div>ARR</div><div>$' + (c.arr || 0) + 'K</div>'
+    +     '<div>Last active in 1Password</div><div>' + cmEscape(c.lastActive || 'Unknown') + '</div>'
     +     '<div>Last Gong</div><div>' + cmEscape(c.lastGong) + '</div>'
     +     '<div>Last CSM touch</div><div>' + cmEscape(c.lastTouch) + '</div>'
     +     '<div>Renewal</div><div>' + cmEscape(c.renewal || '—') + '</div>'
@@ -10261,6 +10458,8 @@ function cmAddNote(id) {
 // new contact appears in the list immediately (in-memory unshift).
 var CM_KNOWN_ACCOUNTS = ['Acme Corp','Brightex Inc','NovaVault','Meridian Health Systems','Creston Software','Apex Dynamics'];
 var CM_ACCT_KEY_MAP   = { 'Acme Corp':'acme','Brightex Inc':'brightex','NovaVault':'nova','Meridian Health Systems':'meridian','Creston Software':'creston','Apex Dynamics':'apex' };
+// v4.8.0 — Public alias used by external tests / docs.
+function cmOpenAddContact() { return cmAddContactPrompt(); }
 function cmAddContactPrompt() {
   var acctOpts = CM_KNOWN_ACCOUNTS.map(function(a){ return '<option value="' + cmEscape(a) + '">' + cmEscape(a) + '</option>'; }).join('') + '<option value="other">Other / not in system</option>';
   var body = ''
@@ -10320,7 +10519,14 @@ function cmToggleDD(id, ev) {
     else el.classList.remove('on');
   });
 }
-document.addEventListener('click', function(){ ['cm-dd-gs','cm-dd-sf'].forEach(function(k){ var el = document.getElementById(k); if (el) el.classList.remove('on'); }); });
+document.addEventListener('click', function(ev){
+  ['cm-dd-gs','cm-dd-sf'].forEach(function(k){ var el = document.getElementById(k); if (el) el.classList.remove('on'); });
+  // v4.8.0 — Close 0-count segment empty-state popover when clicking outside
+  // any segment chip.
+  if (!ev.target.closest || !ev.target.closest('.cm-seg-chip')) {
+    document.querySelectorAll('.cm-seg-empty-pop.on').forEach(function(p){ p.classList.remove('on'); });
+  }
+});
 function cmImport(src, label, n) {
   ['cm-dd-gs','cm-dd-sf'].forEach(function(k){ var el = document.getElementById(k); if (el) el.classList.remove('on'); });
   setTimeout(function(){
@@ -10543,6 +10749,14 @@ var CM_ANALYTICS_DATA = {
   alltime:  { label:'All time', sent:1204, open:57, reply:21, activeSeqs:2, vsPrev:'Lifetime average', vsReply:'Lifetime average', campaigns:['cmp1','cmp2','cmp3'] }
 };
 function cmSetAnalyticsPeriod(p) { CM_ANALYTICS_PERIOD = p; cmRenderAnalytics(); }
+// v4.8.0 — Analytics row click → switch sub-section + open detail drawer.
+// Ignores clicks on buttons (Send →) inside the progress cell so they keep
+// their own behavior.
+function cmAnalyticsRowClick(id, ev) {
+  if (ev && ev.target && ev.target.tagName === 'BUTTON') return;
+  cmShowSection('campaigns');
+  setTimeout(function(){ cmCampView(id); }, 80);
+}
 function cmRenderAnalytics() {
   var sec = document.getElementById('cm-analytics');
   if (!sec) return;
@@ -10561,7 +10775,11 @@ function cmRenderAnalytics() {
     var progress = r.send
       ? '<span class="cm-pill status draft" style="display:inline-block">Draft</span> <button class="cm-btn" type="button" onclick="cmCampSendStart(\'' + id + '\')" style="margin-left:4px;font-size:10px;padding:4px 8px">Send &rarr;</button>'
       : '<span class="cm-bar"><div style="width:' + r.progPct + '%"></div></span>';
-    return '<tr><td><b>' + cmEscape(r.nm) + '</b></td><td>' + r.type + '</td><td>' + r.sent + '</td><td>' + openTxt + '</td><td>' + replyTxt + '</td><td>' + unsubTxt + '</td><td>' + progress + '</td></tr>';
+    // v4.8.0 — Analytics rows are clickable. Switch to Campaigns sub-section
+    // and open the campaign detail drawer simultaneously. The progress cell
+    // contains buttons in some rows (Send →), so we stop propagation on
+    // clicks inside it via the inner buttons' own handlers.
+    return '<tr tabindex="0" style="cursor:pointer" onclick="cmAnalyticsRowClick(\'' + id + '\',event)" onkeydown="if(event.key===\'Enter\'){cmAnalyticsRowClick(\'' + id + '\',event)}"><td><b>' + cmEscape(r.nm) + '</b></td><td>' + r.type + '</td><td>' + r.sent + '</td><td>' + openTxt + '</td><td>' + replyTxt + '</td><td>' + unsubTxt + '</td><td>' + progress + '</td></tr>';
   }).join('');
   if (!rowsHtml) rowsHtml = '<tr><td colspan="7" style="text-align:center;padding:14px;color:#6B7280;font-style:italic">No campaigns sent in this period.</td></tr>';
   sec.innerHTML = ''
@@ -10667,42 +10885,22 @@ function cmContactPassesFilters(c) {
   }
   return true;
 }
-function cmWizSetFilter(key, val) {
-  if (!CM_WIZ) return;
-  CM_WIZ[key] = val;
-  cmWizRender();
-}
 function cmWizStep2(body) {
   if (CM_WIZ.filterHealth  == null) CM_WIZ.filterHealth = 'all';
   if (CM_WIZ.filterRenewal == null) CM_WIZ.filterRenewal = 'all';
   if (CM_WIZ.filterSearch  == null) CM_WIZ.filterSearch = '';
-  var visible = CM_CONTACTS.filter(cmContactPassesFilters);
-  // Group by account (preserving CM_CONTACTS order).
-  var grouped = {};
-  var order = [];
-  visible.forEach(function(c){
-    if (!grouped[c.acctKey]) { grouped[c.acctKey] = { acct:c.acct, rows:[] }; order.push(c.acctKey); }
-    grouped[c.acctKey].rows.push(c);
-  });
-  var groupsHtml = order.map(function(k){
-    var g = grouped[k];
-    var rowsHtml = g.rows.map(function(c){
-      var checked = CM_WIZ.contacts.indexOf(c.id) !== -1;
-      var sel = checked ? ' sel' : '';
-      var dis = (c.seq === 'departed') ? ' style="opacity:.45;cursor:not-allowed"' : '';
-      return '<label class="cm-wiz-cnt-item' + sel + '"' + dis + '><input type="checkbox" ' + (checked ? 'checked' : '') + (c.seq === 'departed' ? ' disabled' : '') + ' onchange="cmWizToggleContact(\'' + c.id + '\',this.checked)"><span><b>' + cmEscape(c.fn + ' ' + c.ln) + '</b> · ' + cmEscape(c.role) + ' · <span style="color:#6B7280">' + cmEscape(c.email) + '</span></span></label>';
-    }).join('');
-    return ''
-      + '<div class="cm-wiz-grp">'
-      +   '<div class="cm-wiz-grp-hd"><span>' + cmEscape(g.acct.toUpperCase()) + '</span><span class="cm-wiz-grp-count">' + g.rows.length + ' contact' + (g.rows.length === 1 ? '' : 's') + '</span></div>'
-      +   '<div class="cm-wiz-grp-rows">' + rowsHtml + '</div>'
-      + '</div>';
-  }).join('') || '<div class="cm-detail-empty" style="padding:20px 10px;font-size:12px">No contacts match these filters.</div>';
-  var accts = {};
-  CM_WIZ.contacts.forEach(function(id){ var c = CM_CONTACTS.find(function(x){return x.id===id;}); if (c) accts[c.acctKey] = true; });
+  // v4.8.0 — EBR Overdue context note (display-only when the segment seeded
+  // the wizard).
+  var ebrCtx = (CM_WIZ.segmentKey === 'ebr-overdue')
+    ? '<div class="cm-wiz-ctx-note">Filtered to: <b>Accounts with no EBR completed this quarter</b> · $25K+ ARR</div>'
+    : '';
+  var ebrChip = (CM_WIZ.segmentKey === 'ebr-overdue')
+    ? '<span class="cm-wiz-display-chip ebr">EBR Status: Overdue</span>'
+    : '';
   body.innerHTML = ''
     + '<div class="cm-wiz-step-l">Step 2 of 5</div>'
-    + '<div class="cm-wiz-h">Who&rsquo;s this campaign for?</div>'
+    + '<div class="cm-wiz-h">Who&rsquo;s this campaign for?' + ebrChip + '</div>'
+    + ebrCtx
     + '<div class="cm-wiz-filter">'
     +   '<div><div class="cm-wiz-label">Health score</div><select class="cm-wiz-select" style="margin-bottom:0" onchange="cmWizSetFilter(\'filterHealth\',this.value)">'
     +     '<option value="all"' + (CM_WIZ.filterHealth === 'all' ? ' selected' : '') + '>All health scores</option>'
@@ -10717,28 +10915,91 @@ function cmWizStep2(body) {
     +     '<option value="90"' + (CM_WIZ.filterRenewal === '90' ? ' selected' : '') + '>61–90 days</option>'
     +   '</select></div>'
     + '</div>'
-    + '<input class="cm-wiz-search" type="text" id="cm-wiz-search" placeholder="🔍 Search contacts by name or company" value="' + cmEscape(CM_WIZ.filterSearch) + '" oninput="cmWizSetSearch(this.value)" aria-label="Search contacts">'
-    + groupsHtml
-    + '<div style="margin-top:12px"><span class="cm-wiz-counter">' + CM_WIZ.contacts.length + ' contacts selected across ' + Object.keys(accts).length + ' accounts</span></div>';
-  // Preserve search focus + cursor on re-render.
-  setTimeout(function(){
-    var s = document.getElementById('cm-wiz-search');
-    if (s && CM_WIZ_SEARCH_FOCUS) { try { s.focus(); s.setSelectionRange(s.value.length, s.value.length); } catch (_) {} }
-  }, 0);
+    + '<input class="cm-wiz-search" type="text" id="cm-wiz-search" placeholder="🔍 Search contacts by name or company" value="' + cmEscape(CM_WIZ.filterSearch) + '" oninput="cmWizSearchInput(this.value)" aria-label="Search contacts">'
+    + '<div id="cm-wiz-step2-list">' + cmWizStep2BuildGroups() + '</div>'
+    + '<div style="margin-top:12px"><span class="cm-wiz-counter" id="cm-wiz-step2-counter">' + cmWizStep2Counter() + '</span></div>';
 }
-var CM_WIZ_SEARCH_FOCUS = false;
-function cmWizSetSearch(v) {
+// v4.8.0 — Group-list HTML factored out so the search input can re-render
+// only the list (and counter), not the entire Step 2. Account header carries
+// SSO + ARR right-aligned per the new feature.
+function cmWizStep2BuildGroups() {
+  var visible = CM_CONTACTS.filter(cmContactPassesFilters);
+  var grouped = {};
+  var order = [];
+  visible.forEach(function(c){
+    if (!grouped[c.acctKey]) { grouped[c.acctKey] = { acct:c.acct, rows:[], sso:c.sso, arr:c.arr }; order.push(c.acctKey); }
+    grouped[c.acctKey].rows.push(c);
+  });
+  return order.map(function(k){
+    var g = grouped[k];
+    var rowsHtml = g.rows.map(function(c){
+      var checked = CM_WIZ.contacts.indexOf(c.id) !== -1;
+      var sel = checked ? ' sel' : '';
+      var dis = (c.seq === 'departed') ? ' style="opacity:.45;cursor:not-allowed"' : '';
+      return '<label class="cm-wiz-cnt-item' + sel + '"' + dis + '><input type="checkbox" ' + (checked ? 'checked' : '') + (c.seq === 'departed' ? ' disabled' : '') + ' onchange="cmWizToggleContact(\'' + c.id + '\',this.checked)"><span><b>' + cmEscape(c.fn + ' ' + c.ln) + '</b> · ' + cmEscape(c.role) + ' · <span style="color:#6B7280">' + cmEscape(c.email) + '</span></span></label>';
+    }).join('');
+    var ssoLabel = g.sso || 'Unknown';
+    var arrLabel = (g.arr != null) ? ('$' + g.arr + 'K') : '—';
+    return ''
+      + '<div class="cm-wiz-grp">'
+      +   '<div class="cm-wiz-grp-hd"><span>' + cmEscape(g.acct.toUpperCase()) + '</span>'
+      +     '<div class="cm-wiz-grp-hd-r">'
+      +       '<span class="cm-wiz-grp-meta">SSO: <b>' + cmEscape(ssoLabel) + '</b> · ARR: <b>' + cmEscape(arrLabel) + '</b></span>'
+      +       '<span class="cm-wiz-grp-count">' + g.rows.length + ' contact' + (g.rows.length === 1 ? '' : 's') + '</span>'
+      +     '</div>'
+      +   '</div>'
+      +   '<div class="cm-wiz-grp-rows">' + rowsHtml + '</div>'
+      + '</div>';
+  }).join('') || '<div class="cm-detail-empty" style="padding:20px 10px;font-size:12px">No contacts match these filters.</div>';
+}
+function cmWizStep2Counter() {
+  var accts = {};
+  CM_WIZ.contacts.forEach(function(id){ var c = CM_CONTACTS.find(function(x){return x.id===id;}); if (c) accts[c.acctKey] = true; });
+  return CM_WIZ.contacts.length + ' contacts selected across ' + Object.keys(accts).length + ' accounts';
+}
+
+// v4.8.0 — Step 2 search input uses an oninput handler that writes the
+// value to state immediately, then re-renders ONLY the contact list (not the
+// whole step) after a 150ms debounce. The previous implementation re-rendered
+// the entire wizard body on every keystroke, which dropped focus and ate the
+// second+ character. Verified: "wu", "jennifer", and "acme" all filter now.
+var CM_WIZ_SEARCH_DEBOUNCE = null;
+function cmWizSearchInput(v) {
   if (!CM_WIZ) return;
   CM_WIZ.filterSearch = v;
-  CM_WIZ_SEARCH_FOCUS = true;
-  cmWizRender();
-  CM_WIZ_SEARCH_FOCUS = false;
+  if (CM_WIZ_SEARCH_DEBOUNCE) clearTimeout(CM_WIZ_SEARCH_DEBOUNCE);
+  CM_WIZ_SEARCH_DEBOUNCE = setTimeout(function(){
+    var list = document.getElementById('cm-wiz-step2-list');
+    if (list) list.innerHTML = cmWizStep2BuildGroups();
+    var counter = document.getElementById('cm-wiz-step2-counter');
+    if (counter) counter.textContent = cmWizStep2Counter();
+    CM_WIZ_SEARCH_DEBOUNCE = null;
+  }, 150);
 }
+// Filter dropdowns also use the list-only rerender path now.
+function cmWizSetFilter(key, val) {
+  if (!CM_WIZ) return;
+  CM_WIZ[key] = val;
+  var list = document.getElementById('cm-wiz-step2-list');
+  if (list) list.innerHTML = cmWizStep2BuildGroups();
+  var counter = document.getElementById('cm-wiz-step2-counter');
+  if (counter) counter.textContent = cmWizStep2Counter();
+}
+// Toggle handler also updates only the counter + selection state.
 function cmWizToggleContact(id, on) {
   var i = CM_WIZ.contacts.indexOf(id);
   if (on && i === -1) CM_WIZ.contacts.push(id);
   if (!on && i !== -1) CM_WIZ.contacts.splice(i, 1);
-  cmWizRender();
+  // Update the label's sel class without re-rendering the whole list.
+  var labels = document.querySelectorAll('.cm-wiz-cnt-item');
+  labels.forEach(function(l){
+    var input = l.querySelector('input[type=checkbox]');
+    if (input && input.getAttribute('onchange') && input.getAttribute('onchange').indexOf("'" + id + "'") !== -1) {
+      l.classList.toggle('sel', !!on);
+    }
+  });
+  var counter = document.getElementById('cm-wiz-step2-counter');
+  if (counter) counter.textContent = cmWizStep2Counter();
 }
 function cmWizStep3(body) {
   var cards = CM_TEMPLATES.map(function(t){
@@ -10756,12 +11017,11 @@ function cmWizStep3(body) {
     +   '<div class="cm-wiz-toggle-l">Dust personalization<small>Generates a personalized opening line per contact from last Gong call + account context.</small></div>'
     +   '<button class="cm-wiz-sw' + (CM_WIZ.dust ? ' on' : '') + '" type="button" onclick="CM_WIZ.dust=!CM_WIZ.dust;cmWizRender()" aria-label="Toggle Dust personalization" aria-pressed="' + (CM_WIZ.dust ? 'true' : 'false') + '"></button>'
     + '</div>';
+  // v4.8.0 — Editable preview component replaces the read-only preview at
+  // Step 3. Contact switcher + editable subject + editable body + reset link.
   var preview = '';
   if (CM_WIZ.template && CM_WIZ.contacts.length) {
-    var t = CM_TEMPLATES.find(function(x){return x.id===CM_WIZ.template;});
-    var firstId = CM_WIZ.contacts[0];
-    var c = CM_CONTACTS.find(function(x){return x.id===firstId;});
-    if (t && c) preview = cmWizPreviewHTML(t, c);
+    preview = cmRenderEditablePreview('s3');
   }
   // v4.3.0 — AI Draft Generator block below the template grid. Renders even
   // before draft is generated (button only); after generation the editable
@@ -10780,7 +11040,7 @@ function cmWizStep3(body) {
     + recBanner
     + '<div class="cm-wiz-tpls">' + cards + '</div>'
     + dustToggle
-    + (preview ? '<div class="cm-wiz-step-l">Preview · first selected contact</div>' + preview : '<div class="cm-detail-empty" style="font-size:12px;padding:20px 0">Pick a template + at least one contact to see the personalized preview.</div>')
+    + (preview ? '<div class="cm-wiz-step-l">Preview · editable for this campaign</div>' + preview : '<div class="cm-detail-empty" style="font-size:12px;padding:20px 0">Pick a template + at least one contact to see the personalized preview.</div>')
     + aiBlock;
 }
 
@@ -10911,13 +11171,15 @@ function cmUseDraft() {
   toast('AI draft locked in · Advancing to sequence builder ✓');
   cmWizNext();
 }
-function cmWizPreviewHTML(t, c) {
-  var sig = cmGetSignature();
+// v4.8.0 — Template-fill helper kept so existing callers continue to work
+// (used by AI Draft Generator for first-contact prefill). Returns the raw
+// body + filled subject for any template/contact pair.
+function cmFillTemplate(t, c) {
   var company = c.acct;
   var fn = c.fn;
   var renewal = c.renewal || 'TBD';
   var daysOut = (c.renewal && /·\s*(\d+)d/.test(c.renewal)) ? RegExp.$1 : '—';
-  var bodyFilled = t.body
+  var body = t.body
     .replace(/{{first_name}}/g, fn)
     .replace(/{{company}}/g, company)
     .replace(/{{renewal_date}}/g, (renewal.split(' · ')[0] || renewal))
@@ -10930,15 +11192,109 @@ function cmWizPreviewHTML(t, c) {
     .replace(/{{use_case}}/g, '[Account use case]')
     .replace(/{{predecessor_name}}/g, '[Predecessor name]')
     .replace(/{{what_weve_built}}/g, '[Relationship history]')
-    .replace(/{{last_gong_topic}}/g, (c.lastGong.split(' · ')[1] || 'recent topic'))
+    .replace(/{{last_gong_topic}}/g, ((c.lastGong && c.lastGong.split(' · ')[1]) || 'recent topic'))
     .replace(/{{dust_opener}}/g, '');
-  var subjFilled = t.subject.replace(/{{company}}/g, company).replace(/{{quarter}}/g,'Q2 2026').replace(/{{feature_name}}/g,'[Feature]');
-  var dustLine = CM_WIZ.dust ? '<div class="cm-wiz-em-dust">Dust opener: "Following up after your ' + cmEscape(c.lastGong.split(' · ')[1] || 'recent conversation') + ' last week — wanted to make sure we address that before ' + (c.renewal ? cmEscape(c.renewal.split(' · ')[0]) : 'our next touch') + '."</div>' : '';
+  var subj = t.subject.replace(/{{first_name}}/g, fn).replace(/{{company}}/g, company).replace(/{{quarter}}/g,'Q2 2026').replace(/{{feature_name}}/g,'[Feature]').replace(/{{renewal_date}}/g, (renewal.split(' · ')[0] || renewal)).replace(/{{days_out}}/g, daysOut);
+  return { subject: subj, body: body };
+}
+
+// v4.8.0 — Per-instance draft store. CM_WIZ.drafts is keyed by contact id;
+// values are { subject, body } pairs. cmGetEffectiveDraft falls back to the
+// template-filled defaults when no edit exists. On save/send/schedule the
+// drafts are flushed to localStorage 'teamos_campaign_drafts' keyed by
+// campaign id, so the saved drafts travel with the campaign record.
+var CM_DRAFTS_KEY = 'teamos_campaign_drafts';
+function cmGetEffectiveDraft(contactId) {
+  if (!CM_WIZ) return null;
+  if (CM_WIZ.drafts && CM_WIZ.drafts[contactId]) return CM_WIZ.drafts[contactId];
+  var t = CM_TEMPLATES.find(function(x){return x.id===CM_WIZ.template;});
+  var c = CM_CONTACTS.find(function(x){return x.id===contactId;});
+  if (!t || !c) return null;
+  return cmFillTemplate(t, c);
+}
+function cmSetDraftField(contactId, field, value) {
+  if (!CM_WIZ) return;
+  if (!CM_WIZ.drafts) CM_WIZ.drafts = {};
+  if (!CM_WIZ.drafts[contactId]) {
+    var t = CM_TEMPLATES.find(function(x){return x.id===CM_WIZ.template;});
+    var c = CM_CONTACTS.find(function(x){return x.id===contactId;});
+    CM_WIZ.drafts[contactId] = t && c ? cmFillTemplate(t, c) : { subject:'', body:'' };
+  }
+  CM_WIZ.drafts[contactId][field] = value;
+}
+function cmResetDraft(contactId) {
+  if (CM_WIZ && CM_WIZ.drafts) delete CM_WIZ.drafts[contactId];
+  cmWizRender();
+}
+function cmCyclePreview(delta) {
+  if (!CM_WIZ) return;
+  var n = CM_WIZ.contacts.length;
+  if (!n) return;
+  var idx = (CM_WIZ.previewIdx || 0) + delta;
+  if (idx < 0) idx = 0;
+  if (idx >= n) idx = n - 1;
+  CM_WIZ.previewIdx = idx;
+  cmWizRender();
+}
+function cmFlushDraftsToCampaign(campaignId) {
+  if (!CM_WIZ || !CM_WIZ.drafts || !campaignId) return;
+  var store = {};
+  try { store = JSON.parse(localStorage.getItem(CM_DRAFTS_KEY) || '{}'); } catch (e) {}
+  store[campaignId] = CM_WIZ.drafts;
+  try { localStorage.setItem(CM_DRAFTS_KEY, JSON.stringify(store)); } catch (e) {}
+}
+
+// v4.8.0 — Editable preview component shared by Step 3 and Step 5. Renders a
+// "Showing: X of N ← →" switcher above an editable subject (contenteditable
+// span for inline edit) and an editable body textarea. Reset link below
+// restores the per-contact template default. The body is editable for this
+// campaign instance only — never modifies the master template.
+function cmRenderEditablePreview(stepCtx) {
+  if (!CM_WIZ || !CM_WIZ.template || !CM_WIZ.contacts.length) return '';
+  if (CM_WIZ.previewIdx == null) CM_WIZ.previewIdx = 0;
+  if (CM_WIZ.previewIdx >= CM_WIZ.contacts.length) CM_WIZ.previewIdx = 0;
+  var idx = CM_WIZ.previewIdx;
+  var contactId = CM_WIZ.contacts[idx];
+  var c = CM_CONTACTS.find(function(x){return x.id===contactId;});
+  if (!c) return '';
+  var draft = cmGetEffectiveDraft(contactId);
+  var n = CM_WIZ.contacts.length;
+  var prevDisabled = (idx === 0) ? ' disabled' : '';
+  var nextDisabled = (idx === n - 1) ? ' disabled' : '';
+  var sig = cmGetSignature();
+  var stepId = stepCtx || 'wiz';
+  return ''
+    + '<div class="cm-prev-switcher">'
+    +   '<div class="cm-prev-switcher-l">Showing: ' + cmEscape(c.fn + ' ' + c.ln) + ' · ' + cmEscape(c.acct) + '</div>'
+    +   '<div class="cm-prev-switcher-nav">'
+    +     '<button class="cm-prev-switcher-btn" type="button" aria-label="Previous contact"' + prevDisabled + ' onclick="cmCyclePreview(-1)">&larr;</button>'
+    +     '<span class="cm-prev-switcher-count">' + (idx + 1) + ' of ' + n + '</span>'
+    +     '<button class="cm-prev-switcher-btn" type="button" aria-label="Next contact"' + nextDisabled + ' onclick="cmCyclePreview(1)">&rarr;</button>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cm-wiz-email-preview">'
+    +   '<div class="cm-wiz-em-meta">'
+    +     '<b>FROM:</b> Carmen Corio &lt;carmen@1password.com&gt;<br>'
+    +     '<b>TO:</b> ' + cmEscape(c.fn + ' ' + c.ln) + ' &lt;' + cmEscape(c.email) + '&gt;<br>'
+    +     '<b>SUBJECT:</b> <span contenteditable="true" id="cm-prev-subj-' + stepId + '" oninput="cmSetDraftField(\'' + contactId + '\',\'subject\',this.textContent)">' + cmEscape(draft.subject) + '</span>'
+    +   '</div>'
+    +   '<textarea class="cm-prev-edit" id="cm-prev-body-' + stepId + '" aria-label="Editable email body" oninput="cmSetDraftField(\'' + contactId + '\',\'body\',this.value)">' + cmEscape(draft.body + '\n\n— — —\n' + sig) + '</textarea>'
+    +   '<button class="cm-prev-reset" type="button" onclick="cmResetDraft(\'' + contactId + '\')">Reset to template</button>'
+    + '</div>';
+}
+
+// Legacy callers (analytics + tests) — keep the previous signature for the
+// non-editable preview path. Now just wraps cmFillTemplate + the static
+// render markup so the AI Draft Generator's preview surface is unaffected.
+function cmWizPreviewHTML(t, c) {
+  var sig = cmGetSignature();
+  var filled = cmFillTemplate(t, c);
+  var dustLine = CM_WIZ.dust ? '<div class="cm-wiz-em-dust">Dust opener: "Following up after your ' + cmEscape((c.lastGong && c.lastGong.split(' · ')[1]) || 'recent conversation') + ' last week — wanted to make sure we address that before ' + (c.renewal ? cmEscape(c.renewal.split(' · ')[0]) : 'our next touch') + '."</div>' : '';
   return ''
     + '<div class="cm-wiz-email-preview">'
-    +   '<div class="cm-wiz-em-meta"><b>FROM:</b> Carmen Corio &lt;carmen@1password.com&gt;<br><b>TO:</b> ' + cmEscape(c.fn + ' ' + c.ln) + ' &lt;' + cmEscape(c.email) + '&gt;<br><b>SUBJECT:</b> ' + cmEscape(subjFilled) + '</div>'
+    +   '<div class="cm-wiz-em-meta"><b>FROM:</b> Carmen Corio &lt;carmen@1password.com&gt;<br><b>TO:</b> ' + cmEscape(c.fn + ' ' + c.ln) + ' &lt;' + cmEscape(c.email) + '&gt;<br><b>SUBJECT:</b> ' + cmEscape(filled.subject) + '</div>'
     +   dustLine
-    +   '<div class="cm-wiz-em-body">' + cmEscape(bodyFilled) + '\n\n— — —\n' + cmEscape(sig) + '</div>'
+    +   '<div class="cm-wiz-em-body">' + cmEscape(filled.body) + '\n\n— — —\n' + cmEscape(sig) + '</div>'
     + '</div>';
 }
 function cmWizStep4(body) {
@@ -10968,12 +11324,13 @@ function cmWizStep4(body) {
 }
 function cmWizSetTouchCount(n) { CM_WIZ.touchCount = n; cmWizRender(); }
 function cmWizStep5(body) {
-  var t = CM_TEMPLATES.find(function(x){return x.id===CM_WIZ.template;});
-  var firstC = CM_CONTACTS.find(function(x){return x.id===CM_WIZ.contacts[0];});
   var accts = {};
   CM_WIZ.contacts.forEach(function(id){ var c = CM_CONTACTS.find(function(x){return x.id===id;}); if (c) accts[c.acctKey] = true; });
   var totalDays = CM_WIZ.touches.reduce(function(acc, t){ return acc + (t.d === 'now' ? 0 : parseInt(t.d, 10) || 0); }, 0);
-  var preview = (t && firstC) ? cmWizPreviewHTML(t, firstC) : '';
+  // v4.8.0 — Step 5 preview is editable (matches Step 3). Same contact
+  // switcher; edits persist into CM_WIZ.drafts and flow into the campaign
+  // record on save/send/schedule via cmFlushDraftsToCampaign.
+  var preview = (CM_WIZ.template && CM_WIZ.contacts.length) ? cmRenderEditablePreview('s5') : '';
   body.innerHTML = ''
     + '<div class="cm-wiz-step-l">Step 5 of 5</div>'
     + '<div class="cm-wiz-h">Review your campaign</div>'
@@ -10984,7 +11341,7 @@ function cmWizStep5(body) {
     +   '<div class="cm-wiz-summary-r"><span>Sequence</span><b>' + CM_WIZ.touchCount + ' touches over ' + totalDays + ' days</b></div>'
     +   '<div class="cm-wiz-summary-r"><span>Sending from</span><b>Carmen Corio · carmen@1password.com</b></div>'
     + '</div>'
-    + (preview ? '<div class="cm-wiz-step-l">Preview · first contact</div>' + preview : '');
+    + (preview ? '<div class="cm-wiz-step-l">Preview · editable per contact</div>' + preview : '');
 }
 function cmWizRenderFooter(foot) {
   var canNext = true;
@@ -11008,6 +11365,7 @@ function cmWizNext() { if (CM_WIZ.step < 5) { CM_WIZ.step++; cmWizRender(); } }
 function cmWizSaveDraft() {
   var c = cmWizBuild('draft', null);
   CM_CAMPAIGNS.unshift(c);
+  cmFlushDraftsToCampaign(c.id);
   cmCloseWizard();
   cmShowSection('campaigns');
   toast('Draft saved · &ldquo;' + cmEscape(c.name) + '&rdquo; ✓');
@@ -11069,6 +11427,7 @@ function cmSchConfirm() {
   c.scheduledAt = label + ' · ' + cmSchFormatTime(t) + ' ' + tz;
   c.progress = 'Scheduled: ' + c.scheduledAt;
   CM_CAMPAIGNS.unshift(c);
+  cmFlushDraftsToCampaign(c.id);
   cmCloseModal();
   cmCloseWizard();
   cmShowSection('campaigns');
@@ -11079,6 +11438,7 @@ function cmWizSend() { cmOpenSendConfirm({ source:'wizard' }); }
 function cmWizSendActual() {
   var c = cmWizBuild('active', 'Today');
   CM_CAMPAIGNS.unshift(c);
+  cmFlushDraftsToCampaign(c.id);
   cmCloseWizard();
   cmShowSection('campaigns');
   toast('Campaign &ldquo;' + cmEscape(c.name) + '&rdquo; launched · ' + c.contactCount + ' Touch 1 emails sending · Logged in Gainsight ✓');
