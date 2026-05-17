@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.2.7
+**Version:** 3.3.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,35 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.3.0] — 2026-05-17
+
+CSS-only sticky-column upgrade for the CSM Dashboard. The two outer columns of the `.main` grid now float with the page scroll so the high-signal widgets on the sides stay visible while the CSM scrolls the long center column (Mission Briefing + Agent Hub). Other tabs are untouched.
+
+### Added — Sticky left + right columns on the Dashboard
+- `.main > div:first-child` and `.main > div:nth-child(3)` get `position:sticky; top:88px; align-self:start; max-height:calc(100vh - 88px); overflow-y:auto;` — they pin to the top of the viewport (just below the 44 px nav + pulse strip) and scroll internally when their content exceeds the viewport.
+- The center column (`.main > div:nth-child(2)` — Mission Briefing, Agent Hub, Dark Zone) has no sticky behavior and continues to scroll with the page as before.
+- Scoped to `.main` so the Recipe tab's full-width layout and all Coming Soon tab templates are unaffected.
+
+### Offline-banner adjustment
+- When `body.offline` is active the offline banner adds 36 px above the pulse strip. Sticky top shifts to `124px` with `max-height:calc(100vh - 124px)` so the columns stay aligned with the bottom of the banner + strip.
+
+### Scrollbar styling
+- Thin subtle scrollbar inside each sticky column: `scrollbar-width:thin` with a #E5E7EB thumb on a transparent track; 4 px width on WebKit, with a darker hover thumb (`#C6C5C0`) for visibility without becoming dominant.
+
+### What was not touched
+- No widget content, no JS, no center-column behavior. Nav and pulse strip positioning, all other tabs (Recipe for Success, Coming Soon placeholders), and the offline banner itself are all left in place.
+
+### Acceptance verification
+- Scroll to y=1500: left column (Urgent Inbox / Dark Zone / Today's Tasks) pinned at top=88; right column (Calendar / Live Signals) pinned at top=88; center column (Mission Briefing / Agent Hub) scrolled with the page (top=-985).
+- `body.offline` toggled: sticky top shifts from 88 → 124, computed top matches CSS.
+- Viewport at 1280 / 1440 / 1920: side columns engage `max-height` and scroll internally when content exceeds the viewport; no layout shift at scroll=0 (cols at natural top with `position:sticky` already applied).
+
+### Implementation notes
+- Used child-position selectors instead of adding `.col-left` / `.col-right` classes so this stays a true CSS-only change with zero markup edits.
+- Pulse-strip rendered height is 33 px in normal mode (no explicit CSS height), so the 88 px top value also reserves ~11 px breathing room above the sticky content.
 
 ---
 
