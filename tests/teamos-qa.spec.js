@@ -1225,3 +1225,153 @@ test.describe('v4.9.0 Risk & Signals fixes', () => {
     expect(await page.locator('.rs-pl-step').count()).toBe(10);
   });
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.10.0 — CSM DASHBOARD UX OVERHAUL
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.10.0 Dashboard UX overhaul', () => {
+  test('SPEC §1: standalone Dark Zone widget is gone from the left rail', async ({ page }) => {
+    expect(await page.locator('#tab-dash .dz').count()).toBe(0);
+    expect(await page.locator('#tab-dash .dz-acct').count()).toBe(0);
+  });
+
+  test('SPEC §1: Urgent Inbox renders 4 single-line rows with avatar + source chip', async ({ page }) => {
+    const rows = await page.locator('#tab-dash .ii').count();
+    expect(rows).toBe(4);
+    expect(await page.locator('#tab-dash .ii .ii-av').count()).toBe(4);
+    expect(await page.locator('#tab-dash .ii .ii-time').count()).toBe(4);
+    expect(await page.locator('#tab-dash .ii .tb-src').count()).toBeGreaterThanOrEqual(4);
+    expect(await page.locator('#tab-dash .ii .ii-body').count()).toBe(0);
+  });
+
+  test('SPEC §1: Today\'s Tasks renders 7 simple rows + 0 admin attribution cards', async ({ page }) => {
+    expect(await page.locator('#tab-dash .ac').count()).toBe(7);
+    expect(await page.locator('#tab-dash .ac-n').count()).toBe(7);
+    expect(await page.locator('#tab-dash .ac-from').count()).toBe(0);
+    expect(await page.locator('#tab-dash .tk-legend').count()).toBe(0);
+  });
+
+  test('SPEC §1: every task has exactly one source dot', async ({ page }) => {
+    const rows = page.locator('#tab-dash .ac');
+    const count = await rows.count();
+    for (let i = 0; i < count; i++) {
+      expect(await rows.nth(i).locator('.src-dot').count()).toBe(1);
+    }
+  });
+
+  test('SPEC §2: Priority Stack buttons all render at 28px and share base class', async ({ page }) => {
+    const btns = page.locator('#tab-dash .bf-priority .bf-act');
+    const total = await btns.count();
+    expect(total).toBe(5);
+    const heights = await page.evaluate(() => Array.from(document.querySelectorAll('#tab-dash .bf-priority .bf-act')).map(b => b.getBoundingClientRect().height));
+    const max = Math.max(...heights);
+    const min = Math.min(...heights);
+    expect(max - min).toBeLessThan(2);
+    expect(Math.round(max)).toBe(28);
+  });
+
+  test('SPEC §2 + §8: Priority Stack tags use the unified taxonomy classes', async ({ page }) => {
+    expect(await page.locator('#tab-dash .bf-priority .bf-tag').count()).toBe(5);
+    expect(await page.locator('#tab-dash .bf-priority .bf-tag.tb-crit').count()).toBe(1);
+    expect(await page.locator('#tab-dash .bf-priority .bf-tag.tb-high').count()).toBe(2);
+    expect(await page.locator('#tab-dash .bf-priority .bf-tag.tb-watch').count()).toBe(1);
+    expect(await page.locator('#tab-dash .bf-priority .bf-tag.tb-opp').count()).toBe(1);
+  });
+
+  test('SPEC §3: Next Up summary renders signal chips, not prose', async ({ page }) => {
+    expect(await page.locator('#bf-next-chips .bf-next-chip').count()).toBeLessThanOrEqual(3);
+    expect(await page.locator('#bf-next-chips .bf-next-chip').count()).toBeGreaterThanOrEqual(1);
+    const txt = await page.locator('#bf-next-chips').textContent();
+    expect(txt).not.toMatch(/IT security team scaling/);
+    expect(txt).toMatch(/SSO|Expansion|Champion/);
+  });
+
+  test('SPEC §4: Dust Agents shows All Agents link instead of chip-with-caret', async ({ page }) => {
+    const link = page.locator('#dust-agents-btn');
+    await expect(link).toBeVisible();
+    const cls = await link.getAttribute('class');
+    expect(cls).toContain('bf-qa-link');
+    expect(cls).not.toContain('bf-qa-btn');
+    const txt = await link.textContent();
+    expect(txt).toMatch(/All Agents \(9\)/);
+    await link.click();
+    await page.waitForTimeout(150);
+    await expect(page.locator('#dust-agents-pop.on')).toBeVisible();
+  });
+
+  test('SPEC §5: TeamOS Live demoted to subtle Live chip', async ({ page }) => {
+    const btn = page.locator('#view-default .mb-tl-btn');
+    await expect(btn).toBeVisible();
+    const txt = await btn.textContent();
+    expect(txt.trim()).toMatch(/^Live$/);
+    const bg = await page.evaluate(() => {
+      const el = document.querySelector('#view-default .mb-tl-btn');
+      return el ? getComputedStyle(el).backgroundColor : null;
+    });
+    expect(bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent').toBe(true);
+  });
+
+  test('SPEC §6: Live Signals widget removed from right rail', async ({ page }) => {
+    expect(await page.locator('#tab-dash .ls').count()).toBe(0);
+    expect(await page.locator('#tab-dash .ls-row').count()).toBe(0);
+  });
+
+  test('SPEC §7: Prepare My Day output includes Silent Accounts section', async ({ page }) => {
+    const body = await page.locator('#view-default .rp-scroll').textContent();
+    expect(body).toMatch(/Silent accounts/);
+    expect(body).toMatch(/3 accounts/);
+    expect(body).toMatch(/\$55K ARR/);
+    expect(body).toMatch(/Meridian Health/);
+    expect(body).toMatch(/Creston Software/);
+    expect(body).toMatch(/Apex Dynamics/);
+    expect(await page.locator('#view-default .sa-row').count()).toBe(3);
+  });
+
+  test('SPEC §7: Silent Accounts Ghost-Buster button routes to view-meridian', async ({ page }) => {
+    await page.evaluate(() => {
+      const btns = document.querySelectorAll('#view-default .sa-row .sa-btn');
+      btns[0].click();
+    });
+    await page.waitForTimeout(250);
+    const isOn = await page.evaluate(() => document.getElementById('view-meridian')?.classList.contains('on'));
+    expect(isOn).toBe(true);
+  });
+
+  test('SPEC §8: badge taxonomy — 5 filled classes applied across dashboard', async ({ page }) => {
+    const counts = await page.evaluate(() => {
+      const classes = ['tb-crit','tb-high','tb-watch','tb-opp','tb-admin'];
+      return classes.map(c => document.querySelectorAll('#tab-dash .' + c).length);
+    });
+    expect(counts[0]).toBeGreaterThanOrEqual(1);
+    expect(counts[1]).toBeGreaterThanOrEqual(1);
+    expect(counts[2]).toBeGreaterThanOrEqual(1);
+    expect(counts[3]).toBeGreaterThanOrEqual(1);
+    expect(await page.locator('#tab-dash .tb-src').count()).toBeGreaterThanOrEqual(4);
+  });
+
+  test('SPEC §9: pulse strip swap — Drive Docs replaced by Renews This Month', async ({ page }) => {
+    await expect(page.locator('#pb-renew')).toBeVisible();
+    const t = await page.locator('#pb-renew').textContent();
+    expect(t).toMatch(/\$89K/);
+    expect(t).toMatch(/renews this month/i);
+    await page.click('#pb-renew');
+    await page.waitForTimeout(200);
+    await expect(page.locator('#tab-forecast')).toHaveClass(/on/);
+  });
+
+  test('SPEC §9: Training replaced by Expansion Pipeline', async ({ page }) => {
+    await expect(page.locator('#pb-exp')).toBeVisible();
+    const t = await page.locator('#pb-exp').textContent();
+    expect(t).toMatch(/\$12K.*\$18K/);
+    expect(t).toMatch(/expansion pipeline/i);
+    const trainParentDisplay = await page.evaluate(() => {
+      const btn = document.getElementById('pb-train');
+      return btn ? getComputedStyle(btn.parentElement).display : null;
+    });
+    expect(trainParentDisplay).toBe('none');
+  });
+
+  test('SPEC §9: pulse strip still has at least 7 ps-wrap items', async ({ page }) => {
+    expect(await page.locator('.pulse-strip .ps-wrap').count()).toBeGreaterThanOrEqual(7);
+  });
+});

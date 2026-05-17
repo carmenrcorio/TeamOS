@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.9.0
+**Version:** 4.10.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,37 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.10.0] — 2026-05-17
+
+CSM Dashboard structural UX overhaul. **Result: 129/129 chromium tests passing.** No new features — every change tightens or reorganizes existing content based on the senior-PM browser extension review.
+
+### UX
+- **Left rail simplified** to Urgent Inbox (compact) + Today's Tasks (checklist). Source filter row above Tasks removed. Dark Zone floating widget removed.
+- **Admin broadcast task cards removed** from left rail. Replaced with two plain numbered rows in the Tasks list carrying only an indigo source dot.
+- **Dark Zone widget removed** from the left rail; the content reappears inside Mission Briefing as a "Silent Accounts" section in the Prepare My Day output. The Priority Stack `73 DAYS DARK` row tag remains the in-page entry point.
+- **Priority Stack buttons unified** to a single `.bf-act` base style: outlined, 28 px tall, leading icon, hover fills teal. The row TAG carries the urgency color; the button no longer competes.
+- **Next Up account summary** replaced with up to 3 signal chips (`SSO rollout active`, `Expansion signal`, `Champion: David Kim`). Chips: small pill, teal border, no fill.
+- **Dust Agents "Agents" chip** replaced with a right-aligned `→ All Agents (9)` text link in the 6th cell of the 2×3 grid. The dropdown still mounts via `toggleAgentsDropdown` from the same trigger element.
+- **Mission Briefing header** — TeamOS Live demoted from a filled-teal CTA button to a subtle gray-outlined chip labelled `⚡ Live`, right-aligned in the header row. The `Prepare My Day · Auto-loaded` pl-tag stays dominant.
+- **Live Signals widget removed** from the right rail; Calendar now takes the full column height. The same data lives in three better surfaces: status-bar KPIs, Priority Stack, and Mission Briefing's Signals to Know in the PMD output.
+- **Badge taxonomy unified** to 6 types applied globally across the dashboard: `.tb-crit` (red), `.tb-high` (amber), `.tb-watch` (gray), `.tb-opp` (teal), `.tb-admin` (indigo), `.tb-src` (outlined, system-color per source). All 11 px / weight 600 / `2px 8px` / radius 4 / uppercase.
+- **Pulse strip swap** — "Drive Docs" → "Renews This Month $89K" (routes to Forecasting → Timeline). "Training" hidden via `display:none` and replaced with "Expansion Pipeline $12K–$18K" (routes to Forecasting → Pipeline). The two legacy popovers remain in DOM so callers that opened them programmatically don't break; the pulse strip still satisfies the `>= 7 ps-wrap` assertion.
+
+### Engineering notes
+- The compact Urgent Inbox row replaces three-line `.ii-from / .ii-body / .ii-meta` with one flex row carrying `.ii-av` (initial avatar) + `.ii-mid` (name + chips) + `.ii-time`. Italic body preview text is gone.
+- Today's Tasks rows now use a `.ac-n` numbered prefix + single `.src-dot` + ellipsised `.ac-title` + single trailing action button. Old `.ac-from` sender attribution + `.ac-top` meta row + `.ac-badge.ov / td / lo` urgency badges gone.
+- `.bf-act.r / .a / .g / .gy` color variants removed from the Priority Stack CSS. Markup that previously carried `bf-act g` now uses just `bf-act` — the visual urgency now lives on the row tag, not the button.
+- The Drive Docs and Training popovers stay in DOM (`display:none` on their `.ps-wrap` parents) — the existing Agent Hub Quick Links and external triggers that `togglePop('cft' / 'train')` still resolve at the JS level for Phase 2.
+- `psSilentChampionApex()` extracted from inline `onclick` so the Silent Accounts row's "Champion Protocol" button stays readable in the source.
+
+### Test coverage
+- **129 / 129 chromium passing** (was 113 in v4.9.0). 16 new tests under a `v4.10.0 Dashboard UX overhaul` describe — one per SPEC section plus a Silent Accounts routing check, a TeamOS-Live computed-style check, and a regression for the `>= 7 ps-wrap` invariant.
+
+### Spec label
+Shipped as `[4.10.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 
