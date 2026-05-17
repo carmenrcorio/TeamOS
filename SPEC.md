@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.3.0
+**Version:** 4.4.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,84 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.4.0] — 2026-05-17
+
+Comprehensive two-tab build (Campaign Manager + Forecasting) based on a browser-extension QA review. Engineering standard for this release: every button performs a real operation, every form opens a real UI, every filter binds to real data — no toast-only simulations for actions that require UI state changes. Spec labeled as [4.3.0]; shipped as [4.4.0] to preserve monotonic ordering above the existing 4.3.0 entry.
+
+### Part 1 — Campaign Manager fixes (10)
+
+**Fix 1: [View] → right-side drawer.** Replaces the in-place panel from v4.3.0 with a real 480 px slide-in drawer (`#cm-cv-drawer`) backed by a dimmed overlay. Header carries name + type + status tags. Body has 4 stat tiles (Sent / Open / Reply / Unsub), sequence progress bars (Touch 1/2/3 with sent/queued/scheduled counts), and a contacts table with 5 columns (Contact / Account / Touch Reached / Status / Last Activity) — status colour-coded (Not opened grey / Opened amber / Replied teal / Bounced red). Footer: Pause/Resume · Archive · Export List. Verified: 8 rows, 4 tiles, 3 sequence rows for "June Renewal Push".
+
+**Fix 2: [Duplicate] → real card.** `cmCampDuplicate` now deep-copies the campaign, names it "Copy of …", flips status to DRAFT, nulls the rate fields, and unshifts onto `CM_CAMPAIGNS`. The list re-renders immediately. Verified: card count 3 → 4 and the new card carries name "Copy of June Renewal Push" + status "draft".
+
+**Fix 3: [Archive] → confirm strip + slide-out.** Click reveals a red inline confirm strip on the card (`.cm-card-confirm.on`). Cancel hides it. "Yes, archive" animates the card out via a max-height/opacity transition (`.archiving` → `.archived-out`), then sets the campaign's status to `archived` and re-renders. A new "Archived" filter chip surfaces the hidden cards.
+
+**Fix 4: [+ Add Contact] → real form modal.** `cmAddContactPrompt` opens the generic modal with a labeled form (First/Last/Email*/Role/Company/Account picker/SSO/SCIM/Last Active/Seat Util %). Email is the only required field — marked with a red asterisk + `aria-required="true"` + a `role="alert"` error message that surfaces when empty. On save the contact is pushed onto `CM_CONTACTS` and the contacts list re-renders.
+
+**Fix 5: [+ New Template] → real builder modal.** `cmNewTemplate` opens a wider modal with name + category + subject + body textarea, plus a toolbar with B/I/U/Link buttons and a `{{Variable ▾}}` dropdown listing 13 supported tokens. The Newsletter category auto-reveals an "unsubscribe footer required" checkbox. On save the new template is unshifted into `CM_TEMPLATES` and persisted to `localStorage.teamos_templates`.
+
+**Fix 6: Wizard Step 2 audience picker.** Health Score (All / Critical <50 / At-Risk 50–74 / Healthy 75+) and Renewal Window (All / Next 30d / 31–60d / 61–90d) dropdowns now bind to real account data (`CM_ACCT_HEALTH` + `CM_ACCT_DAYS` lookup maps). A search input above the list filters on name + company + email. Contact rows are grouped under uppercase account headers with per-account contact counts. A live counter ("3 contacts selected across 2 accounts") updates on every toggle. Verified: All=13, Critical=4, Next 30d=2, search "wu"=2, 2 group headers.
+
+**Fix 7: Add to Campaign → explicit picker.** `cmAddToCampaign` no longer silently adds to all campaigns. Opens a modal listing active + draft campaigns with radio-style buttons; the CSM must explicitly pick one. Selection appends the contact to that campaign's `contactIds` (deduplicated), increments `contactCount`, closes the modal, and toasts "[Contact] added to [Campaign]".
+
+**Fix 8: Analytics time-period filter.** `cmRenderAnalytics` is now driven by `CM_ANALYTICS_DATA` keyed by period: `quarter` (847 / 58% / 22% / 2), `month` (312 / 61% / 24% / 2), `week` (48 / 62% / 25% / 1), `alltime` (1,204 / 57% / 21% / 2). The per-campaign table also filters by period — "This week" shows only "June Renewal Push" since it's the only campaign with sends in the window. The KPIs and per-campaign trend bars all re-render on dropdown change.
+
+**Fix 9: Schedule modal.** `cmWizSchedule` opens a date/time/timezone picker (default = today + 19 days at 09:00 AM PT) with a live `cm-sched-preview` line updating as the CSM types. Confirming the schedule pushes a campaign with status `scheduled`, the picked label, and a `scheduledAt` field, then closes the wizard and toasts.
+
+**Fix 10: Send confirmation modal.** `cmCampSendStart` (from card) and `cmWizSend` (from wizard Step 5) now both route through `cmOpenSendConfirm`. The modal lists every recipient with a checkbox (`CM_SEND_SELECTED` tracks the live deselected set), shows campaign + accounts summary + sequence schedule, and only sends after explicit confirmation. Deselecting trims the recipient list before the send fires.
+
+### Part 2 — Campaign Manager AI features (2)
+
+**Feature 1: AI Account Segmentation Panel.** Already shipped in v4.3.0; this revision adds segment-specific icons (🚫 / ⚠️ / 📊 / 🔴 / 👤 / 📈 / 📋), hover tooltips per chip ("Dark 60+ days, SSO not deployed" etc.), per-segment health + renewal filter prefills, and lands the wizard at **Step 2** (per spec, was Step 3) so the CSM reviews the audience. The matching template still pre-selects at Step 3, accompanied by a teal "AI recommended this template for [Segment Name] accounts" banner. Verified: 7 chips, Champion Change click → Step 2 with `filterHealth='all'`, `filterRenewal='all'` (kept all for that segment), 2 contacts pre-selected, template `t5`; At-Risk click → `filterHealth='critical'`, `filterRenewal='60'`, 2 contacts, template `t3`.
+
+**Feature 2: AI Draft Generator.** Already shipped in v4.3.0; this revision adds:
+- Multi-line loading state per spec: "Generating personalized draft for [Contact] at [Account]… ↳ Reading last Gong call ([date]) ↳ Checking health score ([N · band]) ↳ Checking renewal date ([date])".
+- Smarter subject for the At-Risk segment: "Your [Company] renewal — let's connect before [renewal date]".
+- "← Back to templates" inline link below the draft to discard and pick another template.
+- "AI recommended this template for…" banner at the top of Step 3 when seeded from a segment chip.
+- Verified: subject "Your NovaVault renewal — let's connect before Jun 1" for at-risk + Nova; body starts "Hi Michael,…" with the renewal opener; back/use buttons both wire correctly.
+
+### Part 3 — Forecasting fixes (7) + 1 feature
+
+**Fix 1: Forecast ($) override column.** New column rendered via `FC_COL_DEF` driving the table render. Each row carries an editable input (text-mode, accepts `$28K`, `28000`, or `28`). On blur/Enter `fcSaveOverride` parses the number, persists `{key: dollars}` to `localStorage.teamos_forecast_overrides`, fires a toast, and surfaces a delta badge ("−$3K" red / "+$2K" teal) showing the variance from contract ARR. Defaults: Nova=$28K, Brightex=$30K seeded on first load. Other rows render a grayed-out placeholder containing the contract ARR.
+
+**Fix 2: Status update timestamp + pending pulse.** `fcSetStatus` now stamps `FC_STATUS_TS[key]` with a `HH:MM AM` time and sets `FC_STATUS_PENDING[key] = true` for 2 seconds. The row's status cell gains a `.fc-pipe-status-meta` line below the pill showing either "● Syncing…" (animated pulse) or "Updated 8:43 AM". Toast: "Forecast updated · [Account] · [Status] · Logged to Gainsight ✓". Gainsight forecast-category crosswalk documented as a code comment for the Phase 2 server-side bridge.
+
+**Fix 3: Ghost-Buster buttons wired.** Pipeline row actions for Meridian + Creston now route through `openGhostBuster(acct)` (new public wrapper around `openGhostBusterFromPopover`). The wrapper falls back to a toast for accounts without a registered popover view. Verified by stubbing `openAgentDrawer` — Champion Protocol on Apex routed correctly through `openAgentDrawer('save','apex')`.
+
+**Fix 4: Champion Protocol passes correct account key.** The pipeline row HTML reads `r.actionAcct` (not a hardcoded value), and `FC_PIPELINE[apex].actionAcct === 'apex'`. Verified via Playwright stub: `fcAction('champion','apex')` → `openAgentDrawer('save','apex')`. Code comment documents the invariant.
+
+**Fix 5: Reply compose modal.** New `fcOpenReply(acct)` opens the generic modal with TO (locked) + editable Subject + editable Body. Pre-written templates for Meridian (Jennifer Ramos) and Brightex (Sarah Chen, SLA-specific). Footer: Cancel · Copy Draft · Mark as Sent. Mark as Sent closes the modal and toasts "Reply logged · [Account] · Gainsight timeline updated ✓".
+
+**Fix 6: Timeline → in-tab account drawer.** Timeline account links no longer call `fcOpenMB` (which navigated to the dashboard). They now call `fcOpenAcctDrawer(key)` which opens a 360 px right-side drawer with Health / ARR / Renewal / Open CTAs / Last Gong / Status, a one-sentence summary, and three quick actions (Prep Me / Risk Analyst / Open in Gainsight). Clicking the same account toggles the drawer closed. The drawer stays open while the CSM scrolls; × closes it.
+
+**Fix 7: Forecast commit rollup.** New section above the Dust summary card in the Dust Forecast tab. Three cells: Commit total (sum of `FC_OVERRIDES` + status-weighted estimates for non-overridden accounts), At Risk (sum of churn + at-risk ARRs), Gap to Quota. "Set quota" link opens an inline form; the quota persists to `localStorage.teamos_forecast_quota` and the gap shows in teal (+X above) or red (−X below). Verified: commit shows $134K with default overrides + status weights.
+
+**Feature: Pipeline column picker.** New `⚙ Columns` button in the pipeline header opens a dropdown with two sections: "Visible columns ✓" (click to hide) and "Hidden columns (click to show)". Default-visible: Account · Health · ARR · Renewal · Days Out · Forecast ($) · Forecast Status · Risk Weight · Action. Default-hidden: Account Tier · Contract Term · Overdue CTAs · Prior Year ARR · Success Plan · CSM Owner. Toggle adds/removes the column from the live table. Demo data per spec: $25K+ tier for top 3 accounts, $10–25K for dark accounts; overdue CTAs Nova=2 (red) / Brightex=1 (amber); success plan Active for Acme + Creston, Outdated for Brightex, None for the three at-risk dark accounts.
+
+### Accessibility + engineering standards landed
+- All new modals + drawers have `role="dialog"` + `aria-modal="true"` + `aria-label` / `aria-labelledby`.
+- Add Contact email field is `aria-required="true"` with a `role="alert"` error message.
+- Tables use `<thead>` + `<th scope="col">`.
+- Status badges use icon + colour (not colour alone — e.g. ⚠ ⏳ ✓ ✗ glyphs accompany colour pills).
+- Wizard Step 2 search input + status select have explicit `aria-label`.
+- Zero `console.log` confirmed across the file.
+
+### Verification (headless, end-to-end across all 19 items)
+Every fix and feature in Parts 1–3 verified via Playwright. Zero JS errors across the full flow. Test highlights:
+- View drawer renders correct counts for cmp1 (8 / 4 / 3); Duplicate creates a 4th card with "Copy of …" name; Archive confirm + cmp1.status='archived'; Add Contact persists "test@example.com"; Template Builder persists a new template; wizard health filter narrows to 4 critical contacts; Add to Campaign picker has 3 items + closes on pick; Analytics period switches deliver the three spec datasets verbatim; Schedule modal renders date/time/tz + preview; Send Confirm shows recipient list + send button; segmentation chip click lands at Step 2 with `filterHealth='critical' filterRenewal='60'` for At-Risk; AI Draft loading shows "Reading last Gong call"; subject is segment-specific ("Your NovaVault renewal — let's connect before Jun 1"); Forecast $ override persists to localStorage; status update stamps a timestamp; Champion Protocol on Apex calls `openAgentDrawer('save','apex')`; reply modal opens with the Meridian template; account drawer opens without leaving the Forecasting tab; commit rollup shows $134K; column picker has 15 items and "Account Tier" toggles into the table.
+
+### What was NOT done this turn
+- Live email delivery — Phase 1 simulation only by spec.
+- Add Contact form does not write to Gainsight (in-memory list only).
+- The Ghost-Buster fallback toast still appears for accounts where `openGhostBusterFromPopover` doesn't have a registered view; the wrapper exists and dispatches, but the underlying GB view registration for Creston wasn't expanded in this pass — Creston routes to the toast.
+- Column picker state is not persisted across sessions (in-memory only); a follow-on can write `visible` flags to localStorage.
+
+### Spec label note
+Shipped as `[4.4.0]` — the user-supplied label was `[4.3.0]` (already used for the v4.3.0 selector/AI sprint shipped earlier today). Monotonic ordering preserved.
 
 ---
 

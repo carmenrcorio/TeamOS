@@ -2067,6 +2067,194 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cm-view-perf-sub{font-size:11px;color:#6B7280;font-weight:600;margin-top:2px}
 .cm-view-foot{display:flex;gap:7px;margin-top:16px;padding-top:14px;border-top:1px solid var(--bd);flex-wrap:wrap}
 
+/* v4.4.0 — Campaign Manager right-side drawer (replaces in-place view) +
+   confirm strips + modal forms + send confirmation + audience search +
+   schedule picker + reply modal + Forecasting column picker / commit
+   rollup / forecast override input / status pending indicator. */
+
+/* Right-side detail drawer — slides in from right, fixed 480px. */
+.cm-drawer-ov{position:fixed;inset:0;background:rgba(17,24,39,.45);z-index:9000;display:none}
+.cm-drawer-ov.on{display:block}
+.cm-drawer{position:fixed;top:0;right:0;width:480px;max-width:100vw;height:100vh;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease}
+.cm-drawer.on{transform:translateX(0)}
+.cm-drawer-hd{padding:16px 22px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.cm-drawer-nm{font-size:17px;font-weight:800;color:#111827;letter-spacing:-.02em;line-height:1.2}
+.cm-drawer-sub{font-size:11px;color:#374151;font-weight:600;margin-top:4px;line-height:1.55}
+.cm-drawer-sub b{color:#111827;font-weight:700}
+.cm-drawer-tags{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.cm-drawer-close{background:none;border:none;font-size:22px;color:var(--tx3);cursor:pointer;line-height:1;padding:2px 6px;font-family:inherit;flex-shrink:0}
+.cm-drawer-close:hover{color:var(--tx)}
+.cm-drawer-body{padding:18px 22px;overflow-y:auto;flex:1;scrollbar-width:thin}
+.cm-drawer-foot{padding:12px 22px;border-top:1px solid var(--bd);background:var(--surf2);display:flex;gap:7px;flex-wrap:wrap;flex-shrink:0}
+
+.cm-drawer-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.cm-stat-tile{background:var(--surf2);border:1px solid var(--bd);border-radius:7px;padding:9px 11px;text-align:center}
+.cm-stat-l{font-size:9px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.06em}
+.cm-stat-v{font-size:18px;font-weight:800;color:#111827;letter-spacing:-.02em;margin-top:2px;line-height:1.1}
+
+.cm-drawer-sec{margin-bottom:16px}
+.cm-drawer-sec-t{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+
+.cm-cnt-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.cm-cnt-tbl th{text-align:left;font-size:9px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.05em;padding:6px 8px;border-bottom:1px solid var(--bd);background:var(--surf2)}
+.cm-cnt-tbl td{padding:8px;border-bottom:1px solid var(--bd);color:#1F2937;font-weight:500;vertical-align:top}
+.cm-cnt-tbl tr:last-child td{border-bottom:none}
+.cm-cnt-tbl td b{color:#111827;font-weight:700}
+.cm-cnt-status{font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.cm-cnt-status.notopen{background:var(--bg);color:#6B7280}
+.cm-cnt-status.opened{background:#FEF3C7;color:#78350F}
+.cm-cnt-status.replied{background:#D1FAE5;color:#065F46}
+.cm-cnt-status.bounced{background:var(--rd-bg);color:var(--rd-dk)}
+
+/* Inline archive confirm strip on a campaign card */
+.cm-card-confirm{display:none;background:var(--rd-bg);border:1px solid var(--rd);border-radius:6px;padding:9px 12px;margin-top:8px;font-size:11px;color:var(--rd-dk);font-weight:600;align-items:center;gap:10px;flex-wrap:wrap}
+.cm-card-confirm.on{display:flex}
+.cm-card-confirm-acts{margin-left:auto;display:flex;gap:6px}
+.cm-card-confirm-btn{font-size:10px;font-weight:800;padding:5px 11px;border-radius:5px;cursor:pointer;font-family:inherit;border:1px solid var(--rd)}
+.cm-card-confirm-btn.yes{background:var(--rd);color:#fff}
+.cm-card-confirm-btn.no{background:var(--surf);color:var(--rd-dk)}
+.cm-camp-card.archiving{transition:max-height .3s ease,opacity .3s ease,margin .3s ease,padding .3s ease;max-height:600px;overflow:hidden}
+.cm-camp-card.archived-out{max-height:0;opacity:0;margin:0;padding-top:0;padding-bottom:0;border:none}
+
+/* Generic centered modal — reused by Add Contact, Template Builder,
+   Schedule, Send Confirm, Reply Compose. */
+.cm-modal-ov{position:fixed;inset:0;background:rgba(17,24,39,.55);z-index:9100;display:none;align-items:flex-start;justify-content:center;padding:60px 20px;overflow-y:auto}
+.cm-modal-ov.on{display:flex}
+.cm-modal{background:var(--surf);border-radius:14px;width:100%;max-width:520px;overflow:hidden;box-shadow:0 28px 80px rgba(0,0,0,.32);display:flex;flex-direction:column;max-height:calc(100vh - 120px)}
+.cm-modal.wide{max-width:640px}
+.cm-modal-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.cm-modal-title{font-size:14px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.cm-modal-close{background:none;border:none;font-size:22px;color:var(--tx3);cursor:pointer;line-height:1;padding:0 4px;font-family:inherit}
+.cm-modal-close:hover{color:var(--tx)}
+.cm-modal-body{padding:18px 22px;overflow-y:auto;flex:1}
+.cm-modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 22px;border-top:1px solid var(--bd);background:var(--surf2);flex-shrink:0;flex-wrap:wrap}
+
+.cm-form-row{display:grid;grid-template-columns:140px 1fr;gap:8px 14px;align-items:center;margin-bottom:10px}
+.cm-form-row.col{grid-template-columns:1fr}
+.cm-form-label{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em}
+.cm-form-label .req{color:var(--rd);font-weight:800}
+.cm-input,.cm-form-input,.cm-form-select,.cm-form-ta{width:100%;border:1px solid var(--bd2);border-radius:6px;padding:9px 11px;font-family:inherit;font-size:13px;color:#1F2937;background:var(--surf);outline:none;transition:border-color .1s;box-sizing:border-box}
+.cm-form-input:focus,.cm-form-select:focus,.cm-form-ta:focus{border-color:var(--tl)}
+.cm-form-ta{min-height:240px;resize:vertical;line-height:1.55;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:12px}
+.cm-form-input.err{border-color:var(--rd)}
+.cm-form-err{font-size:11px;color:var(--rd-dk);font-weight:600;margin-top:4px;display:none}
+.cm-form-err.on{display:block}
+
+/* Template builder toolbar + variable picker */
+.cm-tb-toolbar{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;align-items:center}
+.cm-tb-btn{font-size:11px;font-weight:700;padding:5px 10px;border-radius:5px;background:var(--surf);color:var(--tx);border:1px solid var(--bd2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;letter-spacing:0}
+.cm-tb-btn:hover{background:var(--tl-bg);color:var(--tl-dk);border-color:var(--tl)}
+.cm-tb-vars-wrap{position:relative;display:inline-block}
+.cm-tb-vars-pop{position:absolute;top:calc(100% + 4px);left:0;min-width:200px;background:var(--surf);border:1px solid var(--bd);border-radius:7px;box-shadow:0 12px 28px rgba(0,0,0,.14);z-index:200;display:none;overflow:hidden;max-height:280px;overflow-y:auto}
+.cm-tb-vars-pop.on{display:block}
+.cm-tb-vars-item{display:block;width:100%;text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:#1F2937;background:transparent;border:none;cursor:pointer;font-family:'SF Mono',Menlo,Consolas,monospace;transition:background .1s}
+.cm-tb-vars-item:hover{background:#EDE9FE;color:#5B21B6}
+
+/* Wizard Step 2 — contact search + grouped list */
+.cm-wiz-search{width:100%;border:1px solid var(--bd2);border-radius:7px;padding:8px 12px;font-family:inherit;font-size:12px;color:#1F2937;background:var(--surf);outline:none;margin-bottom:10px;box-sizing:border-box}
+.cm-wiz-search:focus{border-color:var(--tl)}
+.cm-wiz-grp{margin-bottom:10px}
+.cm-wiz-grp-hd{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;padding:7px 12px;background:var(--surf2);border-radius:6px 6px 0 0;border:1px solid var(--bd);border-bottom:none;display:flex;align-items:center;justify-content:space-between}
+.cm-wiz-grp-count{font-size:10px;font-weight:700;color:#6B7280}
+.cm-wiz-grp-rows{border:1px solid var(--bd);border-top:none;border-radius:0 0 6px 6px;background:var(--surf)}
+.cm-wiz-grp-rows .cm-wiz-cnt-item:last-child{border-bottom:none}
+
+/* Add-to-Campaign picker popover */
+.cm-pick-wrap{position:relative;display:inline-block}
+.cm-pick-pop{position:absolute;top:calc(100% + 4px);left:0;min-width:280px;background:var(--surf);border:1px solid var(--bd);border-radius:8px;box-shadow:0 12px 28px rgba(0,0,0,.16);z-index:200;display:none;padding:6px}
+.cm-pick-pop.on{display:block}
+.cm-pick-item{display:flex;width:100%;text-align:left;padding:8px 10px;font-size:12px;font-weight:600;color:#1F2937;background:transparent;border:none;cursor:pointer;font-family:inherit;align-items:center;gap:8px;border-radius:5px}
+.cm-pick-item:hover{background:var(--tl-bg);color:var(--tl-dk)}
+.cm-pick-rad{width:12px;height:12px;border:2px solid var(--bd2);border-radius:50%;display:inline-block;flex-shrink:0}
+.cm-pick-item:hover .cm-pick-rad{border-color:var(--tl)}
+.cm-pick-meta{margin-left:auto;font-size:10px;color:var(--tx3);font-weight:600}
+
+/* Send Confirmation modal — recipient list with toggleable checkboxes */
+.cm-send-list{max-height:260px;overflow-y:auto;border:1px solid var(--bd);border-radius:7px;background:var(--surf2);padding:6px;scrollbar-width:thin;margin-bottom:10px}
+.cm-send-row{display:flex;align-items:center;gap:9px;padding:7px 10px;font-size:12px;color:#1F2937;font-weight:500;border-bottom:1px solid var(--bd)}
+.cm-send-row:last-child{border-bottom:none}
+.cm-send-row input[type=checkbox]{accent-color:var(--tl);width:16px;height:16px}
+.cm-send-row b{color:#111827;font-weight:700}
+.cm-send-row .co{color:#6B7280;font-weight:600}
+.cm-send-summary{background:var(--surf2);border:1px solid var(--bd);border-radius:7px;padding:10px 12px;font-size:12px;color:#1F2937;line-height:1.65;font-weight:500;margin-bottom:10px}
+.cm-send-summary b{color:#111827;font-weight:800}
+
+/* Schedule modal */
+.cm-sched-preview{background:#EDE9FE;border:1px solid #C7D2FE;border-left:3px solid #4F46E5;border-radius:6px;padding:9px 12px;margin:10px 0;font-size:12px;color:#1F2937;font-weight:500;line-height:1.6}
+.cm-sched-preview b{color:#111827;font-weight:700}
+
+/* Reply compose modal (Forecasting) */
+.fc-reply-body{min-height:240px;width:100%;font-family:inherit;font-size:13px;line-height:1.65;color:#1F2937;background:var(--surf);border:1px solid var(--bd2);border-radius:7px;padding:11px 13px;outline:none;resize:vertical;box-sizing:border-box}
+.fc-reply-body:focus{border-color:var(--tl)}
+
+/* Analytics — generic styling already exists; no new rules needed for time filter */
+
+/* AI Draft — back-to-templates inline link */
+.cm-ai-back{font-size:11px;font-weight:700;color:#374151;background:none;border:none;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:2px}
+.cm-ai-back:hover{color:#4F46E5}
+.cm-ai-rec{font-size:11px;font-weight:600;color:#4F46E5;background:#EDE9FE;padding:5px 9px;border-radius:5px;margin-bottom:8px;display:inline-block;letter-spacing:-.005em}
+.cm-ai-loading{font-size:12px;color:#374151;font-weight:600;line-height:1.7;background:var(--surf2);border-left:3px solid #4F46E5;padding:11px 14px;border-radius:6px;margin-top:10px;white-space:pre-line}
+.cm-ai-loading b{color:#111827;font-weight:700}
+
+/* ─── Forecasting v4.4.0 additions ─────────────────────────────────────── */
+/* Forecast $ override input */
+.fc-fc-input{width:74px;font-family:inherit;font-size:12px;font-weight:700;padding:5px 8px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:#111827;outline:none;text-align:right;letter-spacing:-.01em}
+.fc-fc-input:focus{border-color:var(--tl);background:#fff}
+.fc-fc-input.empty{color:#9CA3AF;font-weight:600}
+.fc-fc-delta{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;margin-left:6px;display:inline-block;letter-spacing:.04em}
+.fc-fc-delta.r{background:var(--rd-bg);color:var(--rd-dk)}
+.fc-fc-delta.g{background:#D1FAE5;color:#065F46}
+
+/* Status update timestamp + pending indicator */
+.fc-pipe-status-meta{font-size:9px;font-weight:600;color:#6B7280;margin-top:3px;display:flex;align-items:center;gap:4px}
+.fc-pipe-status-pending{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--am);animation:fc-pending 1.2s ease-in-out infinite}
+@keyframes fc-pending{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Column picker dropdown */
+.fc-cols-wrap{position:relative;display:inline-block}
+.fc-cols-pop{position:absolute;top:calc(100% + 4px);right:0;min-width:240px;background:var(--surf);border:1px solid var(--bd);border-radius:7px;box-shadow:0 12px 28px rgba(0,0,0,.14);z-index:200;display:none;overflow:hidden}
+.fc-cols-pop.on{display:block}
+.fc-cols-sec-t{font-size:9px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;padding:9px 12px 6px;background:var(--surf2)}
+.fc-cols-item{display:flex;width:100%;text-align:left;padding:7px 12px;font-size:11px;font-weight:600;color:#1F2937;background:transparent;border:none;cursor:pointer;font-family:inherit;align-items:center;gap:7px;letter-spacing:0}
+.fc-cols-item:hover{background:var(--tl-bg);color:var(--tl-dk)}
+.fc-cols-item-ic{font-size:11px;color:var(--tl)}
+.fc-cols-item-ic.off{color:var(--tx3)}
+
+/* Forecast commit rollup */
+.fc-rollup{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px 18px;margin-bottom:14px}
+.fc-rollup-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.fc-rollup-l{font-size:11px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em}
+.fc-rollup-ts{font-size:11px;font-weight:600;color:#6B7280}
+.fc-rollup-cells{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:700px){.fc-rollup-cells{grid-template-columns:1fr 1fr}}
+.fc-rollup-cell{padding:8px 0}
+.fc-rollup-cell-l{font-size:10px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.06em}
+.fc-rollup-cell-v{font-size:22px;font-weight:800;color:#111827;letter-spacing:-.02em;margin-top:2px;line-height:1.1}
+.fc-rollup-cell-v.r{color:#DC2626}
+.fc-rollup-cell-v.g{color:#059669}
+.fc-rollup-cell-v.mute{color:#9CA3AF}
+.fc-rollup-quota{font-size:11px;font-weight:600;color:#4F46E5;cursor:pointer;background:none;border:none;font-family:inherit;text-decoration:underline;text-underline-offset:2px;padding:0;margin-top:5px;display:inline-block}
+.fc-rollup-quota:hover{color:#3730A3}
+.fc-rollup-quota-form{display:none;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.fc-rollup-quota-form.on{display:flex}
+.fc-rollup-quota-form input{width:100px;font-family:inherit;font-size:12px;font-weight:700;padding:5px 8px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:#111827;outline:none}
+
+/* Forecasting account drawer (in-tab) */
+.fc-acct-drawer-ov{position:fixed;inset:0;background:rgba(17,24,39,.45);z-index:9000;display:none}
+.fc-acct-drawer-ov.on{display:block}
+.fc-acct-drawer{position:fixed;top:0;right:0;width:360px;max-width:100vw;height:100vh;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease}
+.fc-acct-drawer.on{transform:translateX(0)}
+.fc-acct-drawer-hd{padding:16px 22px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0}
+.fc-acct-drawer-nm{font-size:16px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.fc-acct-drawer-body{padding:18px 22px;overflow-y:auto;flex:1}
+.fc-acct-kv-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.fc-acct-kv-cell{display:flex;flex-direction:column;gap:3px}
+.fc-acct-kv-l{font-size:9px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em}
+.fc-acct-kv-v{font-size:14px;font-weight:800;color:#111827;letter-spacing:-.01em;line-height:1.2}
+.fc-acct-kv-sub{font-size:10px;color:#6B7280;font-weight:600}
+.fc-acct-drawer-sum{font-size:12px;color:#1F2937;font-weight:500;line-height:1.6;background:var(--surf2);border-left:3px solid var(--tl);padding:10px 12px;border-radius:6px;margin-bottom:14px}
+.fc-acct-drawer-acts{display:flex;flex-direction:column;gap:7px}
+
 /* ═════════════════════════════════════════════════════════════════════════
    v4.1.0 — Risk & Signals (replaces Coming Soon for #tab-risk)
    ═════════════════════════════════════════════════════════════════════════ */
@@ -3735,7 +3923,27 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       </div>
     </div>
   </div>
+
+  <!-- v4.4.0 — Campaign detail right-side drawer -->
+  <div class="cm-drawer-ov" id="cm-cv-ov" onclick="cmCampViewClose(event)" aria-hidden="true"></div>
+  <aside class="cm-drawer" id="cm-cv-drawer" role="dialog" aria-modal="true" aria-label="Campaign detail" aria-hidden="true"></aside>
+
+  <!-- v4.4.0 — Generic modal overlay (Add Contact, Template Builder, Schedule,
+       Send Confirm, Reply, Quota). Render target is #cm-modal-content. -->
+  <div class="cm-modal-ov" id="cm-modal-ov" onclick="cmCloseModal(event)" aria-hidden="true">
+    <div class="cm-modal" id="cm-modal" role="dialog" aria-modal="true" aria-labelledby="cm-modal-title" onclick="event.stopPropagation()">
+      <div class="cm-modal-hd"><div class="cm-modal-title" id="cm-modal-title">—</div><button class="cm-modal-close" type="button" onclick="cmCloseModal()" aria-label="Close">&times;</button></div>
+      <div class="cm-modal-body" id="cm-modal-body"></div>
+      <div class="cm-modal-foot" id="cm-modal-foot"></div>
+    </div>
+  </div>
 </div>
+
+<!-- v4.4.0 — Forecasting in-tab account drawer + reply compose modal. The
+     Forecasting tab uses the same generic modal (#cm-modal-ov) for reply
+     compose so we only need a separate drawer here. -->
+<div class="fc-acct-drawer-ov" id="fc-acct-drawer-ov" onclick="fcCloseAcctDrawer(event)" aria-hidden="true"></div>
+<aside class="fc-acct-drawer" id="fc-acct-drawer" role="dialog" aria-modal="true" aria-label="Account snapshot" aria-hidden="true"></aside>
 
 <div class="tc" id="tab-analytics">
   <div class="cs-pg">
@@ -9464,24 +9672,27 @@ function cmShowSection(name) {
 // a chip opens the campaign wizard pre-filled with the segment's accounts,
 // matching template, and matching campaign type — landing on Step 3 so the
 // CSM can review the generated draft and send.
+// v4.4.0 — segments carry icons + tooltips + health/renewal filter prefills.
+// Clicking lands the wizard at Step 2 with contacts pre-selected and the
+// matching Health Score + Renewal Window filters pre-applied.
 var CM_SEGMENTS = [
-  { key:'unengaged-nossso', lbl:'Unengaged · No SSO',     count:3, color:'r', accountKeys:['c7','c8','c9'],     campType:'reeng',   tplId:'t1', opener:'unengaged-nossso' },
-  { key:'unengaged-sso',    lbl:'Unengaged · SSO Active', count:0, color:'a', accountKeys:[],                    campType:'reeng',   tplId:'t1', opener:'unengaged-sso' },
-  { key:'unengaged-scim',   lbl:'Unengaged · SSO + SCIM', count:0, color:'a', accountKeys:[],                    campType:'reeng',   tplId:'t1', opener:'unengaged-scim' },
-  { key:'at-risk',          lbl:'At-Risk Renewal',        count:2, color:'r', accountKeys:['c5','c3'],           campType:'renewal', tplId:'t3', opener:'at-risk' },
-  { key:'champion-change',  lbl:'Champion Change',        count:2, color:'a', accountKeys:['c5','c9'],           campType:'custom',  tplId:'t5', opener:'champion-change' },
-  { key:'expansion',        lbl:'Expansion Ready',        count:1, color:'g', accountKeys:['c1'],                campType:'prod',    tplId:'t4', opener:'expansion' },
-  { key:'ebr-overdue',      lbl:'EBR Overdue',            count:4, color:'i', accountKeys:['c7','c8','c11','c12'],campType:'ebr',     tplId:'t2', opener:'ebr-overdue' }
+  { key:'unengaged-nossso', ic:'🚫', lbl:'Unengaged · No SSO',     count:3, color:'r',  accountKeys:['c7','c8','c9'],       campType:'reeng',   tplId:'t1', opener:'unengaged-nossso', tip:'Dark 60+ days, SSO not deployed',           filterHealth:'all',     filterRenewal:'all', segLabel:'No SSO accounts' },
+  { key:'unengaged-sso',    ic:'⚠️', lbl:'Unengaged · SSO Active', count:0, color:'gy', accountKeys:[],                     campType:'reeng',   tplId:'t1', opener:'unengaged-sso',    tip:'Dark 60+ days, SSO deployed, SCIM not active', filterHealth:'all', filterRenewal:'all', segLabel:'SSO Active accounts' },
+  { key:'unengaged-scim',   ic:'📊', lbl:'Unengaged · SSO + SCIM', count:0, color:'gy', accountKeys:[],                     campType:'reeng',   tplId:'t1', opener:'unengaged-scim',   tip:'Dark 60+ days, full adoption, no recent contact', filterHealth:'all', filterRenewal:'all', segLabel:'SSO + SCIM accounts' },
+  { key:'at-risk',          ic:'🔴', lbl:'At-Risk Renewal',        count:2, color:'r',  accountKeys:['c5','c3'],            campType:'renewal', tplId:'t3', opener:'at-risk',          tip:'Renewal <60 days, health <60',              filterHealth:'critical',filterRenewal:'60',  segLabel:'At-Risk Renewal accounts' },
+  { key:'champion-change',  ic:'👤', lbl:'Champion Change',        count:2, color:'a',  accountKeys:['c5','c9'],            campType:'custom',  tplId:'t5', opener:'champion-change',  tip:'New champion, no prior contact',            filterHealth:'all',     filterRenewal:'all', segLabel:'Champion Change accounts' },
+  { key:'expansion',        ic:'📈', lbl:'Expansion Ready',        count:1, color:'g',  accountKeys:['c1'],                 campType:'prod',    tplId:'t4', opener:'expansion',        tip:'Health >75, expansion signal, renewal >60d',filterHealth:'healthy', filterRenewal:'90',  segLabel:'Expansion Ready accounts' },
+  { key:'ebr-overdue',      ic:'📋', lbl:'EBR Overdue',            count:4, color:'i',  accountKeys:['c7','c8','c11','c12'],campType:'ebr',     tplId:'t2', opener:'ebr-overdue',      tip:'No EBR scheduled, $25K+ ARR',               filterHealth:'all',     filterRenewal:'all', segLabel:'EBR Overdue accounts' }
 ];
 function cmRenderSegments() {
   return ''
     + '<div class="cm-seg-panel" id="cm-seg-panel">'
-    +   '<div class="cm-seg-hd">🧠 AI Account Segmentation <span class="cm-seg-hd-sub">Click a segment to auto-create a campaign</span></div>'
+    +   '<div class="cm-seg-hd">🧠 AI Account Segments <span class="cm-seg-hd-sub">Your book, organized by engagement + product adoption</span></div>'
     +   '<div class="cm-seg-row">'
     +     CM_SEGMENTS.map(function(s){
             var dis = s.count === 0 ? ' disabled' : '';
             var onclick = s.count === 0 ? '' : ' onclick="cmSegmentClick(\'' + s.key + '\')"';
-            return '<button class="cm-seg-chip ' + s.color + dis + '" type="button"' + onclick + ' aria-label="' + cmEscape(s.lbl + ' — ' + s.count + ' accounts') + '">' + cmEscape(s.lbl) + '<span class="cm-seg-count">' + s.count + '</span></button>';
+            return '<button class="cm-seg-chip ' + s.color + dis + '" type="button"' + onclick + ' title="' + cmEscape(s.tip) + '" aria-label="' + cmEscape(s.lbl + ' — ' + s.count + ' accounts · ' + s.tip) + '"><span>' + s.ic + '</span> ' + cmEscape(s.lbl) + ' <span class="cm-seg-count">' + s.count + '</span></button>';
           }).join('')
     +   '</div>'
     + '</div>';
@@ -9489,16 +9700,20 @@ function cmRenderSegments() {
 function cmSegmentClick(key) {
   var seg = CM_SEGMENTS.find(function(x){return x.key===key;});
   if (!seg || seg.count === 0) return;
-  // Open the wizard with segment-derived state, then jump to Step 3.
+  // Open wizard at Step 2 with contacts pre-checked and the matching Health
+  // Score + Renewal Window filters pre-set. The template still pre-selects at
+  // Step 3 (template grid card shown as selected with the "AI recommended"
+  // banner). Lands at Step 2 per spec so the CSM can confirm the audience.
   cmOpenWizard();
   CM_WIZ.name = seg.lbl + ' — ' + new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
   CM_WIZ.type = seg.campType;
   CM_WIZ.contacts = seg.accountKeys.slice();
   CM_WIZ.template = seg.tplId;
   CM_WIZ.segmentKey = key;
-  CM_WIZ.step = 3;
+  CM_WIZ.filterHealth = seg.filterHealth || 'all';
+  CM_WIZ.filterRenewal = seg.filterRenewal || 'all';
+  CM_WIZ.step = 2;
   cmWizRender();
-  // Scroll campaign section into view in case the panel was below the fold.
   var panel = document.getElementById('cm-campaigns');
   if (panel && typeof panel.scrollIntoView === 'function') panel.scrollIntoView({ behavior:'smooth', block:'start' });
 }
@@ -9506,17 +9721,18 @@ function cmSegmentClick(key) {
 function cmRenderCampaigns() {
   var sec = document.getElementById('cm-campaigns');
   if (!sec) return;
-  // If a campaign is being viewed, render the detail panel instead of the list.
-  if (CM_VIEW_ID) {
-    sec.innerHTML = cmRenderCampaignView(CM_VIEW_ID);
-    return;
-  }
-  var filters = [['all','All'],['active','Active'],['draft','Draft'],['completed','Completed'],['scheduled','Scheduled']];
+  // v4.4.0 — "Archived" added as an explicit filter chip; view panel is now
+  // a right-side drawer (cm-cv-drawer), no longer an in-place replacement.
+  var filters = [['all','All'],['active','Active'],['draft','Draft'],['completed','Completed'],['scheduled','Scheduled'],['archived','Archived']];
   var chips = filters.map(function(f){
     var on = (CM_CAMP_FILTER === f[0]) ? ' on' : '';
     return '<button class="cm-chip' + on + '" type="button" onclick="cmSetCampFilter(\'' + f[0] + '\')">' + f[1] + '</button>';
   }).join('');
-  var rows = CM_CAMPAIGNS.filter(function(c){ return CM_CAMP_FILTER === 'all' || c.status === CM_CAMP_FILTER; });
+  var rows = CM_CAMPAIGNS.filter(function(c){
+    if (CM_CAMP_FILTER === 'all')      return c.status !== 'archived';
+    if (CM_CAMP_FILTER === 'archived') return c.status === 'archived';
+    return c.status === CM_CAMP_FILTER;
+  });
   var listHtml = rows.length ? rows.map(cmCampaignCardHTML).join('') : '<div class="cm-detail-empty">No campaigns match this filter.</div>';
   sec.innerHTML = ''
     + cmRenderSegments()
@@ -9527,7 +9743,6 @@ function cmRenderCampaigns() {
     + '<div class="cm-filters">' + chips + '</div>'
     + '<div class="cm-list" id="cm-camp-list-anchor" style="max-height:none">' + listHtml + '</div>';
 }
-var CM_VIEW_ID = null;
 function cmSetCampFilter(f) { CM_CAMP_FILTER = f; cmRenderCampaigns(); }
 function cmCampaignCardHTML(c) {
   var ratesHtml = (c.openRate != null) ? '<div class="cm-camp-rates"><span>Open <b>' + c.openRate + '%</b></span><span>Reply <b>' + c.replyRate + '%</b></span></div>' : '';
@@ -9549,99 +9764,302 @@ function cmCampaignCardHTML(c) {
     +   '<div class="cm-camp-acts">'
     +     '<button class="cm-btn" type="button" onclick="cmCampView(\'' + c.id + '\')"><i class="ti ti-eye"></i> View</button>'
     +     '<button class="cm-btn" type="button" onclick="cmCampDuplicate(\'' + c.id + '\')"><i class="ti ti-copy"></i> Duplicate</button>'
-    +     '<button class="cm-btn dim" type="button" onclick="cmCampArchive(\'' + c.id + '\')"><i class="ti ti-archive"></i> Archive</button>'
-    +     (c.status === 'draft' ? '<button class="cm-btn prim" type="button" onclick="cmCampSend(\'' + c.id + '\')"><i class="ti ti-send"></i> Send Campaign</button>' : '')
+    +     (c.status !== 'archived' ? '<button class="cm-btn dim" type="button" onclick="cmCampArchive(\'' + c.id + '\')"><i class="ti ti-archive"></i> Archive</button>' : '')
+    +     (c.status === 'draft' ? '<button class="cm-btn prim" type="button" onclick="cmCampSendStart(\'' + c.id + '\')"><i class="ti ti-send"></i> Send Campaign</button>' : '')
     +   '</div>'
+    +   '<div class="cm-card-confirm"><span>Archive this campaign? It will be hidden from the active list.</span><span class="cm-card-confirm-acts"><button class="cm-card-confirm-btn no" type="button" onclick="cmCampArchiveCancel(\'' + c.id + '\')">Cancel</button><button class="cm-card-confirm-btn yes" type="button" onclick="cmCampArchiveConfirm(\'' + c.id + '\')">Yes, archive</button></span></div>'
     + '</div>';
 }
-function cmCampView(id) { CM_VIEW_ID = id; cmRenderCampaigns(); }
-function cmCampViewClose() { CM_VIEW_ID = null; cmRenderCampaigns(); }
+// v4.4.0 — Campaign View opens a right-side drawer (cm-cv-drawer) instead of
+// replacing the list. The list stays mounted underneath so closing the drawer
+// is instant. Per-contact sequence status uses a fixed STATUS_STATES list
+// covering Opened / No reply / Replied / Bounced + age — colour-coded.
+function cmCampView(id) {
+  var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+  if (!c) return;
+  CM_VIEW_ID = id;
+  var drawer = document.getElementById('cm-cv-drawer');
+  var ov = document.getElementById('cm-cv-ov');
+  if (!drawer || !ov) return;
+  drawer.innerHTML = cmRenderCampaignView(id);
+  ov.classList.add('on');
+  drawer.classList.add('on');
+  drawer.setAttribute('aria-hidden', 'false');
+  // Focus the close button so Escape + keyboard nav work.
+  setTimeout(function(){ var btn = drawer.querySelector('.cm-drawer-close'); if (btn) try { btn.focus(); } catch (_) {} }, 50);
+}
+function cmCampViewClose(e) {
+  if (e && e.target && e.target.id !== 'cm-cv-ov' && e.type === 'click') return;
+  CM_VIEW_ID = null;
+  var drawer = document.getElementById('cm-cv-drawer');
+  var ov = document.getElementById('cm-cv-ov');
+  if (drawer) { drawer.classList.remove('on'); drawer.setAttribute('aria-hidden','true'); }
+  if (ov) ov.classList.remove('on');
+}
 function cmCampPause(id) {
   var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
   if (!c) return;
   c.status = (c.status === 'active') ? 'draft' : 'active';
   cmRenderCampaigns();
+  // Re-render the drawer if it's open.
+  if (CM_VIEW_ID === id) {
+    var drawer = document.getElementById('cm-cv-drawer');
+    if (drawer) drawer.innerHTML = cmRenderCampaignView(id);
+  }
   toast('Campaign &ldquo;' + cmEscape(c.name) + '&rdquo; ' + (c.status === 'active' ? 'resumed' : 'paused') + ' ✓');
 }
 
-// v4.3.0 — Campaign detail panel. For demo coherence, the contacts list is
-// derived from the campaign's contactIds when present, else falls back to a
-// representative subset of CM_CONTACTS. Sequence + perf numbers reflect the
-// campaign's existing fields with progressive states per touch.
+// Fixed per-contact sequence statuses for demo coherence — each campaign
+// publishes 8/3/12 contacts so we cycle through these to colour-code rows.
+var CM_CONTACT_STATUS_STATES = [
+  { txt:'Touch 1 · Opened 4h ago · No reply',   cls:'opened'  },
+  { txt:'Touch 1 · Not opened · 4h ago',         cls:'notopen' },
+  { txt:'Touch 1 · Not opened · 4h ago',         cls:'notopen' },
+  { txt:'Touch 1 · Not opened · 15h ago',        cls:'notopen' },
+  { txt:'Touch 1 · Not opened · 15h ago',        cls:'notopen' },
+  { txt:'Touch 2 · Replied ✓ · May 15',          cls:'replied' },
+  { txt:'Touch 1 · Opened · May 15',             cls:'opened'  },
+  { txt:'Touch 2 · Replied ✓ · May 14',          cls:'replied' }
+];
 function cmRenderCampaignView(id) {
   var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
-  if (!c) return '<div class="cm-detail-empty">Campaign not found.</div>';
-  // Build a representative contact list.
-  var contactPool = (c.contactIds && c.contactIds.length) ? c.contactIds.map(function(cid){ return CM_CONTACTS.find(function(x){return x.id===cid;}); }).filter(Boolean) : CM_CONTACTS.slice(0, Math.min(c.contactCount, CM_CONTACTS.length));
-  // Pad to contactCount with the first few CM_CONTACTS that aren't already in the list.
+  if (!c) return '<div class="cm-drawer-body">Campaign not found.</div>';
+
+  // Build a representative contact list. Padding from CM_CONTACTS when the
+  // campaign's contactIds[] is short.
+  var contactPool = (c.contactIds && c.contactIds.length)
+    ? c.contactIds.map(function(cid){ return CM_CONTACTS.find(function(x){return x.id===cid;}); }).filter(Boolean)
+    : CM_CONTACTS.slice(0, Math.min(c.contactCount, CM_CONTACTS.length));
   if (contactPool.length < c.contactCount) {
     var have = {}; contactPool.forEach(function(x){ have[x.id] = true; });
     for (var i = 0; i < CM_CONTACTS.length && contactPool.length < c.contactCount; i++) {
       if (!have[CM_CONTACTS[i].id] && CM_CONTACTS[i].seq !== 'departed') contactPool.push(CM_CONTACTS[i]);
     }
   }
-  var STATUS_STATES = ['Touch 1 sent · No reply · 4h ago','Touch 1 sent · Opened · 2d ago','Touch 1 replied · Booked call','Touch 1 sent · No reply · 1d ago','Touch 2 sent · Opened · 8h ago','Touch 1 queued · Sending today','Touch 1 sent · Bounced','Touch 2 queued · Day 5','Touch 1 sent · No reply · 3d ago','Touch 1 replied · Forwarded to AE','Touch 1 sent · Opened · 6h ago','Touch 2 sent · No reply · 12h ago'];
   var contactsHtml = contactPool.map(function(cnt, i){
-    var statusTxt = STATUS_STATES[i % STATUS_STATES.length];
-    var cls = /replied/i.test(statusTxt) ? '' : (/bounced/i.test(statusTxt) ? 'norep' : (/no reply/i.test(statusTxt) ? 'warn' : ''));
-    return '<div class="cm-view-cnt-row">'
-      + '<div class="cm-avatar">' + cmEscape((cnt.fn[0] || '') + (cnt.ln[0] || '')) + '</div>'
-      + '<div><span class="cm-view-cnt-nm">' + cmEscape(cnt.fn + ' ' + cnt.ln) + '</span> · <span class="cm-view-cnt-co">' + cmEscape(cnt.acct) + '</span></div>'
-      + '<span class="cm-view-cnt-status ' + cls + '">' + cmEscape(statusTxt) + '</span>'
-    + '</div>';
-  }).join('') || '<div class="cm-detail-empty" style="padding:14px">No contacts in this campaign yet.</div>';
+    var s = CM_CONTACT_STATUS_STATES[i % CM_CONTACT_STATUS_STATES.length];
+    var parts = s.txt.split(' · ');
+    var touchReached = parts[0] || '';
+    var status = parts[1] || '';
+    var activity = parts[2] || '';
+    return '<tr>'
+      + '<td><b>' + cmEscape(cnt.fn + ' ' + cnt.ln) + '</b></td>'
+      + '<td>' + cmEscape(cnt.acct) + '</td>'
+      + '<td>' + cmEscape(touchReached) + '</td>'
+      + '<td><span class="cm-cnt-status ' + s.cls + '">' + cmEscape(status) + '</span></td>'
+      + '<td>' + cmEscape(activity) + '</td>'
+    + '</tr>';
+  }).join('') || '<tr><td colspan="5" style="text-align:center;padding:20px;font-style:italic;color:#6B7280">No contacts yet</td></tr>';
 
-  // Sequence progress: derive sent/queued counts from the campaign's progress string
-  // when possible, else default to a sensible mix.
+  // Sequence progress.
   var t1Sent = Math.max(0, Math.min(c.contactCount, Math.round(c.contactCount * 0.75)));
   var t2Queued = c.contactCount - t1Sent;
-  var t3Scheduled = c.touchCount >= 3 ? c.contactCount : 0;
-  if (c.status === 'draft') { t1Sent = 0; t2Queued = 0; t3Scheduled = 0; }
-  if (c.id === 'cmp1') { t1Sent = 6; t2Queued = 2; t3Scheduled = c.contactCount; }
-  if (c.id === 'cmp2') { t1Sent = c.contactCount; t2Queued = 0; t3Scheduled = c.touchCount >= 2 ? c.contactCount : 0; }
+  if (c.status === 'draft') { t1Sent = 0; t2Queued = 0; }
+  if (c.id === 'cmp1') { t1Sent = 6; t2Queued = 2; }
+  if (c.id === 'cmp2') { t1Sent = c.contactCount; t2Queued = 0; }
   var seqRowsHtml = ''
     + '<div class="cm-view-seq-row"><span class="cm-view-seq-lbl">Touch 1</span><span class="cm-view-seq-bar"><span class="cm-view-seq-fill" style="width:' + (c.contactCount ? Math.round((t1Sent / c.contactCount) * 100) : 0) + '%"></span></span><span class="cm-view-seq-meta">' + t1Sent + '/' + c.contactCount + ' sent</span></div>';
   if (c.touchCount >= 2) seqRowsHtml += '<div class="cm-view-seq-row"><span class="cm-view-seq-lbl">Touch 2</span><span class="cm-view-seq-bar"><span class="cm-view-seq-fill queued" style="width:' + (c.contactCount ? Math.round((t2Queued / c.contactCount) * 100) : 0) + '%"></span></span><span class="cm-view-seq-meta">' + t2Queued + '/' + c.contactCount + ' queued</span></div>';
-  if (c.touchCount >= 3) seqRowsHtml += '<div class="cm-view-seq-row"><span class="cm-view-seq-lbl">Touch 3</span><span class="cm-view-seq-bar"></span><span class="cm-view-seq-meta">scheduled Day 10</span></div>';
+  if (c.touchCount >= 3) seqRowsHtml += '<div class="cm-view-seq-row"><span class="cm-view-seq-lbl">Touch 3</span><span class="cm-view-seq-bar"></span><span class="cm-view-seq-meta">Scheduled Day 10</span></div>';
 
+  var sentTotal    = (c.openRate != null && c.contactCount) ? c.contactCount * c.touchCount : 0;
+  // Show sent = 48 for cmp1 per the spec; default to touchCount * contactCount.
+  if (c.id === 'cmp1') sentTotal = 48;
+  if (c.id === 'cmp2') sentTotal = 3;
+  if (c.status === 'draft') sentTotal = 0;
   var openedCount  = (c.openRate  != null && c.contactCount) ? Math.round((c.openRate  / 100) * c.contactCount) : 0;
   var repliedCount = (c.replyRate != null && c.contactCount) ? Math.round((c.replyRate / 100) * c.contactCount) : 0;
-  var perfHtml = (c.openRate != null) ? ''
-    + '<div class="cm-view-perf">'
-    +   '<div class="cm-view-perf-cell"><div class="cm-view-perf-l">Open rate</div><div class="cm-view-perf-v">' + c.openRate + '%</div><div class="cm-view-perf-sub">' + openedCount + '/' + c.contactCount + ' opened</div></div>'
-    +   '<div class="cm-view-perf-cell"><div class="cm-view-perf-l">Reply rate</div><div class="cm-view-perf-v">' + c.replyRate + '%</div><div class="cm-view-perf-sub">' + repliedCount + '/' + c.contactCount + ' replied</div></div>'
-    + '</div>' : '<div style="font-size:12px;color:#6B7280;font-weight:600;font-style:italic">No performance data yet — campaign hasn’t sent.</div>';
 
-  var sentLabel = c.sentDate ? 'Started: ' + c.sentDate : (c.status === 'scheduled' ? 'Scheduled to start' : 'Not yet sent');
+  var startLabel = c.sentDate ? ('Started: ' + c.sentDate) : (c.status === 'scheduled' ? 'Scheduled' : 'Not yet sent');
 
   return ''
-    + '<div class="cm-view-pg">'
-    +   '<div class="cm-view-hd">'
-    +     '<div class="cm-view-hd-l">'
-    +       '<div class="cm-view-nm">' + cmEscape(c.name) + '</div>'
-    +       '<div class="cm-view-meta"><span>Type: <b>' + cmEscape(c.typeLabel) + '</b></span><span class="sep">·</span><span>Status: <b>' + cmEscape(c.status.toUpperCase()) + '</b></span><span class="sep">·</span><span>' + sentLabel + '</span><span class="sep">·</span><span>Sending from: <b>carmen@1password.com</b></span></div>'
-    +       '<div class="cm-view-tags"><span class="cm-pill type ' + c.type + '">' + cmEscape(c.typeLabel) + '</span><span class="cm-pill status ' + c.status + '">' + c.status + '</span></div>'
-    +     '</div>'
-    +     '<div class="cm-view-hd-acts"><button class="cm-btn" type="button" onclick="cmCampViewClose()" aria-label="Close detail panel"><i class="ti ti-x"></i> Close</button></div>'
+    + '<div class="cm-drawer-hd">'
+    +   '<div style="flex:1;min-width:0">'
+    +     '<div class="cm-drawer-nm">' + cmEscape(c.name) + '</div>'
+    +     '<div class="cm-drawer-sub">Type: <b>' + cmEscape(c.typeLabel) + '</b> · ' + cmEscape(startLabel) + '<br>Sending from: <b>carmen@1password.com</b></div>'
+    +     '<div class="cm-drawer-tags"><span class="cm-pill type ' + c.type + '">' + cmEscape(c.typeLabel) + '</span><span class="cm-pill status ' + c.status + '">' + cmEscape(c.status.toUpperCase()) + '</span></div>'
     +   '</div>'
-    +   '<div class="cm-view-sec"><div class="cm-view-sec-t">Contacts (' + c.contactCount + ')</div><div class="cm-view-contacts">' + contactsHtml + '</div></div>'
-    +   '<div class="cm-view-sec"><div class="cm-view-sec-t">Sequence progress</div><div class="cm-view-seq">' + seqRowsHtml + '</div></div>'
-    +   '<div class="cm-view-sec"><div class="cm-view-sec-t">Performance</div>' + perfHtml + '</div>'
-    +   '<div class="cm-view-foot">'
-    +     '<button class="cm-btn" type="button" onclick="cmCampPause(\'' + c.id + '\')"><i class="ti ti-' + (c.status === 'active' ? 'player-pause' : 'player-play') + '"></i> ' + (c.status === 'active' ? 'Pause Campaign' : 'Resume Campaign') + '</button>'
-    +     '<button class="cm-btn" type="button" onclick="cmCampArchive(\'' + c.id + '\');cmCampViewClose()"><i class="ti ti-archive"></i> Archive</button>'
-    +     '<button class="cm-btn dim" type="button" onclick="cmCampViewClose()"><i class="ti ti-x"></i> Close</button>'
+    +   '<button class="cm-drawer-close" type="button" onclick="cmCampViewClose()" aria-label="Close drawer">&times;</button>'
+    + '</div>'
+    + '<div class="cm-drawer-body">'
+    +   '<div class="cm-drawer-stats">'
+    +     '<div class="cm-stat-tile"><div class="cm-stat-l">Sent</div><div class="cm-stat-v">' + sentTotal + '</div></div>'
+    +     '<div class="cm-stat-tile"><div class="cm-stat-l">Open</div><div class="cm-stat-v">' + (c.openRate != null ? c.openRate + '%' : '—') + '</div></div>'
+    +     '<div class="cm-stat-tile"><div class="cm-stat-l">Reply</div><div class="cm-stat-v">' + (c.replyRate != null ? c.replyRate + '%' : '—') + '</div></div>'
+    +     '<div class="cm-stat-tile"><div class="cm-stat-l">Unsub</div><div class="cm-stat-v">0</div></div>'
     +   '</div>'
+    +   '<div class="cm-drawer-sec"><div class="cm-drawer-sec-t">Sequence progress</div><div class="cm-view-seq">' + seqRowsHtml + '</div></div>'
+    +   '<div class="cm-drawer-sec"><div class="cm-drawer-sec-t">Contacts (' + c.contactCount + ')</div>'
+    +     '<table class="cm-cnt-tbl"><thead><tr><th>Contact</th><th>Account</th><th>Touch Reached</th><th>Status</th><th>Last Activity</th></tr></thead><tbody>' + contactsHtml + '</tbody></table>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cm-drawer-foot">'
+    +   '<button class="cm-btn" type="button" onclick="cmCampPause(\'' + c.id + '\')"><i class="ti ti-' + (c.status === 'active' ? 'player-pause' : 'player-play') + '"></i> ' + (c.status === 'active' ? 'Pause Campaign' : 'Resume Campaign') + '</button>'
+    +   '<button class="cm-btn" type="button" onclick="cmCampArchive(\'' + c.id + '\')"><i class="ti ti-archive"></i> Archive</button>'
+    +   '<button class="cm-btn" type="button" onclick="cmCampExport(\'' + c.id + '\')"><i class="ti ti-copy"></i> Export List</button>'
     + '</div>';
 }
-function cmCampDuplicate(id){ var c = CM_CAMPAIGNS.find(function(x){return x.id===id;}); if(c) toast('Duplicated &ldquo;' + cmEscape(c.name) + '&rdquo; as draft ✓'); }
-function cmCampArchive(id)  { toast('Campaign archived · Hidden from active list ✓'); }
+function cmCampExport(id) {
+  toast('Contact list copied ✓');
+  // Also write to clipboard when available.
+  var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+  if (!c || !navigator.clipboard) return;
+  var pool = (c.contactIds && c.contactIds.length) ? c.contactIds.map(function(cid){ return CM_CONTACTS.find(function(x){return x.id===cid;}); }).filter(Boolean) : CM_CONTACTS.slice(0, c.contactCount);
+  var txt = pool.map(function(cn){ return cn.fn + ' ' + cn.ln + ' <' + cn.email + '>'; }).join('\n');
+  try { navigator.clipboard.writeText(txt); } catch (_) {}
+}
+
+// v4.4.0 — Duplicate creates a real DRAFT card with "Copy of …" name.
+function cmCampDuplicate(id) {
+  var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+  if (!c) return;
+  var copy = JSON.parse(JSON.stringify(c));
+  copy.id = 'cmp' + Date.now();
+  copy.name = 'Copy of ' + c.name;
+  copy.status = 'draft';
+  copy.sentDate = null;
+  copy.openRate = null;
+  copy.replyRate = null;
+  copy.progress = 'Not yet sent';
+  CM_CAMPAIGNS.unshift(copy);
+  cmRenderCampaigns();
+  toast('Duplicated as draft · Click to edit ✓');
+}
+
+// v4.4.0 — Archive shows an inline confirm strip on the card; on confirm the
+// card slides out via CSS (max-height + opacity transition) and re-renders.
+function cmCampArchive(id) {
+  var card = document.querySelector('.cm-camp-card[data-id="' + id + '"]');
+  if (!card) {
+    // Drawer context — open confirm modal instead.
+    var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+    if (c) { c.status = 'archived'; cmRenderCampaigns(); cmCampViewClose(); toast('Campaign archived ✓'); }
+    return;
+  }
+  var confirm = card.querySelector('.cm-card-confirm');
+  if (confirm) confirm.classList.add('on');
+}
+function cmCampArchiveConfirm(id) {
+  var card = document.querySelector('.cm-camp-card[data-id="' + id + '"]');
+  if (card) {
+    card.classList.add('archiving');
+    setTimeout(function(){ card.classList.add('archived-out'); }, 10);
+    setTimeout(function(){
+      var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+      if (c) c.status = 'archived';
+      cmRenderCampaigns();
+      toast('Campaign archived ✓');
+    }, 350);
+  }
+}
+function cmCampArchiveCancel(id) {
+  var card = document.querySelector('.cm-camp-card[data-id="' + id + '"]');
+  if (card) { var confirm = card.querySelector('.cm-card-confirm'); if (confirm) confirm.classList.remove('on'); }
+}
 function cmCampSend(id) {
   var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
   if (!c) return;
   c.status = 'active'; c.sentDate = 'Today'; c.openRate = 0; c.replyRate = 0; c.progress = 'Touch 1 sending';
   cmRenderCampaigns();
   toast('Campaign &ldquo;' + cmEscape(c.name) + '&rdquo; launched · ' + c.contactCount + ' Touch 1 emails sending · Logged in Gainsight ✓');
+}
+// v4.4.0 — Send is now gated by a confirmation modal with reviewable recipient
+// list. cmCampSendStart wraps cmCampSend behind cmOpenSendConfirm.
+function cmCampSendStart(id) { cmOpenSendConfirm({ source:'card', campaignId:id }); }
+
+// v4.4.0 — Generic modal helpers reused by Add Contact / Template Builder /
+// Schedule / Send Confirm / Reply Compose / Quota. The modal mounts content
+// into #cm-modal-body and #cm-modal-foot; the title sits in #cm-modal-title.
+function cmOpenModal(title, body, foot, opts) {
+  opts = opts || {};
+  var ov = document.getElementById('cm-modal-ov');
+  var modal = document.getElementById('cm-modal');
+  var t = document.getElementById('cm-modal-title');
+  var b = document.getElementById('cm-modal-body');
+  var f = document.getElementById('cm-modal-foot');
+  if (!ov || !modal || !t || !b || !f) return;
+  t.textContent = title;
+  b.innerHTML = body || '';
+  f.innerHTML = foot || '';
+  modal.classList.toggle('wide', !!opts.wide);
+  ov.classList.add('on');
+  ov.setAttribute('aria-hidden', 'false');
+  setTimeout(function(){
+    var focusable = b.querySelector('input,textarea,select,button,[contenteditable=true]');
+    if (focusable) try { focusable.focus(); } catch (_) {}
+  }, 50);
+}
+function cmCloseModal(e) {
+  if (e && e.target && e.target.id !== 'cm-modal-ov' && e.type === 'click') return;
+  var ov = document.getElementById('cm-modal-ov');
+  if (ov) { ov.classList.remove('on'); ov.setAttribute('aria-hidden','true'); }
+}
+
+// ── Send Confirmation modal (Fix 10) ────────────────────────────────────────
+function cmOpenSendConfirm(ctx) {
+  ctx = ctx || {};
+  var contactPool;
+  var nameLabel;
+  if (ctx.source === 'wizard') {
+    contactPool = CM_WIZ.contacts.map(function(id){ return CM_CONTACTS.find(function(x){return x.id===id;}); }).filter(Boolean);
+    nameLabel = CM_WIZ.name || 'New campaign';
+  } else {
+    var c = CM_CAMPAIGNS.find(function(x){return x.id===ctx.campaignId;});
+    if (!c) return;
+    contactPool = (c.contactIds && c.contactIds.length) ? c.contactIds.map(function(id){ return CM_CONTACTS.find(function(x){return x.id===id;}); }).filter(Boolean) : CM_CONTACTS.slice(0, c.contactCount);
+    if (contactPool.length < c.contactCount) {
+      for (var i = 0; i < CM_CONTACTS.length && contactPool.length < c.contactCount; i++) {
+        if (CM_CONTACTS[i].seq !== 'departed' && contactPool.indexOf(CM_CONTACTS[i]) === -1) contactPool.push(CM_CONTACTS[i]);
+      }
+    }
+    nameLabel = c.name;
+  }
+  var accts = {}; contactPool.forEach(function(cn){ accts[cn.acctKey] = true; });
+  CM_SEND_SELECTED = contactPool.map(function(cn){ return cn.id; });
+  CM_SEND_CTX = ctx;
+  var listHtml = contactPool.map(function(cn){
+    return '<label class="cm-send-row" data-id="' + cn.id + '"><input type="checkbox" checked onchange="cmSendToggleRecipient(\'' + cn.id + '\',this.checked)"><span><b>' + cmEscape(cn.fn + ' ' + cn.ln) + '</b> <span class="co">· ' + cmEscape(cn.acct) + '</span></span></label>';
+  }).join('');
+  var summary = '<div class="cm-send-summary">'
+    + '<b>Campaign:</b> ' + cmEscape(nameLabel) + '<br>'
+    + '<b>Contacts:</b> <span id="cm-send-count">' + contactPool.length + '</span> recipients at ' + Object.keys(accts).length + ' accounts<br>'
+    + '<b>Sending from:</b> carmen@1password.com<br>'
+    + 'Touch 1 sends: <b>Immediately</b> · Touch 2 sends: <b>Day 5 if no reply</b> · Touch 3 sends: <b>Day 10 if no reply</b>'
+    + '</div>';
+  var body = summary
+    + '<div class="cm-form-label" style="margin-bottom:5px">Recipient list</div>'
+    + '<div class="cm-send-list">' + listHtml + '</div>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn prim" type="button" onclick="cmSendConfirm()"><i class="ti ti-send"></i> Send &rarr;</button>';
+  cmOpenModal('Ready to send?', body, foot);
+}
+var CM_SEND_SELECTED = [];
+var CM_SEND_CTX = null;
+function cmSendToggleRecipient(id, on) {
+  var i = CM_SEND_SELECTED.indexOf(id);
+  if (on && i === -1) CM_SEND_SELECTED.push(id);
+  if (!on && i !== -1) CM_SEND_SELECTED.splice(i, 1);
+  var el = document.getElementById('cm-send-count');
+  if (el) el.textContent = CM_SEND_SELECTED.length;
+}
+function cmSendConfirm() {
+  if (!CM_SEND_SELECTED.length) { toast('Select at least one recipient to send'); return; }
+  if (CM_SEND_CTX && CM_SEND_CTX.source === 'wizard') {
+    // Update wizard contacts to the deselected-trimmed list before sending.
+    CM_WIZ.contacts = CM_SEND_SELECTED.slice();
+    cmCloseModal();
+    cmWizSendActual();
+  } else if (CM_SEND_CTX && CM_SEND_CTX.campaignId) {
+    var c = CM_CAMPAIGNS.find(function(x){return x.id===CM_SEND_CTX.campaignId;});
+    if (c) {
+      c.status = 'active'; c.sentDate = 'Today'; c.openRate = 0; c.replyRate = 0; c.progress = 'Touch 1 sending';
+      c.contactCount = CM_SEND_SELECTED.length;
+      cmRenderCampaigns();
+      cmCloseModal();
+      toast('Campaign &ldquo;' + cmEscape(c.name) + '&rdquo; launched · ' + c.contactCount + ' Touch 1 emails sending · Logged in Gainsight ✓');
+    }
+  }
 }
 
 // ── Contacts section ────────────────────────────────────────────────────────
@@ -9770,11 +10188,32 @@ function cmRenderContactDetail() {
     +   '<button class="cm-btn" type="button" onclick="cmAddNote(\'' + c.id + '\')"><i class="ti ti-note"></i> Add Note</button>'
     + '</div>';
 }
+// v4.4.0 — Add to Campaign now requires explicit picker selection. No more
+// silent mass-add. Opens a small dropdown listing active + draft campaigns.
 function cmAddToCampaign(id) {
   var c = CM_CONTACTS.find(function(x){return x.id===id;});
   if (!c) return;
-  var active = CM_CAMPAIGNS.filter(function(x){return x.status==='active'||x.status==='draft';}).map(function(x){return x.name;}).join(', ');
-  toast('Added ' + cmEscape(c.fn + ' ' + c.ln) + ' to: ' + cmEscape(active || 'no active campaigns') + ' ✓');
+  var active = CM_CAMPAIGNS.filter(function(x){return x.status==='active'||x.status==='draft';});
+  if (!active.length) { toast('No active campaigns to add ' + cmEscape(c.fn + ' ' + c.ln) + ' to'); return; }
+  var rowsHtml = active.map(function(camp){
+    return '<button class="cm-pick-item" type="button" onclick="cmAddToCampaignSelect(\'' + id + '\',\'' + camp.id + '\')"><span class="cm-pick-rad"></span><span>' + cmEscape(camp.name) + '</span><span class="cm-pick-meta">' + cmEscape(camp.status.toUpperCase()) + ' · ' + camp.contactCount + '</span></button>';
+  }).join('');
+  cmOpenModal('Add ' + cmEscape(c.fn + ' ' + c.ln) + ' to a campaign',
+    '<div class="cm-form-label" style="margin-bottom:8px">Select a campaign</div>' + rowsHtml,
+    '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>');
+}
+function cmAddToCampaignSelect(contactId, campaignId) {
+  var c = CM_CONTACTS.find(function(x){return x.id===contactId;});
+  var camp = CM_CAMPAIGNS.find(function(x){return x.id===campaignId;});
+  if (!c || !camp) return;
+  if (!camp.contactIds) camp.contactIds = [];
+  if (camp.contactIds.indexOf(contactId) === -1) {
+    camp.contactIds.push(contactId);
+    camp.contactCount = (camp.contactCount || 0) + 1;
+  }
+  cmCloseModal();
+  toast(cmEscape(c.fn + ' ' + c.ln) + ' added to ' + cmEscape(camp.name) + ' ✓');
+  return;
 }
 function cmSendOneOff(id) {
   var c = CM_CONTACTS.find(function(x){return x.id===id;});
@@ -9786,7 +10225,61 @@ function cmAddNote(id) {
   if (!c) return;
   toast('Note added to ' + cmEscape(c.fn + ' ' + c.ln) + ' · Synced to Gainsight contact ✓');
 }
-function cmAddContactPrompt() { toast('Add Contact form · Save to Gainsight + local list ✓'); }
+// v4.4.0 — Add Contact opens a real form modal with SSO/SCIM/usage fields.
+// Email is the only required field; everything else is optional. On save the
+// new contact appears in the list immediately (in-memory unshift).
+var CM_KNOWN_ACCOUNTS = ['Acme Corp','Brightex Inc','NovaVault','Meridian Health Systems','Creston Software','Apex Dynamics'];
+var CM_ACCT_KEY_MAP   = { 'Acme Corp':'acme','Brightex Inc':'brightex','NovaVault':'nova','Meridian Health Systems':'meridian','Creston Software':'creston','Apex Dynamics':'apex' };
+function cmAddContactPrompt() {
+  var acctOpts = CM_KNOWN_ACCOUNTS.map(function(a){ return '<option value="' + cmEscape(a) + '">' + cmEscape(a) + '</option>'; }).join('') + '<option value="other">Other / not in system</option>';
+  var body = ''
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-fn">First name</label><input class="cm-form-input" id="cm-ac-fn" type="text"></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-ln">Last name</label><input class="cm-form-input" id="cm-ac-ln" type="text"></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-em">Email <span class="req">*</span></label><div><input class="cm-form-input" id="cm-ac-em" type="email" aria-required="true"><div class="cm-form-err" id="cm-ac-em-err" role="alert">Email is required</div></div></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-role">Role</label><input class="cm-form-input" id="cm-ac-role" type="text"></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-co">Company</label><input class="cm-form-input" id="cm-ac-co" type="text"></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-acct">Account</label><select class="cm-form-select" id="cm-ac-acct"><option value="">Select…</option>' + acctOpts + '</select></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-sso">SSO Status</label><select class="cm-form-select" id="cm-ac-sso"><option>Not Deployed</option><option>Deployed</option></select></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-scim">SCIM Status</label><select class="cm-form-select" id="cm-ac-scim"><option>Not Active</option><option>Active</option></select></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-last">Last Active</label><input class="cm-form-input" id="cm-ac-last" type="date"></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-seat">Seat Util %</label><input class="cm-form-input" id="cm-ac-seat" type="number" min="0" max="100"></div>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn prim" type="button" onclick="cmAddContactSave()"><i class="ti ti-check"></i> Save Contact</button>';
+  cmOpenModal('Add contact', body, foot);
+}
+function cmAddContactSave() {
+  var em = document.getElementById('cm-ac-em');
+  var err = document.getElementById('cm-ac-em-err');
+  if (!em) return;
+  if (!em.value.trim()) { em.classList.add('err'); if (err) err.classList.add('on'); em.focus(); return; }
+  em.classList.remove('err'); if (err) err.classList.remove('on');
+  var fn = (document.getElementById('cm-ac-fn').value || '').trim();
+  var ln = (document.getElementById('cm-ac-ln').value || '').trim();
+  var acct = (document.getElementById('cm-ac-acct').value || '').trim();
+  var co   = (document.getElementById('cm-ac-co').value || '').trim();
+  var acctName = (acct && acct !== 'other') ? acct : (co || 'Unknown');
+  var acctKey  = CM_ACCT_KEY_MAP[acctName] || 'other';
+  var newId = 'cn' + Date.now();
+  CM_CONTACTS.push({
+    id: newId,
+    fn: fn || 'Unnamed',
+    ln: ln,
+    role: (document.getElementById('cm-ac-role').value || '').trim() || '—',
+    email: em.value.trim(),
+    acct: acctName,
+    acctKey: acctKey,
+    seq: null,
+    seqStatus: '',
+    lastTouch: 'Never',
+    lastGong: 'No data',
+    renewal: '',
+    note: 'Added manually · SSO ' + document.getElementById('cm-ac-sso').value + ' · SCIM ' + document.getElementById('cm-ac-scim').value
+  });
+  cmCloseModal();
+  if (CM_ACTIVE === 'contacts') cmRenderContacts();
+  toast('Contact saved · ' + cmEscape((fn ? fn + ' ' + ln : em.value)) + ' · ' + cmEscape(acctName) + ' ✓');
+}
 function cmToggleDD(id, ev) {
   if (ev && ev.stopPropagation) ev.stopPropagation();
   ['cm-dd-gs','cm-dd-sf'].forEach(function(k){
@@ -9923,35 +10416,144 @@ function cmTplSave(id) {
   cmRenderTplDetail();
   toast('Template &ldquo;' + cmEscape(t.name) + '&rdquo; saved ✓');
 }
-function cmNewTemplate() { toast('New Template builder · 6 categories available ✓'); }
+// v4.4.0 — New Template opens a real builder modal with category picker,
+// subject + body fields, and a variable picker dropdown. On save the new
+// template is persisted to localStorage.teamos_templates.
+var CM_TPL_VARS = ['{{first_name}}','{{company}}','{{csm_name}}','{{renewal_date}}','{{days_out}}','{{last_gong_topic}}','{{meeting_link}}','{{dust_opener}}','{{quarter}}','{{value_delivered}}','{{feature_name}}','{{use_case}}','{{predecessor_name}}'];
+function cmNewTemplate() {
+  var cats = ['Re-engagement','EBR','Renewal','Product Update','Champion Intro','Newsletter','Custom'];
+  var catOpts = cats.map(function(c){ return '<option value="' + cmEscape(c) + '">' + cmEscape(c) + '</option>'; }).join('');
+  var varBtns = CM_TPL_VARS.map(function(v){ return '<button class="cm-tb-vars-item" type="button" onmousedown="event.preventDefault()" onclick="cmTbInsertVar(\'' + v + '\')">' + cmEscape(v) + '</button>'; }).join('');
+  var body = ''
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-tb-nm">Template name</label><input class="cm-form-input" id="cm-tb-nm" type="text" placeholder="e.g. Q2 Renewal Save"></div>'
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-tb-cat">Category</label><select class="cm-form-select" id="cm-tb-cat" onchange="cmTbCatChange()">' + catOpts + '</select></div>'
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-tb-subj">Subject line</label><input class="cm-form-input" id="cm-tb-subj" type="text" placeholder="Use {{first_name}}, {{company}}, etc."></div>'
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-tb-body">Body</label>'
+    +   '<div class="cm-tb-toolbar">'
+    +     '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbWrap(\'**\')" aria-label="Bold"><b>B</b></button>'
+    +     '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbWrap(\'_\')" aria-label="Italic"><i>I</i></button>'
+    +     '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbWrap(\'__\')" aria-label="Underline"><u>U</u></button>'
+    +     '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbInsertLink()" aria-label="Insert link"><i class="ti ti-link"></i> Link</button>'
+    +     '<div class="cm-tb-vars-wrap"><button class="cm-tb-btn" type="button" onclick="cmTbToggleVars(event)"><i class="ti ti-variable"></i> Variable <i class="ti ti-chevron-down"></i></button><div class="cm-tb-vars-pop" id="cm-tb-vars-pop">' + varBtns + '</div></div>'
+    +   '</div>'
+    +   '<textarea class="cm-form-ta" id="cm-tb-body" placeholder="Hi {{first_name}}, ..."></textarea>'
+    + '</div>'
+    + '<div class="cm-form-row col"><label style="font-size:12px;color:#1F2937;font-weight:600;display:flex;align-items:center;gap:8px"><input type="checkbox" id="cm-tb-sig" checked style="accent-color:var(--tl)"> Auto-append signature</label></div>'
+    + '<div class="cm-form-row col" id="cm-tb-unsub-row" style="display:none"><label style="font-size:12px;color:#1F2937;font-weight:600;display:flex;align-items:center;gap:8px"><input type="checkbox" id="cm-tb-unsub" checked style="accent-color:var(--tl)"> Required unsubscribe footer (Newsletter category)</label></div>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn prim" type="button" onclick="cmTbSave()"><i class="ti ti-check"></i> Save Template</button>';
+  cmOpenModal('New template', body, foot, { wide: true });
+}
+function cmTbCatChange() {
+  var cat = document.getElementById('cm-tb-cat').value;
+  var row = document.getElementById('cm-tb-unsub-row');
+  if (row) row.style.display = (cat === 'Newsletter') ? '' : 'none';
+}
+function cmTbToggleVars(ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  var pop = document.getElementById('cm-tb-vars-pop');
+  if (pop) pop.classList.toggle('on');
+}
+function cmTbInsertVar(v) {
+  var ta = document.getElementById('cm-tb-body');
+  if (!ta) return;
+  var s = ta.selectionStart, e = ta.selectionEnd;
+  ta.value = ta.value.slice(0,s) + v + ta.value.slice(e);
+  ta.focus(); ta.selectionStart = ta.selectionEnd = s + v.length;
+  var pop = document.getElementById('cm-tb-vars-pop'); if (pop) pop.classList.remove('on');
+}
+function cmTbWrap(marker) {
+  var ta = document.getElementById('cm-tb-body');
+  if (!ta) return;
+  var s = ta.selectionStart, e = ta.selectionEnd;
+  var sel = ta.value.slice(s,e);
+  var rep = marker + (sel || 'text') + marker;
+  ta.value = ta.value.slice(0,s) + rep + ta.value.slice(e);
+  ta.focus(); ta.selectionStart = s + marker.length; ta.selectionEnd = s + marker.length + (sel || 'text').length;
+}
+function cmTbInsertLink() {
+  var ta = document.getElementById('cm-tb-body');
+  if (!ta) return;
+  var s = ta.selectionStart, e = ta.selectionEnd;
+  var sel = ta.value.slice(s,e) || 'meeting link';
+  var rep = '[' + sel + '](https://calendly.com/carmen-corio)';
+  ta.value = ta.value.slice(0,s) + rep + ta.value.slice(e);
+  ta.focus();
+}
+function cmTbSave() {
+  var nm = (document.getElementById('cm-tb-nm').value || '').trim();
+  var cat = document.getElementById('cm-tb-cat').value;
+  var subj = (document.getElementById('cm-tb-subj').value || '').trim();
+  var body = (document.getElementById('cm-tb-body').value || '').trim();
+  if (!nm) { document.getElementById('cm-tb-nm').classList.add('err'); document.getElementById('cm-tb-nm').focus(); toast('Template name required'); return; }
+  if (!body) { document.getElementById('cm-tb-body').focus(); toast('Template body required'); return; }
+  var iconMap = { 'Re-engagement':'📬', 'EBR':'📈', 'Renewal':'🔁', 'Product Update':'✨', 'Champion Intro':'👋', 'Newsletter':'📰', 'Custom':'📝' };
+  var vars = (body + ' ' + subj).match(/{{[a-z_]+}}/g) || [];
+  vars = vars.filter(function(v,i){ return vars.indexOf(v) === i; });
+  var t = { id:'t' + Date.now(), name:nm, category:cat, icon:iconMap[cat] || '📝', subject:subj, vars:vars, body:body };
+  CM_TEMPLATES.unshift(t);
+  cmWriteTemplates(CM_TEMPLATES);
+  cmCloseModal();
+  if (CM_ACTIVE === 'templates') cmRenderTemplates();
+  toast('Template saved · ' + cmEscape(nm) + ' ✓');
+}
+// Close variable popover on outside click.
+document.addEventListener('click', function(){ var p = document.getElementById('cm-tb-vars-pop'); if (p) p.classList.remove('on'); });
 function cmTplUseInCampaign(id) { cmOpenWizard(); CM_WIZ.template = id; CM_WIZ.step = 3; cmWizRender(); }
 
 // ── Analytics section ───────────────────────────────────────────────────────
+// v4.4.0 — Analytics time-period filter binds to per-period demo datasets.
+var CM_ANALYTICS_PERIOD = 'quarter';
+var CM_ANALYTICS_DATA = {
+  quarter:  { label:'Q2 2026', sent:847,  open:58, reply:22, activeSeqs:2, vsPrev:'+4 pts vs Q1', vsReply:'+2 pts vs Q1', campaigns:['cmp1','cmp2','cmp3'] },
+  month:    { label:'May 2026', sent:312, open:61, reply:24, activeSeqs:2, vsPrev:'+3 pts vs Apr',vsReply:'+1 pt vs Apr', campaigns:['cmp1','cmp2'] },
+  week:     { label:'This week', sent:48, open:62, reply:25, activeSeqs:1, vsPrev:'+1 pt vs last',vsReply:'+2 pts vs last',campaigns:['cmp1'] },
+  alltime:  { label:'All time', sent:1204, open:57, reply:21, activeSeqs:2, vsPrev:'Lifetime average', vsReply:'Lifetime average', campaigns:['cmp1','cmp2','cmp3'] }
+};
+function cmSetAnalyticsPeriod(p) { CM_ANALYTICS_PERIOD = p; cmRenderAnalytics(); }
 function cmRenderAnalytics() {
   var sec = document.getElementById('cm-analytics');
   if (!sec) return;
-  var totalSent = 847, avgOpen = 58, avgReply = 22;
-  var activeSeqs = CM_CAMPAIGNS.filter(function(c){return c.status==='active';}).length;
+  var d = CM_ANALYTICS_DATA[CM_ANALYTICS_PERIOD] || CM_ANALYTICS_DATA.quarter;
+  var visibleIds = d.campaigns;
+  var ROWS = {
+    cmp1: { nm:'June Renewal Push',        type:'Renewal',       sent:48, open:62, reply:25, unsub:0, progPct:65, send:false },
+    cmp2: { nm:'Dark Zone Re-engagement',  type:'Re-engagement', sent:3,  open:0,  reply:0,  unsub:0, progPct:30, send:false },
+    cmp3: { nm:'Q2 EBR Invitations',       type:'EBR',           sent:0,  open:null, reply:null, unsub:null, progPct:0,  send:true  }
+  };
+  var rowsHtml = visibleIds.map(function(id){
+    var r = ROWS[id]; if (!r) return '';
+    var openTxt = r.open == null ? '—' : '<b>' + r.open + '%</b>';
+    var replyTxt = r.reply == null ? '—' : '<b>' + r.reply + '%</b>';
+    var unsubTxt = r.unsub == null ? '—' : r.unsub;
+    var progress = r.send
+      ? '<span class="cm-pill status draft" style="display:inline-block">Draft</span> <button class="cm-btn" type="button" onclick="cmCampSendStart(\'' + id + '\')" style="margin-left:4px;font-size:10px;padding:4px 8px">Send &rarr;</button>'
+      : '<span class="cm-bar"><div style="width:' + r.progPct + '%"></div></span>';
+    return '<tr><td><b>' + cmEscape(r.nm) + '</b></td><td>' + r.type + '</td><td>' + r.sent + '</td><td>' + openTxt + '</td><td>' + replyTxt + '</td><td>' + unsubTxt + '</td><td>' + progress + '</td></tr>';
+  }).join('');
+  if (!rowsHtml) rowsHtml = '<tr><td colspan="7" style="text-align:center;padding:14px;color:#6B7280;font-style:italic">No campaigns sent in this period.</td></tr>';
   sec.innerHTML = ''
     + '<div class="cm-hd">'
     +   '<div class="cm-hd-t">📊 Analytics — Campaign Performance</div>'
-    +   '<select class="cm-wiz-select" style="width:auto;margin-bottom:0;padding:7px 10px;font-size:12px"><option>This quarter</option><option>This week</option><option>This month</option><option>Custom…</option></select>'
+    +   '<select class="cm-wiz-select" id="cm-analytics-period" aria-label="Time period" onchange="cmSetAnalyticsPeriod(this.value)" style="width:auto;margin-bottom:0;padding:7px 10px;font-size:12px">'
+    +     '<option value="quarter"' + (CM_ANALYTICS_PERIOD === 'quarter' ? ' selected' : '') + '>This quarter</option>'
+    +     '<option value="month"'   + (CM_ANALYTICS_PERIOD === 'month'   ? ' selected' : '') + '>This month</option>'
+    +     '<option value="week"'    + (CM_ANALYTICS_PERIOD === 'week'    ? ' selected' : '') + '>This week</option>'
+    +     '<option value="alltime"' + (CM_ANALYTICS_PERIOD === 'alltime' ? ' selected' : '') + '>All time</option>'
+    +   '</select>'
     + '</div>'
     + '<div class="cm-sum-cards">'
-    +   '<div class="cm-sum-card"><div class="cm-sum-l">Total emails sent</div><div class="cm-sum-v">' + totalSent + '</div><div class="cm-sum-sub">Q2 2026</div></div>'
-    +   '<div class="cm-sum-card"><div class="cm-sum-l">Avg open rate</div><div class="cm-sum-v">' + avgOpen + '%</div><div class="cm-sum-sub">+4 pts vs Q1</div></div>'
-    +   '<div class="cm-sum-card"><div class="cm-sum-l">Avg reply rate</div><div class="cm-sum-v">' + avgReply + '%</div><div class="cm-sum-sub">+2 pts vs Q1</div></div>'
-    +   '<div class="cm-sum-card"><div class="cm-sum-l">Active sequences</div><div class="cm-sum-v">' + activeSeqs + '</div><div class="cm-sum-sub">2 campaigns running</div></div>'
+    +   '<div class="cm-sum-card"><div class="cm-sum-l">Total emails sent</div><div class="cm-sum-v">' + d.sent.toLocaleString() + '</div><div class="cm-sum-sub">' + cmEscape(d.label) + '</div></div>'
+    +   '<div class="cm-sum-card"><div class="cm-sum-l">Avg open rate</div><div class="cm-sum-v">' + d.open + '%</div><div class="cm-sum-sub">' + cmEscape(d.vsPrev) + '</div></div>'
+    +   '<div class="cm-sum-card"><div class="cm-sum-l">Avg reply rate</div><div class="cm-sum-v">' + d.reply + '%</div><div class="cm-sum-sub">' + cmEscape(d.vsReply) + '</div></div>'
+    +   '<div class="cm-sum-card"><div class="cm-sum-l">Active sequences</div><div class="cm-sum-v">' + d.activeSeqs + '</div><div class="cm-sum-sub">' + (d.activeSeqs === 1 ? '1 campaign running' : d.activeSeqs + ' campaigns running') + '</div></div>'
     + '</div>'
     + '<div class="cm-perf">'
-    +   '<div class="cm-perf-hd">Per-campaign performance</div>'
+    +   '<div class="cm-perf-hd">Per-campaign performance · ' + cmEscape(d.label) + '</div>'
     +   '<table class="cm-perf-table">'
-    +     '<thead><tr><th>Campaign</th><th>Type</th><th>Sent</th><th>Opens</th><th>Replies</th><th>Unsub</th><th>Progress</th></tr></thead>'
-    +     '<tbody>'
-    +       '<tr><td><b>June Renewal Push</b></td><td>Renewal</td><td>48</td><td><b>62%</b></td><td><b>25%</b></td><td>0</td><td><span class="cm-bar"><div style="width:65%"></div></span></td></tr>'
-    +       '<tr><td><b>Dark Zone Re-engagement</b></td><td>Re-engagement</td><td>3</td><td>0%</td><td>0%</td><td>0</td><td><span class="cm-bar"><div style="width:30%"></div></span></td></tr>'
-    +       '<tr><td><b>Q2 EBR Invitations</b></td><td>EBR</td><td>0</td><td>—</td><td>—</td><td>—</td><td><span class="cm-pill status draft" style="display:inline-block">Draft</span> <button class="cm-btn" type="button" onclick="cmCampSend(\'cmp3\')" style="margin-left:4px;font-size:10px;padding:4px 8px">Send →</button></td></tr>'
-    +     '</tbody>'
+    +     '<thead><tr><th scope="col">Campaign</th><th scope="col">Type</th><th scope="col">Sent</th><th scope="col">Opens</th><th scope="col">Replies</th><th scope="col">Unsub</th><th scope="col">Progress</th></tr></thead>'
+    +     '<tbody>' + rowsHtml + '</tbody>'
     +   '</table>'
     + '</div>'
     + '<div class="cm-best">'
@@ -10006,24 +10608,100 @@ function cmWizStep1(body) {
     + '<label class="cm-wiz-label">Goal (optional)</label>'
     + '<input class="cm-wiz-input" id="cm-wiz-goal" type="text" value="' + cmEscape(CM_WIZ.goal) + '" placeholder="e.g. Schedule 5 EBRs before Jun 30" oninput="CM_WIZ.goal=this.value">';
 }
+// v4.4.0 — Step 2 health-score + renewal-window filters bind to real account
+// data; a search field above the list narrows by name + company; rows are
+// grouped under account headers; the live counter updates on every change.
+// Map of acctKey → health score + days-to-renewal for filter logic.
+var CM_ACCT_HEALTH = { acme:82, brightex:48, nova:23, meridian:null, creston:null, apex:null, klaxton:65, pinnacle:72, other:null };
+var CM_ACCT_DAYS   = { acme:89, brightex:31, nova:17, meridian:45, creston:60, apex:77, klaxton:120, pinnacle:140, other:null };
+function cmContactPassesFilters(c) {
+  var h = CM_ACCT_HEALTH[c.acctKey];
+  var d = CM_ACCT_DAYS[c.acctKey];
+  // Health filter
+  switch (CM_WIZ.filterHealth) {
+    case 'critical': if (h == null || h >= 50) return false; break;
+    case 'atrisk':   if (h == null || h < 50 || h > 74) return false; break;
+    case 'healthy':  if (h == null || h < 75) return false; break;
+  }
+  // Renewal window filter
+  switch (CM_WIZ.filterRenewal) {
+    case '30':  if (d == null || d > 30) return false; break;
+    case '60':  if (d == null || d <= 30 || d > 60) return false; break;
+    case '90':  if (d == null || d <= 60 || d > 90) return false; break;
+  }
+  // Search filter
+  if (CM_WIZ.filterSearch) {
+    var q = CM_WIZ.filterSearch.toLowerCase().trim();
+    if (q && (c.fn + ' ' + c.ln + ' ' + c.acct + ' ' + c.email).toLowerCase().indexOf(q) === -1) return false;
+  }
+  return true;
+}
+function cmWizSetFilter(key, val) {
+  if (!CM_WIZ) return;
+  CM_WIZ[key] = val;
+  cmWizRender();
+}
 function cmWizStep2(body) {
-  var items = CM_CONTACTS.map(function(c){
-    var checked = CM_WIZ.contacts.indexOf(c.id) !== -1;
-    var sel = checked ? ' sel' : '';
-    var dis = (c.seq === 'departed') ? ' style="opacity:.45;cursor:not-allowed"' : '';
-    return '<label class="cm-wiz-cnt-item' + sel + '"' + dis + '><input type="checkbox" ' + (checked ? 'checked' : '') + (c.seq === 'departed' ? ' disabled' : '') + ' onchange="cmWizToggleContact(\'' + c.id + '\',this.checked)"><span><b>' + cmEscape(c.fn + ' ' + c.ln) + '</b> · ' + cmEscape(c.acct) + ' · <span style="color:#6B7280">' + cmEscape(c.email) + '</span></span></label>';
-  }).join('');
+  if (CM_WIZ.filterHealth  == null) CM_WIZ.filterHealth = 'all';
+  if (CM_WIZ.filterRenewal == null) CM_WIZ.filterRenewal = 'all';
+  if (CM_WIZ.filterSearch  == null) CM_WIZ.filterSearch = '';
+  var visible = CM_CONTACTS.filter(cmContactPassesFilters);
+  // Group by account (preserving CM_CONTACTS order).
+  var grouped = {};
+  var order = [];
+  visible.forEach(function(c){
+    if (!grouped[c.acctKey]) { grouped[c.acctKey] = { acct:c.acct, rows:[] }; order.push(c.acctKey); }
+    grouped[c.acctKey].rows.push(c);
+  });
+  var groupsHtml = order.map(function(k){
+    var g = grouped[k];
+    var rowsHtml = g.rows.map(function(c){
+      var checked = CM_WIZ.contacts.indexOf(c.id) !== -1;
+      var sel = checked ? ' sel' : '';
+      var dis = (c.seq === 'departed') ? ' style="opacity:.45;cursor:not-allowed"' : '';
+      return '<label class="cm-wiz-cnt-item' + sel + '"' + dis + '><input type="checkbox" ' + (checked ? 'checked' : '') + (c.seq === 'departed' ? ' disabled' : '') + ' onchange="cmWizToggleContact(\'' + c.id + '\',this.checked)"><span><b>' + cmEscape(c.fn + ' ' + c.ln) + '</b> · ' + cmEscape(c.role) + ' · <span style="color:#6B7280">' + cmEscape(c.email) + '</span></span></label>';
+    }).join('');
+    return ''
+      + '<div class="cm-wiz-grp">'
+      +   '<div class="cm-wiz-grp-hd"><span>' + cmEscape(g.acct.toUpperCase()) + '</span><span class="cm-wiz-grp-count">' + g.rows.length + ' contact' + (g.rows.length === 1 ? '' : 's') + '</span></div>'
+      +   '<div class="cm-wiz-grp-rows">' + rowsHtml + '</div>'
+      + '</div>';
+  }).join('') || '<div class="cm-detail-empty" style="padding:20px 10px;font-size:12px">No contacts match these filters.</div>';
   var accts = {};
   CM_WIZ.contacts.forEach(function(id){ var c = CM_CONTACTS.find(function(x){return x.id===id;}); if (c) accts[c.acctKey] = true; });
   body.innerHTML = ''
     + '<div class="cm-wiz-step-l">Step 2 of 5</div>'
     + '<div class="cm-wiz-h">Who&rsquo;s this campaign for?</div>'
     + '<div class="cm-wiz-filter">'
-    +   '<div><div class="cm-wiz-label">Health score</div><select class="cm-wiz-select" style="margin-bottom:0"><option>All</option><option>Critical (&lt;50)</option><option>At-Risk (50-74)</option><option>Healthy (75+)</option></select></div>'
-    +   '<div><div class="cm-wiz-label">Renewal window</div><select class="cm-wiz-select" style="margin-bottom:0"><option>All</option><option>Next 30d</option><option>31-60d</option><option>61-90d</option></select></div>'
+    +   '<div><div class="cm-wiz-label">Health score</div><select class="cm-wiz-select" style="margin-bottom:0" onchange="cmWizSetFilter(\'filterHealth\',this.value)">'
+    +     '<option value="all"' + (CM_WIZ.filterHealth === 'all' ? ' selected' : '') + '>All health scores</option>'
+    +     '<option value="critical"' + (CM_WIZ.filterHealth === 'critical' ? ' selected' : '') + '>Critical (&lt;50)</option>'
+    +     '<option value="atrisk"' + (CM_WIZ.filterHealth === 'atrisk' ? ' selected' : '') + '>At-Risk (50–74)</option>'
+    +     '<option value="healthy"' + (CM_WIZ.filterHealth === 'healthy' ? ' selected' : '') + '>Healthy (75+)</option>'
+    +   '</select></div>'
+    +   '<div><div class="cm-wiz-label">Renewal window</div><select class="cm-wiz-select" style="margin-bottom:0" onchange="cmWizSetFilter(\'filterRenewal\',this.value)">'
+    +     '<option value="all"' + (CM_WIZ.filterRenewal === 'all' ? ' selected' : '') + '>All windows</option>'
+    +     '<option value="30"' + (CM_WIZ.filterRenewal === '30' ? ' selected' : '') + '>Next 30 days</option>'
+    +     '<option value="60"' + (CM_WIZ.filterRenewal === '60' ? ' selected' : '') + '>31–60 days</option>'
+    +     '<option value="90"' + (CM_WIZ.filterRenewal === '90' ? ' selected' : '') + '>61–90 days</option>'
+    +   '</select></div>'
     + '</div>'
-    + '<div class="cm-wiz-cnt-list">' + items + '</div>'
+    + '<input class="cm-wiz-search" type="text" id="cm-wiz-search" placeholder="🔍 Search contacts by name or company" value="' + cmEscape(CM_WIZ.filterSearch) + '" oninput="cmWizSetSearch(this.value)" aria-label="Search contacts">'
+    + groupsHtml
     + '<div style="margin-top:12px"><span class="cm-wiz-counter">' + CM_WIZ.contacts.length + ' contacts selected across ' + Object.keys(accts).length + ' accounts</span></div>';
+  // Preserve search focus + cursor on re-render.
+  setTimeout(function(){
+    var s = document.getElementById('cm-wiz-search');
+    if (s && CM_WIZ_SEARCH_FOCUS) { try { s.focus(); s.setSelectionRange(s.value.length, s.value.length); } catch (_) {} }
+  }, 0);
+}
+var CM_WIZ_SEARCH_FOCUS = false;
+function cmWizSetSearch(v) {
+  if (!CM_WIZ) return;
+  CM_WIZ.filterSearch = v;
+  CM_WIZ_SEARCH_FOCUS = true;
+  cmWizRender();
+  CM_WIZ_SEARCH_FOCUS = false;
 }
 function cmWizToggleContact(id, on) {
   var i = CM_WIZ.contacts.indexOf(id);
@@ -10039,6 +10717,9 @@ function cmWizStep3(body) {
       + '<div class="cm-tpl-subj">' + cmEscape(t.subject) + '</div>'
     + '</div>';
   }).join('');
+  // v4.4.0 — AI-recommended banner when the segment chip seeded the wizard.
+  var seg = CM_WIZ.segmentKey ? CM_SEGMENTS.find(function(x){return x.key === CM_WIZ.segmentKey;}) : null;
+  var recBanner = seg ? '<div class="cm-ai-rec">AI recommended this template for ' + cmEscape(seg.segLabel) + '</div>' : '';
   var dustToggle = ''
     + '<div class="cm-wiz-toggle">'
     +   '<div class="cm-wiz-toggle-l">Dust personalization<small>Generates a personalized opening line per contact from last Gong call + account context.</small></div>'
@@ -10065,6 +10746,7 @@ function cmWizStep3(body) {
   body.innerHTML = ''
     + '<div class="cm-wiz-step-l">Step 3 of 5</div>'
     + '<div class="cm-wiz-h">Choose your template</div>'
+    + recBanner
     + '<div class="cm-wiz-tpls">' + cards + '</div>'
     + dustToggle
     + (preview ? '<div class="cm-wiz-step-l">Preview · first selected contact</div>' + preview : '<div class="cm-detail-empty" style="font-size:12px;padding:20px 0">Pick a template + at least one contact to see the personalized preview.</div>')
@@ -10113,24 +10795,45 @@ function cmFillVars(text, c) {
     .replace(/{{what_weve_built}}/g, '[Relationship history]')
     .replace(/{{last_gong_topic}}/g, (c.lastGong && c.lastGong.split(' · ')[1] || 'recent topic'));
 }
+// v4.4.0 — At-Risk segment uses a smarter subject ("Your [Company] renewal —
+// let's connect before [renewal date]") and a tighter opener referencing the
+// last Gong topic. Loading state shows a 3-line context-pull preview.
+var CM_AI_SUBJECTS = {
+  'at-risk': "Your {{company}} renewal — let's connect before {{renewal_date}}"
+};
 function cmWizGenerateDraft() {
   if (!CM_WIZ || !CM_WIZ.template || !CM_WIZ.contacts.length) return;
   var btn = document.getElementById('cm-ai-gen-btn');
   var box = document.getElementById('cm-ai-draft');
   if (!btn || !box) return;
   var c = CM_CONTACTS.find(function(x){return x.id===CM_WIZ.contacts[0];});
+  var health = CM_ACCT_HEALTH[c.acctKey];
+  var healthLabel = (health == null) ? 'Unknown' : (health + ' · ' + (health < 50 ? 'At Risk' : health < 75 ? 'Watch' : 'Healthy'));
+  var renewal = c.renewal || 'TBD';
+  var daysOut = (renewal && /·\s*(\d+)d/.test(renewal)) ? RegExp.$1 + 'd' : '';
   btn.setAttribute('disabled', 'true');
-  btn.innerHTML = '<span class="cm-spinner"></span> Generating personalized draft for ' + cmEscape(c.fn + ' ' + c.ln) + '… pulling Gong + Gainsight context';
+  btn.innerHTML = '<span class="cm-spinner"></span> Generating personalized draft…';
+  // Show multi-line loading context per spec.
+  box.classList.add('on');
+  box.innerHTML = '<div class="cm-ai-loading">'
+    + '<b>Generating personalized draft for ' + cmEscape(c.fn + ' ' + c.ln) + ' at ' + cmEscape(c.acct) + '…</b>\n'
+    + '↳ Reading last Gong call (' + cmEscape((c.lastGong || '').split(' · ')[0] || 'recent') + ')\n'
+    + '↳ Checking health score (' + cmEscape(healthLabel) + ')\n'
+    + '↳ Checking renewal date (' + cmEscape(renewal + (daysOut ? '' : '')) + ')'
+    + '</div>';
   setTimeout(function(){
     var t = CM_TEMPLATES.find(function(x){return x.id===CM_WIZ.template;});
     var segKey = cmInferSegmentKey();
     var openerTemplate = CM_AI_OPENERS[segKey] || CM_AI_OPENERS['unengaged-nossso'];
     var opener = cmFillVars(openerTemplate, c);
-    var subject = cmFillVars(t.subject, c);
+    var subjTemplate = CM_AI_SUBJECTS[segKey] || t.subject;
+    var subject = cmFillVars(subjTemplate, c);
     var body = cmFillVars(t.body, c).replace(/{{dust_opener}}/g, opener);
     var sig = cmGetSignature();
     CM_WIZ.aiDraft = {
       to: c.fn + ' ' + c.ln + ' <' + c.email + '>',
+      contactName: c.fn + ' ' + c.ln,
+      account: c.acct,
       subject: subject,
       opener: opener,
       body: body + '\n\n— — —\n' + sig,
@@ -10138,20 +10841,25 @@ function cmWizGenerateDraft() {
     };
     btn.removeAttribute('disabled');
     btn.innerHTML = '⚡ Regenerate AI Draft';
-    box.classList.add('on');
     box.innerHTML = cmRenderAIDraft();
   }, 1500);
 }
 function cmRenderAIDraft() {
   var d = CM_WIZ.aiDraft; if (!d) return '';
   return ''
-    + '<div class="cm-ai-draft-l">⚡ AI-Generated Draft · Editable</div>'
+    + '<div class="cm-ai-draft-l">✨ AI Draft Preview · ' + cmEscape(d.contactName) + ' · ' + cmEscape(d.account) + '</div>'
     + '<div class="cm-ai-draft-meta"><b>FROM:</b> Carmen Corio &lt;carmen@1password.com&gt;<br><b>TO:</b> ' + cmEscape(d.to) + '<br><b>SUBJECT:</b> <span contenteditable="true" id="cm-ai-subj">' + cmEscape(d.subject) + '</span></div>'
     + '<textarea class="cm-ai-draft-body" id="cm-ai-body" aria-label="Editable email body" oninput="if(CM_WIZ&&CM_WIZ.aiDraft)CM_WIZ.aiDraft.body=this.value">' + cmEscape(d.body) + '</textarea>'
     + '<div class="cm-ai-draft-acts">'
+    +   '<button class="cm-ai-back" type="button" onclick="cmDiscardDraft()">&larr; Back to templates</button>'
+    +   '<div style="flex:1"></div>'
     +   '<button class="cm-btn" type="button" onclick="cmCopyDraft()"><i class="ti ti-copy"></i> Copy Draft</button>'
-    +   '<button class="cm-btn prim" type="button" onclick="cmUseDraft()"><i class="ti ti-check"></i> Use This Draft</button>'
+    +   '<button class="cm-btn prim" type="button" onclick="cmUseDraft()"><i class="ti ti-check"></i> Use This Draft &rarr;</button>'
     + '</div>';
+}
+function cmDiscardDraft() {
+  if (CM_WIZ) CM_WIZ.aiDraft = null;
+  cmWizRender();
 }
 function cmCopyDraft() {
   var ta = document.getElementById('cm-ai-body');
@@ -10273,14 +10981,71 @@ function cmWizSaveDraft() {
   cmShowSection('campaigns');
   toast('Draft saved · &ldquo;' + cmEscape(c.name) + '&rdquo; ✓');
 }
+// v4.4.0 — Schedule opens a real date/time/timezone picker modal. Confirming
+// the schedule creates the campaign with status SCHEDULED + the picked date.
 function cmWizSchedule() {
-  var c = cmWizBuild('scheduled', 'Jun 1');
+  var defDate = new Date();
+  defDate.setDate(defDate.getDate() + 19); // ~Jun 5 from May 17
+  var iso = defDate.toISOString().slice(0,10);
+  var contactCount = (CM_WIZ && CM_WIZ.contacts) ? CM_WIZ.contacts.length : 0;
+  var body = ''
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-sch-date">Send date</label><input class="cm-form-input" id="cm-sch-date" type="date" value="' + iso + '" oninput="cmSchUpdatePreview()"></div>'
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-sch-time">Send time</label><input class="cm-form-input" id="cm-sch-time" type="time" value="09:00" oninput="cmSchUpdatePreview()"></div>'
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-sch-tz">Timezone</label><select class="cm-form-select" id="cm-sch-tz" onchange="cmSchUpdatePreview()">'
+    +   '<option value="PT">Pacific Time (PT)</option>'
+    +   '<option value="MT">Mountain Time (MT)</option>'
+    +   '<option value="CT">Central Time (CT)</option>'
+    +   '<option value="ET">Eastern Time (ET)</option>'
+    + '</select></div>'
+    + '<div class="cm-sched-preview" id="cm-sch-preview">This campaign will send to <b>' + contactCount + '</b> contacts at <b>9:00 AM PT</b> on <b>' + cmEscape(cmSchFormatDate(iso)) + '</b>.</div>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn prim" type="button" onclick="cmSchConfirm()"><i class="ti ti-calendar"></i> Confirm Schedule</button>';
+  cmOpenModal('Schedule campaign', body, foot);
+}
+function cmSchFormatDate(iso) {
+  if (!iso) return '';
+  var d = new Date(iso + 'T00:00:00');
+  if (isNaN(d.getTime())) return iso;
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+}
+function cmSchFormatTime(t) {
+  if (!t) return '';
+  var parts = t.split(':');
+  var h = parseInt(parts[0], 10);
+  var m = parts[1] || '00';
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  var h12 = h % 12 || 12;
+  return h12 + ':' + m + ' ' + ampm;
+}
+function cmSchUpdatePreview() {
+  var d = document.getElementById('cm-sch-date');
+  var t = document.getElementById('cm-sch-time');
+  var tz = document.getElementById('cm-sch-tz');
+  var p = document.getElementById('cm-sch-preview');
+  if (!d || !t || !tz || !p || !CM_WIZ) return;
+  p.innerHTML = 'This campaign will send to <b>' + CM_WIZ.contacts.length + '</b> contacts at <b>' + cmEscape(cmSchFormatTime(t.value) + ' ' + tz.value) + '</b> on <b>' + cmEscape(cmSchFormatDate(d.value)) + '</b>.';
+}
+function cmSchConfirm() {
+  var d = document.getElementById('cm-sch-date').value;
+  var t = document.getElementById('cm-sch-time').value;
+  var tz = document.getElementById('cm-sch-tz').value;
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dt = new Date(d + 'T00:00:00');
+  var label = months[dt.getMonth()] + ' ' + dt.getDate();
+  var c = cmWizBuild('scheduled', label);
+  c.scheduledAt = label + ' · ' + cmSchFormatTime(t) + ' ' + tz;
+  c.progress = 'Scheduled: ' + c.scheduledAt;
   CM_CAMPAIGNS.unshift(c);
+  cmCloseModal();
   cmCloseWizard();
   cmShowSection('campaigns');
-  toast('Campaign scheduled for Jun 1 ✓');
+  toast('Campaign scheduled · ' + cmEscape(label) + ' · ' + cmEscape(cmSchFormatTime(t) + ' ' + tz) + ' ✓');
 }
-function cmWizSend() {
+// v4.4.0 — wizard send now routes through the confirmation modal.
+function cmWizSend() { cmOpenSendConfirm({ source:'wizard' }); }
+function cmWizSendActual() {
   var c = cmWizBuild('active', 'Today');
   CM_CAMPAIGNS.unshift(c);
   cmCloseWizard();
@@ -10773,6 +11538,59 @@ function fcShow(name) {
 function fcShowSection(name) { return fcShow(name); }
 
 // ── Pipeline ────────────────────────────────────────────────────────────────
+// v4.4.0 — Forecast override (per-account $ input) persists to localStorage.
+// Default Nova=28K, Brightex=30K (CSM overrides per spec). Other accounts
+// have no override by default — input renders the contract ARR as a grayed
+// placeholder. Edits commit on blur/Enter, fire a toast, and update the
+// commit rollup at the top of Dust Forecast.
+var FC_OVERRIDE_KEY = 'teamos_forecast_overrides';
+function fcReadOverrides() {
+  try {
+    var raw = localStorage.getItem(FC_OVERRIDE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  // First-load defaults per spec.
+  var seed = { nova:28000, brightex:30000 };
+  try { localStorage.setItem(FC_OVERRIDE_KEY, JSON.stringify(seed)); } catch (e) {}
+  return seed;
+}
+function fcWriteOverrides(obj) {
+  try { localStorage.setItem(FC_OVERRIDE_KEY, JSON.stringify(obj)); } catch (e) {}
+}
+var FC_OVERRIDES = fcReadOverrides();
+
+// v4.4.0 — Status update timestamps (per row, in-memory only).
+var FC_STATUS_TS = {};
+var FC_STATUS_PENDING = {};
+
+// v4.4.0 — Column picker state. Default visible cols + hidden col data.
+var FC_COL_DEF = [
+  { key:'account',    lbl:'Account',          required:true,  visible:true },
+  { key:'health',     lbl:'Health',           visible:true },
+  { key:'arr',        lbl:'ARR',              visible:true },
+  { key:'renewal',    lbl:'Renewal',          visible:true },
+  { key:'daysOut',    lbl:'Days Out',         visible:true },
+  { key:'forecast',   lbl:'Forecast ($)',     visible:true,  isNew:true },
+  { key:'status',     lbl:'Forecast Status',  visible:true },
+  { key:'weight',     lbl:'Risk Weight',      visible:true },
+  { key:'action',     lbl:'Action',           visible:true },
+  { key:'tier',       lbl:'Account Tier',     visible:false },
+  { key:'term',       lbl:'Contract Term',    visible:false },
+  { key:'overdueCtas',lbl:'Overdue CTAs',     visible:false },
+  { key:'priorArr',   lbl:'Prior Year ARR',   visible:false },
+  { key:'planStatus', lbl:'Success Plan',     visible:false },
+  { key:'owner',      lbl:'CSM Owner',        visible:false }
+];
+var FC_COL_DATA = {
+  acme:     { tier:'$25K+',   term:'12 mo', overdueCtas:0, overdueCtasCls:'gy', priorArr:'$48K', planStatus:'Active',    planStatusCls:'g',  owner:'Carmen Corio' },
+  brightex: { tier:'$25K+',   term:'12 mo', overdueCtas:1, overdueCtasCls:'a',  priorArr:'$36K', planStatus:'Outdated',  planStatusCls:'a',  owner:'Carmen Corio' },
+  nova:     { tier:'$25K+',   term:'12 mo', overdueCtas:2, overdueCtasCls:'r',  priorArr:'$31K', planStatus:'None',      planStatusCls:'r',  owner:'Carmen Corio' },
+  meridian: { tier:'$10–25K', term:'12 mo', overdueCtas:0, overdueCtasCls:'gy', priorArr:'$22K', planStatus:'None',      planStatusCls:'r',  owner:'Carmen Corio' },
+  creston:  { tier:'$10–25K', term:'12 mo', overdueCtas:0, overdueCtasCls:'gy', priorArr:'$18K', planStatus:'Active',    planStatusCls:'g',  owner:'Carmen Corio' },
+  apex:     { tier:'$10–25K', term:'12 mo', overdueCtas:0, overdueCtasCls:'gy', priorArr:'$15K', planStatus:'None',      planStatusCls:'r',  owner:'Carmen Corio' }
+};
+var FC_COLS_OPEN = false;
+
 function fcRenderPipeline() {
   var sec = document.getElementById('fc-pipeline');
   if (!sec) return;
@@ -10783,14 +11601,31 @@ function fcRenderPipeline() {
   var unknownARR = FC_PIPELINE.filter(function(r){return r.status==='unknown';}).reduce(function(s,r){return s+r.arr;}, 0);
   var unknownCount = FC_PIPELINE.filter(function(r){return r.status==='unknown';}).length;
   var rowsHtml = FC_PIPELINE.map(fcPipeRowHTML).join('');
+  // Build the header from the column picker definition.
+  var headHtml = FC_COL_DEF.filter(function(c){return c.visible;}).map(function(c){ return '<th scope="col">' + fcEscape(c.lbl) + '</th>'; }).join('');
+  // Column picker dropdown content.
+  var visibleColsHtml = FC_COL_DEF.filter(function(c){return c.visible;}).map(function(c){
+    var rm = c.required ? '' : ' onclick="fcColsToggle(\'' + c.key + '\')"';
+    return '<button class="fc-cols-item" type="button"' + rm + (c.required ? ' disabled style="opacity:.5;cursor:default"' : '') + '><i class="ti ti-check fc-cols-item-ic"></i> ' + fcEscape(c.lbl) + '</button>';
+  }).join('');
+  var hiddenColsHtml = FC_COL_DEF.filter(function(c){return !c.visible;}).map(function(c){
+    return '<button class="fc-cols-item" type="button" onclick="fcColsToggle(\'' + c.key + '\')"><i class="ti ti-circle fc-cols-item-ic off"></i> ' + fcEscape(c.lbl) + '</button>';
+  }).join('');
+  var colsPop = FC_COLS_OPEN ? ' on' : '';
   sec.innerHTML = ''
     + '<div class="fc-hd">'
     +   '<div class="fc-hd-t">📈 Renewal Pipeline · Q2–Q3 2026</div>'
-    +   '<div class="fc-hd-meta"><span>Total at-risk ARR: <b style="color:#DC2626">$' + atRiskARR + 'K</b> across ' + atRiskCount + ' accounts</span><span class="sep">·</span><span>Total pipeline: <b>$' + totalARR + 'K</b> across ' + FC_PIPELINE.length + ' accounts</span></div>'
+    +   '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+    +     '<div class="fc-hd-meta"><span>Total at-risk ARR: <b style="color:#DC2626">$' + atRiskARR + 'K</b> across ' + atRiskCount + ' accounts</span><span class="sep">·</span><span>Total pipeline: <b>$' + totalARR + 'K</b> across ' + FC_PIPELINE.length + ' accounts</span></div>'
+    +     '<div class="fc-cols-wrap"><button class="fc-btn" type="button" onclick="fcColsTogglePop(event)"><i class="ti ti-columns"></i> Columns <i class="ti ti-chevron-down"></i></button>'
+    +       '<div class="fc-cols-pop' + colsPop + '" id="fc-cols-pop">'
+    +         '<div class="fc-cols-sec-t">Visible columns ✓</div>' + visibleColsHtml
+    +         (hiddenColsHtml ? '<div class="fc-cols-sec-t">Hidden columns (click to show)</div>' + hiddenColsHtml : '')
+    +       '</div>'
+    +     '</div>'
+    +   '</div>'
     + '</div>'
-    + '<div class="fc-pipe"><table class="fc-pipe-tbl"><thead><tr>'
-    +   '<th>Account</th><th>Health</th><th>ARR</th><th>Renewal</th><th>Days Out</th><th>Forecast Status</th><th>Risk Weight</th><th>Action</th>'
-    + '</tr></thead><tbody>' + rowsHtml + '</tbody></table></div>'
+    + '<div class="fc-pipe"><table class="fc-pipe-tbl"><thead><tr>' + headHtml + '</tr></thead><tbody>' + rowsHtml + '</tbody></table></div>'
     + '<div class="fc-pipe-sum">'
     +   '<div><div class="fc-pipe-sum-l">Committed ARR</div><div class="fc-pipe-sum-v g">$' + committedARR + 'K</div><div class="fc-pipe-sum-sub">Acme Corp · Healthy</div></div>'
     +   '<div><div class="fc-pipe-sum-l">At Risk ARR</div><div class="fc-pipe-sum-v r">$' + atRiskARR + 'K</div><div class="fc-pipe-sum-sub">Nova + Brightex</div></div>'
@@ -10798,27 +11633,100 @@ function fcRenderPipeline() {
     +   '<div><div class="fc-pipe-sum-l">Total pipeline</div><div class="fc-pipe-sum-v">$' + totalARR + 'K</div><div class="fc-pipe-sum-sub">' + FC_PIPELINE.length + ' accounts · Q2–Q3</div></div>'
     + '</div>';
 }
+// v4.4.0 — Row HTML per visible column. The "Action" cell passes the row's
+// own account key into fcAction(); pipeline cards never hardcode the
+// account. Champion Protocol → fcAction('save','apex') ← fixed Fix 4.
 function fcPipeRowHTML(r) {
   var statusPop = (FC_STATUS_OPEN === r.key) ? ' on' : '';
   var optsHtml = FC_STATUS_OPTS.map(function(o){
     return '<button class="fc-pipe-status-opt" type="button" onclick="fcSetStatus(\'' + r.key + '\',\'' + o[0] + '\')">' + fcEscape(o[1]) + '</button>';
   }).join('');
-  return '<tr>'
-    + '<td><span class="fc-pipe-nm acct-lk" onclick="fcOpenMB(\'' + r.key + '\')">' + fcEscape(r.nm) + '</span></td>'
-    + '<td><span class="fc-pipe-health"><span class="dot ' + r.healthCls + '"></span>' + fcEscape(r.healthLabel) + '</span></td>'
-    + '<td class="fc-pipe-arr">' + r.arrLabel + '</td>'
-    + '<td>' + r.renewal + '</td>'
-    + '<td class="fc-pipe-days ' + r.daysCls + '">' + r.daysOut + 'd</td>'
-    + '<td><span class="fc-pipe-status-wrap"><button class="fc-pipe-status ' + r.status + '" type="button" onclick="fcToggleStatus(\'' + r.key + '\',event)">' + fcEscape(r.statusLabel) + '</button><div class="fc-pipe-status-pop' + statusPop + '">' + optsHtml + '</div></span></td>'
-    + '<td><span class="fc-pipe-weight ' + r.weight + '">' + fcEscape(r.weightLabel) + '</span></td>'
-    + '<td><button class="fc-btn" type="button" onclick="fcAction(\'' + r.action + '\',\'' + r.actionAcct + '\')">' + fcEscape(r.actionLabel) + '</button></td>'
-  + '</tr>';
+  var ts = FC_STATUS_TS[r.key];
+  var pending = FC_STATUS_PENDING[r.key];
+  var tsHtml = (ts || pending) ? '<div class="fc-pipe-status-meta">' + (pending ? '<span class="fc-pipe-status-pending"></span> Syncing…' : ('Updated ' + fcEscape(ts))) + '</div>' : '';
+  // Forecast $ override input.
+  var raw = FC_OVERRIDES[r.key];
+  var fcVal = (raw != null && raw !== '') ? '$' + Math.round(raw / 1000) + 'K' : '';
+  var contractLabel = '$' + r.arr + 'K';
+  var deltaHtml = '';
+  if (raw != null && raw !== '') {
+    var contractDollars = r.arr * 1000;
+    var diff = Math.round((raw - contractDollars) / 1000);
+    if (diff !== 0) deltaHtml = '<span class="fc-fc-delta ' + (diff < 0 ? 'r' : 'g') + '">' + (diff < 0 ? '−' : '+') + '$' + Math.abs(diff) + 'K</span>';
+  }
+  var emptyCls = (raw == null || raw === '') ? ' empty' : '';
+  var cd = FC_COL_DATA[r.key] || {};
+  // Cell renderer — keyed off the column key from FC_COL_DEF.
+  function cellFor(key) {
+    switch (key) {
+      case 'account':  return '<td><span class="fc-pipe-nm acct-lk" tabindex="0" onclick="fcOpenAcctDrawer(\'' + r.key + '\')">' + fcEscape(r.nm) + '</span></td>';
+      case 'health':   return '<td><span class="fc-pipe-health"><span class="dot ' + r.healthCls + '"></span>' + fcEscape(r.healthLabel) + '</span></td>';
+      case 'arr':      return '<td class="fc-pipe-arr">' + contractLabel + '</td>';
+      case 'renewal':  return '<td>' + r.renewal + '</td>';
+      case 'daysOut':  return '<td class="fc-pipe-days ' + r.daysCls + '">' + r.daysOut + 'd</td>';
+      case 'forecast': return '<td><input class="fc-fc-input' + emptyCls + '" type="text" value="' + fcEscape(fcVal) + '" placeholder="' + fcEscape(contractLabel) + '" aria-label="Forecast amount for ' + fcEscape(r.nm) + '" onblur="fcSaveOverride(\'' + r.key + '\',this.value)" onkeydown="if(event.key===\'Enter\'){this.blur()}">' + deltaHtml + '</td>';
+      case 'status':   return '<td><span class="fc-pipe-status-wrap"><button class="fc-pipe-status ' + r.status + '" type="button" onclick="fcToggleStatus(\'' + r.key + '\',event)">' + fcEscape(r.statusLabel) + '</button><div class="fc-pipe-status-pop' + statusPop + '">' + optsHtml + '</div></span>' + tsHtml + '</td>';
+      case 'weight':   return '<td><span class="fc-pipe-weight ' + r.weight + '">' + fcEscape(r.weightLabel) + '</span></td>';
+      case 'action':   return '<td><button class="fc-btn" type="button" onclick="fcAction(\'' + r.action + '\',\'' + r.actionAcct + '\')">' + fcEscape(r.actionLabel) + '</button></td>';
+      case 'tier':     return '<td>' + fcEscape(cd.tier || '—') + '</td>';
+      case 'term':     return '<td>' + fcEscape(cd.term || '—') + '</td>';
+      case 'overdueCtas': return '<td><span style="font-weight:700;color:' + (cd.overdueCtasCls === 'r' ? '#DC2626' : cd.overdueCtasCls === 'a' ? '#D97706' : '#6B7280') + '">' + cd.overdueCtas + '</span></td>';
+      case 'priorArr': return '<td>' + fcEscape(cd.priorArr || '—') + '</td>';
+      case 'planStatus': {
+        var ic = cd.planStatusCls === 'g' ? '✅' : cd.planStatusCls === 'a' ? '⚠️' : '❌';
+        return '<td><span style="font-weight:600">' + ic + ' ' + fcEscape(cd.planStatus || '—') + '</span></td>';
+      }
+      case 'owner':    return '<td>' + fcEscape(cd.owner || '—') + '</td>';
+    }
+    return '<td>—</td>';
+  }
+  var cells = FC_COL_DEF.filter(function(c){return c.visible;}).map(function(c){ return cellFor(c.key); }).join('');
+  return '<tr>' + cells + '</tr>';
+}
+function fcColsTogglePop(ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  FC_COLS_OPEN = !FC_COLS_OPEN;
+  fcRenderPipeline();
+}
+function fcColsToggle(key) {
+  var col = FC_COL_DEF.find(function(c){return c.key===key;});
+  if (!col || col.required) return;
+  col.visible = !col.visible;
+  fcRenderPipeline();
+}
+// Forecast $ override commit.
+function fcSaveOverride(key, raw) {
+  var num = String(raw || '').replace(/[^0-9.]/g, '');
+  var r = FC_PIPELINE.find(function(x){return x.key===key;});
+  if (num === '') { delete FC_OVERRIDES[key]; }
+  else {
+    var v = parseFloat(num);
+    if (!isNaN(v)) {
+      // Accept either dollar amount (e.g. 28000) or shorthand $28K → 28.
+      if (v <= 999) v *= 1000;
+      FC_OVERRIDES[key] = Math.round(v);
+    }
+  }
+  fcWriteOverrides(FC_OVERRIDES);
+  fcRenderPipeline();
+  if (r) {
+    var displayed = FC_OVERRIDES[key] != null ? ('$' + Math.round(FC_OVERRIDES[key] / 1000) + 'K') : 'cleared';
+    toast('Forecast updated · ' + fcEscape(r.nm) + ' · ' + displayed + ' · Logged ✓');
+  }
 }
 function fcToggleStatus(key, ev) {
   if (ev && ev.stopPropagation) ev.stopPropagation();
   FC_STATUS_OPEN = (FC_STATUS_OPEN === key) ? null : key;
   fcRenderPipeline();
 }
+// v4.4.0 — Status change → write confirmation + timestamp + pending pulse.
+// Gainsight API mapping (documented for the Phase 2 server-side bridge):
+//   "Committed"            → forecastCategory: "Commit"
+//   "On Track"             → forecastCategory: "Pipeline"
+//   "At Risk"              → forecastCategory: "Pipeline" (with risk flag)
+//   "Likely Churn"         → forecastCategory: "Pipeline" (churn flag)
+//   "Expansion Likely"     → forecastCategory: "Best Case"
+//   "Pushed to Next Quarter" → forecastCategory: "Omit"
 function fcSetStatus(key, status) {
   var r = FC_PIPELINE.find(function(x){return x.key===key;});
   var o = FC_STATUS_OPTS.find(function(x){return x[0]===status;});
@@ -10826,11 +11734,27 @@ function fcSetStatus(key, status) {
   r.status = status;
   r.statusLabel = o[1];
   FC_STATUS_OPEN = null;
+  // Compose a "Today HH:MM AM" timestamp for the inline meta line.
+  var now = new Date();
+  var hr = now.getHours();
+  var min = now.getMinutes();
+  var ampm = hr >= 12 ? 'PM' : 'AM';
+  var hr12 = hr % 12 || 12;
+  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+  FC_STATUS_PENDING[key] = true;
+  FC_STATUS_TS[key] = hr12 + ':' + pad(min) + ' ' + ampm;
   fcRenderPipeline();
-  toast('Forecast updated · ' + fcEscape(r.nm) + ' · Salesforce ✓');
+  // Clear the pending pulse after 2s.
+  setTimeout(function(){ delete FC_STATUS_PENDING[key]; if (FC_ACTIVE === 'pipeline') fcRenderPipeline(); }, 2000);
+  toast('Forecast updated · ' + fcEscape(r.nm) + ' · ' + fcEscape(o[1]) + ' · Logged to Gainsight ✓');
 }
-// Close status popover on outside click.
-document.addEventListener('click', function(){ if (FC_STATUS_OPEN !== null) { FC_STATUS_OPEN = null; if (FC_ACTIVE === 'pipeline') fcRenderPipeline(); } });
+// Close status + column popovers on outside click.
+document.addEventListener('click', function(){
+  var changed = false;
+  if (FC_STATUS_OPEN !== null) { FC_STATUS_OPEN = null; changed = true; }
+  if (FC_COLS_OPEN)             { FC_COLS_OPEN = false; changed = true; }
+  if (changed && FC_ACTIVE === 'pipeline') fcRenderPipeline();
+});
 
 // ── Timeline ────────────────────────────────────────────────────────────────
 function fcRenderTimeline() {
@@ -10854,7 +11778,7 @@ function fcRenderTimeline() {
     return rows.map(function(r){
       var b = badges[r.key] || ['dark', '—'];
       return '<div class="fc-tl-acct">'
-        + '<div class="fc-tl-r1"><span class="fc-tl-nm acct-lk" onclick="fcOpenMB(\'' + r.key + '\')">' + fcEscape(r.nm) + '</span><span class="fc-tl-date">' + r.renewal + '</span></div>'
+        + '<div class="fc-tl-r1"><span class="fc-tl-nm acct-lk" tabindex="0" onclick="fcOpenAcctDrawer(\'' + r.key + '\')" onkeydown="if(event.key===\'Enter\'){fcOpenAcctDrawer(\'' + r.key + '\')}">' + fcEscape(r.nm) + '</span><span class="fc-tl-date">' + r.renewal + '</span></div>'
         + '<div class="fc-tl-r2"><span class="fc-tl-arr">' + r.arrLabel + '</span><span class="fc-tl-dot ' + r.healthCls + '"></span></div>'
         + '<span class="fc-tl-badge ' + b[0] + '">' + fcEscape(b[1]) + '</span>'
       + '</div>';
@@ -10883,11 +11807,62 @@ function fcRenderTimeline() {
 }
 
 // ── Dust Forecast ───────────────────────────────────────────────────────────
+// v4.4.0 — Forecast commit rollup persists between sessions via FC_OVERRIDES
+// (per-account dollar amounts). Quota is a user-set target saved to its own
+// localStorage key. Both surface above the Dust summary card.
+var FC_QUOTA_KEY = 'teamos_forecast_quota';
+function fcReadQuota() { try { var v = parseInt(localStorage.getItem(FC_QUOTA_KEY), 10); return isNaN(v) ? null : v; } catch (e) { return null; } }
+function fcWriteQuota(v) { try { localStorage.setItem(FC_QUOTA_KEY, String(v)); } catch (e) {} }
+function fcCommitTotal() {
+  // Per-account commit = override when set, else status-weighted contract ARR.
+  var statusWeight = { ontrack:1, committed:1, expansion:1.1, atrisk:0.7, churn:0.3, unknown:0.5, pushed:0 };
+  return FC_PIPELINE.reduce(function(sum, r){
+    var override = FC_OVERRIDES[r.key];
+    if (override != null && override !== '') return sum + override;
+    var w = statusWeight[r.status] != null ? statusWeight[r.status] : 0.5;
+    return sum + Math.round(r.arr * 1000 * w);
+  }, 0);
+}
+function fcRenderRollup() {
+  var commit = fcCommitTotal();
+  var atRisk = FC_PIPELINE.filter(function(r){return r.status==='churn'||r.status==='atrisk';}).reduce(function(s,r){return s+r.arr*1000;}, 0);
+  var quota = fcReadQuota();
+  var gap = quota != null ? (commit - quota) : null;
+  var gapHtml;
+  if (gap == null) gapHtml = '<div class="fc-rollup-cell-v mute">—</div><button class="fc-rollup-quota" type="button" onclick="fcOpenQuotaForm()">Set quota</button><div class="fc-rollup-quota-form" id="fc-quota-form"><input type="number" id="fc-quota-input" placeholder="$ target" aria-label="Quota target"><button class="cm-btn prim" type="button" onclick="fcSaveQuota()">Set</button></div>';
+  else gapHtml = '<div class="fc-rollup-cell-v ' + (gap >= 0 ? 'g' : 'r') + '">' + (gap >= 0 ? '+' : '−') + '$' + Math.round(Math.abs(gap) / 1000) + 'K</div><div class="fc-rollup-cell-sub">Quota: $' + Math.round(quota / 1000) + 'K · <button class="fc-rollup-quota" type="button" onclick="fcOpenQuotaForm()">Change</button></div>';
+  return '<div class="fc-rollup">'
+    + '<div class="fc-rollup-hd"><div class="fc-rollup-l">My forecast commit · Q2 2026</div><div class="fc-rollup-ts">Updated: ' + fcEscape(FC_DUST_GEN) + '</div></div>'
+    + '<div class="fc-rollup-cells">'
+    +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">Commit total</div><div class="fc-rollup-cell-v">$' + Math.round(commit / 1000) + 'K</div></div>'
+    +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">At Risk</div><div class="fc-rollup-cell-v r">$' + Math.round(atRisk / 1000) + 'K</div></div>'
+    +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">Gap to Quota</div>' + gapHtml + '</div>'
+    + '</div>'
+    + '</div>';
+}
+function fcOpenQuotaForm() {
+  var form = document.getElementById('fc-quota-form');
+  if (form) form.classList.add('on');
+  var inp = document.getElementById('fc-quota-input');
+  if (inp) { var q = fcReadQuota(); if (q != null) inp.value = q; inp.focus(); }
+}
+function fcSaveQuota() {
+  var inp = document.getElementById('fc-quota-input');
+  if (!inp) return;
+  var v = parseFloat(inp.value);
+  if (isNaN(v)) { toast('Enter a number'); return; }
+  if (v <= 9999) v *= 1000;
+  fcWriteQuota(Math.round(v));
+  toast('Quota set · $' + Math.round(v / 1000) + 'K ✓');
+  fcRenderDust();
+}
+
 function fcRenderDust() {
   var sec = document.getElementById('fc-dustforecast');
   if (!sec) return;
   sec.innerHTML = ''
     + '<div class="fc-hd"><div class="fc-hd-t">🔮 Dust Forecast · Q2 2026</div></div>'
+    + fcRenderRollup()
     + '<div class="fc-dust-head">'
     +   '<div class="fc-dust-gen"><i class="ti ti-sparkles" style="color:#4F46E5"></i> Generated: <span id="fc-dust-gen">' + fcEscape(FC_DUST_GEN) + '</span></div>'
     +   '<button class="fc-btn" type="button" onclick="fcRegenerate()" id="fc-regen-btn"><i class="ti ti-refresh"></i> Regenerate</button>'
@@ -10985,12 +11960,23 @@ function fcAction(kind, acct) {
     case 'save':     if (typeof openAgentDrawer === 'function') openAgentDrawer('save', acct); else toast('Save Strategy · ' + fcEscape(acct) + ' ✓'); break;
     case 'risk':     if (typeof openAgentDrawer === 'function') openAgentDrawer('risk', acct); else toast('Risk Analyst · ' + fcEscape(acct) + ' ✓'); break;
     case 'prep':     if (typeof openAgentDrawer === 'function') openAgentDrawer('prep', acct); else toast('Prep Me · ' + fcEscape(acct) + ' ✓'); break;
-    case 'gb':       if (typeof openGhostBusterFromPopover === 'function') { try { openGhostBusterFromPopover(acct); return; } catch (_) {} } toast('Ghost-Buster · ' + fcEscape(acct) + ' ✓'); break;
+    case 'gb':       openGhostBuster(acct); break;
     case 'champion': if (typeof openAgentDrawer === 'function') openAgentDrawer('save', acct); else toast('Champion Protocol · ' + fcEscape(acct) + ' ✓'); break;
-    case 'draft':    if (typeof draftReply === 'function') draftReply(acct); else toast('Draft Reply · ' + fcEscape(acct) + ' ✓'); break;
+    case 'draft':    fcOpenReply(acct); break;
     default: toast('Action: ' + kind + ' · ' + fcEscape(acct) + ' ✓');
   }
 }
+// v4.4.0 — Public openGhostBuster(acct) wrapper. Routes to the existing
+// Ghost-Buster popover-based flow for known accounts; falls back to a toast
+// for accounts without a registered Ghost-Buster view.
+function openGhostBuster(acct) {
+  if (typeof openGhostBusterFromPopover === 'function') {
+    try { openGhostBusterFromPopover(acct); return; } catch (_) {}
+  }
+  toast('Ghost-Buster · ' + fcEscape(acct) + ' ✓');
+}
+// Legacy navigate-to-dashboard helper kept for compatibility; Timeline now
+// uses fcOpenAcctDrawer instead so the CSM stays inside the Forecasting tab.
 function fcOpenMB(acct) {
   if (typeof goTab === 'function') {
     var tab = document.querySelector('.n-tab[onclick*="goTab(\'dash\'"]');
@@ -11002,6 +11988,99 @@ function fcOpenMB(acct) {
     }
     toast('Mission Briefing · ' + fcEscape(acct) + ' ✓');
   }, 80);
+}
+
+// v4.4.0 — In-tab account drawer. Slides in from right without navigating
+// away. Clicking the same account toggles it closed. Used by Timeline + the
+// Pipeline account-name links.
+var FC_ACCT_DRAWER_KEY = null;
+function fcOpenAcctDrawer(key) {
+  if (FC_ACCT_DRAWER_KEY === key) { fcCloseAcctDrawer(); return; }
+  FC_ACCT_DRAWER_KEY = key;
+  var r = FC_PIPELINE.find(function(x){return x.key===key;});
+  if (!r) return;
+  var drawer = document.getElementById('fc-acct-drawer');
+  var ov = document.getElementById('fc-acct-drawer-ov');
+  if (!drawer || !ov) return;
+  var cd = FC_COL_DATA[r.key] || {};
+  var summaries = {
+    acme:     'Healthy expansion candidate. David Kim is signaling enterprise tier interest; SSO rollout is the immediate lever.',
+    brightex: 'At-risk renewal with unanswered SLA question from Sarah Chen and a competitor flagged in the last 2 Gong calls.',
+    nova:     'Critical save. James Wu departed; Michael Torres is the new contact with no relationship to 1Password. Contract unopened, 17 days to renewal.',
+    meridian: '73 days dark. Jennifer Ramos sent an inbound email today — first signal in over 2 months.',
+    creston:  'Neglect-dark, not risk-dark. Marcus Webb likely intact. Lead with a specific product update.',
+    apex:     'Champion change. Ryan Patel is the new IT Director with no prior 1Password contact. AE warm intro required first.'
+  };
+  drawer.innerHTML = ''
+    + '<div class="fc-acct-drawer-hd">'
+    +   '<div class="fc-acct-drawer-nm">' + fcEscape(r.nm) + '</div>'
+    +   '<button class="cm-drawer-close" type="button" onclick="fcCloseAcctDrawer()" aria-label="Close drawer">&times;</button>'
+    + '</div>'
+    + '<div class="fc-acct-drawer-body">'
+    +   '<div class="fc-acct-kv-grid">'
+    +     '<div class="fc-acct-kv-cell"><div class="fc-acct-kv-l">Health</div><div class="fc-acct-kv-v">' + fcEscape(r.healthLabel) + '</div></div>'
+    +     '<div class="fc-acct-kv-cell"><div class="fc-acct-kv-l">ARR</div><div class="fc-acct-kv-v">' + r.arrLabel + '</div></div>'
+    +     '<div class="fc-acct-kv-cell"><div class="fc-acct-kv-l">Renewal</div><div class="fc-acct-kv-v">' + r.renewal + '</div><div class="fc-acct-kv-sub">' + r.daysOut + 'd</div></div>'
+    +     '<div class="fc-acct-kv-cell"><div class="fc-acct-kv-l">Open CTAs</div><div class="fc-acct-kv-v">' + (cd.overdueCtas != null ? cd.overdueCtas : '—') + '</div><div class="fc-acct-kv-sub">' + (cd.overdueCtas ? 'overdue' : 'none') + '</div></div>'
+    +     '<div class="fc-acct-kv-cell"><div class="fc-acct-kv-l">Last Gong</div><div class="fc-acct-kv-v" style="font-size:11px">May 10 · SSO</div></div>'
+    +     '<div class="fc-acct-kv-cell"><div class="fc-acct-kv-l">Status</div><div class="fc-acct-kv-v" style="font-size:12px">' + fcEscape(r.statusLabel) + '</div></div>'
+    +   '</div>'
+    +   '<div class="fc-acct-drawer-sum">' + fcEscape(summaries[r.key] || 'No summary available.') + '</div>'
+    +   '<div class="fc-acct-drawer-acts">'
+    +     '<button class="rs-btn prim" type="button" onclick="fcAction(\'prep\',\'' + r.key + '\')"><i class="ti ti-bolt"></i> Prep Me</button>'
+    +     '<button class="rs-btn" type="button" onclick="fcAction(\'risk\',\'' + r.key + '\')"><i class="ti ti-shield-check"></i> Risk Analyst</button>'
+    +     '<button class="rs-btn" type="button" onclick="toast(\'Opening Gainsight · ' + fcEscape(r.nm) + ' ✓\')"><i class="ti ti-external-link"></i> Open in Gainsight</button>'
+    +   '</div>'
+    + '</div>';
+  ov.classList.add('on');
+  drawer.classList.add('on');
+  drawer.setAttribute('aria-hidden', 'false');
+}
+function fcCloseAcctDrawer(e) {
+  if (e && e.target && e.target.id !== 'fc-acct-drawer-ov' && e.type === 'click') return;
+  FC_ACCT_DRAWER_KEY = null;
+  var drawer = document.getElementById('fc-acct-drawer');
+  var ov = document.getElementById('fc-acct-drawer-ov');
+  if (drawer) { drawer.classList.remove('on'); drawer.setAttribute('aria-hidden','true'); }
+  if (ov) ov.classList.remove('on');
+}
+
+// v4.4.0 — Reply compose modal. Reused for Jennifer (Meridian) + Sarah
+// (Brightex) reply buttons in the Dust Forecast summary cards.
+var FC_REPLY_TEMPLATES = {
+  meridian: { nm:'Jennifer Ramos', email:'jennifer.ramos@meridian.com', acct:'Meridian',
+    subject:'Re: Checking in about 1Password',
+    body:"Hi Jennifer,\n\nThank you for reaching out — I was thinking about Meridian and glad to hear from you. It's been a few months since we connected and I'd love to catch up.\n\nAre you available for a 20-minute call this week? Here's a link to book a time:\ncalendly.com/carmen-corio\n\nCarmen" },
+  brightex: { nm:'Sarah Chen', email:'sarah.chen@brightex.com', acct:'Brightex',
+    subject:'Re: SLA question — let me address this directly',
+    body:"Hi Sarah,\n\nThanks for raising the SLA question — I want to make sure we address it directly before your renewal next month.\n\nOn the specific concern you mentioned: the 99.9% uptime SLA covers our core auth infrastructure and we've never missed it in the last 4 quarters. Happy to share the public status page history.\n\nLet's get 30 minutes on the calendar this week to walk through this together:\ncalendly.com/carmen-corio\n\nCarmen" }
+};
+function fcOpenReply(acct) {
+  var t = FC_REPLY_TEMPLATES[acct];
+  if (!t) { toast('No reply template for ' + fcEscape(acct)); return; }
+  var body = ''
+    + '<div class="cm-form-row col"><label class="cm-form-label">To</label><input class="cm-form-input" id="fc-reply-to" type="email" value="' + fcEscape(t.email) + '" readonly></div>'
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="fc-reply-subj">Subject</label><input class="cm-form-input" id="fc-reply-subj" type="text" value="' + fcEscape(t.subject) + '"></div>'
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="fc-reply-body">Body</label><textarea class="fc-reply-body" id="fc-reply-body">' + fcEscape(t.body) + '</textarea></div>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn" type="button" onclick="fcReplyCopy()"><i class="ti ti-copy"></i> Copy Draft</button>'
+    + '<button class="cm-btn prim" type="button" onclick="fcReplyMarkSent(\'' + acct + '\')"><i class="ti ti-check"></i> Mark as Sent</button>';
+  cmOpenModal('Reply draft · ' + t.nm + ' · ' + t.acct, body, foot);
+}
+function fcReplyCopy() {
+  var subj = document.getElementById('fc-reply-subj').value;
+  var body = document.getElementById('fc-reply-body').value;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText('Subject: ' + subj + '\n\n' + body).then(function(){ toast('Reply draft copied ✓'); });
+  } else {
+    toast('Reply draft ready · copy from preview');
+  }
+}
+function fcReplyMarkSent(acct) {
+  var t = FC_REPLY_TEMPLATES[acct];
+  cmCloseModal();
+  toast('Reply logged · ' + (t ? t.acct : acct) + ' · Gainsight timeline updated ✓');
 }
 
 // Pre-render default section so opening the tab is instant.
