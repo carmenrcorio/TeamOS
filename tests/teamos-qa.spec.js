@@ -458,11 +458,16 @@ test.describe('Forecasting', () => {
     expect(headers.some(h => h.indexOf('Forecast ($)') !== -1)).toBe(true);
   });
 
-  test('Forecast $ override persists to localStorage', async ({ page }) => {
+  test('Forecast $ override persists to localStorage with Phase-2 shape', async ({ page }) => {
     await page.evaluate(() => fcSaveOverride('nova', '28000'));
     await page.waitForTimeout(150);
-    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_forecast_overrides')).nova);
-    expect(saved).toBe(28000);
+    const rec = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_forecast_overrides')).nova);
+    expect(rec.forecast_amount).toBe(28000);
+    expect(rec.display_name).toBe('NovaVault');
+    expect(rec.gainsight_renewal_id).toBe('PENDING_OAUTH');
+    expect(rec.salesforce_opp_id).toBe('PENDING_OAUTH');
+    expect(rec.quarter).toBe('Q2-2026');
+    expect(typeof rec.updated_at).toBe('string');
   });
 
   test('Forecast Status change stamps a timestamp + 2s pending pulse', async ({ page }) => {
@@ -554,6 +559,108 @@ test.describe('Forecasting', () => {
     await page.waitForTimeout(150);
     const after = await page.locator('.fc-pipe-tbl thead th').count();
     expect(after).toBe(before + 1);
+  });
+
+  // ─── v4.7.0 additions ──────────────────────────────────────────────────
+  test('v4.7.0: FORECAST_STATUS_CROSSWALK constant exposes Gainsight mapping', async ({ page }) => {
+    const map = await page.evaluate(() => FORECAST_STATUS_CROSSWALK);
+    expect(map['Committed']).toBe('Commit');
+    expect(map['On Track']).toBe('Best Case');
+    expect(map['At Risk']).toBe('Pipeline');
+    expect(map['Likely Churn']).toBe('Omitted');
+    expect(map['Expansion Likely']).toBe('Best Case');
+    expect(map['Pushed to Next Quarter']).toBe('Omitted');
+    expect(map['Unknown']).toBe('Pipeline');
+  });
+
+  test('v4.7.0: legacy { key: number } overrides migrate to Phase-2 shape on read', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('teamos_forecast_overrides', JSON.stringify({ acme: 50000 }));
+    });
+    await page.reload();
+    await page.evaluate(() => goTab('forecast', document.querySelector('[onclick*="goTab(\'forecast\'"]')));
+    await page.waitForTimeout(300);
+    const migrated = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_forecast_overrides')).acme);
+    expect(typeof migrated).toBe('object');
+    expect(migrated.forecast_amount).toBe(50000);
+    expect(migrated.gainsight_renewal_id).toBe('PENDING_OAUTH');
+  });
+
+  test('v4.7.0: Timeline card click navigates to Pipeline + highlights the row', async ({ page }) => {
+    await page.evaluate(() => fcShowSection('timeline'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => fcJumpToPipelineRow('nova'));
+    await page.waitForTimeout(250);
+    await expect(page.locator('#fc-pipeline')).toHaveClass(/on/);
+    const highlighted = await page.locator('.fc-pipe-tbl tbody tr.fc-row-highlight').count();
+    expect(highlighted).toBe(1);
+    // Highlight clears after ~2s
+    await page.waitForTimeout(2100);
+    const stillHighlighted = await page.locator('.fc-pipe-tbl tbody tr.fc-row-highlight').count();
+    expect(stillHighlighted).toBe(0);
+  });
+
+  test('v4.7.0: ARR Trends account row click navigates to Pipeline', async ({ page }) => {
+    await page.evaluate(() => fcShowSection('trends'));
+    await page.waitForTimeout(200);
+    // Click the second row (Brightex). Use evaluate to bypass timing.
+    await page.evaluate(() => {
+      const rows = document.querySelectorAll('#fc-arrtrends .fc-acct-tbl tbody tr');
+      // Find the Brightex Inc row by label
+      for (const r of rows) {
+        if (/Brightex Inc/.test(r.textContent)) { r.click(); break; }
+      }
+    });
+    await page.waitForTimeout(250);
+    await expect(page.locator('#fc-pipeline')).toHaveClass(/on/);
+    const highlighted = await page.locator('.fc-pipe-tbl tbody tr.fc-row-highlight').count();
+    expect(highlighted).toBe(1);
+  });
+
+  test('v4.7.0: ARR Trends chart bars show a tooltip on hover', async ({ page }) => {
+    await page.evaluate(() => fcShowSection('trends'));
+    await page.waitForTimeout(200);
+    // Trigger the May column via direct API call (avoids hover-rect timing flakes)
+    await page.evaluate(() => {
+      const col = document.querySelector('[data-month="May"]');
+      const rect = col.getBoundingClientRect();
+      fcTrendBarTip({ currentTarget: col }, 'May');
+    });
+    await page.waitForTimeout(150);
+    await expect(page.locator('#fc-trend-tip')).toHaveClass(/on/);
+    const txt = await page.locator('#fc-trend-tip').textContent();
+    expect(txt).toContain('May');
+    expect(txt).toMatch(/Healthy/);
+    expect(txt).toMatch(/At risk/);
+    expect(txt).toMatch(/Dark/);
+  });
+
+  test('v4.7.0: Copy Forecast Summary button generates dynamic clipboard text', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.evaluate(() => fcShowSection('dust'));
+    await page.waitForTimeout(200);
+    await expect(page.locator('#fc-copy-summary-btn')).toBeVisible();
+    const summary = await page.evaluate(() => fcBuildForecastSummary());
+    expect(summary).toContain('Q2 2026 Forecast');
+    expect(summary).toContain('Carmen Corio');
+    expect(summary).toMatch(/Commit: \$\d+K/);
+    expect(summary).toMatch(/At Risk: \$\d+K/);
+    expect(summary).toContain('NovaVault');
+    expect(summary).toContain('Acme Corp');
+  });
+
+  test('v4.7.0: Pipeline action buttons audit — every row passes own accountKey', async ({ page }) => {
+    // Same as the v4.6.0 audit but kept under v4.7.0 to flag any regression
+    // if a future row hardcodes a different key.
+    const onclicks = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('#fc-pipeline .fc-pipe-tbl tbody tr')).map(r =>
+        r.querySelector('td:last-child button')?.getAttribute('onclick') || null
+      )
+    );
+    const expected = ['nova', 'brightex', 'meridian', 'creston', 'apex', 'acme'];
+    onclicks.forEach((click, i) => {
+      expect(click).toContain("'" + expected[i] + "'");
+    });
   });
 });
 
