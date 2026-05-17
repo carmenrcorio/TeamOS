@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.4.0
+**Version:** 4.5.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -627,6 +627,54 @@ All changes logged here. Format: `## [version] — YYYY-MM-DD`
 
 ---
 
+## [4.5.0] — 2026-05-17
+
+Regression-confirmation + targeted accessibility follow-up. The user issued a spec listing 8 Forecasting items already shipped in v4.4.0; re-verified each end-to-end against the live build, found one inaccurate "deferred" note in the v4.4.0 SPEC (Creston Ghost-Buster), and corrected it. Added one real improvement: the global Escape handler now closes the new modals and drawers introduced in v4.4.0.
+
+### Verified working (already shipped in v4.4.0)
+- Ghost-Buster Meridian + Creston: `fcAction('gb','meridian')` → `view-meridian`; `fcAction('gb','creston')` → `view-creston`. Both views exist in the DOM; my v4.4.0 note that Creston "routes to the toast" was wrong (`view-creston` was registered all along).
+- Champion Protocol passes correct accountId: full 6-row audit confirms `fcAction('save','nova')`, `fcAction('risk','brightex')`, `fcAction('gb','meridian')`, `fcAction('gb','creston')`, `fcAction('save','apex')`, `fcAction('prep','acme')`.
+- Reply modal with TO/SUBJECT/editable body for Meridian (Jennifer Ramos) and Brightex (Sarah Chen, SLA-specific). `Mark as Sent` toasts "Reply logged · [Account] · Gainsight timeline updated ✓".
+- Timeline drawer (`#fc-acct-drawer`, 360 px right-side) opens with Health / ARR / Renewal / Open CTAs / Last Gong + three quick-action buttons. CSM stays on the Forecasting tab.
+- Forecast ($) override column: text input per row, parses `$28K` / `28000` / `28`, persists to `localStorage.teamos_forecast_overrides`, surfaces a red/teal delta badge vs contract ARR.
+- Forecast Status change shows toast + inline timestamp (`Updated 8:43 AM`) + 2 s syncing pulse + Gainsight crosswalk comment.
+- Dust Forecast commit rollup (3 cells: Commit total / At Risk / Gap to Quota) with quota persisted to `localStorage.teamos_forecast_quota`.
+- Pipeline column picker (15 entries: 9 default visible + 6 hidden) with toggle.
+
+### Added — Escape handler closes the new modals/drawers
+Extended the v3.4.0 global Escape handler with an explicit precedence chain so the v4.4.0-era surfaces also dismiss on Escape (previously only the agent drawer + pulse dropdowns did):
+1. Generic modal overlay (`#cm-modal-ov`) — Add Contact / Template Builder / Schedule / Send Confirm / Reply / Add-to-Campaign picker / Quota form.
+2. Campaign view right-side drawer (`#cm-cv-drawer`).
+3. Forecasting account drawer (`#fc-acct-drawer`).
+4. Campaign wizard (`#cm-wiz-ov`).
+5. Signature modal (`#cm-sig-ov`).
+6. Agent drawer (existing v3.4.0 path) — also returns focus to `window._drawerTrigger`.
+7. Pulse-strip + nav dropdowns via `closeAllDropdowns()`.
+
+First open layer Escape encounters consumes the event; nothing further fires.
+
+### Corrected — v4.4.0 SPEC entry
+Struck the "Creston routes to the Ghost-Buster fallback toast" line. The full chain `fcAction('gb','creston')` → `openGhostBuster('creston')` → `openGhostBusterFromPopover('creston')` → `openPanel('creston', null)` resolves the existing `view-creston` Mission Briefing view, with the registered `Creston Software · $18K ARR · Renews Jul 15` Ghost-Buster card. Headless test: `activeView: "view-creston"`, `crestonNameInDOM: true`.
+
+### Verification matrix (headless, end-to-end)
+- FIX 1 Meridian — opens `view-meridian` ✓
+- FIX 1 Creston — opens `view-creston` ✓
+- FIX 2 Champion Apex — `openAgentDrawer('save','apex')` ✓
+- FIX 2 all 6 rows pass own key — audited via DOM onclick attrs ✓
+- FIX 3 Reply Meridian + Brightex — both subjects + bodies render ✓
+- FIX 4 Timeline drawer — `stillOnForecast: true`, 3 action buttons ✓
+- FIX 5 Forecast $ — $30K persisted, delta shown, column present ✓
+- FIX 6 Status — pending pulse on click, cleared after 2 s, timestamp persists ✓
+- F1 Commit rollup — 3 cells, $134K commit; quota $150K saved → gap −$17K ✓
+- F2 Column picker — 15 items, all 6 hidden columns toggle into table ✓
+- Escape closes the modal overlay + cv-drawer + fc-acct-drawer ✓
+- Zero JS errors.
+
+### Spec label note
+Shipped as `[4.5.0]` per spec. No-op for the 8 verified items; the new content is the SPEC correction + Escape handler.
+
+---
+
 ## [4.4.0] — 2026-05-17
 
 Comprehensive two-tab build (Campaign Manager + Forecasting) based on a browser-extension QA review. Engineering standard for this release: every button performs a real operation, every form opens a real UI, every filter binds to real data — no toast-only simulations for actions that require UI state changes. Spec labeled as [4.3.0]; shipped as [4.4.0] to preserve monotonic ordering above the existing 4.3.0 entry.
@@ -697,8 +745,8 @@ Every fix and feature in Parts 1–3 verified via Playwright. Zero JS errors acr
 ### What was NOT done this turn
 - Live email delivery — Phase 1 simulation only by spec.
 - Add Contact form does not write to Gainsight (in-memory list only).
-- The Ghost-Buster fallback toast still appears for accounts where `openGhostBusterFromPopover` doesn't have a registered view; the wrapper exists and dispatches, but the underlying GB view registration for Creston wasn't expanded in this pass — Creston routes to the toast.
 - Column picker state is not persisted across sessions (in-memory only); a follow-on can write `visible` flags to localStorage.
+- ~~Creston routes to the Ghost-Buster fallback toast~~ — corrected in v4.5.0 below. `view-creston` already existed in the DOM; `openGhostBusterFromPopover('creston')` → `openPanel('creston')` resolves it correctly. The v4.4.0 SPEC entry overstated the gap; nothing was actually broken.
 
 ### Spec label note
 Shipped as `[4.4.0]` — the user-supplied label was `[4.3.0]` (already used for the v4.3.0 selector/AI sprint shipped earlier today). Monotonic ordering preserved.
