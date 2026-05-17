@@ -761,6 +761,37 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .bf-dust-input input::placeholder{color:var(--tx3)}
 .bf-dust-send{background:var(--tl);color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;font-weight:600}
 .bf-dust-send:hover{background:var(--tl-md)}
+.bf-dust-clear{background:none;border:none;color:var(--tx3);cursor:pointer;padding:2px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.bf-dust-clear:hover{color:var(--tx);background:var(--bg)}
+.bf-dust-clear i{font-size:14px}
+
+/* v3.2.5 — Agent search results + Recommended Agents section header */
+.bf-rec-hd{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;margin-top:2px}
+.bf-rec-hd.dim{opacity:.5}
+.bf-qa.dim{opacity:.45;pointer-events:none;filter:saturate(.6)}
+.bf-results{display:none;flex-direction:column;gap:7px;margin-bottom:10px;max-height:340px;overflow-y:auto}
+.bf-results.on{display:flex}
+.bf-result-card{background:var(--surf);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;transition:border-color .1s}
+.bf-result-card:hover{border-color:var(--bd2)}
+.bf-result-r1{display:flex;align-items:center;gap:8px}
+.bf-result-ic{width:22px;height:22px;border-radius:50%;background:rgba(24,165,117,.10);color:var(--tl);display:inline-flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.bf-result-card.avail .bf-result-ic{background:var(--bg);color:var(--tx3)}
+.bf-result-nm{font-size:13px;font-weight:600;color:var(--tx);letter-spacing:-.01em;flex:1;min-width:0}
+.bf-result-st{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:4px}
+.bf-result-st.active{background:var(--tl-bg);color:var(--tl-dk)}
+.bf-result-st.avail{background:var(--bg);color:var(--tx2);border:1px solid var(--bd2)}
+.bf-result-d{font-size:12px;color:var(--tx2);line-height:1.5;margin-left:30px}
+.bf-result-sk{font-size:10px;color:var(--tx3);margin-left:30px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;line-height:1.5}
+.bf-result-sk-l{font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:9px;color:var(--tx3)}
+.bf-result-sk-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--tl-bg);color:var(--tl-dk);letter-spacing:.01em}
+.bf-result-act{display:flex;justify-content:flex-end;margin-top:3px}
+.bf-result-btn{font-size:11px;font-weight:700;padding:5px 11px;border-radius:5px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;border:1px solid}
+.bf-result-btn.launch{background:var(--surf);color:var(--tl-dk);border-color:var(--tl)}
+.bf-result-btn.launch:hover{background:var(--tl-bg)}
+.bf-result-btn.request{background:var(--surf);color:var(--tx2);border-color:var(--bd2)}
+.bf-result-btn.request:hover{background:var(--bg);color:var(--tx);border-color:var(--tx3)}
+.bf-result-empty{font-size:12px;color:var(--tx3);font-style:italic;padding:14px 4px;text-align:center;background:var(--surf2);border:1px dashed var(--bd2);border-radius:6px}
+
 .bf-qa{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex:1;align-content:stretch}
 /* v2.11.1 — Chip restyle. Vertical stack with icon-in-teal-circle + bolder label.
    Card size + grid template unchanged so v2.2.0 equal-height behavior still holds. */
@@ -1961,13 +1992,20 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
       <div class="bf-hd"><div class="bf-ic tl"><i class="ti ti-sparkles"></i></div><div class="bf-t">Dust Agents</div></div>
       <div class="bf-sub">Access your Dust agents here</div>
 
-      <form class="bf-dust-input" onsubmit="askDust(event)">
+      <!-- v3.2.5 — Search bar is now an agent finder. Live filter against the
+           9-agent library below; results render in #bf-results and the
+           Recommended chips section dims when a search is active. -->
+      <div class="bf-dust-input" onclick="document.getElementById('dust-q').focus()">
         <i class="ti ti-search"></i>
-        <input id="dust-q" type="text" autocomplete="off" placeholder="Ask any agent a question&hellip;" aria-label="Ask Dust" />
-        <button class="bf-dust-send" type="submit" aria-label="Send to Dust"><i class="ti ti-arrow-right"></i></button>
-      </form>
+        <input id="dust-q" type="text" autocomplete="off" placeholder="Search agents by keyword or task&hellip;" aria-label="Search Dust agents" oninput="_dustSearch(this.value)" />
+        <button id="dust-q-clear" class="bf-dust-clear" type="button" aria-label="Clear search" onclick="_dustClearSearch()" style="display:none"><i class="ti ti-x"></i></button>
+      </div>
 
-      <div class="bf-qa">
+      <div class="bf-results" id="bf-results"></div>
+
+      <div class="bf-rec-hd" id="bf-rec-hd">Recommended agents</div>
+
+      <div class="bf-qa" id="bf-qa">
         <button class="bf-qa-btn" onclick="dustQuick('Prepare My Day')" type="button"><i class="ti ti-sun"></i>Prepare My Day</button>
         <button class="bf-qa-btn" onclick="dustQuick('Draft Follow-Ups')" type="button"><i class="ti ti-mail-fast"></i>Draft Follow-Ups</button>
         <button class="bf-qa-btn" onclick="dustQuick('Find Open Loops')" type="button"><i class="ti ti-circle-dashed"></i>Find Open Loops</button>
@@ -3631,6 +3669,139 @@ function dustQuick(label) {
   // v2.11.1 — mark the matching chip as the active agent. Cleared automatically
   // by openPanel when the user navigates away from view-dust.
   _markActiveChip(label);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// v3.2.5 — Dust Agents search bar = agent directory finder
+// ═══════════════════════════════════════════════════════════════════════════
+var DUST_AGENTS = [
+  { name:'Prepare My Day',          icon:'sun',              status:'active',
+    keywords:['day','morning','brief','plan','prepare','overview','calls','schedule'],
+    desc:"Builds your AI-prioritized daily brief across all accounts. Surfaces what needs attention, who you're meeting, and what to say.",
+    skills:['Gainsight health','Gong signals','Salesforce renewals','Calendar'] },
+  { name:'Draft Follow-Ups',        icon:'mail-fast',        status:'active',
+    keywords:['email','follow-up','followup','draft','write','outreach','message','send'],
+    desc:'Drafts account-specific follow-up emails using Gong call history and account context.',
+    skills:['Gong transcripts','Gmail','Account history'] },
+  { name:'Find Open Loops',         icon:'circle-dashed',    status:'active',
+    keywords:['open','loop','overdue','cta','missing','gap','incomplete','stuck'],
+    desc:'Surfaces every open CTA, unanswered email, and missed commitment across your book.',
+    skills:['Gainsight CTAs','Gmail threads','Salesforce tasks'] },
+  { name:'Review At-Risk Renewals', icon:'alert-triangle',   status:'active',
+    keywords:['risk','renewal','churn','at-risk','health','save','critical','expire'],
+    desc:'Risk-ranks your renewal pipeline with churn probability, driving signals, and recommended save plays.',
+    skills:['Gainsight health','Gong sentiment','Salesforce ARR','Ironclad contracts'] },
+  { name:'Coach Me',                icon:'bolt',             status:'active',
+    keywords:['coach','prep','tips','advice','call','improve','strategy','guidance'],
+    desc:'Analyzes your last 3 Gong calls with the account and gives one targeted coaching tip for your next interaction.',
+    skills:['Gong call history',"Carmen's talk patterns",'Account signals'] },
+  { name:'Competitive Intel',       icon:'swords',           status:'available',
+    keywords:['competitor','competition','battle','okta','lastpass','alternative'],
+    desc:'Pulls competitor mentions from Gong, surfaces battle card talking points, and flags accounts with active competitive threats.',
+    skills:['Gong competitor flags','Battle cards','Account signals'] },
+  { name:'EBR Prep',                icon:'presentation',     status:'available',
+    keywords:['ebr','qbr','business','review','executive','presentation','deck'],
+    desc:'Generates a complete Executive Business Review package: account health summary, ROI evidence, expansion opportunities, and next quarter goals.',
+    skills:['Gainsight','Gong','Salesforce','Google Drive'] },
+  { name:'Renewal Forecaster',      icon:'trending-up',      status:'available',
+    keywords:['forecast','renewal','pipeline','arr','predict','close','quarter'],
+    desc:'Projects your end-of-quarter renewal attainment and identifies the 3 accounts most likely to change the outcome.',
+    skills:['Salesforce renewals','Gainsight health','Ironclad contracts'] },
+  { name:'Champion Tracker',        icon:'user-check',       status:'available',
+    keywords:['champion','stakeholder','contact','change','departure','new','intro'],
+    desc:'Monitors champion health across your book, flags departures and new contacts, and generates re-introduction outreach for accounts with new stakeholders.',
+    skills:['Gainsight contacts','Gong speaker detection','LinkedIn'] }
+];
+
+function _dustEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _dustMatch(agent, q) {
+  var hay = (agent.name + ' ' + agent.keywords.join(' ') + ' ' + agent.desc + ' ' + agent.skills.join(' ')).toLowerCase();
+  // All whitespace-separated tokens of length ≥1 must appear somewhere in the haystack.
+  var toks = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!toks.length) return false;
+  for (var i = 0; i < toks.length; i++) {
+    if (hay.indexOf(toks[i]) === -1) return false;
+  }
+  return true;
+}
+
+function _dustRenderResultCard(a) {
+  var stCls = a.status === 'active' ? 'active' : 'avail';
+  var stTxt = a.status === 'active' ? 'Active' : 'Available';
+  var btnCls, btnTxt, onClick;
+  if (a.status === 'active') {
+    btnCls  = 'launch';
+    btnTxt  = 'Launch &rarr;';
+    onClick = "_dustLaunchAgent('" + a.name.replace(/'/g,"\\'") + "')";
+  } else {
+    btnCls  = 'request';
+    btnTxt  = 'Request &rarr;';
+    onClick = "_dustRequestAgent('" + a.name.replace(/'/g,"\\'") + "')";
+  }
+  var skills = a.skills.map(function(s){ return '<span class="bf-result-sk-pill">' + _dustEscape(s) + '</span>'; }).join('');
+  return ''
+    + '<div class="bf-result-card ' + stCls + '">'
+    +   '<div class="bf-result-r1">'
+    +     '<span class="bf-result-ic"><i class="ti ti-' + a.icon + '"></i></span>'
+    +     '<span class="bf-result-nm">' + _dustEscape(a.name) + '</span>'
+    +     '<span class="bf-result-st ' + stCls + '">' + stTxt + '</span>'
+    +   '</div>'
+    +   '<div class="bf-result-d">' + _dustEscape(a.desc) + '</div>'
+    +   '<div class="bf-result-sk"><span class="bf-result-sk-l">Skills</span>' + skills + '</div>'
+    +   '<div class="bf-result-act"><button class="bf-result-btn ' + btnCls + '" type="button" onclick="' + onClick + '">' + btnTxt + '</button></div>'
+    + '</div>';
+}
+
+function _dustSearch(q) {
+  var query = String(q || '').trim();
+  var results = document.getElementById('bf-results');
+  var recHd   = document.getElementById('bf-rec-hd');
+  var chips   = document.getElementById('bf-qa');
+  var clearBtn= document.getElementById('dust-q-clear');
+  if (!results || !recHd || !chips) return;
+  if (query.length < 2) {
+    // Default state — chips visible, results hidden.
+    results.classList.remove('on');
+    results.innerHTML = '';
+    recHd.classList.remove('dim');
+    chips.classList.remove('dim');
+    if (clearBtn) clearBtn.style.display = query.length ? 'flex' : 'none';
+    return;
+  }
+  if (clearBtn) clearBtn.style.display = 'flex';
+  // Filter, then sort: active first, available below; preserve original order within.
+  var hits = DUST_AGENTS.filter(function(a){ return _dustMatch(a, query); });
+  hits.sort(function(a, b){
+    if (a.status === b.status) return 0;
+    return a.status === 'active' ? -1 : 1;
+  });
+  if (!hits.length) {
+    results.innerHTML = '<div class="bf-result-empty">No agents found for &ldquo;' + _dustEscape(query) + '&rdquo; &middot; Try different keywords</div>';
+  } else {
+    results.innerHTML = hits.map(_dustRenderResultCard).join('');
+  }
+  results.classList.add('on');
+  recHd.classList.add('dim');
+  chips.classList.add('dim');
+}
+
+function _dustClearSearch() {
+  var input = document.getElementById('dust-q');
+  if (input) input.value = '';
+  _dustSearch('');
+  if (input) input.focus();
+}
+
+function _dustLaunchAgent(name) {
+  // Active agents launch via the existing chip routing → Mission Briefing.
+  if (typeof dustQuick === 'function') dustQuick(name);
+}
+
+function _dustRequestAgent(name) {
+  if (typeof requestAgent === 'function') requestAgent(name);
 }
 
 // Mark the bf-qa-btn whose label matches `name` as active; clear the others.

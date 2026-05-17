@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.2.5
+**Version:** 3.2.6
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,39 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.2.6] — 2026-05-17
+
+Dust Agents search bar is now an agent directory finder, not a chat/query input. Typing keywords filters a 9-agent library and surfaces matching agents as result cards with description, skill sources, and a Launch / Request action. The six existing recommended chips and the Agents dropdown stay exactly as they are — they just dim when a search is active.
+
+### Added — Agent directory search
+- Placeholder rewritten to `Search agents by keyword or task…`. The input no longer submits to a chat handler; it filters live on every keystroke.
+- Clear `×` button appears in the input as soon as anything is typed and restores the default state.
+
+### Added — 9-agent searchable library
+- 5 active: Prepare My Day · Draft Follow-Ups · Find Open Loops · Review At-Risk Renewals · Coach Me.
+- 4 available: Competitive Intel · EBR Prep · Renewal Forecaster · Champion Tracker.
+- Each agent declares name, keywords, description, and skills; the search matches on all four fields with token-AND semantics ("renewal forecast" must hit both tokens).
+
+### Added — Result cards
+- Layout: agent-icon disc + name + status badge (`ACTIVE` teal / `AVAILABLE` muted grey) on the first row; one-line description; teal `Skills` pill row; action button right-aligned.
+- Active agents: `Launch →` button routes through the existing `dustQuick(name)` so the Mission Briefing panel behavior is identical to clicking the matching chip.
+- Available agents: `Request →` button routes through the existing `requestAgent(name)` so it toasts `Agent requested · Your admin will activate [Agent Name] ✓`.
+- Results are ordered: active first, available below; original library order preserved within each tier.
+- Empty state: `No agents found for "[query]" · Try different keywords`.
+
+### Default vs search state
+- Default (<2 chars typed): results hidden, chips fully visible, `RECOMMENDED AGENTS` header above the chip grid.
+- Search (≥2 chars): results render directly below the input; chips + recommended header dim (≈45% opacity, pointer-events:none) and the chip grid remains in place below so the CSM never loses orientation. Clearing the input restores chips to full strength.
+
+### What was not touched
+- The six chip buttons and their behavior. The Agents dropdown and its content. All agent output routing to Mission Briefing. The dead `askDust(e)` legacy function was left in place — nothing calls it anymore, but removing it was out of scope.
+
+### Implementation notes
+- New JS module (`DUST_AGENTS`, `_dustMatch`, `_dustRenderResultCard`, `_dustSearch`, `_dustClearSearch`, `_dustLaunchAgent`, `_dustRequestAgent`) lives next to `dustQuick` so the search funnel reuses the same chip-routing primitive.
+- Spec label note: the user requested this entry as `[3.2.5]`; shipped as `[3.2.6]` to preserve monotonic versioning above the existing 3.2.5 entry.
 
 ---
 
