@@ -595,14 +595,25 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .bf-dust-send{background:var(--tl);color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;font-weight:600}
 .bf-dust-send:hover{background:var(--tl-md)}
 .bf-qa{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex:1;align-content:stretch}
-.bf-qa-btn{font-size:11px;font-weight:600;padding:9px 9px;border-radius:6px;border:1px solid var(--bd);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all .1s;text-align:left;line-height:1.2;min-height:34px}
-.bf-qa-btn:hover{background:var(--surf2);border-color:var(--bd2);color:var(--tx)}
-.bf-qa-btn.muted{justify-content:space-between}
-.bf-qa-btn.muted i.chev{font-size:13px;margin-left:2px;color:var(--tx3)}
+/* v2.11.1 — Chip restyle. Vertical stack with icon-in-teal-circle + bolder label.
+   Card size + grid template unchanged so v2.2.0 equal-height behavior still holds. */
+.bf-qa-btn{font-size:13px;font-weight:600;padding:14px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:all .12s;text-align:center;line-height:1.25;min-height:34px}
+.bf-qa-btn > i{width:24px;height:24px;border-radius:50%;background:rgba(24,165,117,.10);color:var(--tl);display:inline-flex;align-items:center;justify-content:center;font-size:14px !important;flex-shrink:0;transition:background .12s}
+.bf-qa-btn:hover{background:rgba(24,165,117,.05);border-color:var(--tl);border-width:1.5px;color:var(--tx);padding:13.5px 9.5px}
+.bf-qa-btn.on{border:2px solid var(--tl);padding:13px 9px}
+.bf-qa-btn.on > i{background:rgba(24,165,117,.15)}
+.bf-qa-btn.muted{flex-direction:row;justify-content:space-between;padding:14px 12px;gap:8px}
+.bf-qa-btn.muted > span{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.bf-qa-btn.muted > span > i{width:24px;height:24px;border-radius:50%;background:rgba(24,165,117,.10);color:var(--tl);display:inline-flex;align-items:center;justify-content:center;font-size:14px !important;flex-shrink:0}
+.bf-qa-btn.muted i.chev{font-size:14px;margin-left:0;color:var(--tx3);width:auto;height:auto;background:none;border-radius:0}
+.bf-qa-btn.muted:hover{padding:13.5px 11.5px}
+.bf-qa-btn.muted.on{padding:13px 11px}
+.bf-qa-btn.muted.on > span > i{background:rgba(24,165,117,.15)}
 .bf-qa-wrap{position:relative;display:flex;flex-direction:column}
 .bf-qa-wrap > .bf-qa-btn{flex:1;width:100%}
-.dust-agents-pop{position:absolute;bottom:calc(100% + 6px);right:0;width:280px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);box-shadow:0 12px 40px rgba(0,0,0,.18);z-index:200;display:none;overflow:hidden}
+.dust-agents-pop{position:absolute;top:100%;right:0;width:280px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);box-shadow:0 12px 40px rgba(0,0,0,.18);z-index:200;display:none;overflow:hidden;margin-top:-1px}
 .dust-agents-pop.on{display:block}
+.dust-agents-pop.up{top:auto;bottom:100%;margin-top:0;margin-bottom:-1px;box-shadow:0 -12px 40px rgba(0,0,0,.18)}
 .dap-hd{padding:10px 14px;font-size:10px;font-weight:700;color:var(--tx);letter-spacing:.04em;background:var(--surf2);border-bottom:1px solid var(--bd);text-transform:uppercase;display:flex;align-items:center;gap:6px}
 .dap-sec{padding:4px 0;border-bottom:1px solid var(--bd)}
 .dap-sec:last-of-type{border-bottom:none}
@@ -671,6 +682,14 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .du-card-tag.a{background:var(--am-bg);color:var(--am-dk)}
 .du-card-tag.g{background:var(--tl-bg);color:var(--tl-dk)}
 .du-card-s{color:var(--tx2);font-size:11px;line-height:1.5}
+/* v2.11.1 — Usage & Adoption feature-row table */
+.du-feat{display:flex;flex-direction:column;gap:4px;margin:6px 0 8px;padding:8px 10px;background:var(--surf);border-radius:5px}
+.du-feat-row{display:grid;grid-template-columns:18px 1fr auto;gap:9px;align-items:baseline;font-size:11px;line-height:1.4}
+.du-feat-ic{font-size:11px;line-height:1;text-align:center}
+.du-feat-nm{color:var(--tx);font-weight:600}
+.du-feat-v{color:var(--tx2);font-size:10px;text-align:right}
+.du-feat-v.warn{color:var(--am-dk);font-weight:600}
+.du-feat-v.crit{color:var(--rd-dk);font-weight:600}
 .du-tbl{width:100%;font-size:11px;border-collapse:collapse;margin-top:4px;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
 .du-tbl th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;background:var(--surf2);border-bottom:1px solid var(--bd)}
 .du-tbl td{padding:8px 10px;border-bottom:1px solid var(--bd);color:var(--tx2);vertical-align:top}
@@ -2364,6 +2383,9 @@ function openPanel(id, ceEl) {
   if (ceEl) ceEl.classList.add('sel');
   if (typeof _updateAgentHubAccount === 'function') _updateAgentHubAccount(id);
   if (typeof _updateCFTDocs === 'function') _updateCFTDocs(id);
+  // v2.11.1 — clear any "active" Ask Dust chip when navigating away from
+  // view-dust (the only view that represents a chip-fired output).
+  if (id !== 'dust' && typeof _clearActiveChips === 'function') _clearActiveChips();
   scrollPanelIntoView();
 }
 
@@ -2415,11 +2437,23 @@ function acctClickFromNotif(key, ev) {
 function toggleAgentsDropdown(ev) {
   if (ev && ev.stopPropagation) ev.stopPropagation();
   var p = document.getElementById('dust-agents-pop');
+  var btn = document.getElementById('dust-agents-btn');
   if (!p) return;
   var willOpen = !p.classList.contains('on');
   // Enforce single-dropdown invariant: close every other surface first.
   if (willOpen) closeAllDropdowns();
-  if (willOpen) p.classList.add('on');
+  if (willOpen) {
+    // v2.11.1 — decide direction. Default: open down. If less than 300px of
+    // room below the chip, flip to open up instead. Avoids the dropdown
+    // running off the bottom of the viewport.
+    p.classList.remove('up');
+    if (btn) {
+      var r = btn.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      if ((vh - r.bottom) < 300) p.classList.add('up');
+    }
+    p.classList.add('on');
+  }
 }
 
 // Single-dropdown invariant: closes pulse-strip popovers, notification rail
@@ -2458,6 +2492,7 @@ function resetPanel() {
   if (tag) tag.innerHTML = '<span class="pl-dot"></span>Next Up &middot; Auto-loaded';
   if (typeof _updateAgentHubAccount === 'function') _updateAgentHubAccount('default');
   if (typeof _updateCFTDocs === 'function') _updateCFTDocs('default');
+  if (typeof _clearActiveChips === 'function') _clearActiveChips();
   scrollPanelIntoView();
 }
 
@@ -3002,6 +3037,50 @@ var DUST_RESP = {
         + '</table>'
         + '<div style="font-size:11px;color:var(--tx2);margin-top:10px;font-weight:600">Total at-risk ARR: <span style="color:var(--rd);font-weight:700">$67K</span> across 2 accounts</div>'
       + '</div>'
+
+      // v2.11.1 — Usage & Adoption block. Pulled between the risk table and the
+      // existing Dust summary so the CSM has product-side data before walking
+      // into a save play.
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-chart-bar"></i> Usage &amp; Adoption &middot; Gainsight + Gong</div>'
+        + '<div class="du-card r">'
+          + '<div class="du-card-t">NovaVault</div>'
+          + '<div class="du-card-s">'
+            + '<strong style="color:var(--tx)">Weekly Active Users:</strong> 31 / 64 seats (48%) &middot; <span style="color:var(--rd);font-weight:700">&darr; from 58 WAU last month (&minus;46%)</span><br>'
+            + '<strong style="color:var(--tx)">Daily logins (7d avg):</strong> 4.2 / day<br>'
+            + '<strong style="color:var(--tx)">Feature adoption:</strong>'
+            + '<div class="du-feat">'
+              + '<div class="du-feat-row"><span class="du-feat-ic ok">✅</span><span class="du-feat-nm">Password Manager</span><span class="du-feat-v">94% of active users</span></div>'
+              + '<div class="du-feat-row"><span class="du-feat-ic warn">⚠️</span><span class="du-feat-nm">Admin Console</span><span class="du-feat-v warn">12% (was 67% — sharp drop)</span></div>'
+              + '<div class="du-feat-row"><span class="du-feat-ic crit">❌</span><span class="du-feat-nm">SSO Integration</span><span class="du-feat-v crit">0% (never configured)</span></div>'
+              + '<div class="du-feat-row"><span class="du-feat-ic crit">❌</span><span class="du-feat-nm">1Password CLI</span><span class="du-feat-v crit">0% (not deployed)</span></div>'
+            + '</div>'
+            + '<strong style="color:var(--tx)">Last product event:</strong> May 1 &middot; Password export <span style="color:var(--rd);font-weight:700">(unusual — possible offboarding signal)</span>'
+          + '</div>'
+        + '</div>'
+        + '<div class="du-card a">'
+          + '<div class="du-card-t">Brightex Inc</div>'
+          + '<div class="du-card-s">'
+            + '<strong style="color:var(--tx)">Weekly Active Users:</strong> 71 / 87 seats (82%) &middot; <span style="color:var(--tx2);font-weight:600">&rarr; stable (&plusmn;3% over 30 days)</span><br>'
+            + '<strong style="color:var(--tx)">Daily logins (7d avg):</strong> 11.4 / day<br>'
+            + '<strong style="color:var(--tx)">Feature adoption:</strong>'
+            + '<div class="du-feat">'
+              + '<div class="du-feat-row"><span class="du-feat-ic ok">✅</span><span class="du-feat-nm">Password Manager</span><span class="du-feat-v">98% of active users</span></div>'
+              + '<div class="du-feat-row"><span class="du-feat-ic ok">✅</span><span class="du-feat-nm">Shared Vaults</span><span class="du-feat-v">87%</span></div>'
+              + '<div class="du-feat-row"><span class="du-feat-ic warn">⚠️</span><span class="du-feat-nm">SSO Integration</span><span class="du-feat-v warn">34% (target: 80%)</span></div>'
+              + '<div class="du-feat-row"><span class="du-feat-ic warn">⚠️</span><span class="du-feat-nm">Admin Console</span><span class="du-feat-v warn">61%</span></div>'
+            + '</div>'
+            + '<strong style="color:var(--tx)">Last product event:</strong> May 14 &middot; New vault created by Sarah Chen <span style="color:var(--tl-dk);font-weight:700">(positive signal)</span>'
+          + '</div>'
+        + '</div>'
+      + '</div>'
+
+      + '<div class="du-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-bulb"></i> What this means &middot; Dust read</div>'
+        + '<div class="du-card r"><div class="du-card-t">NovaVault</div><div class="du-card-s">The Admin Console collapse (67%&rarr;12%) happened in April &mdash; same time James Wu departed. The new admin (Torres) has not configured the console. This is a technical onboarding gap, not a product satisfaction issue. SSO at 0% despite it being in the sales notes as a key use case is a red flag. The password export event on May 1 needs to be verified &mdash; this pattern precedes offboarding in similar accounts.</div></div>'
+        + '<div class="du-card a"><div class="du-card-t">Brightex Inc</div><div class="du-card-s">Usage is stable but SSO adoption at 34% vs. target 80% is the hidden risk. Sarah Chen&rsquo;s SLA question about response time may be related to SSO configuration issues, not contractual concerns. Routing to Solutions Engineering before the renewal conversation could close this gap faster than any commercial negotiation.</div></div>'
+      + '</div>'
+
       + '<div class="du-sec">'
         + '<div class="du-sec-t"><i class="ti ti-sparkles"></i> Dust summary</div>'
         + '<div class="du-card b"><div class="du-card-s">NovaVault is your highest priority. Renewal is in 17 days, health is critical, and your new champion Michael Torres has had no prior contact with 1Password. Brightex has a competitor evaluation in progress &mdash; lead with value before the renewal conversation.</div></div>'
@@ -3084,6 +3163,26 @@ function dustQuick(label) {
   var fn = DUST_RESP[label];
   var body = fn ? fn() : '<div class="du-card"><div class="du-card-s">No response template registered.</div></div>';
   _dustRender(label, body);
+  // v2.11.1 — mark the matching chip as the active agent. Cleared automatically
+  // by openPanel when the user navigates away from view-dust.
+  _markActiveChip(label);
+}
+
+// Mark the bf-qa-btn whose label matches `name` as active; clear the others.
+// Match is bidirectional substring so "Review At-Risk" (chip text) matches
+// "Review At-Risk Renewals" (DUST_RESP key).
+function _markActiveChip(name) {
+  if (!name) return;
+  var target = String(name);
+  document.querySelectorAll('.bf-qa .bf-qa-btn').forEach(function(b){
+    var lbl = (b.textContent || '').trim();
+    if (!lbl) { b.classList.remove('on'); return; }
+    var match = lbl === target || target.indexOf(lbl) !== -1 || lbl.indexOf(target) !== -1;
+    b.classList.toggle('on', match);
+  });
+}
+function _clearActiveChips() {
+  document.querySelectorAll('.bf-qa .bf-qa-btn.on').forEach(function(b){ b.classList.remove('on'); });
 }
 
 // Used by action buttons inside Dust output that should open an agent drawer.

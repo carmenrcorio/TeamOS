@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.0.0
+**Version:** 3.0.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,51 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.0.1] — 2026-05-17
+
+Three UI fixes against v3.0.0. The user labeled the changelog entry `[2.11.1]`; shipped as `[3.0.1]` here so the version number stays monotonically increasing (v3.0.0 already shipped). Content matches the user's `[2.11.1]` brief verbatim.
+
+### Fixed — Fix 1: Agents dropdown opens downward by default
+- `.dust-agents-pop` flipped from `bottom: calc(100% + 6px)` (always-up) to `top: 100%; margin-top: -1px` (down by default, touching the chip's bottom border).
+- New `.dust-agents-pop.up` variant — `top:auto; bottom:100%; margin-bottom:-1px; box-shadow: 0 -12px 40px ...` so when the dropdown flips upward it gets a shadow rising upward instead of downward.
+- `toggleAgentsDropdown` now measures `(window.innerHeight - chipRect.bottom)` when opening and adds the `.up` class only when the gap below the chip is less than 300px. Default flow is downward; upward is a fallback for near-bottom-of-viewport cases.
+- Removed the 6px gap between chip and dropdown — they now share a border edge.
+
+### Added — Fix 2: Review At-Risk Renewals usage block
+- New `Usage & Adoption · Gainsight + Gong` section inserted between the existing risk-renewals table and the existing Dust summary inside the `Review At-Risk Renewals` template in `DUST_RESP`.
+- Two account cards (NovaVault + Brightex Inc) with WAU vs seats, month-over-month delta, daily-login average, a 4-row feature-adoption table with ✅ / ⚠️ / ❌ icons, and a "last product event" line.
+- Per spec content:
+  - **NovaVault**: WAU 31/64 (48%) ↓ from 58 (−46%), 4.2 daily logins, Password Manager 94% ✅, Admin Console 12% ⚠️ (was 67%), SSO Integration 0% ❌, 1Password CLI 0% ❌. Last event: May 1 password export (red flag).
+  - **Brightex Inc**: WAU 71/87 (82%) stable, 11.4 daily logins, Password Manager 98% ✅, Shared Vaults 87% ✅, SSO 34% ⚠️ (target 80%), Admin Console 61% ⚠️. Last event: May 14 new vault by Sarah Chen (positive).
+- New `What this means · Dust read` section directly below with two cards (NovaVault → admin-console collapse traced to James Wu's departure + SSO 0% red flag + May 1 export anomaly; Brightex → SSO adoption gap reframed as Solutions Engineering opportunity, not commercial negotiation).
+- Existing risk-renewals table at the top, Dust summary paragraph below the new sections, and the three action buttons at the bottom are all untouched.
+- New CSS: `.du-feat` + `.du-feat-row` + `.du-feat-ic` + `.du-feat-nm` + `.du-feat-v` (with `.warn` / `.crit` color variants).
+
+### Changed — Fix 3: Ask Dust chip restyle
+- `.bf-qa-btn` flipped from inline icon + label to a vertical stack: `flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 14px 10px; font-size: 13px; font-weight: 600`.
+- Icons get a 24×24 teal-tinted circle (`background: rgba(24, 165, 117, .10); border-radius: 50%; font-size: 14px !important`). `!important` defeats Tabler's font-family rule that was making the icons inherit the button's 11px responsive override.
+- New `.bf-qa-btn:hover` state — teal-tinted background (`rgba(24, 165, 117, .05)`), `border: 1.5px solid var(--tl)`, with adjusted padding so the increased border width doesn't shift the chip footprint.
+- New `.bf-qa-btn.on` active state — `border: 2px solid var(--tl)`, icon circle bumped to 15% teal background. JS marker:
+  - `_markActiveChip(name)` matches the chip whose text overlaps the dustQuick label (bidirectional substring — so the abbreviated "Review At-Risk" chip text correctly maps to the `Review At-Risk Renewals` DUST_RESP key). Called at the end of `dustQuick()`.
+  - `_clearActiveChips()` called from `openPanel(id)` when `id !== 'dust'` and from `resetPanel()`. Ensures the chip clears whenever the user navigates away from `view-dust`.
+- Agents chip override (`.bf-qa-btn.muted`) keeps horizontal layout: gear icon + "Agents" label + chevron, all in one row. Same icon-circle treatment on the inner `<i>` inside the `<span>` wrapper. Chevron stays as a plain icon (no circle).
+- Card grid layout, dimensions, equal-height behavior from v2.2.0 — all untouched. Verified card heights still 400/400/400 across the brief strip.
+
+### Verified end-to-end
+- Agents dropdown default open (page top): `up:false, popTop ≈ btnBottom, gap = -1px` (border-shared).
+- All 6 chips computed icon font-size `14px` (rule applies via `!important`).
+- Review At-Risk output now has 4 sections (Risk-ranked / Usage & Adoption / Dust read / Dust summary), 8 feature-adoption rows total, both account usage blocks present, Dust read paragraph references the Admin Console collapse.
+- Active chip toggle: `dustQuick('Prepare My Day')` → "Prepare My Day" chip has `.on`, all others don't. After `resetPanel()`, 0 active chips.
+- Brief-strip equal height holds: 400/400/400 at 1440 viewport.
+
+### Not touched
+- Other Ask Dust templates (Prepare My Day / Draft Follow-Ups / Find Open Loops / Coach Me / Ask Dust free-text) — unchanged.
+- Dropdown content (the 9 agent rows + Request new agent footer) — unchanged.
+- All other widgets, drawers, Mission Briefing views, Ghost-Buster, TeamOS Live, Agent Hub, Task Briefs, Drive Docs, My Accounts tab, Service Worker, offline resilience.
+- `agentBtn`, `openAgentDrawer`, `setDrawerMode`, every other JS handler — unchanged.
 
 ---
 
