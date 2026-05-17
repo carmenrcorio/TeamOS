@@ -114,6 +114,29 @@ body.offline .main > div:nth-child(3){
   max-height:calc(100vh - 124px);
 }
 
+/* ═════════════════════════════════════════════════════════════════════════
+   v4.10.0 — Unified Badge Taxonomy (SPEC §8)
+   Six badge types applied across the dashboard. All share: 11px,
+   font-weight 600, padding 2px 8px, border-radius 4px, uppercase.
+   ═════════════════════════════════════════════════════════════════════════ */
+.tb{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px;line-height:1.4;white-space:nowrap}
+.tb-crit{background:#FEE2E2;color:#DC2626;border:none}
+.tb-high{background:#FEF3C7;color:#B45309;border:none}
+.tb-watch{background:#F3F4F6;color:#4B5563;border:none}
+.tb-opp{background:#CCFBF1;color:#0F766E;border:none}
+.tb-admin{background:#EEF2FF;color:#4338CA;border:none}
+/* Source chips: outlined, transparent fill, system-color border + text. */
+.tb-src{background:transparent;border:1px solid currentColor;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px;line-height:1.4;white-space:nowrap}
+.tb-src.gainsight{color:#0F766E}
+.tb-src.gong{color:#5B21B6}
+.tb-src.salesforce{color:#1E3A8A}
+.tb-src.ironclad{color:#1E3A8A}
+.tb-src.gmail{color:#B91C1C}
+.tb-src.slack{color:#6B21A8}
+.tb-src.calendar{color:#1E40AF}
+.tb-src.zendesk{color:#9A3412}
+.tb-src.admin{color:#4338CA}
+
 .card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;margin-bottom:16px}
 .card:last-child{margin-bottom:0}
 .card-hd{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
@@ -130,40 +153,35 @@ body.offline .main > div:nth-child(3){
 .tip-w:hover .tip-bx{display:block}
 .tip-bx em{color:var(--tl);font-style:normal}
 
-.ii{padding:13px 16px;border-bottom:1px solid var(--bd);border-left:4px solid transparent;transition:background .1s}
+/* v4.10.0 — Urgent Inbox compacted to single-line rows (SPEC §1). Each row:
+   avatar + name·account + source chip + time. No body preview. */
+.ii{padding:9px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;transition:background .1s;min-height:42px}
 .ii:last-child{border-bottom:none}
-.ii.crit{border-left-color:var(--rd);background:#FFF8F8}
-.ii.warn{border-left-color:var(--am)}
-.ii.info{border-left-color:var(--bl)}
-.ii-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
-.ii-from{font-size:12px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:5px}
-.ii-time{font-size:10px;color:var(--tx3);white-space:nowrap;flex-shrink:0;margin-top:1px}
-.ii-body{font-size:12px;color:var(--tx2);margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;font-style:italic}
-.ii-meta{display:flex;align-items:center;gap:6px}
-.tag{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700}
-.tag.red{background:var(--rd-bg);color:var(--rd-dk)}
-.tag.amber{background:var(--am-bg);color:var(--am-dk)}
-.tag.blue{background:var(--bl-bg);color:var(--bl-dk)}
+.ii:hover{background:var(--surf2)}
+.ii-av{width:26px;height:26px;border-radius:50%;background:var(--surf2);color:var(--tx);font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--bd)}
+.ii-av.crit{background:#FEE2E2;color:#DC2626;border-color:#FCA5A5}
+.ii-av.high{background:#FEF3C7;color:#B45309;border-color:#FBBF24}
+.ii-av.watch{background:#F3F4F6;color:#4B5563;border-color:var(--bd2)}
+.ii-mid{flex:1;min-width:0;display:flex;align-items:center;gap:8px;overflow:hidden}
+.ii-nm{font-size:12px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0}
+.ii-time{font-size:10px;color:var(--tx3);white-space:nowrap;flex-shrink:0;font-weight:600}
 
-.ac{padding:12px 16px;border-bottom:1px solid var(--bd);transition:background .1s}
+/* v4.10.0 — Today's Tasks simplified to a numbered list with source dot only
+   (SPEC §1). No sender attribution, no admin cards. */
+.ac{padding:8px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;transition:background .1s;min-height:38px}
 .ac:last-child{border-bottom:none}
 .ac:hover{background:var(--surf2)}
 .ac.done{opacity:.45}
-.ac-top{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.ac-n{font-size:11px;font-weight:700;color:var(--tx3);min-width:14px;text-align:right;flex-shrink:0}
 .src-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.src-dot.gs{background:var(--tl)}
-.src-dot.gm{background:var(--rd)}
-.src-dot.ca{background:var(--bl)}
-.src-dot.sl{background:var(--tx3)}
-.src-dot.admin{background:#4F46E5}
-.ac-src{font-size:10px;color:var(--tx3);flex:1}
-.ac-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700}
-.ac-badge.ov{background:var(--rd-bg);color:var(--rd-dk)}
-.ac-badge.td{background:var(--am-bg);color:var(--am-dk)}
-.ac-badge.lo{background:var(--surf2);color:var(--tx3);border:1px solid var(--bd)}
-.ac-title{font-size:12px;font-weight:500;color:var(--tx);margin-bottom:6px;line-height:1.4}
+.src-dot.gs{background:#14B8A6}        /* Gainsight CTA → teal */
+.src-dot.ca{background:#1E40AF}        /* Calendar → blue */
+.src-dot.gm{background:#DC2626}        /* Gmail → red */
+.src-dot.sl{background:#7C3AED}        /* Slack → purple */
+.src-dot.admin{background:#4338CA}     /* Admin → indigo */
+.ac-title{font-size:12px;font-weight:500;color:var(--tx);line-height:1.35;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ac.done .ac-title{text-decoration:line-through;color:var(--tx3)}
-.ac-btn{font-size:11px;font-weight:500;padding:5px 11px;border:1px solid var(--bd2);border-radius:var(--r);cursor:pointer;background:var(--surf);color:var(--tx);font-family:inherit;transition:all .1s;white-space:nowrap}
+.ac-btn{font-size:11px;font-weight:600;padding:4px 9px;border:1px solid var(--bd2);border-radius:5px;cursor:pointer;background:var(--surf);color:var(--tx2);font-family:inherit;transition:all .1s;white-space:nowrap;flex-shrink:0}
 .ac-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
 .ac-btn.done-btn{background:var(--tl-bg);color:var(--tl-dk);border-color:var(--tl-bg);cursor:default}
 
@@ -819,18 +837,19 @@ body.offline .main > div:nth-child(3){
 .bf-mid{flex:1;min-width:0}
 .bf-top{display:flex;align-items:baseline;gap:8px;margin-bottom:3px;flex-wrap:wrap}
 .bf-nm{font-size:12px;font-weight:700;color:var(--tx);letter-spacing:-.01em}
-.bf-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:.03em;text-transform:uppercase}
-.bf-tag.r{background:var(--rd-bg);color:var(--rd-dk)}
-.bf-tag.a{background:var(--am-bg);color:var(--am-dk)}
-.bf-tag.g{background:var(--tl-bg);color:var(--tl-dk)}
-.bf-tag.gy{background:var(--surf2);color:var(--tx2);border:1px solid var(--bd)}
+/* v4.10.0 — Priority Stack tags adopt the unified taxonomy (SPEC §8).
+   Legacy color variants (.r/.a/.g/.gy) remain so existing markup that
+   hasn't been migrated still renders, but every Priority Stack tag in
+   #tab-dash uses .tb-* directly in v4.10.0+. */
+.bf-tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px;line-height:1.4;white-space:nowrap}
 .bf-ctx{font-size:11px;color:var(--tx2);line-height:1.45}
-.bf-act{margin-top:6px;font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:opacity .1s}
-.bf-act:hover{opacity:.85}
-.bf-act.r{background:var(--rd);color:#fff}
-.bf-act.a{background:var(--am);color:#fff}
-.bf-act.g{background:var(--tl);color:#fff}
-.bf-act.gy{background:var(--tx2);color:#fff}
+
+/* v4.10.0 — Priority Stack buttons unified to one base style (SPEC §2).
+   Outlined, 28 px tall, leading icon, hover fills teal. The row tag carries
+   the urgency color — the button no longer competes with it. */
+.bf-act{margin-top:6px;height:28px;font-size:11px;font-weight:600;padding:0 10px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:all .12s;line-height:1}
+.bf-act:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.bf-act i{font-size:13px}
 
 /* Next Up panel */
 .bf-next-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
@@ -844,7 +863,11 @@ body.offline .main > div:nth-child(3){
 .bf-kv-v.g{color:var(--tl)}.bf-kv-v.a{color:var(--am)}.bf-kv-v.r{color:var(--rd)}
 .bf-kv-v .seat-up{color:var(--tl);font-weight:700}
 .bf-kv-v .seat-dn{color:var(--rd);font-weight:700}
-.bf-next-sum{font-size:10px;color:var(--tx3);line-height:1.55;padding-top:9px;border-top:1px solid var(--bd);margin-top:2px;margin-bottom:10px}
+/* v4.10.0 — Next Up prose summary replaced by 3 signal chips (SPEC §3).
+   The container keeps the visual rhythm (border-top + padding) so the
+   layout doesn't collapse, but the body is now chips, not paragraph copy. */
+.bf-next-sum{padding-top:9px;border-top:1px solid var(--bd);margin-top:2px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:24px}
+.bf-next-chip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;border:1px solid var(--tl);background:transparent;color:var(--tl-dk);letter-spacing:-.005em;line-height:1.3}
 .bf-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:auto}
 .bf-btn{font-size:10px;font-weight:700;padding:8px 6px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .1s;line-height:1.2;text-align:center}
 .bf-btn:hover{background:var(--surf2);border-color:var(--tx2)}
@@ -899,13 +922,13 @@ body.offline .main > div:nth-child(3){
 .bf-qa-btn:hover{background:rgba(24,165,117,.05);border-color:var(--tl);border-width:1.5px;color:var(--tx);padding:13.5px 9.5px}
 .bf-qa-btn.on{border:2px solid var(--tl);padding:13px 9px}
 .bf-qa-btn.on > i{background:rgba(24,165,117,.15)}
-.bf-qa-btn.muted{flex-direction:row;justify-content:space-between;padding:14px 12px;gap:8px}
-.bf-qa-btn.muted > span{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
-.bf-qa-btn.muted > span > i{width:24px;height:24px;border-radius:50%;background:rgba(24,165,117,.10);color:var(--tl);display:inline-flex;align-items:center;justify-content:center;font-size:14px !important;flex-shrink:0}
-.bf-qa-btn.muted i.chev{font-size:14px;margin-left:0;color:var(--tx3);width:auto;height:auto;background:none;border-radius:0}
-.bf-qa-btn.muted:hover{padding:13.5px 11.5px}
-.bf-qa-btn.muted.on{padding:13px 11px}
-.bf-qa-btn.muted.on > span > i{background:rgba(24,165,117,.15)}
+/* v4.10.0 — .bf-qa-btn.muted is no longer rendered (SPEC §4). The "Agents"
+   chip with caret broke the 2×3 grid; replaced by an .bf-qa-link text link
+   sitting in the 6th cell, right-aligned. The legacy .muted rule kept so
+   the dropdown menu remains in DOM but the trigger is now the link. */
+.bf-qa-link{font-family:inherit;font-size:12px;font-weight:600;color:var(--tl-dk);background:transparent;border:none;padding:14px 10px;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;text-align:right;transition:color .12s;letter-spacing:-.005em}
+.bf-qa-link:hover{color:var(--tl)}
+.bf-qa-link:focus-visible{outline:2px solid var(--tl);outline-offset:2px;border-radius:4px}
 .bf-qa-wrap{position:relative;display:flex;flex-direction:column}
 .bf-qa-wrap > .bf-qa-btn{flex:1;width:100%}
 .dust-agents-pop{position:absolute;top:100%;right:0;width:280px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);box-shadow:0 12px 40px rgba(0,0,0,.18);z-index:200;display:none;overflow:hidden;margin-top:-1px}
@@ -933,6 +956,18 @@ body.offline .main > div:nth-child(3){
   .brief-strip{grid-template-columns:1fr;gap:12px}
   .bf{min-height:0}
 }
+
+/* v4.10.0 — Silent Accounts section (SPEC §7) — compact rows inside the
+   Prepare My Day Mission Briefing output. */
+.sa-sec .sa-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surf2);border-radius:7px;margin-bottom:6px;border-left:3px solid var(--tx3)}
+.sa-sec .sa-row:last-of-type{margin-bottom:0}
+.sa-ic{font-size:18px;line-height:1;flex-shrink:0;width:22px;text-align:center}
+.sa-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.sa-t{font-size:12px;font-weight:600;color:var(--tx);line-height:1.4}
+.sa-acts{display:flex;gap:6px;flex-wrap:wrap}
+.sa-btn{height:26px;font-size:11px;font-weight:600;padding:0 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .12s;line-height:1}
+.sa-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.sa-btn i{font-size:12px}
 
 /* Live Signals widget — SPEC §5.7 */
 .ls{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);margin-top:18px;overflow:hidden}
@@ -1389,9 +1424,12 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .tl-signal-btn i{font-size:11px}
 
 /* [⚡ TeamOS Live] trigger in Mission Briefing headers */
-.mb-tl-btn{font-size:10px;font-weight:700;padding:5px 10px;border-radius:5px;background:var(--tl);color:#fff;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:background .1s;margin-left:8px;flex-shrink:0}
-.mb-tl-btn:hover{background:var(--tl-md)}
-.mb-tl-btn i{font-size:12px}
+/* v4.10.0 — TeamOS Live demoted to a subtle outlined chip (SPEC §5). The
+   pl-tag stays dominant; this chip sits right-aligned with the same row
+   weight as a secondary action. Label shortened to "⚡ Live". */
+.mb-tl-btn{font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;background:transparent;color:var(--tx2);border:1px solid var(--bd2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .12s;margin-left:auto;flex-shrink:0;line-height:1.3}
+.mb-tl-btn:hover{background:var(--surf2);color:var(--tx);border-color:var(--tx3)}
+.mb-tl-btn i{font-size:12px;color:var(--tl)}
 .du-loop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:11px}
 .du-loop:last-child{border-bottom:none}
 .du-loop-l{flex:1;min-width:0}
@@ -3043,6 +3081,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
 
     <div class="ps-wrap">
+      <!-- v4.10.0 — SPEC §9: "Drive Docs" replaced with "Renews This Month".
+           Mirrors Forecasting Timeline column 1 ($89K renewing in next 30d).
+           Click routes to Forecasting → Timeline. The legacy Drive Docs
+           popover stays in DOM (display:none) so the existing tooling that
+           opens it programmatically (Agent Hub Quick Links → Drive Docs)
+           keeps working in Phase 2. -->
+      <button class="ps-btn" id="pb-renew" onclick="psKpiRenew()" type="button" aria-label="$89K renewing in next 30 days — open Forecasting Timeline"><i class="ti ti-calendar-check" style="color:var(--tl)"></i><span class="ps-n">$89K</span>&nbsp;renews this month</button>
+    </div>
+    <div class="ps-wrap" style="display:none">
       <button class="ps-btn" id="pb-cft" onclick="togglePop('cft',event)" type="button"><i class="ti ti-folder"></i>&nbsp;Drive Docs</button>
       <div class="pop pop-right cft-pop" id="pop-cft" role="dialog" aria-label="Drive Docs" aria-modal="false">
         <div class="cft-hd">
@@ -3060,6 +3107,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
 
     <div class="ps-wrap">
+      <!-- v4.10.0 — SPEC §9: "Training" replaced with "Expansion Pipeline".
+           Surfaces the Acme enterprise-tier signal ($12K–$18K potential).
+           Click routes to Forecasting → Pipeline. -->
+      <button class="ps-btn" id="pb-exp" onclick="psKpiExpansion()" type="button" aria-label="Expansion pipeline $12K to $18K — open Forecasting"><i class="ti ti-trending-up" style="color:var(--tl)"></i><span class="ps-n">$12K–$18K</span>&nbsp;expansion pipeline</button>
+    </div>
+    <div class="ps-wrap" style="display:none">
       <button class="ps-btn" id="pb-train" onclick="togglePop('train',event)" type="button"><i class="ti ti-school"></i><span class="ps-n a" id="pn-train">2</span>&nbsp;Training</button>
       <div class="pop pop-right tr-pop" id="pop-train" role="dialog" aria-label="Training" aria-modal="false">
         <div class="tr-hd">
@@ -3119,49 +3172,52 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       <div class="bf-hd"><div class="bf-ic tl"><i class="ti ti-flag-3"></i></div><div class="bf-t">Today&rsquo;s Priority Stack</div></div>
       <div class="bf-sub">AI-ranked by health, renewal, CTAs, Gong silence</div>
 
+      <!-- v4.10.0 — SPEC §2: Priority Stack buttons use one unified outlined
+           base style. The row TAG carries the urgency color (taxonomy from
+           SPEC §8) — the buttons no longer compete. -->
       <div class="bf-it">
         <div class="bf-rank">1</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('nova',event)">NovaVault</span><span class="bf-tag r">Critical save</span></div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('nova',event)">NovaVault</span><span class="bf-tag tb tb-crit">CRITICAL SAVE</span></div>
           <div class="bf-ctx">17d to renewal &middot; champion lost &middot; health 23</div>
         </div>
-        <button class="bf-act r" onclick="openAgentDrawer('save','nova')" type="button"><i class="ti ti-lifebuoy"></i> Save Strategy</button>
+        <button class="bf-act" onclick="openAgentDrawer('save','nova')" type="button"><i class="ti ti-lifebuoy"></i> Save Strategy</button>
       </div>
 
       <div class="bf-it">
         <div class="bf-rank">2</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('brightex',event)">Brightex</span><span class="bf-tag a">Email pending</span></div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('brightex',event)">Brightex</span><span class="bf-tag tb tb-high">EMAIL PENDING</span></div>
           <div class="bf-ctx">Sarah Chen SLA question &middot; unanswered 4h &middot; renews 31d</div>
         </div>
-        <button class="bf-act a" onclick="draftReply('brightex')" type="button"><i class="ti ti-mail"></i> Draft Reply</button>
+        <button class="bf-act" onclick="draftReply('brightex')" type="button"><i class="ti ti-mail"></i> Draft Reply</button>
       </div>
 
       <div class="bf-it">
         <div class="bf-rank">3</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('acme',event)">Acme Corp</span><span class="bf-tag g">Expansion</span></div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('acme',event)">Acme Corp</span><span class="bf-tag tb tb-opp">EXPANSION</span></div>
           <div class="bf-ctx">9:00 AM QBR &middot; SSO signal &middot; health 82</div>
         </div>
-        <button class="bf-act g" onclick="openAgentDrawer('prep','acme')" type="button"><i class="ti ti-bolt"></i> Prep Me</button>
+        <button class="bf-act" onclick="openAgentDrawer('prep','acme')" type="button"><i class="ti ti-bolt"></i> Prep Me</button>
       </div>
 
       <div class="bf-it">
         <div class="bf-rank">4</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('meridian',event)">Meridian</span><span class="bf-tag gy">73 days dark</span></div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('meridian',event)">Meridian</span><span class="bf-tag tb tb-watch">73 DAYS DARK</span></div>
           <div class="bf-ctx">No contact &middot; $22K at risk &middot; inbound today</div>
         </div>
-        <button class="bf-act gy" onclick="openGhostBusterFromPopover('meridian')" type="button"><i class="ti ti-ghost"></i> Ghost-Buster</button>
+        <button class="bf-act" onclick="openGhostBusterFromPopover('meridian')" type="button"><i class="ti ti-ghost"></i> Ghost-Buster</button>
       </div>
 
       <div class="bf-it">
         <div class="bf-rank">5</div>
         <div class="bf-mid">
-          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('brightex',event)">Brightex</span><span class="bf-tag a">Overdue CTA</span></div>
+          <div class="bf-top"><span class="bf-nm acct-lk" onclick="acctClick('brightex',event)">Brightex</span><span class="bf-tag tb tb-high">OVERDUE CTA</span></div>
           <div class="bf-ctx">Renewal deck due Friday &middot; 2d overdue</div>
         </div>
-        <button class="bf-act a" onclick="openTaskBrief('brightex-proj')" type="button"><i class="ti ti-clipboard-text"></i> Open Task</button>
+        <button class="bf-act" onclick="openTaskBrief('brightex-proj')" type="button"><i class="ti ti-clipboard-text"></i> Open Task</button>
       </div>
     </div>
 
@@ -3188,7 +3244,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
         <div class="bf-kv-r"><span class="bf-kv-l">Industry</span><span class="bf-kv-v">SaaS / IT Security</span></div>
         <div class="bf-kv-r"><span class="bf-kv-l">Since</span><span class="bf-kv-v">Jan 2022</span></div>
       </div>
-      <div class="bf-next-sum">IT security team scaling across distributed engineering org. Primary use case: privileged access management + SSO rollout in progress. Expansion signal active &mdash; enterprise tier interest confirmed.</div>
+      <!-- v4.10.0 — SPEC §3: prose summary replaced with up to 3 signal chips. -->
+      <div class="bf-next-sum" id="bf-next-chips">
+        <span class="bf-next-chip">SSO rollout active</span>
+        <span class="bf-next-chip">Expansion signal</span>
+        <span class="bf-next-chip">Champion: David Kim</span>
+      </div>
 
       <div class="bf-btns">
         <button class="bf-btn" onclick="agentBtn('prep','acme',this)" type="button"><i class="ti ti-bolt"></i>Prep Me</button>
@@ -3221,8 +3282,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
         <button class="bf-qa-btn" onclick="dustQuick('Find Open Loops')" type="button"><i class="ti ti-circle-dashed"></i>Find Open Loops</button>
         <button class="bf-qa-btn" onclick="dustQuick('Review At-Risk Renewals')" type="button"><i class="ti ti-alert-triangle"></i>Review At-Risk</button>
         <button class="bf-qa-btn" onclick="dustQuick('Coach Me')" type="button"><i class="ti ti-bolt" style="color:var(--am)"></i>Coach Me</button>
+        <!-- v4.10.0 — SPEC §4: the Agents chip-with-caret broke the 2×3 grid.
+             Replaced with a right-aligned text link in the 6th cell. Same
+             toggleAgentsDropdown() behavior; same dropdown menu DOM. -->
         <div class="bf-qa-wrap">
-          <button class="bf-qa-btn muted" id="dust-agents-btn" onclick="toggleAgentsDropdown(event)" type="button"><span style="display:flex;align-items:center;gap:5px"><i class="ti ti-settings"></i>Agents</span><i class="ti ti-chevron-down chev"></i></button>
+          <button class="bf-qa-link" id="dust-agents-btn" onclick="toggleAgentsDropdown(event)" type="button" aria-label="See all 9 Dust agents">&rarr; All Agents (9)</button>
           <div class="dust-agents-pop" id="dust-agents-pop">
             <div class="dap-hd"><i class="ti ti-settings" style="color:var(--tx2)"></i> Available Dust Agents</div>
             <div class="dap-sec">
@@ -3262,63 +3326,35 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
             <span class="cached-badge"><i class="ti ti-database-off"></i> Cached</span>
           </div>
         </div>
-        <div class="ii crit">
-          <div class="ii-top"><div class="ii-from"><i class="ti ti-robot" style="font-size:12px;color:var(--rd)"></i> Gainsight Alert</div><span class="ii-time">2h ago</span></div>
-          <div class="ii-body"><span class="acct-lk" onclick="acctClick('nova',event)">NovaVault</span> health dropped 67 &rarr; 23 overnight</div>
-          <div class="ii-meta"><span class="tag red">CRITICAL</span><span style="font-size:10px;color:var(--tx3)">Renewal 17 days &middot; 45d Gong silence</span></div>
+        <!-- v4.10.0 — SPEC §1: compact single-line rows. Avatar initial +
+             name·account + source chip + time. No multi-line preview.
+             Max 4 rows. -->
+        <div class="ii" onclick="acctClick('nova',event)">
+          <div class="ii-av crit">N</div>
+          <div class="ii-mid"><span class="ii-nm">Gainsight Alert · <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span></span><span class="tb tb-crit" aria-label="Critical">CRITICAL</span><span class="tb-src gainsight">GAINSIGHT</span></div>
+          <span class="ii-time">2h ago</span>
         </div>
-        <div class="ii crit">
-          <div class="ii-top"><div class="ii-from"><i class="ti ti-mail" style="font-size:12px;color:var(--rd)"></i> Michael Torres &middot; <span class="acct-lk" onclick="acctClick('nova',event)">NovaVault</span></div><span class="ii-time">5h ago</span></div>
-          <div class="ii-body">&ldquo;Re: Following up on our account &mdash; hoping to connect&rdquo;</div>
-          <div class="ii-meta"><span class="tag red">NO REPLY</span><span style="font-size:10px;color:var(--tx3)">45d since last Gong call</span></div>
+        <div class="ii" onclick="acctClick('nova',event)">
+          <div class="ii-av crit">M</div>
+          <div class="ii-mid"><span class="ii-nm">Michael Torres · <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span></span><span class="tb tb-watch" aria-label="No reply">NO REPLY</span><span class="tb-src gmail">GMAIL</span></div>
+          <span class="ii-time">5h ago</span>
         </div>
-        <div class="ii warn">
-          <div class="ii-top"><div class="ii-from"><i class="ti ti-mail" style="font-size:12px;color:var(--am)"></i> Sarah Chen &middot; <span class="acct-lk" onclick="acctClick('brightex',event)">Brightex Inc</span></div><span class="ii-time">3h ago</span></div>
-          <div class="ii-body">&ldquo;Quick question about our renewal options &mdash; do you have a moment?&rdquo;</div>
-          <div class="ii-meta"><span class="tag amber">NO REPLY</span><span style="font-size:10px;color:var(--tx3)">Renews in 31 days</span></div>
+        <div class="ii" onclick="acctClick('brightex',event)">
+          <div class="ii-av high">S</div>
+          <div class="ii-mid"><span class="ii-nm">Sarah Chen · <span class="acct-lk" onclick="event.stopPropagation();acctClick('brightex',event)">Brightex Inc</span></span><span class="tb tb-high" aria-label="No reply">NO REPLY</span><span class="tb-src gmail">GMAIL</span></div>
+          <span class="ii-time">3h ago</span>
         </div>
-        <div class="ii info">
-          <div class="ii-top"><div class="ii-from"><i class="ti ti-brand-slack" style="font-size:12px;color:var(--bl)"></i> Maggie Spry &middot; Slack</div><span class="ii-time">1h ago</span></div>
-          <div class="ii-body">&ldquo;Can you make sure <span class="acct-lk" onclick="acctClick('acme',event)">Acme</span> QBR slides are ready before 9?&rdquo;</div>
-          <div class="ii-meta"><span class="tag blue">DM</span><span style="font-size:10px;color:var(--tx3)">#cs-leaders</span></div>
+        <div class="ii" onclick="acctClick('acme',event)">
+          <div class="ii-av watch">M</div>
+          <div class="ii-mid"><span class="ii-nm">Maggie Spry · <span class="acct-lk" onclick="event.stopPropagation();acctClick('acme',event)">Acme</span></span><span class="tb tb-watch" aria-label="DM">DM</span><span class="tb-src slack">SLACK</span></div>
+          <span class="ii-time">1h ago</span>
         </div>
       </div>
 
-      <div class="dz">
-        <div class="dz-hd">
-          <div style="display:flex;align-items:center;gap:10px"><div class="dz-title"><i class="ti ti-moon" style="color:var(--rd)"></i> 60-Day Dark Zone</div><span class="dz-cnt">3 accounts</span></div>
-          <button class="dz-toggle" id="dz-toggle-btn" type="button" onclick="toggleDz()">
-            <span id="dz-toggle-label">Show accounts</span>
-            <i class="ti ti-chevron-down dz-chev"></i>
-          </button>
-        </div>
-        <div class="dz-body" id="dz-body">
-          <div class="dz-acct">
-            <div class="dz-left">
-              <div class="dz-nm"><span class="acct-lk" onclick="acctClick('meridian',event)">Meridian Health Systems</span> &middot; $22K</div>
-              <div class="dz-row"><span class="dz-days">73d dark</span><span class="dz-renewal">Renews Jun 30</span></div>
-              <div class="dz-last">&ldquo;Last positive: SSO rollout discussion &mdash; March 15 (Gong)&rdquo;</div>
-            </div>
-            <button class="dz-btn" onclick="openPanel('meridian',null)">Ghost-Buster</button>
-          </div>
-          <div class="dz-acct">
-            <div class="dz-left">
-              <div class="dz-nm"><span class="acct-lk" onclick="acctClick('creston',event)">Creston Software</span> &middot; $18K</div>
-              <div class="dz-row"><span class="dz-days">67d dark</span><span class="dz-renewal">Renews Aug 20</span></div>
-              <div class="dz-last">&ldquo;Last positive: Onboarding call &mdash; went quiet after Feb 28&rdquo;</div>
-            </div>
-            <button class="dz-btn" onclick="openPanel('creston',null)">Ghost-Buster</button>
-          </div>
-          <div class="dz-acct">
-            <div class="dz-left">
-              <div class="dz-nm"><span class="acct-lk" onclick="acctClick('apex',event)">Apex Dynamics</span> &middot; $15K</div>
-              <div class="dz-row"><span class="dz-days">61d dark</span><span class="dz-renewal">Renews Aug 1</span></div>
-              <div class="dz-last">&ldquo;Champion changed &mdash; Ryan Patel not yet reached (Salesforce)&rdquo;</div>
-            </div>
-            <button class="dz-btn" onclick="openPanel('apex',null)">Ghost-Buster</button>
-          </div>
-        </div>
-      </div>
+      <!-- v4.10.0 — SPEC §1 + §7: the standalone Dark Zone widget moved
+           into the Mission Briefing as "Silent Accounts" inside Prepare My
+           Day. The Priority Stack row tag "73 DAYS DARK" remains the
+           in-page entry point. -->
 
       <div class="card">
         <div class="card-hd">
@@ -3332,68 +3368,42 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
           </div>
           <span style="font-size:11px;color:var(--tx3)" id="task-count">0 / 7</span>
         </div>
-        <div class="tk-legend">
-          <span class="tk-leg"><span class="tk-dot gs"></span>Gainsight CTA</span>
-          <span class="tk-leg"><span class="tk-dot ca"></span>Calendar</span>
-          <span class="tk-leg"><span class="tk-dot gm"></span>Gmail</span>
-          <span class="tk-leg"><span class="tk-dot sl"></span>Slack</span>
-          <span class="tk-leg"><span class="tk-dot admin"></span>Admin</span>
-        </div>
-        <div class="ac admin" id="ac-admin1">
-          <div class="ac-top"><div class="src-dot admin">👔</div><span class="ac-src">ADMIN</span><span class="ac-badge adhi">High priority</span><span class="ac-badge ov" style="margin-left:auto">Due today</span></div>
-          <div class="ac-title">Schedule EBR for all accounts renewing in next 60 days</div>
-          <div class="ac-from">From: <strong>Maggie Spry</strong> &middot; CS Leadership &middot; Sent to all Commercial CSMs</div>
-          <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:6px">
-            <button class="ac-btn" data-label="Schedule EBRs" onclick="adminTask('ebr');doneTask(this,'ac-admin1')">Schedule EBRs</button>
-          </div>
-        </div>
-        <div class="ac admin" id="ac-admin2">
-          <div class="ac-top"><div class="src-dot admin">👔</div><span class="ac-src">ADMIN</span><span class="ac-badge admed">Medium priority</span><span class="ac-badge td" style="margin-left:auto">Due Jun 10</span></div>
-          <div class="ac-title">Update champion contacts for all dark zone accounts in Gainsight</div>
-          <div class="ac-from">From: <strong>Maggie Spry</strong> &middot; CS Leadership &middot; Sent to all CSMs</div>
-          <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:6px">
-            <button class="ac-btn" data-label="Update in Gainsight" onclick="adminTask('champion');doneTask(this,'ac-admin2')">Update in Gainsight</button>
-          </div>
-        </div>
+        <!-- v4.10.0 — SPEC §1: simple numbered list with one source dot per row.
+             Source filter row + Admin broadcast cards removed entirely. -->
         <div class="ac" id="ac1">
-          <div class="ac-top"><div class="src-dot gs"></div><span class="ac-src">Gainsight CTA</span><span class="ac-badge ov">2d overdue</span></div>
-          <div class="ac-title">Update <span class="acct-lk" onclick="acctClick('nova',event)">NovaVault</span> renewal forecast status</div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:10px;color:var(--tx3)">Health 23 &middot; Renewal Jun 1 &middot; Critical</span>
-            <button class="ac-btn" data-label="Update forecast" onclick="dustQuick('Update NovaVault forecast');doneTask(this,'ac1')">Update forecast</button>
-          </div>
+          <span class="ac-n">1.</span><span class="src-dot gs" aria-label="Gainsight CTA"></span>
+          <span class="ac-title">Update <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span> renewal forecast status</span>
+          <button class="ac-btn" data-label="Update forecast" onclick="dustQuick('Update NovaVault forecast');doneTask(this,'ac1')">Update</button>
         </div>
         <div class="ac" id="ac2">
-          <div class="ac-top"><div class="src-dot ca"></div><span class="ac-src">Calendar</span><span class="ac-badge td">Before 9am</span></div>
-          <div class="ac-title">Finalize <span class="acct-lk" onclick="acctClick('acme',event)">Acme Corp</span> QBR slides &middot; send to David Kim</div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:10px;color:var(--tx3)">QBR at 9:00 AM &middot; Health 82 &middot; No CTAs</span>
-            <button class="ac-btn" data-label="Generate prep" onclick="openAgentDrawer('prep','acme');doneTask(this,'ac2')">Generate prep</button>
-          </div>
+          <span class="ac-n">2.</span><span class="src-dot ca" aria-label="Calendar"></span>
+          <span class="ac-title">Finalize <span class="acct-lk" onclick="event.stopPropagation();acctClick('acme',event)">Acme Corp</span> QBR slides — send to David Kim</span>
+          <button class="ac-btn" data-label="Generate prep" onclick="openAgentDrawer('prep','acme');doneTask(this,'ac2')">Prep</button>
         </div>
         <div class="ac" id="ac3">
-          <div class="ac-top"><div class="src-dot gs"></div><span class="ac-src">Gainsight CTA</span><span class="ac-badge ov">Today</span></div>
-          <div class="ac-title">Schedule exec sponsor save call for <span class="acct-lk" onclick="acctClick('nova',event)">NovaVault</span></div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:10px;color:var(--tx3)">Emergency retention &middot; 17d to renewal</span>
-            <button class="ac-btn" data-label="Draft outreach" onclick="openAgentDrawer('save','nova');doneTask(this,'ac3')">Draft outreach</button>
-          </div>
+          <span class="ac-n">3.</span><span class="src-dot gs" aria-label="Gainsight CTA"></span>
+          <span class="ac-title">Schedule exec sponsor save call for <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span></span>
+          <button class="ac-btn" data-label="Draft outreach" onclick="openAgentDrawer('save','nova');doneTask(this,'ac3')">Draft</button>
         </div>
         <div class="ac" id="ac4">
-          <div class="ac-top"><div class="src-dot gm"></div><span class="ac-src">Gmail</span><span class="ac-badge td">3h ago</span></div>
-          <div class="ac-title">Reply to Sarah Chen re: <span class="acct-lk" onclick="acctClick('brightex',event)">Brightex</span> renewal options</div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:10px;color:var(--tx3)">At risk &middot; Competitor flagged &middot; Renewal 31d</span>
-            <button class="ac-btn" data-label="Draft reply" onclick="openAgentDrawer('risk','brightex');doneTask(this,'ac4')">Draft reply</button>
-          </div>
+          <span class="ac-n">4.</span><span class="src-dot gm" aria-label="Gmail"></span>
+          <span class="ac-title">Reply to Sarah Chen re: <span class="acct-lk" onclick="event.stopPropagation();acctClick('brightex',event)">Brightex</span> renewal options</span>
+          <button class="ac-btn" data-label="Draft reply" onclick="openAgentDrawer('risk','brightex');doneTask(this,'ac4')">Reply</button>
         </div>
         <div class="ac" id="ac5">
-          <div class="ac-top"><div class="src-dot sl"></div><span class="ac-src">Slack reminder</span><span class="ac-badge lo">Low</span></div>
-          <div class="ac-title">Log Klaxton Labs call notes from yesterday</div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:10px;color:var(--tx3)">Onboarding &middot; Health 76 &middot; All good</span>
-            <button class="ac-btn" data-label="Log notes" onclick="dustQuick('Log Klaxton call notes');doneTask(this,'ac5')">Log notes</button>
-          </div>
+          <span class="ac-n">5.</span><span class="src-dot sl" aria-label="Slack"></span>
+          <span class="ac-title">Log Klaxton Labs call notes from yesterday</span>
+          <button class="ac-btn" data-label="Log notes" onclick="dustQuick('Log Klaxton call notes');doneTask(this,'ac5')">Log</button>
+        </div>
+        <div class="ac" id="ac6">
+          <span class="ac-n">6.</span><span class="src-dot admin" aria-label="Admin"></span>
+          <span class="ac-title">Schedule EBR for accounts renewing in next 60 days</span>
+          <button class="ac-btn" data-label="Schedule EBRs" onclick="adminTask('ebr');doneTask(this,'ac6')">Open</button>
+        </div>
+        <div class="ac" id="ac7">
+          <span class="ac-n">7.</span><span class="src-dot admin" aria-label="Admin"></span>
+          <span class="ac-title">Update champion contacts for dark-zone accounts in Gainsight</span>
+          <button class="ac-btn" data-label="Update in Gainsight" onclick="adminTask('champion');doneTask(this,'ac7')">Open</button>
         </div>
       </div>
     </div>
@@ -3401,7 +3411,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <div>
       <div class="rp" role="region" aria-label="Mission Briefing" aria-live="polite">
         <div class="rp-view on" id="view-default">
-          <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Prepare My Day &middot; Auto-loaded</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
+          <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Prepare My Day &middot; Auto-loaded</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> Live</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">Acme Corp</div>
             <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>QBR &middot; 9:00 AM</span></div>
@@ -3422,7 +3432,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
         <div class="rp-view" id="view-acme">
           <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--tl-bg);color:var(--tl-dk);padding:2px 8px;border-radius:4px">QBR</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
+          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--tl-bg);color:var(--tl-dk);padding:2px 8px;border-radius:4px">QBR</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> Live</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">Acme Corp</div>
             <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>9:00 AM</span></div>
@@ -3445,7 +3455,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
         <div class="rp-view" id="view-brightex">
           <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--am-bg);color:var(--am-dk);padding:2px 8px;border-radius:4px">Risk Review</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('brightex')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
+          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--am-bg);color:var(--am-dk);padding:2px 8px;border-radius:4px">Risk Review</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('brightex')"><i class="ti ti-bolt"></i> Live</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">Brightex Inc</div>
             <div class="mb-meta"><span>$36K ARR</span><span>&middot;</span><span style="color:var(--am)">Jun 15 &middot; 31 days &#9888;</span><span>&middot;</span><span>11:00 AM</span></div>
@@ -3468,7 +3478,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
         <div class="rp-view" id="view-nova">
           <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
-          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--rd-bg);color:var(--rd-dk);padding:2px 8px;border-radius:4px">Critical</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('nova')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
+          <div class="rp-hd"><div class="rp-t">Mission Briefing</div><span style="font-size:10px;font-weight:700;background:var(--rd-bg);color:var(--rd-dk);padding:2px 8px;border-radius:4px">Critical</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('nova')"><i class="ti ti-bolt"></i> Live</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">NovaVault</div>
             <div class="mb-meta"><span>$31K ARR</span><span>&middot;</span><span style="color:var(--rd);font-weight:700">Jun 1 &middot; 17 DAYS &#128308;</span><span>&middot;</span><span>3:30 PM</span></div>
@@ -3856,69 +3866,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
         </div>
       </div>
 
-      <!-- Live Signals widget — SPEC §5.7 -->
-      <div class="ls">
-        <div class="ls-hd">
-          <div class="ls-title"><i class="ti ti-broadcast" style="color:var(--rd)"></i> Live Signals <span class="cached-badge"><i class="ti ti-database-off"></i> Cached</span></div>
-          <div class="ls-live"><span class="ls-dot"></span> Live &middot; Gainsight + Gong</div>
-        </div>
-        <div class="ls-row">
-          <div class="ls-ic r"><i class="ti ti-microphone-off"></i></div>
-          <div class="ls-mid">
-            <div class="ls-acct acct-lk" onclick="acctClick('meridian',event)">Meridian Health Systems</div>
-            <div class="ls-type">Gong silence</div>
-            <div class="ls-ctx">No call in 73 days &middot; last positive: SSO rollout, Mar 15</div>
-            <span class="ls-sev crit">Critical</span>
-            <div class="ls-time">3 min ago</div>
-            <button class="ls-act" type="button" onclick="openPanel('meridian',null)"><i class="ti ti-ghost"></i> Ghost-Buster</button>
-          </div>
-        </div>
-        <div class="ls-row">
-          <div class="ls-ic r"><i class="ti ti-user-off"></i></div>
-          <div class="ls-mid">
-            <div class="ls-acct acct-lk" onclick="acctClick('nova',event)">NovaVault</div>
-            <div class="ls-type">Champion change</div>
-            <div class="ls-ctx">James Wu inactive &middot; Michael Torres added as primary</div>
-            <span class="ls-sev hi">High Risk</span>
-            <div class="ls-time">22 min ago</div>
-            <button class="ls-act" type="button" onclick="agentBtn('prep','nova',this)"><i class="ti ti-bolt"></i> Prep Me</button>
-          </div>
-        </div>
-        <div class="ls-row">
-          <div class="ls-ic a"><i class="ti ti-trending-down"></i></div>
-          <div class="ls-mid">
-            <div class="ls-acct acct-lk" onclick="acctClick('brightex',event)">Brightex Inc</div>
-            <div class="ls-type">Health drop</div>
-            <div class="ls-ctx">Health 71 &rarr; 48 over 30 days &middot; sustained trend</div>
-            <span class="ls-sev watch">Watch</span>
-            <div class="ls-time">1h ago</div>
-            <button class="ls-act" type="button" onclick="agentBtn('risk','brightex',this)"><i class="ti ti-shield-check"></i> Risk Analyst</button>
-          </div>
-        </div>
-        <div class="ls-row">
-          <div class="ls-ic g"><i class="ti ti-trending-up"></i></div>
-          <div class="ls-mid">
-            <div class="ls-acct acct-lk" onclick="acctClick('acme',event)">Acme Corp</div>
-            <div class="ls-type">Expansion signal</div>
-            <div class="ls-ctx">&ldquo;Enterprise tier&rdquo; unprompted &middot; SSO + reporting flagged</div>
-            <span class="ls-sev opp">Opportunity</span>
-            <div class="ls-time">2h ago</div>
-            <button class="ls-act" type="button" onclick="agentBtn('prep','acme',this)"><i class="ti ti-bolt"></i> Prep Me</button>
-          </div>
-        </div>
-        <div class="ls-row">
-          <div class="ls-ic a"><i class="ti ti-ticket"></i></div>
-          <div class="ls-mid">
-            <div class="ls-acct acct-lk" onclick="acctClick('brightex',event)">Brightex Inc</div>
-            <div class="ls-type">Support ticket spike</div>
-            <div class="ls-ctx">3 new tickets in 48h &middot; SSO config + provisioning issues</div>
-            <span class="ls-sev watch">Watch</span>
-            <div class="ls-time">3h ago</div>
-            <button class="ls-act" type="button" onclick="agentBtn('risk','brightex',this)"><i class="ti ti-shield-check"></i> Risk Analyst</button>
-          </div>
-        </div>
-        <div class="ls-foot"><button class="ls-foot-a" type="button" onclick="toast('Full signals feed coming in Forecasting tab')">View 6 more signals <i class="ti ti-arrow-right"></i></button></div>
-      </div>
+      <!-- v4.10.0 — SPEC §6: Live Signals widget removed. The same data lives
+           in three better surfaces: status-bar KPIs (ARR at risk, dark
+           accounts), Priority Stack rows, and Mission Briefing's Signals to
+           Know inside the Prepare My Day output. Calendar now takes the
+           full right-column height. -->
     </div>
 
   </div>
@@ -4876,6 +4828,41 @@ var DUST_RESP = {
         + '<div class="du-card r"><div class="du-card-t">NovaVault &middot; champion change</div><div class="du-card-s">Champion changed 45 days ago. New contact Michael Torres has had zero onboarding from 1Password.</div></div>'
         + '<div class="du-card a"><div class="du-card-t">Brightex &middot; health drop</div><div class="du-card-s">Health dropped 23 points in 30 days. Gong flagged competitor evaluation.</div></div>'
         + '<div class="du-card g"><div class="du-card-t">Acme &middot; expansion signal</div><div class="du-card-s">Enterprise tier interest mentioned unprompted in last Gong.</div></div>'
+      + '</div>'
+      // v4.10.0 — SPEC §7: Dark Zone widget moved into the PMD output as
+      // "Silent Accounts". Same compact row layout as Today's Calls above.
+      + '<div class="du-sec sa-sec">'
+        + '<div class="du-sec-t"><i class="ti ti-ghost"></i> Silent accounts &middot; 3 accounts &middot; $55K ARR</div>'
+        + '<div class="sa-row">'
+          + '<div class="sa-ic">👻</div>'
+          + '<div class="sa-body">'
+            + '<div class="sa-t"><span class="acct-lk" onclick="acctClick(\'meridian\',event)">Meridian Health</span> &middot; 73d &middot; $22K &middot; Jun 30</div>'
+            + '<div class="sa-acts">'
+              + '<button class="sa-btn" type="button" onclick="rsOpenGB(\'meridian\')"><i class="ti ti-ghost"></i> Ghost-Buster</button>'
+              + '<button class="sa-btn" type="button" onclick="toast(\'Touch logged · Meridian · Gainsight ✓\')"><i class="ti ti-note"></i> Log touch</button>'
+            + '</div>'
+          + '</div>'
+        + '</div>'
+        + '<div class="sa-row">'
+          + '<div class="sa-ic">👻</div>'
+          + '<div class="sa-body">'
+            + '<div class="sa-t"><span class="acct-lk" onclick="acctClick(\'creston\',event)">Creston Software</span> &middot; 67d &middot; $18K &middot; Jul 15</div>'
+            + '<div class="sa-acts">'
+              + '<button class="sa-btn" type="button" onclick="rsOpenGB(\'creston\')"><i class="ti ti-ghost"></i> Ghost-Buster</button>'
+              + '<button class="sa-btn" type="button" onclick="toast(\'Touch logged · Creston · Gainsight ✓\')"><i class="ti ti-note"></i> Log touch</button>'
+            + '</div>'
+          + '</div>'
+        + '</div>'
+        + '<div class="sa-row">'
+          + '<div class="sa-ic">👻</div>'
+          + '<div class="sa-body">'
+            + '<div class="sa-t"><span class="acct-lk" onclick="acctClick(\'apex\',event)">Apex Dynamics</span> &middot; 61d &middot; $15K &middot; Aug 1</div>'
+            + '<div class="sa-acts">'
+              + '<button class="sa-btn" type="button" onclick="psSilentChampionApex()"><i class="ti ti-user-check"></i> Champion Protocol</button>'
+              + '<button class="sa-btn" type="button" onclick="toast(\'Slack DM sent to AE · Apex · Warm intro requested ✓\')"><i class="ti ti-brand-slack"></i> Notify AE</button>'
+            + '</div>'
+          + '</div>'
+        + '</div>'
       + '</div>'
       + '<div class="du-acts foot"><button class="du-btn prim" type="button" onclick="dustQuickToDrawer(\'save\',\'nova\')"><i class="ti ti-lifebuoy"></i> Open NovaVault Save Strategy</button><button class="du-btn" type="button" onclick="dustQuickToDrawer(\'risk\',\'brightex\')"><i class="ti ti-shield-check"></i> Open Brightex Risk Analyst</button></div>'
       + '<div class="du-foot">Sourced from Gainsight &middot; Gong &middot; Google Calendar via Dust &middot; Updated 8:47 AM</div>';
@@ -12353,6 +12340,43 @@ function rsTaskComplete(id) {
   // Keep the top-bar badge + popover count in sync.
   if (typeof renderTasksList === 'function') renderTasksList();
   toast('Task complete · ' + rsEscape(t.acct || t.title) + ' ✓');
+}
+
+// v4.10.0 — SPEC §9: pulse-strip Renews / Expansion handlers.
+function psKpiRenew() {
+  _rsClearPops();
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'forecast\'"]');
+    if (tab) goTab('forecast', tab);
+  }
+  setTimeout(function(){
+    if (typeof fcShow === 'function') fcShow('timeline');
+    toast('Forecasting · Timeline · $89K renewing in next 30 days');
+  }, 80);
+}
+function psKpiExpansion() {
+  _rsClearPops();
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'forecast\'"]');
+    if (tab) goTab('forecast', tab);
+  }
+  setTimeout(function(){
+    if (typeof fcShow === 'function') fcShow('pipeline');
+    toast('Forecasting · Pipeline · $12K–$18K expansion potential');
+  }, 80);
+}
+// v4.10.0 — SPEC §7: Silent Accounts "Champion Protocol" for Apex routes to
+// Risk & Signals → Champions sub-section. Extracted from inline onclick so
+// the markup stays readable and Playwright can evaluate the handler directly.
+function psSilentChampionApex() {
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'risk\'"]');
+    if (tab) goTab('risk', tab);
+  }
+  setTimeout(function(){
+    if (typeof rsShow === 'function') rsShow('champions');
+    toast('Champion Change Protocol · Apex Dynamics');
+  }, 80);
 }
 
 function rsOpenSlide(title, html) {
