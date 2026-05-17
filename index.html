@@ -676,6 +676,53 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .gb-foot{display:flex;flex-direction:column;gap:6px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--bd)}
 .gb-foot .gb-btn{justify-content:center;padding:10px 12px;font-size:11px}
 
+/* v2.11.0 — Editable touch UI (channel selector, subject input, strategy, signature) */
+.gb-touch summary{justify-content:flex-start;gap:8px}
+.gb-touch-ch{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 7px 3px 8px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;line-height:1.2;letter-spacing:0;text-transform:none}
+.gb-touch-ch:hover{border-color:var(--tx2);background:var(--surf2)}
+.gb-touch-ch i.tcch{font-size:11px;color:var(--tx3);margin-left:1px}
+.gb-touch-day{font-size:11px;color:var(--tx2);font-weight:600;letter-spacing:0;text-transform:none;flex:1}
+.gb-touch-summary-chev{font-size:14px;color:var(--tx3);transition:transform .2s;flex-shrink:0;margin-left:auto}
+.gb-touch[open] .gb-touch-summary-chev{transform:rotate(180deg)}
+
+.gb-subj-input{display:block;width:100%;border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:600;color:var(--tx);outline:none;padding:0;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.gb-subj-input:focus{border-bottom-color:var(--tl)}
+.gb-subj-input::placeholder{color:var(--tx3)}
+.gb-subj-row{display:flex;align-items:baseline;gap:6px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.gb-subj-row > label{font-size:11px;color:var(--tx3);font-weight:600;flex-shrink:0}
+.gb-subj-row > input{flex:1;border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:600;color:var(--tx);outline:none;padding:0;min-width:0}
+.gb-subj-row > input:focus{color:var(--tl-dk)}
+
+.gb-sig{padding:8px 0 0;margin-top:8px;border-top:1px solid var(--bd);font-size:11px;color:var(--tx2);line-height:1.55;white-space:pre-wrap}
+
+.gb-strat-toggle{background:none;border:none;font-size:10px;font-weight:600;color:var(--tx3);cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:2px;display:inline-flex;align-items:center;gap:4px;align-self:flex-end;margin-bottom:8px}
+.gb-strat-toggle:hover{color:var(--tx2)}
+.gb-strat-row{display:flex;justify-content:flex-end;margin-bottom:4px}
+.gb-strat{display:none;background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:11px 13px;margin-bottom:10px;flex-direction:column;gap:10px}
+.gb-strat.on{display:flex}
+.gb-strat-sec{font-size:11px;line-height:1.5;color:var(--tx2)}
+.gb-strat-l{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;display:block}
+
+/* Email signature settings panel */
+.gb-sig-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd);margin-bottom:14px;font-size:10px;color:var(--tx3)}
+.gb-sig-gear{background:none;border:none;font-size:11px;color:var(--tx3);cursor:pointer;font-family:inherit;padding:4px 7px;border-radius:5px;display:inline-flex;align-items:center;gap:4px;font-weight:600}
+.gb-sig-gear:hover{background:var(--surf2);color:var(--tx)}
+.gb-sig-gear i{font-size:13px}
+.gb-sig-panel{display:none;background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:13px;margin-bottom:14px;flex-direction:column;gap:8px}
+.gb-sig-panel.on{display:flex}
+.gb-sig-panel-l{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
+.gb-sig-panel textarea{width:100%;min-height:88px;border:1px solid var(--bd2);border-radius:6px;padding:9px 11px;font-family:inherit;font-size:11px;line-height:1.55;color:var(--tx);background:var(--surf);outline:none;resize:vertical;box-sizing:border-box}
+.gb-sig-panel textarea:focus{border-color:var(--tl)}
+.gb-sig-panel-acts{display:flex;gap:6px;justify-content:flex-end}
+
+/* Channel-selector popover */
+.gb-ch-pop{position:absolute;top:calc(100% + 4px);left:0;background:var(--surf);border:1px solid var(--bd);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:50;display:none;min-width:170px;overflow:hidden}
+.gb-ch-pop.on{display:block}
+.gb-ch-pop-item{padding:8px 12px;font-size:11px;font-weight:600;color:var(--tx2);cursor:pointer;display:flex;align-items:center;gap:7px;font-family:inherit;background:none;border:none;width:100%;text-align:left}
+.gb-ch-pop-item:hover{background:var(--surf2);color:var(--tx)}
+.gb-ch-pop-item.on{color:var(--tl);background:var(--tl-bg);font-weight:700}
+.gb-touch-ch-wrap{position:relative;display:inline-block}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    TeamOS Live (v2.8.0) — drawer repurposed as conversational AI companion
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -1723,73 +1770,22 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
               </div>
             </div>
 
+            <div class="gb-sig-bar">
+              <span>Email signature applied to all email touches</span>
+              <button class="gb-sig-gear" type="button" onclick="gbToggleSigPanel('meridian')"><i class="ti ti-settings"></i> Signature</button>
+            </div>
+            <div class="gb-sig-panel" id="gb-sig-panel-meridian">
+              <div class="gb-sig-panel-l">Email signature</div>
+              <textarea aria-label="Email signature"></textarea>
+              <div class="gb-sig-panel-acts">
+                <button class="gb-btn" type="button" onclick="gbToggleSigPanel('meridian')">Cancel</button>
+                <button class="gb-btn prim" type="button" onclick="gbSigPanelSave('meridian')"><i class="ti ti-device-floppy"></i> Save signature</button>
+              </div>
+            </div>
+
             <div class="gb-sec">
               <div class="gb-sec-t"><i class="ti ti-list-numbers"></i> 3-Touch Sequence</div>
-
-              <details class="gb-touch" open>
-                <summary>
-                  <span class="gb-touch-n">Touch 1</span>
-                  <span class="gb-touch-type">Email &middot; Send today</span>
-                  <i class="ti ti-chevron-down gb-touch-chev"></i>
-                </summary>
-                <div class="gb-touch-body">
-                  <div class="gb-touch-to">To: Jennifer Ramos &middot; jennifer.ramos@meridian.com</div>
-                  <div class="gb-touch-subj">Subject: Quick question about your SSO rollout</div>
-                  <div class="gb-touch-txt">Jennifer,
-
-Hope things are well at Meridian. I was reviewing your account and noticed we haven&rsquo;t connected since your SSO rollout kicked off in March &mdash; I wanted to check in directly.
-
-How is the rollout going? I&rsquo;ve helped a few other teams work through IT integration questions on the SSO side and would love to make sure you have everything you need.
-
-Are you free for a 20-minute call this week?
-
-&mdash; Carmen</div>
-                  <div class="gb-touch-acts">
-                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('meridian','Jennifer Ramos',1)"><i class="ti ti-send"></i> Send via Gmail</button>
-                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
-                  </div>
-                </div>
-              </details>
-
-              <details class="gb-touch">
-                <summary>
-                  <span class="gb-touch-n">Touch 2</span>
-                  <span class="gb-touch-type">LinkedIn message &middot; Day 5</span>
-                  <i class="ti ti-chevron-down gb-touch-chev"></i>
-                </summary>
-                <div class="gb-touch-body">
-                  <div class="gb-touch-to">To: Jennifer Ramos &middot; LinkedIn DM</div>
-                  <div class="gb-touch-subj">Subject: (LinkedIn — no subject)</div>
-                  <div class="gb-touch-txt">Jennifer, I left you an email earlier this week about your SSO rollout. Happy to connect whenever works &mdash; even a quick call would help me make sure you&rsquo;re set up for success.</div>
-                  <div class="gb-touch-acts">
-                    <button class="gb-btn" type="button" onclick="gbCopyTouch(this)"><i class="ti ti-copy"></i> Copy message</button>
-                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
-                  </div>
-                </div>
-              </details>
-
-              <details class="gb-touch">
-                <summary>
-                  <span class="gb-touch-n">Touch 3</span>
-                  <span class="gb-touch-type">Email &middot; Day 10 (urgency)</span>
-                  <i class="ti ti-chevron-down gb-touch-chev"></i>
-                </summary>
-                <div class="gb-touch-body">
-                  <div class="gb-touch-to">To: Jennifer Ramos &middot; jennifer.ramos@meridian.com</div>
-                  <div class="gb-touch-subj">Subject: Last reach-out &mdash; Meridian + 1Password</div>
-                  <div class="gb-touch-txt">Jennifer, I&rsquo;ve tried to connect a couple of times over the past two weeks. I want to make sure Meridian is getting full value from the platform before your renewal in June.
-
-If now isn&rsquo;t the right time, just let me know &mdash; I&rsquo;ll follow your lead. But I&rsquo;d hate for a technical question to sit unresolved when I&rsquo;m here to help.
-
-15 minutes this week?
-
-&mdash; Carmen</div>
-                  <div class="gb-touch-acts">
-                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('meridian','Jennifer Ramos',3)"><i class="ti ti-send"></i> Send via Gmail</button>
-                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
-                  </div>
-                </div>
-              </details>
+              <div id="gb-seq-meridian"></div>
             </div>
 
             <div class="gb-sec">
@@ -1840,71 +1836,22 @@ If now isn&rsquo;t the right time, just let me know &mdash; I&rsquo;ll follow yo
               </div>
             </div>
 
+            <div class="gb-sig-bar">
+              <span>Email signature applied to all email touches</span>
+              <button class="gb-sig-gear" type="button" onclick="gbToggleSigPanel('creston')"><i class="ti ti-settings"></i> Signature</button>
+            </div>
+            <div class="gb-sig-panel" id="gb-sig-panel-creston">
+              <div class="gb-sig-panel-l">Email signature</div>
+              <textarea aria-label="Email signature"></textarea>
+              <div class="gb-sig-panel-acts">
+                <button class="gb-btn" type="button" onclick="gbToggleSigPanel('creston')">Cancel</button>
+                <button class="gb-btn prim" type="button" onclick="gbSigPanelSave('creston')"><i class="ti ti-device-floppy"></i> Save signature</button>
+              </div>
+            </div>
+
             <div class="gb-sec">
               <div class="gb-sec-t"><i class="ti ti-list-numbers"></i> 3-Touch Sequence</div>
-
-              <details class="gb-touch" open>
-                <summary>
-                  <span class="gb-touch-n">Touch 1</span>
-                  <span class="gb-touch-type">Email &middot; Send today</span>
-                  <i class="ti ti-chevron-down gb-touch-chev"></i>
-                </summary>
-                <div class="gb-touch-body">
-                  <div class="gb-touch-to">To: Marcus Webb &middot; m.webb@creston.com</div>
-                  <div class="gb-touch-subj">Subject: Following up on your onboarding goals</div>
-                  <div class="gb-touch-txt">Marcus,
-
-It&rsquo;s been a couple of months since we went through your onboarding goals &mdash; I wanted to check in and see how the team is getting on with the platform.
-
-We&rsquo;ve shipped a few updates since March that I think your engineering team would find useful, particularly around the developer API and SSO management. Worth 20 minutes to walk through?
-
-Happy to work around your schedule.
-
-&mdash; Carmen</div>
-                  <div class="gb-touch-acts">
-                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('creston','Marcus Webb',1)"><i class="ti ti-send"></i> Send via Gmail</button>
-                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
-                  </div>
-                </div>
-              </details>
-
-              <details class="gb-touch">
-                <summary>
-                  <span class="gb-touch-n">Touch 2</span>
-                  <span class="gb-touch-type">Slack message &middot; Day 5</span>
-                  <i class="ti ti-chevron-down gb-touch-chev"></i>
-                </summary>
-                <div class="gb-touch-body">
-                  <div class="gb-touch-to">To: Marcus Webb &middot; Slack DM</div>
-                  <div class="gb-touch-subj">Subject: (Slack — no subject)</div>
-                  <div class="gb-touch-txt">Hey Marcus &mdash; sent you an email earlier this week. Wanted to make sure it didn&rsquo;t get buried. Happy to connect whenever works for you.</div>
-                  <div class="gb-touch-acts">
-                    <button class="gb-btn" type="button" onclick="gbCopyTouch(this)"><i class="ti ti-copy"></i> Copy message</button>
-                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
-                  </div>
-                </div>
-              </details>
-
-              <details class="gb-touch">
-                <summary>
-                  <span class="gb-touch-n">Touch 3</span>
-                  <span class="gb-touch-type">Email &middot; Day 10</span>
-                  <i class="ti ti-chevron-down gb-touch-chev"></i>
-                </summary>
-                <div class="gb-touch-body">
-                  <div class="gb-touch-to">To: Marcus Webb &middot; m.webb@creston.com</div>
-                  <div class="gb-touch-subj">Subject: Creston + 1Password &mdash; quick check</div>
-                  <div class="gb-touch-txt">Marcus, I know you&rsquo;re heads down. I&rsquo;ll be brief: I want to make sure Creston is getting value before your July renewal, and I haven&rsquo;t been able to reach you.
-
-Even a reply telling me things are fine gives me what I need. Otherwise happy to schedule something short.
-
-&mdash; Carmen</div>
-                  <div class="gb-touch-acts">
-                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('creston','Marcus Webb',3)"><i class="ti ti-send"></i> Send via Gmail</button>
-                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
-                  </div>
-                </div>
-              </details>
+              <div id="gb-seq-creston"></div>
             </div>
 
             <div class="gb-sec">
@@ -1992,75 +1939,22 @@ Even a reply telling me things are fine gives me what I need. Otherwise happy to
               </div>
             </div>
 
+            <div class="gb-sig-bar">
+              <span>Email signature applied to all email touches</span>
+              <button class="gb-sig-gear" type="button" onclick="gbToggleSigPanel('apex')"><i class="ti ti-settings"></i> Signature</button>
+            </div>
+            <div class="gb-sig-panel" id="gb-sig-panel-apex">
+              <div class="gb-sig-panel-l">Email signature</div>
+              <textarea aria-label="Email signature"></textarea>
+              <div class="gb-sig-panel-acts">
+                <button class="gb-btn" type="button" onclick="gbToggleSigPanel('apex')">Cancel</button>
+                <button class="gb-btn prim" type="button" onclick="gbSigPanelSave('apex')"><i class="ti ti-device-floppy"></i> Save signature</button>
+              </div>
+            </div>
+
             <div class="gb-sec">
               <div class="gb-sec-t"><i class="ti ti-list-numbers"></i> 3-Touch Sequence</div>
-
-              <details class="gb-touch" open>
-                <summary>
-                  <span class="gb-touch-n">Touch 1</span>
-                  <span class="gb-touch-type">Email &middot; Send today (post AE intro)</span>
-                  <i class="ti ti-chevron-down gb-touch-chev"></i>
-                </summary>
-                <div class="gb-touch-body">
-                  <div class="gb-touch-to">To: Ryan Patel &middot; r.patel@apexdynamics.com</div>
-                  <div class="gb-touch-subj">Subject: Continuing where James Wu left off</div>
-                  <div class="gb-touch-txt">Ryan,
-
-I&rsquo;m Carmen, your Customer Success Manager at 1Password. I worked closely with James Wu on your team&rsquo;s rollout and wanted to reach out personally to introduce myself and make sure nothing fell through the cracks during the transition.
-
-I&rsquo;d love to schedule a brief intro call &mdash; 30 minutes to make sure you have full visibility into what your team has set up and where we can help as you settle in.
-
-Would this week work?
-
-&mdash; Carmen</div>
-                  <div class="gb-touch-acts">
-                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('apex','Ryan Patel',1)"><i class="ti ti-send"></i> Send via Gmail</button>
-                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
-                  </div>
-                </div>
-              </details>
-
-              <details class="gb-touch">
-                <summary>
-                  <span class="gb-touch-n">Touch 2</span>
-                  <span class="gb-touch-type">Email &middot; Day 5</span>
-                  <i class="ti ti-chevron-down gb-touch-chev"></i>
-                </summary>
-                <div class="gb-touch-body">
-                  <div class="gb-touch-to">To: Ryan Patel &middot; r.patel@apexdynamics.com</div>
-                  <div class="gb-touch-subj">Subject: Re: Continuing where James Wu left off</div>
-                  <div class="gb-touch-txt">Ryan, following up on my note from earlier this week. I want to make sure you have everything you need as you get up to speed on the 1Password side.
-
-Happy to make this as short as you need it.
-
-&mdash; Carmen</div>
-                  <div class="gb-touch-acts">
-                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('apex','Ryan Patel',2)"><i class="ti ti-send"></i> Send via Gmail</button>
-                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
-                  </div>
-                </div>
-              </details>
-
-              <details class="gb-touch">
-                <summary>
-                  <span class="gb-touch-n">Touch 3</span>
-                  <span class="gb-touch-type">Email &middot; Day 10</span>
-                  <i class="ti ti-chevron-down gb-touch-chev"></i>
-                </summary>
-                <div class="gb-touch-body">
-                  <div class="gb-touch-to">To: Ryan Patel &middot; r.patel@apexdynamics.com</div>
-                  <div class="gb-touch-subj">Subject: Apex Dynamics account &mdash; quick note</div>
-                  <div class="gb-touch-txt">Ryan, I&rsquo;ve reached out a couple of times. If this isn&rsquo;t the right channel or if there&rsquo;s someone else I should be speaking with at Apex, please let me know and I&rsquo;ll redirect.
-
-I want to make sure the account is in good shape &mdash; especially with the team transition. 10 minutes would be enough.
-
-&mdash; Carmen</div>
-                  <div class="gb-touch-acts">
-                    <button class="gb-btn prim" type="button" onclick="gbSendTouch('apex','Ryan Patel',3)"><i class="ti ti-send"></i> Send via Gmail</button>
-                    <button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>
-                  </div>
-                </div>
-              </details>
+              <div id="gb-seq-apex"></div>
             </div>
 
             <div class="gb-sec">
@@ -2438,6 +2332,329 @@ function gbNotifyAE(acct) {
 
 function gbLinkedIn(person) {
   toast('Opening LinkedIn &mdash; ' + person + ' ✓');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Ghost-Buster 3-Touch Sequence v2.11.0 — editable channel, subject, strategy
+// ═══════════════════════════════════════════════════════════════════════════
+var GB_ACCT_LBL = { meridian:'Meridian Health Systems', creston:'Creston Software', apex:'Apex Dynamics' };
+
+// Channel definitions — each lists the toolbox the renderer uses to assemble
+// a touch when the user picks that channel from the dropdown.
+var GB_CHANNELS = {
+  email:    { ic:'📧', label:'Email',     toLbl:'To',  hasSubject:true,  hasSig:true,  bodyLbl:null,                actions:['send','draft','edit'] },
+  slack:    { ic:'💬', label:'Slack DM',  toLbl:'To',  hasSubject:false, hasSig:false, bodyLbl:null,                actions:['copy','edit'] },
+  linkedin: { ic:'🔗', label:'LinkedIn',  toLbl:'To',  hasSubject:false, hasSig:false, bodyLbl:'LinkedIn message',  actions:['copy','edit'] },
+  phone:    { ic:'📞', label:'Phone',     toLbl:'Call',hasSubject:false, hasSig:false, bodyLbl:'Talking points',    actions:['copyTp','edit'] }
+};
+
+var GB_SEQUENCES = {
+  meridian: {
+    contact: { name:'Jennifer Ramos', email:'jennifer.ramos@meridian.com', slack:'@jramos · #meridian-it', linkedin:'Jennifer Ramos · LinkedIn', phone:'Direct line on file' },
+    touches: [
+      { ch:'email', day:'Send today',
+        subject:'Quick question about your SSO rollout',
+        body:"Jennifer,\n\nHope things are well at Meridian. I was reviewing your account and noticed we haven't connected since your SSO rollout kicked off in March — I wanted to check in directly.\n\nHow is the rollout going? I've helped a few other teams work through IT integration questions on the SSO side and would love to make sure you have everything you need.\n\nAre you free for a 20-minute call this week?",
+        strategy:{
+          why:"Jennifer Ramos sent an inbound email after 73 days of silence — this is the highest-value re-engagement signal possible. A same-day response doubles reply probability. Leading with the SSO rollout (not commercial language) matches her role as IT Manager.",
+          prep:"Check with Solutions Engineering: is there a known SSO integration issue for healthcare compliance environments that could explain the adoption drop? If yes, reference it in the email — \"I've seen this with a few other IT teams on HIPAA-compliant SSO rollouts.\" Loop in AE (cc or notify) before sending — this is the first active touch in 73 days and AE should be aware.",
+          expected:"Good: Jennifer replies and mentions the SSO blocker specifically. Treat this as a support request first, renewal conversation second.\nConcerning: No reply within 48 hours. Escalate to Touch 2 (LinkedIn) and loop in team lead.",
+          risk:"Jennifer's inbound email represents Meridian's last self-initiated contact signal. If unanswered, the implicit message is that 1Password doesn't notice or care. Account churns silently at Jun 30 renewal."
+        }
+      },
+      { ch:'linkedin', day:'Day 5',
+        subject:'',
+        body:"Jennifer, I left you an email earlier this week about your SSO rollout. Happy to connect whenever works — even a quick call would help me make sure you're set up for success.",
+        strategy:{
+          why:"Email is easy to miss or deprioritize. LinkedIn is a professional channel that signals personal attention — a CSM sending a LinkedIn DM communicates \"I'm treating you like a person, not a ticket.\" IT Managers respond to this differently than procurement contacts do.",
+          prep:"Connect with Jennifer on LinkedIn first if not already connected — a cold DM from a non-connection is easy to miss. Check mutual connections. If AE is connected to Jennifer, have AE send the connection request, then CSM follows with DM.",
+          expected:"Good: Jennifer accepts and replies. Any reply is a positive signal — acknowledge and move the conversation to email or Zoom.\nConcerning: No acceptance within 3 days. Suggests Jennifer may not be the right champion — check with AE whether another contact at Meridian has been active.",
+          risk:"Meridian has $22K ARR renewing Jun 30 with zero touchpoints. After Touch 2 silence, leadership should be informed this account is at high churn risk."
+        }
+      },
+      { ch:'email', day:'Day 10 (urgency)',
+        subject:'Last reach-out — Meridian + 1Password',
+        body:"Jennifer, I've tried to connect a couple of times over the past two weeks. I want to make sure Meridian is getting full value from the platform before your renewal in June.\n\nIf now isn't the right time, just let me know — I'll follow your lead. But I'd hate for a technical question to sit unresolved when I'm here to help.\n\n15 minutes this week?",
+        strategy:{
+          why:"The \"last reach-out\" email creates a professional urgency without being aggressive. It respects the contact's autonomy while making clear the CSM has made a genuine effort. It also opens the door for Jennifer to redirect to a more appropriate contact if circumstances have changed internally.",
+          prep:"Before sending Touch 3, schedule an internal review with team lead. If no response to Touch 3 within 5 business days, initiate the formal churn risk escalation process in Gainsight. Update health score rationale note with full re-engagement timeline.",
+          expected:"Good: Any reply — even \"wrong person, try [name]\" — gives a path forward.\nConcerning: No reply. Meridian is now a formal churn risk. Escalate to VP of CS before renewal date.",
+          risk:"At $22K ARR with renewal in under 45 days, this account churns with no further contact attempts. Creates a gap in the renewal attainment number that is difficult to backfill in Q."
+        }
+      }
+    ]
+  },
+  creston: {
+    contact: { name:'Marcus Webb', email:'m.webb@creston.com', slack:'@mwebb · DM', linkedin:'Marcus Webb · LinkedIn', phone:'VP Eng direct (Salesforce)' },
+    touches: [
+      { ch:'email', day:'Send today',
+        subject:'Following up on your onboarding goals',
+        body:"Marcus,\n\nIt's been a couple of months since we went through your onboarding goals — I wanted to check in and see how the team is getting on with the platform.\n\nWe've shipped a few updates since March that I think your engineering team would find useful, particularly around the developer API and SSO management. Worth 20 minutes to walk through?\n\nHappy to work around your schedule.",
+        strategy:{
+          why:"Creston went dark 67 days ago from a position of strength (H76, positive onboarding review). This is a neglect dark, not a risk dark — the relationship is warm, just dormant. Marcus Webb (VP Engineering) is technically sophisticated and will respond to specific, relevant product updates rather than generic check-ins.",
+          prep:"Ask product or Solutions Engineering: what has shipped since the March onboarding review that is specifically relevant to a VP Engineering's team? Developer API changes, SSO management updates, CLI improvements. Lead with one specific concrete update — not \"we've shipped some updates.\" That sounds automated.\nCheck AE: has the AE touched this account since March? If not, cc the AE on this email or alert them first.",
+          expected:"Good: Marcus replies with a question about the developer API or SSO. This is a re-engagement with technical intent — route to SE for a technical walkthrough, not just a CSM check-in.\nConcerning: No reply within 5 days. Marcus may be on leave or have changed roles. Cross-reference LinkedIn for role changes before Touch 2.",
+          risk:"Creston's health score is uncontextualized (the CS Ops open CTA confirms this). Without a rationale note and a re-engagement attempt, this account enters the renewal cycle with no recent activity log and no champion relationship confirmation."
+        }
+      },
+      { ch:'slack', day:'Day 5',
+        subject:'',
+        body:"Hey Marcus — sent you an email earlier this week. Wanted to make sure it didn't get buried. Happy to connect whenever works for you.",
+        strategy:{
+          why:"Marcus Webb is VP Engineering — high probability of active Slack usage. A brief, non-pressuring DM is appropriate for this relationship stage. It references the email without re-sending it, keeping the message volume low.",
+          prep:"Check if Creston uses Slack Connect or has a shared channel with 1Password. If yes, message through the shared channel rather than a cold DM — it's more visible and signals an active partnership. If no shared channel, direct Slack DM is appropriate.",
+          expected:"Good: \"Got it, will reply this week\" or similar. Any signal of active receipt.\nConcerning: No response. Marcus may be unreachable via Slack. Move to Touch 3 email with increased specificity.",
+          risk:"At 67 days dark, Creston is building institutional distance from the product. Without contact before the 90-day mark, the CSM will be cold-introducing themselves to their own renewal."
+        }
+      },
+      { ch:'email', day:'Day 10',
+        subject:'Creston + 1Password — quick check',
+        body:"Marcus, I know you're heads down. I'll be brief: I want to make sure Creston is getting value before your July renewal, and I haven't been able to reach you.\n\nEven a reply telling me things are fine gives me what I need. Otherwise happy to schedule something short.",
+        strategy:{
+          why:"The \"last reach-out before I loop in my manager\" framing is calibrated specifically for VP-level contacts who respond to professional accountability. It is not a threat — it is a signal that the CSM is diligent and that their leadership is aware of the relationship. Many VPs will respond to this when nothing else worked.",
+          prep:"Alert team lead before sending. If no response within 5 days of Touch 3, initiate Gainsight churn risk CTA, update health rationale note (required by CS Ops — this closes that open CTA), and tag the AE to attempt a parallel reach-out through their relationship.",
+          expected:"Good: Any reply.\nConcerning: Continued silence. Request an intro to a second contact at Creston via the AE or through LinkedIn company connections.",
+          risk:"$18K ARR at risk at Jul 15 renewal. The CS Ops rationale note CTA remains open and will flag in the weekly pipeline review, creating visibility and pressure from leadership."
+        }
+      }
+    ]
+  },
+  apex: {
+    contact: { name:'Ryan Patel', email:'r.patel@apexdynamics.com', slack:'@rpatel (pending invite)', linkedin:'Ryan Patel · LinkedIn', phone:'IT Director direct (TBD)' },
+    touches: [
+      { ch:'email', day:'Send today (post AE intro)',
+        subject:'Continuing where James Wu left off',
+        body:"Ryan,\n\nI'm Carmen, your Customer Success Manager at 1Password. I worked closely with James Wu on your team's rollout and wanted to reach out personally to introduce myself and make sure nothing fell through the cracks during the transition.\n\nI'd love to schedule a brief intro call — 30 minutes to make sure you have full visibility into what your team has set up and where we can help as you settle in.\n\nWould this week work?",
+        strategy:{
+          why:"Ryan Patel is a new champion with no prior 1Password relationship. A cold CSM email has low probability of positive reception. This touch is only sent AFTER AE has made a warm intro. Without the warm intro, Touch 1 is the wrong move — see Champion Change Protocol above.",
+          prep:"Critical: Do not send until AE confirms the warm intro has been made or attempted. If AE has a direct relationship with Ryan Patel (check Salesforce contact history), AE should send a brief intro note: \"Ryan — meet Carmen, your CSM. She's been working with your team for the past year and wants to make sure you have full continuity.\" CSM email follows within 24 hours of AE intro.\nIf AE has no relationship with Patel, consider requesting a VP-to-VP intro from CS leadership before any outreach.",
+          expected:"Good: Ryan replies acknowledging the intro and expressing interest in a call. Schedule within 48 hours.\nConcerning: No reply within 3 days of the warm intro. AE should follow up through their channel first before CSM sends a second email.",
+          risk:"Ryan Patel enters the renewal period (Aug 1) having never spoken to his CSM. The contract renewal becomes a procurement decision rather than a relationship decision. Procurement decisions go to lowest-cost alternative."
+        }
+      },
+      { ch:'email', day:'Day 5',
+        subject:'Re: Continuing where James Wu left off',
+        body:"Ryan, following up on my note from earlier this week. I want to make sure you have everything you need as you get up to speed on the 1Password side.\n\nHappy to make this as short as you need it.",
+        strategy:{
+          why:"A low-friction follow-up that doesn't add pressure. Keeps the CSM top of mind without repeating the full intro. Signals patience and professionalism.",
+          prep:"Check with AE: any activity from Ryan Patel in other channels (reply to AE email, LinkedIn, Slack) between Touch 1 and Touch 2? If yes, coordinate response through whichever channel Ryan engaged in first — don't cross the streams.\nAlso verify: is there a current open contract in Ironclad? If the contract is Not Opened after Touch 1, this is now a critical renewal risk signal.",
+          expected:"Good: Any reply, even brief.\nConcerning: Ironclad shows contract Not Opened + no email reply + no AE channel activity = escalate to team lead immediately.",
+          risk:"Apex is 61 days from renewal with a cold champion and an unopened contract. This is a critical account. Every day without contact increases the probability that Ryan Patel engages a competitor's outreach instead."
+        }
+      },
+      { ch:'email', day:'Day 10',
+        subject:'Apex Dynamics account — quick note',
+        body:"Ryan, I've reached out a couple of times. If this isn't the right channel or if there's someone else I should be speaking with at Apex, please let me know and I'll redirect.\n\nI want to make sure the account is in good shape — especially with the team transition. 10 minutes would be enough.",
+        strategy:{
+          why:"The last professional attempt before formal escalation. The \"redirect me if this isn't the right channel\" framing is important for champion change scenarios — Patel may have a preferred contact or may have delegated the vendor relationship to a team member.",
+          prep:"Before sending: team lead should be aware. If Ironclad shows contract still Not Opened, RevOps must be looped in before renewal date. Prepare a formal account escalation brief for team lead: account health, ARR, renewal date, champion status, all outreach attempts with dates. This becomes the handoff document if escalation is required.",
+          expected:"Good: Ryan replies, even to say \"wrong person, reach out to [name].\" Any reply is a path forward.\nConcerning: Silence. This account now requires executive escalation — VP of CS should consider a personal outreach to Ryan Patel or to Apex's procurement leadership.",
+          risk:"$15K ARR at risk Aug 1. Contract Not Opened. Cold champion. No internal advocate confirmed. This is the highest-probability churn scenario in the dark zone."
+        }
+      }
+    ]
+  }
+};
+
+// localStorage persistence for the user-configured email signature.
+var GB_SIG_KEY = 'teamos_signature';
+var GB_SIG_DEFAULT = "Carmen Corio\nCustomer Success Manager · 1Password\n📧 c.corio@1password.com\n📅 calendly.com/carmen-corio";
+function gbGetSignature() {
+  try { return localStorage.getItem(GB_SIG_KEY) || GB_SIG_DEFAULT; }
+  catch (e) { return GB_SIG_DEFAULT; }
+}
+function gbSaveSignature(text) {
+  try { localStorage.setItem(GB_SIG_KEY, text); } catch (e) {}
+  // Re-render every sequence so the new signature appears on every email touch.
+  Object.keys(GB_SEQUENCES).forEach(function(k){ _gbRenderSequence(k); });
+  toast('Signature saved &middot; Applied to all email touches ✓');
+}
+
+function gbToggleSigPanel(acct) {
+  var p = document.getElementById('gb-sig-panel-' + acct);
+  if (!p) return;
+  p.classList.toggle('on');
+  if (p.classList.contains('on')) {
+    var ta = p.querySelector('textarea');
+    if (ta) { ta.value = gbGetSignature(); ta.focus(); }
+  }
+}
+
+function gbSigPanelSave(acct) {
+  var p = document.getElementById('gb-sig-panel-' + acct);
+  if (!p) return;
+  var ta = p.querySelector('textarea');
+  if (ta) gbSaveSignature(ta.value);
+  p.classList.remove('on');
+}
+
+function _gbEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Renderer — emits one touch card based on (acct, touchIndex). Called by
+// the parent renderer and by gbSwitchChannel when the user picks a new
+// channel from the dropdown. The currentBody / currentSubject overrides
+// let us preserve the user's in-progress edits across a channel switch.
+function _gbRenderTouchCard(acct, idx, opts) {
+  opts = opts || {};
+  var seq = GB_SEQUENCES[acct];
+  if (!seq) return '';
+  var t = seq.touches[idx];
+  if (!t) return '';
+  var ch = GB_CHANNELS[t.ch] || GB_CHANNELS.email;
+  var contact = seq.contact;
+  var subj = (opts.subject != null) ? opts.subject : t.subject;
+  var body = (opts.body != null) ? opts.body : t.body;
+
+  // Recipient line per channel
+  var toLine = '';
+  if (t.ch === 'email')    toLine = contact.name + ' &middot; ' + contact.email;
+  else if (t.ch === 'slack')   toLine = contact.name + ' &middot; ' + contact.slack;
+  else if (t.ch === 'linkedin') toLine = contact.linkedin;
+  else if (t.ch === 'phone')   toLine = contact.name + ' &middot; ' + contact.phone;
+
+  // Subject row (email only)
+  var subjHtml = '';
+  if (ch.hasSubject) {
+    subjHtml = '<div class="gb-subj-row"><label>Subject</label><input type="text" value="' + _gbEscape(subj) + '" placeholder="Add a subject line&hellip;" data-gb-subj="1" oninput="_gbUpdateSubject(\'' + acct + '\',' + idx + ',this.value)"></div>';
+  } else if (ch.bodyLbl) {
+    subjHtml = '<div class="gb-touch-to" style="margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--bd);font-weight:700;color:var(--tx)">' + ch.bodyLbl + '</div>';
+  }
+
+  // Action buttons per channel
+  var actsHtml = '';
+  ch.actions.forEach(function(a) {
+    if (a === 'send')   actsHtml += '<button class="gb-btn prim" type="button" onclick="gbSendTouch(\'' + acct + '\',\'' + _gbEscape(contact.name).replace(/&#39;/g,"\\'") + '\',' + (idx+1) + ')"><i class="ti ti-send"></i> Send via Gmail</button>';
+    if (a === 'draft')  actsHtml += '<button class="gb-btn" type="button" onclick="gbSaveDraft(\'' + acct + '\',' + (idx+1) + ')"><i class="ti ti-device-floppy"></i> Save as Draft</button>';
+    if (a === 'copy')   actsHtml += '<button class="gb-btn" type="button" onclick="gbCopyTouch(this)"><i class="ti ti-copy"></i> Copy message</button>';
+    if (a === 'copyTp') actsHtml += '<button class="gb-btn" type="button" onclick="gbCopyTouch(this)"><i class="ti ti-copy"></i> Copy talking points</button>';
+    if (a === 'edit')   actsHtml += '<button class="gb-btn" type="button" onclick="gbEdit(this)"><i class="ti ti-edit"></i> Edit first</button>';
+  });
+
+  // Signature (email only)
+  var sigHtml = '';
+  if (ch.hasSig) {
+    var sig = gbGetSignature();
+    if (sig.trim()) sigHtml = '<div class="gb-sig">' + _gbEscape(sig) + '</div>';
+  }
+
+  // Channel dropdown — built per touch so the active option highlights
+  var chOptions = ['email','slack','linkedin','phone'].map(function(k){
+    var c = GB_CHANNELS[k];
+    var on = (k === t.ch) ? ' on' : '';
+    return '<button type="button" class="gb-ch-pop-item' + on + '" onclick="gbSwitchChannel(\'' + acct + '\',' + idx + ',\'' + k + '\')">' + c.ic + '&nbsp;' + c.label + '</button>';
+  }).join('');
+
+  // Strategy panel
+  var st = t.strategy || {};
+  var stratHtml = ''
+    + '<div class="gb-strat-row"><button class="gb-strat-toggle" type="button" onclick="gbToggleStrategy(this)">&#9656; View strategy &amp; context</button></div>'
+    + '<div class="gb-strat">'
+      + '<div class="gb-strat-sec"><span class="gb-strat-l">Why this touch</span>' + _gbEscape(st.why) + '</div>'
+      + '<div class="gb-strat-sec"><span class="gb-strat-l">Internal prep</span>' + _gbEscape(st.prep).replace(/\n/g,'<br>') + '</div>'
+      + '<div class="gb-strat-sec"><span class="gb-strat-l">Expected response</span>' + _gbEscape(st.expected).replace(/\n/g,'<br>') + '</div>'
+      + '<div class="gb-strat-sec"><span class="gb-strat-l">Risk if ignored</span>' + _gbEscape(st.risk) + '</div>'
+    + '</div>';
+
+  var openAttr = (idx === 0) ? ' open' : '';
+  return ''
+    + '<details class="gb-touch"' + openAttr + ' data-acct="' + acct + '" data-idx="' + idx + '">'
+      + '<summary>'
+        + '<span class="gb-touch-n">Touch ' + (idx+1) + '</span>'
+        + '<span class="gb-touch-ch-wrap">'
+          + '<button class="gb-touch-ch" type="button" onclick="event.preventDefault();event.stopPropagation();gbToggleChannelPop(this)">' + ch.ic + '&nbsp;' + ch.label + ' <i class="ti ti-chevron-down tcch"></i></button>'
+          + '<div class="gb-ch-pop">' + chOptions + '</div>'
+        + '</span>'
+        + '<span class="gb-touch-day">&middot; ' + t.day + '</span>'
+        + '<i class="ti ti-chevron-down gb-touch-summary-chev"></i>'
+      + '</summary>'
+      + '<div class="gb-touch-body">'
+        + '<div class="gb-touch-to">' + ch.toLbl + ': ' + toLine + '</div>'
+        + subjHtml
+        + stratHtml
+        + '<div class="gb-touch-txt" data-gb-body="1">' + _gbEscape(body) + '</div>'
+        + sigHtml
+        + '<div class="gb-touch-acts">' + actsHtml + '</div>'
+      + '</div>'
+    + '</details>';
+}
+
+function _gbRenderSequence(acct) {
+  var host = document.getElementById('gb-seq-' + acct);
+  if (!host) return;
+  var seq = GB_SEQUENCES[acct];
+  if (!seq) return;
+  var html = '';
+  for (var i = 0; i < seq.touches.length; i++) {
+    html += _gbRenderTouchCard(acct, i);
+  }
+  host.innerHTML = html;
+}
+
+// User changed the subject input — persist it in GB_SEQUENCES so a channel
+// switch doesn't blow away the edit.
+function _gbUpdateSubject(acct, idx, value) {
+  if (GB_SEQUENCES[acct] && GB_SEQUENCES[acct].touches[idx]) {
+    GB_SEQUENCES[acct].touches[idx].subject = value;
+  }
+}
+
+function gbToggleChannelPop(btn) {
+  // Close any open channel dropdown elsewhere.
+  document.querySelectorAll('.gb-ch-pop.on').forEach(function(p){
+    if (p !== btn.nextElementSibling) p.classList.remove('on');
+  });
+  var pop = btn.nextElementSibling;
+  if (pop) pop.classList.toggle('on');
+}
+
+// Outside-click for channel dropdowns
+document.addEventListener('click', function(e){
+  if (!e.target.closest('.gb-touch-ch-wrap')) {
+    document.querySelectorAll('.gb-ch-pop.on').forEach(function(p){ p.classList.remove('on'); });
+  }
+});
+
+function gbSwitchChannel(acct, idx, newCh) {
+  var t = GB_SEQUENCES[acct] && GB_SEQUENCES[acct].touches[idx];
+  if (!t) return;
+  // Preserve the user's in-progress body and subject across the switch.
+  var details = document.querySelector('.gb-touch[data-acct="' + acct + '"][data-idx="' + idx + '"]');
+  var currentBody = t.body, currentSubject = t.subject;
+  if (details) {
+    var bodyEl = details.querySelector('.gb-touch-txt');
+    var subjEl = details.querySelector('input[data-gb-subj]');
+    if (bodyEl) currentBody = (bodyEl.innerText || bodyEl.textContent || '');
+    if (subjEl) currentSubject = subjEl.value;
+  }
+  // Persist channel + edits in GB_SEQUENCES so a re-render is accurate.
+  t.ch = newCh;
+  t.body = currentBody;
+  t.subject = currentSubject;
+  // Replace just this touch card in the DOM.
+  if (details && details.parentElement) {
+    var wasOpen = details.hasAttribute('open');
+    var tmp = document.createElement('div');
+    tmp.innerHTML = _gbRenderTouchCard(acct, idx);
+    var fresh = tmp.firstElementChild;
+    if (wasOpen && fresh) fresh.setAttribute('open', '');
+    details.parentElement.replaceChild(fresh, details);
+  }
+}
+
+function gbToggleStrategy(btn) {
+  var body = btn.closest('.gb-touch-body');
+  if (!body) return;
+  var panel = body.querySelector('.gb-strat');
+  if (!panel) return;
+  var on = panel.classList.toggle('on');
+  btn.innerHTML = (on ? '&#9662; Hide strategy &amp; context' : '&#9656; View strategy &amp; context');
+}
+
+function gbSaveDraft(acct, n) {
+  var nm = GB_ACCT_LBL[acct] || acct;
+  toast('Saved to Gmail drafts &middot; ' + nm + ' &middot; Touch ' + n + ' &middot; Opens in Gmail for final review ✓');
 }
 
 function toggleDz() {
@@ -4328,6 +4545,13 @@ function cftCopy(name) {
 
 // Init on boot.
 _updateCFTDocs('default');
+
+// Boot the v2.11.0 Ghost-Buster 3-touch sequences for all three dark accounts.
+if (typeof _gbRenderSequence === 'function') {
+  _gbRenderSequence('meridian');
+  _gbRenderSequence('creston');
+  _gbRenderSequence('apex');
+}
 
 // Restore an agent output inline into the Mission Briefing center panel.
 // Uses the same DRAWER data and section markup as openAgentDrawer, but

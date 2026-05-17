@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.10.1
+**Version:** 2.11.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,81 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.11.0] — 2026-05-17
+
+Ghost-Buster 3-Touch Sequence rebuilt as an editable, channel-switchable, strategy-aware wizard. All 9 touches across the three dark-account views (view-meridian / view-creston / view-apex) now share a single data-driven renderer.
+
+### Added — `GB_SEQUENCES` data table + `_gbRenderSequence` renderer
+- Per-account contact map (`name` / `email` / `slack` / `linkedin` / `phone`) so a channel switch re-points the recipient line automatically.
+- 9 touches total (3 per account) with fields: `ch` (default channel) / `day` (label) / `subject` / `body` / `strategy {why, prep, expected, risk}`. All copy preserved from v2.10.1; new strategy content per spec.
+- `_gbRenderSequence(acct)` emits the full 3-touch HTML into the per-view `<div id="gb-seq-{acct}">` host. Init on boot renders all three sequences.
+- `_gbRenderTouchCard(acct, idx, opts)` emits a single touch and is also used by the channel-switch handler to swap one card in place without re-rendering the whole sequence.
+
+### Added — Editable channel selector (Enhancement 1)
+- Channel chip in each touch summary doubles as a dropdown trigger: `📧 Email ▾`. Click opens a 170px popover with all four channels (📧 Email / 💬 Slack DM / 🔗 LinkedIn / 📞 Phone). Active channel highlighted teal.
+- `gbSwitchChannel(acct, idx, newCh)` rewrites just that touch card. Channel-specific UI:
+  - **Email** → `To: name · email`, subject row, body, signature, `[Send via Gmail][Save as Draft][Edit first]`
+  - **Slack DM** → `To: name · @handle`, no subject, body, `[Copy message][Edit first]`
+  - **LinkedIn** → `To: name · LinkedIn`, "LinkedIn message" label instead of subject, body, `[Copy message][Edit first]`
+  - **Phone** → `Call: name · phone`, "Talking points" label, body, `[Copy talking points][Edit first]`
+- Channel switch **preserves** the user's in-progress body and subject edits — the renderer reads the current DOM values, stores them in `GB_SEQUENCES`, then re-renders with the new channel. Verified end-to-end: editing the subject, switching email → slack → email round-trips the edited subject back intact.
+- Outside-click handler scoped to `.gb-touch-ch-wrap` closes any open channel dropdown.
+
+### Added — Editable subject line (Enhancement 2)
+- Email touches now render `<label>Subject</label><input type="text" value="…">` — borderless, bold, full-width, same typography as the previous static label. Tab moves to the message body. `oninput` syncs the value into `GB_SEQUENCES` so it survives channel switches and re-renders.
+- Slack / LinkedIn touches hide the subject row entirely (no more "Subject: (Slack — no subject)" placeholder). LinkedIn shows "LinkedIn message" as a section heading instead. Phone shows "Talking points".
+
+### Added — Strategy & Context panel (Enhancement 3)
+- Collapsed-by-default toggle link `▸ View strategy & context` right-aligned above each touch body. Click expands a 4-section panel:
+  - **Why this touch** — strategic rationale for this channel + timing
+  - **Internal prep** — what to check / who to loop in before sending
+  - **Expected response** — what a good vs. concerning response looks like and what to do in each
+  - **Risk if ignored** — what happens to the account if this touch never goes out
+- Full content per spec for all 9 touches (Meridian × 3, Creston × 3, Apex × 3). `\n` in any strategy field renders as `<br>` so the multi-paragraph fields keep their breaks.
+- Toggle label flips to `▾ Hide strategy & context` when open.
+
+### Added — Save as Draft button (Enhancement 4)
+- New `[💾 Save as Draft]` button on every email touch — between `[Send via Gmail]` and `[Edit first]`.
+- `gbSaveDraft(acct, n)` toasts the spec copy: `Saved to Gmail drafts · [Account] · Touch [N] · Opens in Gmail for final review ✓`.
+- Not shown on Slack / LinkedIn / Phone touches (the channel definitions in `GB_CHANNELS.actions` are channel-specific).
+
+### Added — Email signature configuration (Enhancement 5)
+- `localStorage` key `teamos_signature`, default value:
+  > Carmen Corio<br>Customer Success Manager · 1Password<br>📧 c.corio@1password.com<br>📅 calendly.com/carmen-corio
+- Signature gear bar (`.gb-sig-bar`) sits between the account header and the Situation Read section in every Ghost-Buster view: `Email signature applied to all email touches · ⚙ Signature` button.
+- Clicking `⚙ Signature` toggles an inline panel (`.gb-sig-panel`) with a multi-line `<textarea>`, `Cancel`, and `Save signature` buttons.
+- `gbSaveSignature(text)` writes to localStorage, re-renders all 9 touches across all 3 accounts so the new signature appears immediately on every email touch, and toasts `Signature saved · Applied to all email touches ✓`.
+- Signature is appended to every email body with a thin top border (`<div class="gb-sig">`). Slack / LinkedIn / Phone touches omit the signature (channel-appropriate).
+
+### Touch card UI cleanup (per spec)
+1. Removed the `Subject: (Slack — no subject)` placeholder from non-email touches.
+2. Touch header now reads `[Touch N] [channel selector ▾] · [Day label]` on a single line with chevron right-aligned.
+3. Strategy toggle link is right-aligned above the message body.
+4. Button order is consistent: email = `[Send via Gmail][Save as Draft][Edit first]`; Slack/LinkedIn = `[Copy message][Edit first]`; Phone = `[Copy talking points][Edit first]`.
+5. Signature block is below the message body with a thin separator (`border-top: 1px solid var(--bd)`).
+
+### Verified end-to-end in a headless render
+- 3 sequences render with 3 touches each. Default channels match spec: Meridian (email/linkedin/email), Creston (email/slack/email), Apex (email/email/email).
+- Channel switch from LinkedIn → Email on Meridian Touch 2 swaps `[Copy message][Edit first]` for `[Send via Gmail][Save as Draft][Edit first]`, adds the subject row, and adds the signature block.
+- Subject edit on Meridian Touch 1 survives an email → slack → email round-trip (`'EDITED SUBJECT TEST'` round-tripped back intact).
+- `Save as Draft` fires the exact spec toast: `Saved to Gmail drafts · Meridian Health Systems · Touch 1 · Opens in Gmail for final review ✓`.
+- Strategy panel toggle opens 4 sections with the spec labels (`Why this touch` / `Internal prep` / `Expected response` / `Risk if ignored`). All 9 touches × 4 sections = 36 strategy paragraphs populated.
+- Signature save: `gbSaveSignature('Custom Sig Test\nLine 2')` → localStorage `teamos_signature='Custom Sig Test\nLine 2'`, every email touch in all 3 views updates immediately.
+- Channel switch Email → Slack hides subject row + signature, replaces button row with `[Copy message][Edit first]`.
+
+### Not touched
+- Other Ghost-Buster sections: Situation Read (3 colored cards), Re-engagement Intel grid, footer Push Sequence button, Apex Champion Change Protocol. All preserved verbatim.
+- All other dashboard widgets, drawers, Mission Briefing views, nav, pulse strip, notification rail, Service Worker, offline resilience, Agent Hub, TeamOS Live drawer, Task Brief, Drive Docs, Priority Stack, Next Up, Ask Dust, Recipe for Success tab.
+- `openGhostBusterFromPopover`, `backFromGhostBuster`, `gbSendTouch`, `gbEdit`, `gbCopyTouch`, `gbPushSequence`, `gbNotifyAE`, `gbLinkedIn` — unchanged, still used by the renderer.
+
+### Engineering
+- The 9 inline `<details class="gb-touch">` blocks (~200 lines of HTML) in the three views are replaced with three `<div id="gb-seq-{acct}">` host divs + one shared renderer (~250 lines of JS). Net file size grew ~150 lines but the per-touch maintenance cost drops to one data-table edit.
+- New CSS namespace (`.gb-touch-ch`, `.gb-ch-pop`, `.gb-subj-row`, `.gb-strat`, `.gb-sig-bar`, `.gb-sig-panel`, `.gb-sig`). All styles bind to existing tokens — no new color values.
+- All channel-specific UI driven by `GB_CHANNELS[ch].actions` array (`send` / `draft` / `copy` / `copyTp` / `edit`). Adding a new channel later is a single entry in the table.
+- HTML-escaping (`_gbEscape`) applied to all dynamic strings injected into innerHTML. The only externally-influenced surface is the signature textarea (user-typed); it's stored as plain text in localStorage and escaped on every render.
 
 ---
 
