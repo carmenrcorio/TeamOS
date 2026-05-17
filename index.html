@@ -339,6 +339,20 @@ body.offline .main > div:nth-child(3){
 .rcp-notes-ts{font-size:9px;color:var(--tx3);font-weight:600;letter-spacing:.02em}
 .rcp-notes-txt{font-size:11px;color:var(--tx);line-height:1.6;white-space:pre-wrap}
 
+/* v3.3.1 — Recipe for Success lively hero header. */
+@keyframes rcp-hero-wobble {
+  0%,100% { transform: rotate(-8deg); }
+  50%     { transform: rotate( 8deg); }
+}
+.rcp-hero{margin-bottom:16px}
+.rcp-hero-r{display:flex;align-items:center;gap:12px}
+.rcp-hero-ic{display:inline-block;font-size:36px;line-height:1;animation:rcp-hero-wobble 2.5s ease-in-out infinite;transform-origin:bottom center;flex-shrink:0}
+.rcp-hero-t{font-size:28px;font-weight:800;color:#111827;letter-spacing:-.5px;line-height:1.1}
+.rcp-hero-sub{font-size:14px;color:#6B7280;font-style:italic;margin-top:4px;font-weight:500}
+@media (prefers-reduced-motion: reduce) {
+  .rcp-hero-ic { animation: none; }
+}
+
 /* v3.2.3 — Recipe overhaul: tab header, portfolio bar, status pills,
    tick marks + rating labels on score bars, projection lines, notes
    tools (jump pill, quarter selector, history toggle). */
@@ -4124,12 +4138,21 @@ function buildRecipe() {
 
   var noteCount = (typeof _rcpNotesCurrentCount === 'function') ? _rcpNotesCurrentCount() : 0;
 
+  // v3.3.1 — Lively hero header. Wobbling 🧪 icon + bold title + tagline.
+  var h = '<div class="rcp-hero">'
+        +   '<div class="rcp-hero-r">'
+        +     '<span class="rcp-hero-ic" aria-hidden="true">🧪</span>'
+        +     '<div class="rcp-hero-t">Recipe for Success</div>'
+        +   '</div>'
+        +   '<div class="rcp-hero-sub">Your quarter, cooked to perfection.</div>'
+        + '</div>';
+
   // Top header: subdued sync timestamp + Notes jump pill. Replaces the
   // green advisory banner and the duplicate "Last synced" footer block.
-  var h = '<div class="sc-tophdr">'
-        +   '<div class="sc-sync"><i class="ti ti-refresh"></i> Last synced: Today &middot; 9:00 AM &middot; Gainsight API</div>'
-        +   '<button class="sc-notes-jump" type="button" onclick="_rcpScrollToNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
-        + '</div>';
+  h += '<div class="sc-tophdr">'
+     +   '<div class="sc-sync"><i class="ti ti-refresh"></i> Last synced: Today &middot; 9:00 AM &middot; Gainsight API</div>'
+     +   '<button class="sc-notes-jump" type="button" onclick="_rcpScrollToNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
+     + '</div>';
 
   // Account Portfolio context bar.
   h += '<div class="sc-port">'
@@ -6055,12 +6078,21 @@ function buildRecipe() {
 
   var noteCount = (typeof _rcpNotesCurrentCount === 'function') ? _rcpNotesCurrentCount() : 0;
 
+  // v3.3.1 — Lively hero header. Wobbling 🧪 icon + bold title + tagline.
+  var h = '<div class="rcp-hero">'
+        +   '<div class="rcp-hero-r">'
+        +     '<span class="rcp-hero-ic" aria-hidden="true">🧪</span>'
+        +     '<div class="rcp-hero-t">Recipe for Success</div>'
+        +   '</div>'
+        +   '<div class="rcp-hero-sub">Your quarter, cooked to perfection.</div>'
+        + '</div>';
+
   // Top header: subdued sync timestamp + Notes jump pill. Replaces the
   // green advisory banner and the duplicate "Last synced" footer block.
-  var h = '<div class="sc-tophdr">'
-        +   '<div class="sc-sync"><i class="ti ti-refresh"></i> Last synced: Today &middot; 9:00 AM &middot; Gainsight API</div>'
-        +   '<button class="sc-notes-jump" type="button" onclick="_rcpScrollToNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
-        + '</div>';
+  h += '<div class="sc-tophdr">'
+     +   '<div class="sc-sync"><i class="ti ti-refresh"></i> Last synced: Today &middot; 9:00 AM &middot; Gainsight API</div>'
+     +   '<button class="sc-notes-jump" type="button" onclick="_rcpScrollToNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
+     + '</div>';
 
   // Account Portfolio context bar.
   h += '<div class="sc-port">'

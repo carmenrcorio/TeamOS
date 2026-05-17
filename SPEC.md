@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.3.0
+**Version:** 3.3.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,24 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.3.1] — 2026-05-17
+
+Lively hero header at the top of the Recipe for Success tab — one HTML block + a small CSS block. Scorecard content, metrics, weights, notes, charts, action plan, and all other tabs are untouched.
+
+### Added — Recipe hero header
+- `🧪 Recipe for Success` on a flex row at the very top of the tab content (before the sync timestamp line). Icon at 36 px with a gentle continuous wobble (`@keyframes rcp-hero-wobble`, 2.5 s ease-in-out infinite, rotates ±8° from the bottom centre).
+- Title: 28 px / weight 800 / `#111827` / letter-spacing `-0.5px`.
+- Tagline below the row: `Your quarter, cooked to perfection.` in 14 px italic `#6B7280`.
+- Honours `prefers-reduced-motion: reduce` — wobble disables, the rest of the header stays.
+- Sync timestamp + Notes-jump pill sit directly below the tagline, unchanged.
+
+### Implementation notes
+- HTML block injected at the top of `buildRecipe()` (both parallel copies via `replace_all: true`) so the header re-renders on every Recipe build.
+- CSS scoped via the `.rcp-hero*` namespace; no other tab or component touches those rules.
+- Spec label note: shipped as `[3.3.1]` matching the user's requested version label — first time in a while the user's label and the monotonic next-version line up. No relabel needed.
 
 ---
 
