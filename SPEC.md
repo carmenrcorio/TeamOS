@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.4.1
+**Version:** 4.0.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,86 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.0.0] — 2026-05-17
+
+Campaign Manager replaces the Campaigns Coming Soon placeholder. Phase 1 — simulation only, no live sends; every send fires a toast. Four sections under one sub-nav: Campaigns, Contacts, Templates, Analytics. All other tabs, dashboard widgets, Mission Briefing, Ghost-Buster, drawers, pulse strip, Service Worker untouched.
+
+### Tab structure
+- New `cm-subnav` at the top of `#tab-campaigns` with four tabs (📣 Campaigns · 👥 Contacts · 📄 Templates · 📊 Analytics) and a right-aligned `⚙ Signature` link. Active tab = teal underline + dark text; inactive = muted. `role="tablist"` + `aria-selected` per button.
+- Default section on open: Campaigns.
+
+### Contacts
+- 12 pre-loaded contacts spanning Acme / Brightex / NovaVault / Meridian / Creston / Apex / Klaxton / Pinnacle. Each carries name, role, email, account, sequence status, last touch, last Gong, renewal, and optional inline notes.
+- Search bar (live filter on name + company + email) + filter chips (All / Active / Dark Zone / In Sequence / Replied / Unsubscribed).
+- Account tag pills colour-keyed to the existing account system (Acme teal · Brightex amber · NovaVault red · dark accounts grey).
+- Departed champions (James Wu × 2) render with a red `⚠ Departed · Do not contact` badge and their action buttons disable.
+- Detail panel renders avatar + name + role + tags, a `Contact info` k/v grid (email · last Gong · last CSM touch · renewal · note), sequence history rows (Touch 1 sent · Touch 2 scheduled), and three quick actions: `+ Add to Campaign`, `✉ Send 1:1 Email`, `📝 Add Note` — each fires a contextual toast.
+- `Add Contact`, `Import from Gainsight ▾`, `Import from Salesforce ▾` buttons. Imports show a loading toast then a success toast after 1.5 s.
+
+### Templates
+- 6 starter templates persisted to `localStorage['teamos_templates']`: Re-engagement · EBR Invitation · Renewal Check-in · Product Update · Champion Introduction · Newsletter. Each declares name, category, icon, subject, body, and a `vars[]` list of `{{placeholder}}` tokens.
+- Library grid with category filter chips. Card shows icon · name · category pill · subject preview · variable count · `Preview` + `Use in Campaign` actions.
+- Detail panel: full body preview with subject line + signature appended; variable pills clickable in the inline editor.
+- Inline editor: subject + body textarea + variable insertion buttons. `Save changes` persists to localStorage and re-renders.
+
+### Campaigns
+- 3 pre-loaded demo campaigns:
+  - **June Renewal Push** (Renewal · ACTIVE) — 8 contacts · 3-touch sequence · sent May 14 · 62% open · 25% reply · "6 on Touch 1 · 2 on Touch 2".
+  - **Dark Zone Re-engagement** (Re-engagement · ACTIVE) — 3 dark accounts · 2-touch · sent May 15.
+  - **Q2 EBR Invitations** (EBR · DRAFT) — 12 contacts · prominent `Send Campaign →` button.
+- Card layout: name + type pill + status badge on row 1; contact count + touch count + sent date on row 2; open/reply rates inline; action buttons (`View`, `Duplicate`, `Archive`, conditional `Send Campaign`).
+- Filter chips: All / Active / Draft / Completed / Scheduled.
+- `+ New Campaign` opens a 5-step modal wizard:
+  - **Step 1 — Basics**: name, type chips (6 options), optional goal.
+  - **Step 2 — Contacts**: contact picker with Gainsight-style filters (health score, renewal window); live counter "N contacts selected across M accounts"; departed champions disabled.
+  - **Step 3 — Template**: 2-column template card grid with selection highlight; Dust personalization toggle (on by default); live preview of the personalized email rendered for the first selected contact (FROM / TO / SUBJECT / Dust opener / body with `{{vars}}` filled / signature appended).
+  - **Step 4 — Sequence**: touch count selector (1–5), per-touch channel + day picker; sequence-stops-on-reply default on.
+  - **Step 5 — Review**: summary + preview + three actions: `Save as Draft`, `Schedule`, `Send Now`. Each persists the campaign to the list with the matching status and fires a contextual toast.
+- Progress bar (5-segment) at the top of the wizard tracks step state.
+- Next button disabled until the current step is valid (name + type at step 1; ≥1 contact at step 2; template at step 3).
+
+### Analytics
+- 4 summary cards: Total emails sent (847) · Avg open rate (58%) · Avg reply rate (22%) · Active sequences (2) — each with trend sub-text.
+- Per-campaign performance table: campaign · type · sent · opens · replies · unsub · progress bar. Draft campaigns get an inline `Send →` shortcut.
+- Best performers: best subject line · highest reply rate · zero-opens risk card (NovaVault + Apex). Risk card uses red left border and surfaces `Try LinkedIn →` + `Ghost-Buster →` action shortcuts.
+- Timeframe selector top-right (This quarter / This week / This month / Custom).
+
+### Signature integration
+- Pulls from `localStorage['teamos_signature']` shared with Ghost-Buster via `cmGetSignature()` → `gbGetSignature()` fallback. Default signature returned if the key is empty.
+- All template previews + wizard previews append the signature.
+- `⚙ Signature` link in the sub-nav opens a modal with a textarea pre-populated from current signature; `Save signature` persists and toasts.
+
+### Data + persistence
+- `CM_CONTACTS` (12 contacts) and `CM_CAMPAIGNS` (3 demo campaigns) are session-scoped in-memory arrays — new campaigns created via the wizard persist for the session but reset on reload.
+- `CM_TEMPLATES` reads from `localStorage['teamos_templates']` on boot, falling back to the 6 starter templates. Inline edits persist across reloads.
+- Updates to the existing localStorage audit comment block apply to the new `teamos_templates` key — still no auth tokens, no PII, no API keys.
+
+### Verification (headless, end-to-end)
+- Sub-nav: 4 buttons; correct one active; section visibility toggles on click ✓
+- Campaigns: 3 pre-loaded cards render with correct names ✓
+- Contacts: 12 rows render; click → detail loads with name, k/v info, sequence rows, 3 action buttons ✓
+- Dark Zone filter narrows to 4 (Meridian, Creston, Apex × 2) ✓
+- Search "wu" finds 2 (James Wu × 2) ✓
+- Templates: 6 cards render in correct order; click → detail with preview + 5 var pills ✓
+- Analytics: 4 summary cards with values [847, 58%, 22%, 2]; 3 perf rows; 3 best cards ✓
+- Wizard: opens, advances through 5 steps; preview renders at step 3; Send creates a 4th campaign and closes the modal ✓
+- Signature modal: opens with prefilled textarea; save persists ✓
+- Zero JS errors across the full flow.
+
+### What was NOT done this turn
+- Live email delivery — Phase 1 is simulation only by spec.
+- Drag-to-reorder for sequence touches — out of scope.
+- Per-touch template overrides ("Choose different template") — UI shows "Same as campaign" as the only option this pass.
+- Custom-template builder ("+ New Template" button toasts a placeholder rather than opening a builder).
+
+### Implementation notes
+- One CSS block (`cm-*` namespace, ~210 lines) appended to the end of the main `<style>`.
+- One JS module (~430 lines) appended after the Service Worker registration block — data tables, render functions for each section, wizard state machine, signature helpers.
+- Coming Soon placeholder for `#tab-campaigns` fully replaced. The seven other Coming Soon tabs (Risk & Signals, Forecasting, Success Plans, Team View, Analytics, My Accounts) untouched.
+- Spec label note: shipped as `[4.0.0]` per spec — major-version bump fits the scope of replacing a placeholder with a full feature surface.
 
 ---
 
