@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.0.3
+**Version:** 3.1.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,57 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.1.0] — 2026-05-17
+
+Three connected features that change what the CSM sees on page load and how leadership pushes guidance into the daily workflow.
+
+### Added — Feature 1: Prepare My Day auto-loads as the Mission Briefing default
+- New `_loadPrepareMyDayDefault()` rebuilds `#view-default .rp-scroll` with the existing `DUST_RESP['Prepare My Day']()` output, preserving the Agent Hub card at the bottom. Called on boot (deferred via `setTimeout(...,0)` so the DUST_RESP table has finished initializing) and on every `resetPanel()`.
+- The static Acme Mission Briefing card (story sections, agent buttons, Generate QBR Deck) is replaced by the Prepare My Day output in this default-state slot. The same Acme briefing is still reachable by clicking the Acme calendar event (→ `view-acme`, untouched).
+- pl-tag text flipped from `Next Up · Auto-loaded` → `Prepare My Day · Auto-loaded`. Same teal pulsing dot, same style. Defensively restored on every `resetPanel` call.
+- Back from any view (`resetPanel()`) now returns to the Prepare My Day output instead of the Acme briefing. Verified end-to-end: calendar click → view-acme → Back → Prepare My Day reloaded with the spec content intact.
+
+### Added — Feature 2: Admin task broadcast in Today's Tasks
+- Two admin-broadcast rows added at the TOP of the Today's Tasks card (above the 5 personal tasks):
+  - `[👔 ADMIN]` `High priority · Due today` — "Schedule EBR for all accounts renewing in next 60 days". Sender: Maggie Spry · CS Leadership · Sent to all Commercial CSMs. Button: `Schedule EBRs` → toast `Opening EBR scheduling workflow · 3 accounts qualify in your book ✓`.
+  - `[👔 ADMIN]` `Medium priority · Due Jun 10` — "Update champion contacts for all dark zone accounts in Gainsight". Sender: Maggie Spry · CS Leadership · Sent to all CSMs. Button: `Update in Gainsight` → toast `Opening Gainsight · Dark zone accounts filtered · 3 accounts need champion update ✓`.
+- New source class `admin` (deep indigo `#4F46E5`) added to both `.src-dot.admin` and `.tk-leg .tk-dot.admin`. Admin rows display the 👔 emoji prefix instead of a colored dot via `.ac.admin .src-dot{background:transparent; font-size:11px}`.
+- New `.ac-from` style for the sender attribution line under the task title (muted italic, 10px, with bold sender name).
+- New `.ac-badge.adhi` (indigo) + `.ac-badge.admed` (gray) priority badges for admin rows.
+- `tk-legend` updated with a 5th item: `● Admin`.
+- Task counter: `0 / 5` → `0 / 7` in HTML + `doneTask` JS so completion math stays correct as admin tasks are marked done.
+- New `adminTask(kind)` helper maps `ebr` / `champion` to the spec toasts.
+
+### Added — Feature 3: Team Guidance banner in Prepare My Day output
+- Collapsible `<details class="tg">` block prepended to the `DUST_RESP['Prepare My Day']()` template, so it appears whenever the Prepare My Day output renders (auto-load AND chip click) but not in any other agent output or Mission Briefing view.
+- **Collapsed (default):** `📋 Team Guidance Active · 1Password CS · Q2 2026 priorities applied · ▸ View guidance`.
+- **Expanded:** indigo header bar, 5 priority rules in a dot-list (renewal-30d / dark-inbound-24h / Q2 EBR / champion-change / Gong-minimum), `Set by: Maggie Spry · VP Customer Success · Last updated: May 15, 2026` footer.
+- Styling: light indigo background (`#EEF2FF`), 3px indigo left border (`#4F46E5`), indigo accent text on labels. Native `<details>` toggle — no JS, no animation.
+- Verified absent from `view-acme` (and by inference every other view).
+
+### Verified end-to-end in a headless render
+- Page load: active view `view-default`, pl-tag `Prepare My Day · Auto-loaded`, Prepare My Day "Today's calls (3)" + "Urgent actions" sections present, Agent Hub card still in view, old Acme briefing content removed ✓
+- Calendar Acme click: `view-acme` loads ✓
+- Back: returns to `view-default` with PMD content restored and pl-tag intact ✓
+- Today's Tasks: counter `0 / 7`, 7 total rows, 2 admin rows with correct titles, legend includes Admin, sender attribution renders ✓
+- Admin toasts match spec verbatim ✓
+- After both admin tasks done: counter `2 / 7` ✓
+- Team Guidance banner: visible inside Prepare My Day output, collapsed by default, 5 rules + spec footer, expandable, absent from `view-acme` ✓
+
+### Architecture note (Phase 2)
+The admin task broadcast and team guidance banner are Phase 1 visual implementations. Phase 2 will add:
+- Role-gated admin panel for CS Leadership to author broadcasts and guidance rules.
+- Dust system-prompt injection so the guidance rules influence agent output ranking (currently the rules are documentation only — the Prepare My Day content is hardcoded).
+- Completion tracking per CSM per admin task with rollup in a Leadership dashboard.
+
+### Not touched
+- Existing Prepare My Day content (3-call brief, coaching notes, urgent actions, signals) — unchanged.
+- `view-acme` / `view-brightex` / `view-nova` Mission Briefing views — untouched, still reachable via calendar clicks and the Agent Hub Quick Launch Matrix.
+- All other widgets, drawers, tabs, agent outputs, Ghost-Buster, TeamOS Live, Agent Hub Quick Launch + Recent Outputs + Recent Docs, Task Briefs, Drive Docs, Training popover, pulse strip indicators, notification rail, Service Worker, offline-resilience layer.
+- `agentBtn`, `openAgentDrawer`, `setDrawerMode`, `dustQuick`, `openPanel`, every Ghost-Buster wizard helper, every Quick Chat helper, every My Accounts helper — unchanged.
 
 ---
 

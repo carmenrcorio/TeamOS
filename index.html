@@ -103,6 +103,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .src-dot.gm{background:var(--rd)}
 .src-dot.ca{background:var(--bl)}
 .src-dot.sl{background:var(--tx3)}
+.src-dot.admin{background:#4F46E5}
 .ac-src{font-size:10px;color:var(--tx3);flex:1}
 .ac-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700}
 .ac-badge.ov{background:var(--rd-bg);color:var(--rd-dk)}
@@ -1116,6 +1117,34 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .tk-leg .tk-dot.ca{background:var(--bl)}
 .tk-leg .tk-dot.gm{background:var(--rd)}
 .tk-leg .tk-dot.sl{background:#7c3aed}
+.tk-leg .tk-dot.admin{background:#4F46E5}
+
+/* v3.1.0 — Admin task row: replaces colored source dot with a small 👔 icon
+   and adds the sender attribution line below the task title. */
+.ac.admin .src-dot{background:transparent;width:auto;height:auto;font-size:11px;line-height:1}
+.ac-from{font-size:10px;color:var(--tx3);font-style:italic;margin-top:1px;letter-spacing:.01em}
+.ac-from strong{color:var(--tx2);font-weight:600;font-style:normal}
+.ac-badge.adhi{background:#EEF2FF;color:#4338CA;border:1px solid #C7D2FE}
+.ac-badge.admed{background:var(--surf2);color:var(--tx2);border:1px solid var(--bd)}
+
+/* v3.1.0 — Team Guidance banner inside Prepare My Day output */
+.tg{background:#EEF2FF;border:1px solid #DDD6FE;border-left:3px solid #4F46E5;border-radius:var(--r);margin-bottom:18px;overflow:hidden}
+.tg summary{padding:11px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;list-style:none;user-select:none}
+.tg summary::-webkit-details-marker{display:none}
+.tg-lbl{font-size:11px;font-weight:600;color:#4F46E5;letter-spacing:-.01em;display:flex;align-items:center;gap:6px}
+.tg-lbl i{font-size:13px}
+.tg-sub{font-size:10px;color:var(--tx3);font-weight:500;letter-spacing:.02em}
+.tg-toggle{margin-left:auto;font-size:10px;font-weight:700;color:#4338CA;display:inline-flex;align-items:center;gap:3px;text-transform:none;letter-spacing:0}
+.tg-toggle .down{display:inline}
+.tg-toggle .up{display:none}
+.tg[open] .tg-toggle .down{display:none}
+.tg[open] .tg-toggle .up{display:inline}
+.tg-body{padding:0 14px 13px;display:flex;flex-direction:column;gap:9px;border-top:1px solid #DDD6FE;background:#F5F3FF}
+.tg-body-hd{font-size:10px;font-weight:700;color:#4338CA;text-transform:uppercase;letter-spacing:.05em;padding-top:11px}
+.tg-rules{display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--tx);line-height:1.55}
+.tg-rule{display:flex;gap:8px;align-items:flex-start}
+.tg-rule-dot{color:#4F46E5;font-weight:700;flex-shrink:0}
+.tg-foot{font-size:10px;color:var(--tx3);padding-top:8px;border-top:1px dashed #DDD6FE;font-style:italic}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Phase A — Layout surgery (v1.4.0)
@@ -1862,13 +1891,30 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
               <div class="tip-bx">Sources: <em>Gainsight CTAs</em> (REST API, sync 30min) + <em>Gmail</em> follow-up labels + <em>Google Calendar</em> tasks + <em>Slack</em> reminders. Auto-sorted: overdue &rarr; today &rarr; low.</div>
             </div>
           </div>
-          <span style="font-size:11px;color:var(--tx3)" id="task-count">0 / 5</span>
+          <span style="font-size:11px;color:var(--tx3)" id="task-count">0 / 7</span>
         </div>
         <div class="tk-legend">
           <span class="tk-leg"><span class="tk-dot gs"></span>Gainsight CTA</span>
           <span class="tk-leg"><span class="tk-dot ca"></span>Calendar</span>
           <span class="tk-leg"><span class="tk-dot gm"></span>Gmail</span>
           <span class="tk-leg"><span class="tk-dot sl"></span>Slack</span>
+          <span class="tk-leg"><span class="tk-dot admin"></span>Admin</span>
+        </div>
+        <div class="ac admin" id="ac-admin1">
+          <div class="ac-top"><div class="src-dot admin">👔</div><span class="ac-src">ADMIN</span><span class="ac-badge adhi">High priority</span><span class="ac-badge ov" style="margin-left:auto">Due today</span></div>
+          <div class="ac-title">Schedule EBR for all accounts renewing in next 60 days</div>
+          <div class="ac-from">From: <strong>Maggie Spry</strong> &middot; CS Leadership &middot; Sent to all Commercial CSMs</div>
+          <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:6px">
+            <button class="ac-btn" data-label="Schedule EBRs" onclick="adminTask('ebr');doneTask(this,'ac-admin1')">Schedule EBRs</button>
+          </div>
+        </div>
+        <div class="ac admin" id="ac-admin2">
+          <div class="ac-top"><div class="src-dot admin">👔</div><span class="ac-src">ADMIN</span><span class="ac-badge admed">Medium priority</span><span class="ac-badge td" style="margin-left:auto">Due Jun 10</span></div>
+          <div class="ac-title">Update champion contacts for all dark zone accounts in Gainsight</div>
+          <div class="ac-from">From: <strong>Maggie Spry</strong> &middot; CS Leadership &middot; Sent to all CSMs</div>
+          <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:6px">
+            <button class="ac-btn" data-label="Update in Gainsight" onclick="adminTask('champion');doneTask(this,'ac-admin2')">Update in Gainsight</button>
+          </div>
         </div>
         <div class="ac" id="ac1">
           <div class="ac-top"><div class="src-dot gs"></div><span class="ac-src">Gainsight CTA</span><span class="ac-badge ov">2d overdue</span></div>
@@ -1916,7 +1962,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
     <div>
       <div class="rp">
         <div class="rp-view on" id="view-default">
-          <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Next Up &middot; Auto-loaded</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
+          <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Prepare My Day &middot; Auto-loaded</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">Acme Corp</div>
             <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>QBR &middot; 9:00 AM</span></div>
@@ -2563,10 +2609,13 @@ function resetPanel() {
   document.querySelectorAll('.rp-view').forEach(function(v){ v.classList.remove('on'); });
   document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
   document.getElementById('view-default').classList.add('on');
-  // Restore the Mission Briefing default "Next Up · Auto-loaded" tag in case
-  // any prior code path mutated it.
+  // v3.1.0 — pl-tag now reflects Prepare My Day as the auto-loaded default
+  // instead of Next Up. Defensively restored on every Back nav.
   var tag = document.querySelector('#view-default .rp-hd.pl .pl-tag');
-  if (tag) tag.innerHTML = '<span class="pl-dot"></span>Next Up &middot; Auto-loaded';
+  if (tag) tag.innerHTML = '<span class="pl-dot"></span>Prepare My Day &middot; Auto-loaded';
+  // v3.1.0 — re-render the Prepare My Day output (replaces the Acme briefing
+  // card that used to live in view-default). Agent Hub card stays below.
+  if (typeof _loadPrepareMyDayDefault === 'function') _loadPrepareMyDayDefault();
   if (typeof _updateAgentHubAccount === 'function') _updateAgentHubAccount('default');
   if (typeof _updateCFTDocs === 'function') _updateCFTDocs('default');
   if (typeof _clearActiveChips === 'function') _clearActiveChips();
@@ -2627,11 +2676,36 @@ function doneTask(btn, id) {
   btn.classList.add('done-btn');
   btn.disabled = true;
   tasksDone++;
-  var txt = tasksDone + ' / 5';
+  // v3.1.0 — task total bumped from 5 → 7 (5 personal + 2 admin).
+  var txt = tasksDone + ' / 7';
   var tc = document.getElementById('task-count');
   if (tc) tc.textContent = txt;
   var ds = document.getElementById('ds-tasks');
-  if (ds) { ds.textContent = txt; ds.className = 'ds-v ' + (tasksDone === 5 ? 'g' : tasksDone > 0 ? 'a' : ''); }
+  if (ds) { ds.textContent = txt; ds.className = 'ds-v ' + (tasksDone === 7 ? 'g' : tasksDone > 0 ? 'a' : ''); }
+}
+
+function adminTask(kind) {
+  var msg = {
+    ebr:      'Opening EBR scheduling workflow &middot; 3 accounts qualify in your book ✓',
+    champion: 'Opening Gainsight &middot; Dark zone accounts filtered &middot; 3 accounts need champion update ✓'
+  }[kind] || 'Opening admin workflow ✓';
+  toast(msg);
+}
+
+// v3.1.0 — Rebuild view-default's content with the Prepare My Day output
+// (replaces the static Acme briefing card) while preserving the Agent Hub
+// card at the bottom. Called on boot and on every resetPanel.
+function _loadPrepareMyDayDefault() {
+  var scroll = document.querySelector('#view-default .rp-scroll');
+  if (!scroll) return;
+  if (typeof DUST_RESP !== 'object' || !DUST_RESP['Prepare My Day']) return;
+  var body = DUST_RESP['Prepare My Day']();
+  // Preserve the Agent Hub card (which lives inside view-default's rp-scroll)
+  // by extracting its outerHTML, rebuilding the scroll content with the
+  // Prepare My Day output first, then re-appending the hub below.
+  var hub = scroll.querySelector('.ah-card');
+  var hubHTML = hub ? hub.outerHTML : '';
+  scroll.innerHTML = body + hubHTML;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -3046,6 +3120,26 @@ var DUST_AGENT = {
 var DUST_RESP = {
   'Prepare My Day': function() {
     return ''
+      // v3.1.0 — Team Guidance banner. Collapsible <details>, collapsed by default.
+      // Appears only inside the Prepare My Day output per spec.
+      + '<details class="tg">'
+        + '<summary>'
+          + '<span class="tg-lbl"><i class="ti ti-clipboard-text"></i> Team Guidance Active</span>'
+          + '<span class="tg-sub">&middot; 1Password CS &middot; Q2 2026 priorities applied</span>'
+          + '<span class="tg-toggle"><span class="down">&#9656; View guidance</span><span class="up">&#9662; Hide guidance</span></span>'
+        + '</summary>'
+        + '<div class="tg-body">'
+          + '<div class="tg-body-hd">Priority rules applied to today&rsquo;s brief</div>'
+          + '<div class="tg-rules">'
+            + '<div class="tg-rule"><span class="tg-rule-dot">·</span>Renewal accounts within 30 days are always Priority 1 regardless of health</div>'
+            + '<div class="tg-rule"><span class="tg-rule-dot">·</span>Dark accounts with inbound signal must be actioned within 24 hours</div>'
+            + '<div class="tg-rule"><span class="tg-rule-dot">·</span>All accounts renewing in Q2 must have EBR scheduled before renewal date</div>'
+            + '<div class="tg-rule"><span class="tg-rule-dot">·</span>Champion change accounts: loop in AE before any outreach</div>'
+            + '<div class="tg-rule"><span class="tg-rule-dot">·</span>Minimum 2 Gong calls per account per quarter for health score maintenance</div>'
+          + '</div>'
+          + '<div class="tg-foot">Set by: Maggie Spry &middot; VP Customer Success &middot; Last updated: May 15, 2026</div>'
+        + '</div>'
+      + '</details>'
       + '<div class="du-sec">'
         + '<div class="du-sec-t"><i class="ti ti-sun"></i> Today&rsquo;s calls (3)</div>'
         + '<div class="du-card g"><div class="du-card-t">9:00 AM &middot; Acme Corp QBR <span class="du-card-tag g">Expansion</span></div><div class="du-card-s">Health 82 &middot; Renewal in 89 days<br><strong style="color:var(--tx)">Coaching:</strong> Expansion-ready. Test enterprise tier interest. Confirm SSO pilot commitment.</div></div>'
@@ -4701,6 +4795,11 @@ function draftAcmeFollowUp() {
 }
 
 renderTasksList();
+
+// v3.1.0 — Auto-load Prepare My Day as the Mission Briefing default state on
+// page boot. Deferred to allow the DUST_RESP table (declared later in the
+// script) to finish being set up first.
+setTimeout(function(){ if (typeof _loadPrepareMyDayDefault === 'function') _loadPrepareMyDayDefault(); }, 0);
 
 
 // ── DRAWER DATA ──────────────────────────────────────────────────────────────
