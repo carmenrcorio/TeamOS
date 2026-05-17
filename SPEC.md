@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.2.0
+**Version:** 3.2.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,62 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.2.1] — 2026-05-17
+
+Three additive enhancements to the Recipe for Success tab. No structural changes to the scorecard, weights, categories, or v2.13.0 Dust recommendation panel.
+
+### Added — Weekly delta indicators on every score
+- `scores[]` array in `buildRecipe()` gained a `d` (delta) field per category. The renderer now appends a delta badge after the score percentage in each `.sc-sr` row.
+- Demo data (per spec):
+  - Success plans & objectives: **71.4%** · ↑ +2.1 pts this week (teal)
+  - Book of business growth: **80%** · → No change (muted)
+  - Renewal forecast actions: **66.7%** · ↓ -3.3 pts this week (red)
+  - Business reviews (EBRs): **62.5%** · ↑ +12.5 pts this week (teal)
+  - Customer advocacy: **80%** · ↑ +5.0 pts this week (teal)
+  - **Final weighted score: 74.5%** · ↑ +1.8 pts this week (teal)
+- New `.sc-delta` / `.sc-fin-delta` CSS namespace with `.up` (teal), `.down` (red), `.flat` (muted) variants. Arrow glyph + text inline on the same line as the score; right-aligned, 11px, non-intrusive.
+
+### Added — Quarter Projection card (Dust analysis framing)
+- New `.rcp-proj` card inserted between the Final Weighted Score block and the v2.13.0 Dust recommendation panel.
+- Styling: light indigo background (`#EEF2FF`), 3px indigo left border (`#4F46E5`), indigo uppercase header — same visual treatment as the v3.1.0 Team Guidance banner in Prepare My Day.
+- Body (verbatim per spec): *"At your current pace you'll finish Q2 at 81% (Exceeding). Closing 2 more EBRs this quarter would push you to 87% and solidify Exceeding. Your biggest risk: Renewal Forecast Actions is trending down — 3 blank statuses need updating before Jun 15."*
+- Phase 2 note: Dust will calculate this dynamically from the live score and Gainsight data; v3.2.1 ships a static card with the spec content.
+
+### Added — Notes & Reflection panel with `localStorage` persistence
+- New `.rcp-notes` panel appended to the bottom of the Recipe page (below the Dust recommendation panel).
+- localStorage key: `teamos_recipe_notes`. Schema: `[{ text, timestamp, category, quarter }, …]`.
+- On first load (localStorage empty): seeds with the spec's demo note (`EBR coverage is my biggest gap this quarter...`, category `EBRs`, timestamp `May 10 · 9:14 AM`, quarter `Q2 2026`).
+- **Input area:** full-width textarea + category chip row (`Success Plans · Growth · Renewals · EBRs · Advocacy · General`) + `Save Note` button.
+- **Save flow:** click writes a new note with auto-applied timestamp (`Today · HH:MM AM/PM`), selected category, and current quarter to localStorage, clears the textarea, re-renders the history list, fires toast `Note saved · Q2 2026 ✓`.
+- **History timeline** below the input shows all saved notes (newest first), each with a category pill, timestamp, and the note text. A `Clear all notes` link in the section header opens an inline confirmation strip (`Clear all Q2 2026 notes? This cannot be undone · [Yes, clear] [Cancel]`); Confirm fires `All Q2 2026 notes cleared ✓`.
+- **Filter chips** (`All · Success Plans · Growth · Renewals · EBRs · Advocacy · General`) under the confirmation strip filter the visible history without modifying storage. Empty filter state: *"No notes in [Category] for this quarter."*
+
+### Verified end-to-end in a headless render
+- All 5 score rows have a delta badge with correct class (`up` / `down` / `flat`) and text matching the spec values ✓
+- Final score row has the `↑ +1.8 pts this week` badge in teal ✓
+- Quarter Projection card renders with correct label + spec body text ✓
+- Notes panel:
+  - First load → 1 row (seed note) ✓
+  - Save a new note → row count 1 → 2, top row is the new entry, input clears, localStorage has 2 entries, toast fires ✓
+  - Filter Growth → 1 row (only the new note) ✓
+  - Filter EBRs → 1 row (only the seed) ✓
+  - Reload page → 2 rows survive ✓
+  - Confirm-then-clear → 0 rows, localStorage empty, empty-state message displayed ✓
+
+### Not touched
+- Existing scorecard metrics, weights, categories, and scoring logic — only the demo `p` values inside the `scores[]` array changed (per spec demo data); category labels and weight percentages unchanged.
+- Dust recommendation panel (v2.13.0): 3 cards + footer — untouched.
+- All other tabs and widgets.
+- Service Worker, offline resilience (the new localStorage key participates transparently in any future snapshot sync — same pattern as `teamos_ma_sessions` in v3.0.0 and `teamos_signature` in v2.11.0).
+
+### Engineering
+- New `.sc-delta`, `.sc-fin-delta`, `.rcp-proj`, `.rcp-notes*` CSS rules (~25 rules total) bound to existing tokens. No new color values introduced.
+- New JS helpers: `_rcpReadNotes`, `_rcpWriteNotes`, `_rcpNotesHTML`, `_rcpNotesRenderList`, `_rcpNotesSave`, `_rcpNotesSetCat`, `_rcpNotesSetFilter`, `_rcpNotesAskClear`, `_rcpNotesConfirmHide`, `_rcpNotesClearAll`, `_rcpNotesEscape`.
+- All user-typed input HTML-escaped via `_rcpNotesEscape` before rendering — defensive against the user-input → innerHTML path.
+- localStorage writes guarded with try/catch. Reads fall back to the seed note if storage is unavailable.
 
 ---
 

@@ -263,6 +263,60 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .rcp-card-btn i{font-size:12px}
 .rcp-dust-ft{font-size:10px;color:var(--tx3);font-style:italic;text-align:center;margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd)}
 
+/* v3.2.1 — Weekly delta badges on score bars */
+.sc-delta{font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;margin-left:10px;letter-spacing:.01em}
+.sc-delta.up{color:var(--tl)}
+.sc-delta.down{color:var(--rd)}
+.sc-delta.flat{color:var(--tx3);font-weight:600}
+.sc-delta i{font-size:13px}
+.sc-fin-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sc-fin-delta{font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;margin-left:6px}
+.sc-fin-delta.up{color:var(--tl)}
+.sc-fin-delta.down{color:var(--rd)}
+.sc-fin-delta.flat{color:var(--tx3);font-weight:600}
+
+/* v3.2.1 — Quarter Projection card (Dust analysis) */
+.rcp-proj{background:#EEF2FF;border:1px solid #DDD6FE;border-left:3px solid #4F46E5;border-radius:var(--r);padding:14px 16px;margin-top:18px}
+.rcp-proj-l{font-size:10px;font-weight:700;color:#4F46E5;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.rcp-proj-l i{font-size:13px}
+.rcp-proj-b{font-size:12px;color:var(--tx);line-height:1.65}
+.rcp-proj-b strong{color:var(--tx);font-weight:700}
+
+/* v3.2.1 — Notes & Reflection panel */
+.rcp-notes{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:20px 22px;margin-top:20px}
+.rcp-notes-hd{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.01em;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.rcp-notes-hd i{font-size:16px;color:var(--tl)}
+.rcp-notes-hd-q{color:var(--tx3);font-weight:600;font-size:12px;letter-spacing:.02em;margin-left:auto}
+.rcp-notes-input{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.rcp-notes-ta{width:100%;min-height:88px;border:1px solid var(--bd2);border-radius:7px;padding:11px 13px;font-family:inherit;font-size:12px;color:var(--tx);background:var(--surf2);outline:none;line-height:1.6;resize:vertical;box-sizing:border-box;transition:border-color .1s}
+.rcp-notes-ta:focus{border-color:var(--tl);background:var(--surf)}
+.rcp-notes-ta::placeholder{color:var(--tx3)}
+.rcp-notes-cats{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.rcp-notes-cat{font-size:10px;font-weight:700;padding:5px 10px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .1s;text-transform:none;letter-spacing:0}
+.rcp-notes-cat:hover{border-color:var(--tx2);color:var(--tx)}
+.rcp-notes-cat.on{background:var(--tl);color:#fff;border-color:var(--tl)}
+.rcp-notes-save{align-self:flex-start;font-size:11px;font-weight:700;padding:8px 14px;border-radius:6px;border:none;background:var(--tx);color:#fff;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.rcp-notes-save:hover{background:#2a2a28}
+.rcp-notes-hist-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;gap:10px}
+.rcp-notes-hist-t{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
+.rcp-notes-clear{font-size:10px;color:var(--tx3);cursor:pointer;background:none;border:none;text-decoration:underline;text-underline-offset:2px;font-family:inherit;padding:0}
+.rcp-notes-clear:hover{color:var(--rd)}
+.rcp-notes-list{display:flex;flex-direction:column;gap:9px}
+.rcp-notes-empty{font-size:11px;color:var(--tx3);font-style:italic;padding:14px 0;text-align:center}
+.rcp-notes-row{padding:11px 13px;background:var(--surf2);border-left:3px solid var(--tl);border-radius:var(--r)}
+.rcp-notes-row-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.rcp-notes-pill{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--tl-bg);color:var(--tl-dk);letter-spacing:.04em;text-transform:uppercase}
+.rcp-notes-ts{font-size:9px;color:var(--tx3);font-weight:600;letter-spacing:.02em}
+.rcp-notes-txt{font-size:11px;color:var(--tx);line-height:1.6;white-space:pre-wrap}
+
+/* Confirmation overlay for Clear All */
+.rcp-notes-confirm{display:none;background:var(--rd-bg);border:1px solid var(--rd);border-radius:var(--r);padding:11px 13px;margin-bottom:12px;font-size:11px;color:var(--rd-dk);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rcp-notes-confirm.on{display:flex}
+.rcp-notes-confirm-acts{margin-left:auto;display:flex;gap:6px}
+.rcp-notes-confirm-btn{font-size:10px;font-weight:700;padding:5px 10px;border-radius:5px;cursor:pointer;font-family:inherit;border:1px solid var(--rd)}
+.rcp-notes-confirm-btn.yes{background:var(--rd);color:#fff;border-color:var(--rd)}
+.rcp-notes-confirm-btn.no{background:var(--surf);color:var(--rd-dk)}
+
 /* Enablement tab (v2.14.0) — Seismic placeholder */
 .en-pg{padding:20px 28px}
 .en-hd{margin-bottom:20px}
@@ -3649,12 +3703,14 @@ setTimeout(function() {
 }, 90000);
 
 function buildRecipe() {
+  // v3.2.1 — score values updated to match the new spec demo data + weekly
+  // deltas. d = points delta this week (positive / negative / 0 = no change).
   var scores = [
-    {l:'Success plans & objectives',w:'50%',p:78,c:'#18A575'},
-    {l:'Book of business growth',w:'20%',p:62,c:'#2563EB'},
-    {l:'Renewal forecast actions',w:'10%',p:55,c:'#D97706'},
-    {l:'Business reviews (EBRs)',w:'10%',p:90,c:'#18A575'},
-    {l:'Customer advocacy',w:'10%',p:40,c:'#8A8A86'}
+    {l:'Success plans & objectives',w:'50%',p:71.4,c:'#18A575',d:2.1},
+    {l:'Book of business growth',w:'20%',p:80,  c:'#2563EB',d:0},
+    {l:'Renewal forecast actions',w:'10%',p:66.7,c:'#D97706',d:-3.3},
+    {l:'Business reviews (EBRs)',w:'10%',p:62.5,c:'#18A575',d:12.5},
+    {l:'Customer advocacy',w:'10%',p:80,  c:'#8A8A86',d:5.0}
   ];
   var metrics = [
     {sec:'Success plans & objectives',rows:[['Active success plans','Target: 100% of $25K+ accounts','16/18',''],['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7',''],['CTAs overdue','Resolve immediately &mdash; hard stop','2','w']]},
@@ -3673,9 +3729,21 @@ function buildRecipe() {
   });
   h += '</div><div class="sc-fin"><div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Live weighted score</div><div style="margin-bottom:16px">';
   scores.forEach(function(s){
-    h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%</div></div>';
+    // v3.2.1 — append weekly delta badge after the score percentage
+    var deltaCls = s.d > 0 ? 'up' : (s.d < 0 ? 'down' : 'flat');
+    var deltaArrow = s.d > 0 ? '&uarr;' : (s.d < 0 ? '&darr;' : '&rarr;');
+    var deltaTxt = s.d === 0 ? 'No change' : ((s.d > 0 ? '+' : '') + (s.d % 1 === 0 ? s.d.toFixed(1) : s.d) + ' pts this week');
+    var deltaHtml = '<span class="sc-delta ' + deltaCls + '">' + deltaArrow + ' ' + deltaTxt + '</span>';
+    h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%' + deltaHtml + '</div></div>';
   });
-  h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div></div>';
+  // v3.2.1 — final score row gains a +1.8 pts weekly delta inline with the score.
+  h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div class="sc-fin-row"><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><span class="sc-fin-delta up">&uarr; +1.8 pts this week</span></div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div>'
+    // v3.2.1 — Quarter Projection card (Dust analysis framing)
+    + '<div class="rcp-proj">'
+      + '<div class="rcp-proj-l"><i class="ti ti-target-arrow"></i> Quarter Projection &middot; Dust Analysis</div>'
+      + '<div class="rcp-proj-b">At your current pace you&rsquo;ll finish Q2 at <strong>81% (Exceeding)</strong>. Closing <strong>2 more EBRs this quarter</strong> would push you to <strong>87%</strong> and solidify Exceeding. Your biggest risk: <strong>Renewal Forecast Actions</strong> is trending down &mdash; 3 blank statuses need updating before Jun 15.</div>'
+    + '</div>'
+  + '</div>';
 
   // v2.13.0 — Dust Recommendation Panel
   h += ''
@@ -3709,13 +3777,163 @@ function buildRecipe() {
       + '<div class="rcp-dust-ft">Dust analysis &middot; Gainsight + Salesforce &middot; Updated today 9:00 AM &middot; Refreshes daily</div>'
     + '</div>';
 
+  // v3.2.1 — Notes & Reflection panel appended below the Dust recommendation
+  // panel. Populated from localStorage on render.
+  if (typeof _rcpNotesHTML === 'function') h += _rcpNotesHTML();
+
   document.getElementById('recipe-root').innerHTML = h;
+
+  // After innerHTML write, populate the dynamic notes list.
+  if (typeof _rcpNotesRenderList === 'function') _rcpNotesRenderList();
 }
 
 function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority accounts &middot; Opens in Mission Briefing ✓'); }
 function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &middot; 3 accounts flagged ✓'); }
 function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
 function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Recipe for Success — Notes & Reflection (v3.2.1)
+// ═══════════════════════════════════════════════════════════════════════════
+var RCP_NOTES_KEY = 'teamos_recipe_notes';
+var RCP_NOTES_CATS = ['All','Success Plans','Growth','Renewals','EBRs','Advocacy','General'];
+var RCP_NOTES_QUARTER = 'Q2 2026';
+var _rcpNotesActiveCat = 'General';  // default category for new note
+var _rcpNotesFilterCat = 'All';      // active filter for history
+
+function _rcpReadNotes() {
+  try {
+    var raw = localStorage.getItem(RCP_NOTES_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  // First load — seed with the demo note per spec.
+  var seed = [{
+    text: "EBR coverage is my biggest gap this quarter. Acme QBR is today which will move the number, but I'm missing 18 of 24 target accounts. Need to get at least 3 more scheduled this week.",
+    timestamp: 'May 10 · 9:14 AM',
+    category: 'EBRs',
+    quarter: RCP_NOTES_QUARTER
+  }];
+  try { localStorage.setItem(RCP_NOTES_KEY, JSON.stringify(seed)); } catch (e) {}
+  return seed;
+}
+
+function _rcpWriteNotes(arr) {
+  try { localStorage.setItem(RCP_NOTES_KEY, JSON.stringify(arr)); } catch (e) {}
+}
+
+function _rcpNotesHTML() {
+  var cats = ['Success Plans','Growth','Renewals','EBRs','Advocacy','General']; // categories for NEW notes (no "All" here)
+  var filterCats = RCP_NOTES_CATS; // includes "All" for the filter
+  var catBtns = cats.map(function(c){
+    var on = (c === _rcpNotesActiveCat) ? ' on' : '';
+    return '<button class="rcp-notes-cat' + on + '" type="button" onclick="_rcpNotesSetCat(\'' + c + '\')">' + c + '</button>';
+  }).join('');
+  var filterBtns = filterCats.map(function(c){
+    var on = (c === _rcpNotesFilterCat) ? ' on' : '';
+    return '<button class="rcp-notes-cat' + on + '" type="button" onclick="_rcpNotesSetFilter(\'' + c + '\')">' + c + '</button>';
+  }).join('');
+  return ''
+    + '<div class="rcp-notes">'
+      + '<div class="rcp-notes-hd"><i class="ti ti-notes"></i> Notes &amp; Reflection <span class="rcp-notes-hd-q">' + RCP_NOTES_QUARTER + '</span></div>'
+      + '<div class="rcp-notes-input">'
+        + '<textarea id="rcp-notes-ta" class="rcp-notes-ta" placeholder="What&rsquo;s driving your score this week? What&rsquo;s in the way? What will you do differently?"></textarea>'
+        + '<div class="rcp-notes-cats" id="rcp-notes-cats">' + catBtns + '</div>'
+        + '<button class="rcp-notes-save" type="button" onclick="_rcpNotesSave()"><i class="ti ti-circle-check"></i> Save Note</button>'
+      + '</div>'
+      + '<div class="rcp-notes-hist-hd">'
+        + '<div class="rcp-notes-hist-t">Saved notes &middot; ' + RCP_NOTES_QUARTER + '</div>'
+        + '<button class="rcp-notes-clear" type="button" onclick="_rcpNotesAskClear()">Clear all notes</button>'
+      + '</div>'
+      + '<div class="rcp-notes-confirm" id="rcp-notes-confirm">'
+        + '<span>Clear all ' + RCP_NOTES_QUARTER + ' notes? This cannot be undone.</span>'
+        + '<span class="rcp-notes-confirm-acts">'
+          + '<button class="rcp-notes-confirm-btn no" type="button" onclick="_rcpNotesConfirmHide()">Cancel</button>'
+          + '<button class="rcp-notes-confirm-btn yes" type="button" onclick="_rcpNotesClearAll()">Yes, clear</button>'
+        + '</span>'
+      + '</div>'
+      + '<div class="rcp-notes-cats" style="margin-bottom:10px">' + filterBtns + '</div>'
+      + '<div class="rcp-notes-list" id="rcp-notes-list"></div>'
+    + '</div>';
+}
+
+function _rcpNotesSetCat(cat) {
+  _rcpNotesActiveCat = cat;
+  // Re-render the chip row in place
+  var row = document.querySelector('.rcp-notes-input .rcp-notes-cats');
+  if (!row) return;
+  Array.from(row.children).forEach(function(b){
+    b.classList.toggle('on', b.textContent.trim() === cat);
+  });
+}
+
+function _rcpNotesSetFilter(cat) {
+  _rcpNotesFilterCat = cat;
+  var row = document.querySelector('.rcp-notes-list').previousElementSibling;
+  if (row && row.classList.contains('rcp-notes-cats')) {
+    Array.from(row.children).forEach(function(b){
+      b.classList.toggle('on', b.textContent.trim() === cat);
+    });
+  }
+  _rcpNotesRenderList();
+}
+
+function _rcpNotesSave() {
+  var ta = document.getElementById('rcp-notes-ta');
+  if (!ta) return;
+  var text = (ta.value || '').trim();
+  if (!text) { toast('Note is empty &mdash; type a reflection first'); return; }
+  var now = new Date();
+  var hr = now.getHours();
+  var min = now.getMinutes();
+  var ampm = hr >= 12 ? 'PM' : 'AM';
+  var hr12 = hr % 12 || 12;
+  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+  var ts = 'Today &middot; ' + hr12 + ':' + pad(min) + ' ' + ampm;
+  var notes = _rcpReadNotes();
+  notes.unshift({ text: text, timestamp: ts, category: _rcpNotesActiveCat, quarter: RCP_NOTES_QUARTER });
+  _rcpWriteNotes(notes);
+  ta.value = '';
+  _rcpNotesRenderList();
+  toast('Note saved &middot; ' + RCP_NOTES_QUARTER + ' ✓');
+}
+
+function _rcpNotesAskClear() {
+  var c = document.getElementById('rcp-notes-confirm');
+  if (c) c.classList.add('on');
+}
+function _rcpNotesConfirmHide() {
+  var c = document.getElementById('rcp-notes-confirm');
+  if (c) c.classList.remove('on');
+}
+function _rcpNotesClearAll() {
+  _rcpWriteNotes([]);
+  _rcpNotesConfirmHide();
+  _rcpNotesRenderList();
+  toast('All ' + RCP_NOTES_QUARTER + ' notes cleared ✓');
+}
+
+function _rcpNotesEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _rcpNotesRenderList() {
+  var list = document.getElementById('rcp-notes-list');
+  if (!list) return;
+  var notes = _rcpReadNotes();
+  if (_rcpNotesFilterCat !== 'All') {
+    notes = notes.filter(function(n){ return n.category === _rcpNotesFilterCat; });
+  }
+  if (!notes.length) {
+    list.innerHTML = '<div class="rcp-notes-empty">' + (_rcpNotesFilterCat === 'All' ? 'No notes yet this quarter. Add your first reflection.' : 'No notes in &ldquo;' + _rcpNotesEscape(_rcpNotesFilterCat) + '&rdquo; for this quarter.') + '</div>';
+    return;
+  }
+  list.innerHTML = notes.map(function(n){
+    return '<div class="rcp-notes-row">'
+      + '<div class="rcp-notes-row-top"><span class="rcp-notes-pill">' + _rcpNotesEscape(n.category) + '</span><span class="rcp-notes-ts">' + n.timestamp + '</span></div>'
+      + '<div class="rcp-notes-txt">' + _rcpNotesEscape(n.text) + '</div>'
+    + '</div>';
+  }).join('');
+}
 
 // v3.0.3 — Training pulse-strip popover action handler. `kind` ∈
 // { 'continue', 'start', 'review', 'all' } maps to the per-row spec toasts.
@@ -5277,12 +5495,14 @@ function openAgentDrawer(type, acct) {
 }
 
 function buildRecipe() {
+  // v3.2.1 — score values updated to match the new spec demo data + weekly
+  // deltas. d = points delta this week (positive / negative / 0 = no change).
   var scores = [
-    {l:'Success plans & objectives',w:'50%',p:78,c:'#18A575'},
-    {l:'Book of business growth',w:'20%',p:62,c:'#2563EB'},
-    {l:'Renewal forecast actions',w:'10%',p:55,c:'#D97706'},
-    {l:'Business reviews (EBRs)',w:'10%',p:90,c:'#18A575'},
-    {l:'Customer advocacy',w:'10%',p:40,c:'#8A8A86'}
+    {l:'Success plans & objectives',w:'50%',p:71.4,c:'#18A575',d:2.1},
+    {l:'Book of business growth',w:'20%',p:80,  c:'#2563EB',d:0},
+    {l:'Renewal forecast actions',w:'10%',p:66.7,c:'#D97706',d:-3.3},
+    {l:'Business reviews (EBRs)',w:'10%',p:62.5,c:'#18A575',d:12.5},
+    {l:'Customer advocacy',w:'10%',p:80,  c:'#8A8A86',d:5.0}
   ];
   var metrics = [
     {sec:'Success plans & objectives',rows:[['Active success plans','Target: 100% of $25K+ accounts','16/18',''],['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7',''],['CTAs overdue','Resolve immediately &mdash; hard stop','2','w']]},
@@ -5301,9 +5521,21 @@ function buildRecipe() {
   });
   h += '</div><div class="sc-fin"><div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Live weighted score</div><div style="margin-bottom:16px">';
   scores.forEach(function(s){
-    h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%</div></div>';
+    // v3.2.1 — append weekly delta badge after the score percentage
+    var deltaCls = s.d > 0 ? 'up' : (s.d < 0 ? 'down' : 'flat');
+    var deltaArrow = s.d > 0 ? '&uarr;' : (s.d < 0 ? '&darr;' : '&rarr;');
+    var deltaTxt = s.d === 0 ? 'No change' : ((s.d > 0 ? '+' : '') + (s.d % 1 === 0 ? s.d.toFixed(1) : s.d) + ' pts this week');
+    var deltaHtml = '<span class="sc-delta ' + deltaCls + '">' + deltaArrow + ' ' + deltaTxt + '</span>';
+    h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%' + deltaHtml + '</div></div>';
   });
-  h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div></div>';
+  // v3.2.1 — final score row gains a +1.8 pts weekly delta inline with the score.
+  h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div class="sc-fin-row"><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><span class="sc-fin-delta up">&uarr; +1.8 pts this week</span></div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div>'
+    // v3.2.1 — Quarter Projection card (Dust analysis framing)
+    + '<div class="rcp-proj">'
+      + '<div class="rcp-proj-l"><i class="ti ti-target-arrow"></i> Quarter Projection &middot; Dust Analysis</div>'
+      + '<div class="rcp-proj-b">At your current pace you&rsquo;ll finish Q2 at <strong>81% (Exceeding)</strong>. Closing <strong>2 more EBRs this quarter</strong> would push you to <strong>87%</strong> and solidify Exceeding. Your biggest risk: <strong>Renewal Forecast Actions</strong> is trending down &mdash; 3 blank statuses need updating before Jun 15.</div>'
+    + '</div>'
+  + '</div>';
 
   // v2.13.0 — Dust Recommendation Panel
   h += ''
@@ -5337,13 +5569,163 @@ function buildRecipe() {
       + '<div class="rcp-dust-ft">Dust analysis &middot; Gainsight + Salesforce &middot; Updated today 9:00 AM &middot; Refreshes daily</div>'
     + '</div>';
 
+  // v3.2.1 — Notes & Reflection panel appended below the Dust recommendation
+  // panel. Populated from localStorage on render.
+  if (typeof _rcpNotesHTML === 'function') h += _rcpNotesHTML();
+
   document.getElementById('recipe-root').innerHTML = h;
+
+  // After innerHTML write, populate the dynamic notes list.
+  if (typeof _rcpNotesRenderList === 'function') _rcpNotesRenderList();
 }
 
 function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority accounts &middot; Opens in Mission Briefing ✓'); }
 function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &middot; 3 accounts flagged ✓'); }
 function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
 function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Recipe for Success — Notes & Reflection (v3.2.1)
+// ═══════════════════════════════════════════════════════════════════════════
+var RCP_NOTES_KEY = 'teamos_recipe_notes';
+var RCP_NOTES_CATS = ['All','Success Plans','Growth','Renewals','EBRs','Advocacy','General'];
+var RCP_NOTES_QUARTER = 'Q2 2026';
+var _rcpNotesActiveCat = 'General';  // default category for new note
+var _rcpNotesFilterCat = 'All';      // active filter for history
+
+function _rcpReadNotes() {
+  try {
+    var raw = localStorage.getItem(RCP_NOTES_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  // First load — seed with the demo note per spec.
+  var seed = [{
+    text: "EBR coverage is my biggest gap this quarter. Acme QBR is today which will move the number, but I'm missing 18 of 24 target accounts. Need to get at least 3 more scheduled this week.",
+    timestamp: 'May 10 · 9:14 AM',
+    category: 'EBRs',
+    quarter: RCP_NOTES_QUARTER
+  }];
+  try { localStorage.setItem(RCP_NOTES_KEY, JSON.stringify(seed)); } catch (e) {}
+  return seed;
+}
+
+function _rcpWriteNotes(arr) {
+  try { localStorage.setItem(RCP_NOTES_KEY, JSON.stringify(arr)); } catch (e) {}
+}
+
+function _rcpNotesHTML() {
+  var cats = ['Success Plans','Growth','Renewals','EBRs','Advocacy','General']; // categories for NEW notes (no "All" here)
+  var filterCats = RCP_NOTES_CATS; // includes "All" for the filter
+  var catBtns = cats.map(function(c){
+    var on = (c === _rcpNotesActiveCat) ? ' on' : '';
+    return '<button class="rcp-notes-cat' + on + '" type="button" onclick="_rcpNotesSetCat(\'' + c + '\')">' + c + '</button>';
+  }).join('');
+  var filterBtns = filterCats.map(function(c){
+    var on = (c === _rcpNotesFilterCat) ? ' on' : '';
+    return '<button class="rcp-notes-cat' + on + '" type="button" onclick="_rcpNotesSetFilter(\'' + c + '\')">' + c + '</button>';
+  }).join('');
+  return ''
+    + '<div class="rcp-notes">'
+      + '<div class="rcp-notes-hd"><i class="ti ti-notes"></i> Notes &amp; Reflection <span class="rcp-notes-hd-q">' + RCP_NOTES_QUARTER + '</span></div>'
+      + '<div class="rcp-notes-input">'
+        + '<textarea id="rcp-notes-ta" class="rcp-notes-ta" placeholder="What&rsquo;s driving your score this week? What&rsquo;s in the way? What will you do differently?"></textarea>'
+        + '<div class="rcp-notes-cats" id="rcp-notes-cats">' + catBtns + '</div>'
+        + '<button class="rcp-notes-save" type="button" onclick="_rcpNotesSave()"><i class="ti ti-circle-check"></i> Save Note</button>'
+      + '</div>'
+      + '<div class="rcp-notes-hist-hd">'
+        + '<div class="rcp-notes-hist-t">Saved notes &middot; ' + RCP_NOTES_QUARTER + '</div>'
+        + '<button class="rcp-notes-clear" type="button" onclick="_rcpNotesAskClear()">Clear all notes</button>'
+      + '</div>'
+      + '<div class="rcp-notes-confirm" id="rcp-notes-confirm">'
+        + '<span>Clear all ' + RCP_NOTES_QUARTER + ' notes? This cannot be undone.</span>'
+        + '<span class="rcp-notes-confirm-acts">'
+          + '<button class="rcp-notes-confirm-btn no" type="button" onclick="_rcpNotesConfirmHide()">Cancel</button>'
+          + '<button class="rcp-notes-confirm-btn yes" type="button" onclick="_rcpNotesClearAll()">Yes, clear</button>'
+        + '</span>'
+      + '</div>'
+      + '<div class="rcp-notes-cats" style="margin-bottom:10px">' + filterBtns + '</div>'
+      + '<div class="rcp-notes-list" id="rcp-notes-list"></div>'
+    + '</div>';
+}
+
+function _rcpNotesSetCat(cat) {
+  _rcpNotesActiveCat = cat;
+  // Re-render the chip row in place
+  var row = document.querySelector('.rcp-notes-input .rcp-notes-cats');
+  if (!row) return;
+  Array.from(row.children).forEach(function(b){
+    b.classList.toggle('on', b.textContent.trim() === cat);
+  });
+}
+
+function _rcpNotesSetFilter(cat) {
+  _rcpNotesFilterCat = cat;
+  var row = document.querySelector('.rcp-notes-list').previousElementSibling;
+  if (row && row.classList.contains('rcp-notes-cats')) {
+    Array.from(row.children).forEach(function(b){
+      b.classList.toggle('on', b.textContent.trim() === cat);
+    });
+  }
+  _rcpNotesRenderList();
+}
+
+function _rcpNotesSave() {
+  var ta = document.getElementById('rcp-notes-ta');
+  if (!ta) return;
+  var text = (ta.value || '').trim();
+  if (!text) { toast('Note is empty &mdash; type a reflection first'); return; }
+  var now = new Date();
+  var hr = now.getHours();
+  var min = now.getMinutes();
+  var ampm = hr >= 12 ? 'PM' : 'AM';
+  var hr12 = hr % 12 || 12;
+  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+  var ts = 'Today &middot; ' + hr12 + ':' + pad(min) + ' ' + ampm;
+  var notes = _rcpReadNotes();
+  notes.unshift({ text: text, timestamp: ts, category: _rcpNotesActiveCat, quarter: RCP_NOTES_QUARTER });
+  _rcpWriteNotes(notes);
+  ta.value = '';
+  _rcpNotesRenderList();
+  toast('Note saved &middot; ' + RCP_NOTES_QUARTER + ' ✓');
+}
+
+function _rcpNotesAskClear() {
+  var c = document.getElementById('rcp-notes-confirm');
+  if (c) c.classList.add('on');
+}
+function _rcpNotesConfirmHide() {
+  var c = document.getElementById('rcp-notes-confirm');
+  if (c) c.classList.remove('on');
+}
+function _rcpNotesClearAll() {
+  _rcpWriteNotes([]);
+  _rcpNotesConfirmHide();
+  _rcpNotesRenderList();
+  toast('All ' + RCP_NOTES_QUARTER + ' notes cleared ✓');
+}
+
+function _rcpNotesEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _rcpNotesRenderList() {
+  var list = document.getElementById('rcp-notes-list');
+  if (!list) return;
+  var notes = _rcpReadNotes();
+  if (_rcpNotesFilterCat !== 'All') {
+    notes = notes.filter(function(n){ return n.category === _rcpNotesFilterCat; });
+  }
+  if (!notes.length) {
+    list.innerHTML = '<div class="rcp-notes-empty">' + (_rcpNotesFilterCat === 'All' ? 'No notes yet this quarter. Add your first reflection.' : 'No notes in &ldquo;' + _rcpNotesEscape(_rcpNotesFilterCat) + '&rdquo; for this quarter.') + '</div>';
+    return;
+  }
+  list.innerHTML = notes.map(function(n){
+    return '<div class="rcp-notes-row">'
+      + '<div class="rcp-notes-row-top"><span class="rcp-notes-pill">' + _rcpNotesEscape(n.category) + '</span><span class="rcp-notes-ts">' + n.timestamp + '</span></div>'
+      + '<div class="rcp-notes-txt">' + _rcpNotesEscape(n.text) + '</div>'
+    + '</div>';
+  }).join('');
+}
 
 // v3.0.3 — Training pulse-strip popover action handler. `kind` ∈
 // { 'continue', 'start', 'review', 'all' } maps to the per-row spec toasts.
