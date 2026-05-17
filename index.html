@@ -344,11 +344,14 @@ body.offline .main > div:nth-child(3){
   0%,100% { transform: rotate(-8deg); }
   50%     { transform: rotate( 8deg); }
 }
-.rcp-hero{margin-bottom:16px}
-.rcp-hero-r{display:flex;align-items:center;gap:12px}
+/* v3.3.3 — centered, width-constrained hero. The icon + title row and
+   tagline both centre horizontally inside a 480px-max card; surrounding
+   content (sync line, portfolio bar, metric cards) keeps its full width. */
+.rcp-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;max-width:480px;margin:0 auto 16px;padding:16px 24px 12px}
+.rcp-hero-r{display:flex;align-items:center;justify-content:center;gap:12px}
 .rcp-hero-ic{display:inline-block;font-size:36px;line-height:1;animation:rcp-hero-wobble 2.5s ease-in-out infinite;transform-origin:bottom center;flex-shrink:0}
 .rcp-hero-t{font-size:28px;font-weight:800;color:#111827;letter-spacing:-.5px;line-height:1.1}
-.rcp-hero-sub{font-size:14px;color:#6B7280;font-style:italic;margin-top:4px;font-weight:500}
+.rcp-hero-sub{font-size:14px;color:#6B7280;font-style:italic;margin-top:4px;font-weight:500;text-align:center}
 @media (prefers-reduced-motion: reduce) {
   .rcp-hero-ic { animation: none; }
 }

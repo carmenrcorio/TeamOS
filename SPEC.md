@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.3.1
+**Version:** 3.3.3
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,23 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.3.3] — 2026-05-17
+
+CSS-only refinements to the v3.3.1 Recipe hero header. The animation, emoji, title text, and tagline text are all unchanged. The surrounding sync line, portfolio bar, metric cards, and the rest of the tab are untouched.
+
+### Fixed — Hero centered + width-constrained
+- `.rcp-hero` is now a column flexbox with `align-items:center; justify-content:center; text-align:center`, so the icon + title row and the tagline below it both centre horizontally.
+- `max-width:480px; margin:0 auto 16px` turns the banner into a compact centred card rather than a full-width strip. Verified at 1440 px viewport: hero width 480 px, 480 px gap on each side — true horizontal centring.
+- Inner padding tightened to `16px 24px 12px` to reclaim vertical space at the top of the tab.
+- `.rcp-hero-r` keeps the icon + title in a single row with `justify-content:center`.
+- `.rcp-hero-sub` gets explicit `text-align:center` so the tagline stays centred regardless of its flex parent alignment.
+
+### Implementation notes
+- One CSS block updated; both `buildRecipe()` HTML copies are unchanged (the same `.rcp-hero` markup just renders against the new rules).
+- Spec label note: user requested `[3.3.3]` (skipping 3.3.2); shipped verbatim.
 
 ---
 
