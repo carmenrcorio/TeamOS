@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.7.0
+**Version:** 4.8.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,65 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.8.0] — 2026-05-17
+
+Campaign Manager follow-up — 13 items. **Result: 86/86 chromium tests passing.** Three items (FIX 3 — Send confirmation modal on all 3 trigger points; FIX 1 prior version — segment chip behavior; FIX 7 — Add Contact wiring) were already shipped in v4.4.0 and re-verified here; the other 10 items + 1 feature landed fresh.
+
+### Verified already shipped (no code change)
+- **FIX 3 — Send confirmation modal on all 3 trigger points.** Card `[Send Campaign]`, wizard Step 5 `[Send Now]`, and Analytics table `[Send →]` all route through `cmCampSendStart` / `cmWizSend` → `cmOpenSendConfirm({source})` since v4.4.0. The modal carries the recipient list with toggleable checkboxes, sender, sequence summary, and a confirm-or-cancel footer. Re-confirmed by the existing `Send opens confirmation modal with reviewable recipient list` test.
+
+### Fixed
+
+**FIX 1 — 0-count segment chips show an empty-state tooltip.** `Unengaged · SSO Active (0)` and `Unengaged · SSO + SCIM (0)` were silent on click. `cmSegmentClick` now intercepts a 0-count chip, shows an inline `.cm-seg-empty-pop` tooltip ("No accounts match this segment yet. As accounts are tagged with SSO/SCIM status in Gainsight, they'll appear here automatically."), and does NOT open the wizard. Tooltip closes on outside-click via the existing document-level click handler. Chips remain `disabled` styled so they read as inactive at-a-glance.
+
+**FIX 2 — EBR Overdue chip surfaces filter context in Step 2.** When the EBR Overdue segment seeds the wizard (`CM_WIZ.segmentKey === 'ebr-overdue'`), Step 2 renders an indigo `.cm-wiz-ctx-note` reading "Filtered to: **Accounts with no EBR completed this quarter** · $25K+ ARR" plus a display-only `EBR Status: Overdue` chip next to the step heading. Renewal Window stays at "All" by design (EBR overdue is not renewal-date-based).
+
+**FIX 4 — Pause Campaign shows inline confirmation + sets PAUSED status.** `cmCampPause` previously toggled status to `draft` silently. Now it injects an inline `.cm-card-confirm.pause` strip into the drawer footer ("Pause this campaign? Contacts will not receive pending touches until you resume.") with Cancel + Pause buttons. `cmCampPauseConfirm` sets `status = 'paused'`, re-renders the list + the drawer (Resume button replaces Pause), and toasts "Campaign paused · Pending touches halted ✓". Resume is single-click (no confirmation) via `cmCampResume`. New `paused` status pill styling: amber on cream.
+
+**FIX 5 — Archive from drawer mirrors card-level flow.** Previously the drawer's Archive button skipped the confirmation strip. Now `cmCampArchive` checks `cmCampInDrawer(id)` first — when the drawer is open it injects the same confirm strip into the drawer footer ("Archive this campaign? It will be hidden from the active list."). On confirm: drawer closes, list re-renders with the archived campaign hidden, toast fires. On cancel: strip is removed. The card-level path is unchanged for when the drawer is closed.
+
+**FIX 6 — Export List generates a real CSV download via Blob API.** `cmCampExport` previously toasted + wrote to clipboard. Now it builds a properly-escaped CSV (RFC-style quote handling via `cmCsvEscape`) with the spec's 6 columns (Contact / Account / Email / Touch Reached / Status / Last Activity), creates a `Blob('text/csv;charset=utf-8')`, generates a temporary `URL.createObjectURL`, and triggers a download via a programmatic `<a download>` click. Filename: `<campaign-slug>-contacts-YYYY-MM-DD.csv` (e.g. `june-renewal-push-contacts-2026-05-17.csv`). Toast: "Contact list exported · N contacts · CSV ✓". Clipboard fallback for browsers without Blob support.
+
+**FIX 7 — `cmOpenAddContact` alias.** Added a public alias `cmOpenAddContact()` that delegates to `cmAddContactPrompt()`. The Add Contact modal itself was already wired in v4.4.0 (Email required + role="alert" validation + SSO/SCIM/usage fields + persistence). The alias matches the external naming convention used by your QA tool.
+
+**FIX 8 — Active contact filter shows only enrolled/replied.** Previous predicate `c.seq !== 'departed' && !unsubscribed` matched the entire book minus the 2 departed champions. New predicate: `(!!c.seq && c.seq !== 'departed') || /replied/i.test(c.seqStatus)` — strictly contacts currently in a sequence or who have replied. Demo result: 2 contacts (Sarah Chen in Renewal Check-in, Michael Torres in Re-engagement).
+
+**FIX 9 — Analytics campaign rows clickable.** Each `<tr>` in the per-campaign performance table now carries `onclick="cmAnalyticsRowClick(id, event)"` + `tabindex="0"` + Enter-key handler. Handler switches to Campaigns sub-section then opens the campaign detail drawer 80 ms later. Click handler ignores clicks targeting buttons inside the progress cell so the inline `Send →` keeps its own behavior.
+
+**FIX 10 — Wizard Step 2 search debounce fix.** Previous implementation re-rendered the entire Step 2 body on every keystroke, which dropped focus and ate every character after the first. New `cmWizSearchInput(v)` updates state immediately and debounces a list-only rerender by 150 ms. `cmWizStep2BuildGroups` is now a pure HTML builder, called by both the initial Step 2 render and the search rerender. Filter-dropdown changes + checkbox toggles also use the list-only update path now. Search input keeps focus + cursor position across rerenders because the input element itself isn't replaced. Full words ("jennifer", "acme", "brightex") filter correctly.
+
+**FIX 11 — Editable email body at Step 3 and Step 5 with contact switcher.** The biggest item in this release. Previous Step 3/5 previews were static `cmWizPreviewHTML` divs showing only the first selected contact. New `cmRenderEditablePreview(stepId)` shared component renders:
+- A `.cm-prev-switcher` row above the preview with "Showing: [Contact name · Account] ← N of M →" navigation.
+- The subject inline-editable via `contenteditable="true"` with an `oninput` that writes back to the per-contact draft store.
+- The body as a `<textarea class="cm-prev-edit">` (240 px min-height, vertical resize) with `oninput` writing back.
+- A "Reset to template" link below that clears the per-contact draft.
+- Cycle handlers `cmCyclePreview(±1)` step through every selected contact; first/last contact disables the corresponding arrow.
+
+Per-instance draft store: `CM_WIZ.drafts[contactId] = { subject, body }`. `cmGetEffectiveDraft(contactId)` returns the edited draft if it exists, else falls back to `cmFillTemplate(template, contact)` — so untouched contacts always show the personalized template default. Edits affect this campaign instance only; they never mutate the master template.
+
+Drafts flush to `localStorage.teamos_campaign_drafts` keyed by campaign id at the moment the wizard saves (`cmWizSaveDraft`), sends (`cmWizSendActual`), or schedules (`cmSchConfirm`). Shape:
+```
+{ "campaignId": { "contactId": { subject, body } } }
+```
+
+### Added
+
+**FEATURE — SSO / SCIM / ARR / Last active in 1Password surfaced in contact detail panel.** `CM_CONTACTS` records gained `sso`, `scim`, `arr`, `lastActive` fields per the spec's demo data (9 contacts called out by name; the 3 book-account contacts get sensible defaults). The contact detail panel's "Contact info" section now renders these 4 rows above the existing Email / Last Gong / Last CSM touch / Renewal / Note rows. Status values render as colored pills (`.kv-pill.deployed`, `.kv-pill.active`, `.kv-pill.notdeployed`, `.kv-pill.notactive`, `.kv-pill.departed`).
+
+**FEATURE — Wizard Step 2 account group headers show SSO + ARR.** Each `.cm-wiz-grp-hd` now renders an inline `<span class="cm-wiz-grp-meta">SSO: <b>Deployed</b> · ARR: <b>$48K</b></span>` right-aligned next to the existing contact-count badge. Uses the first contact at the account as the per-account proxy (consistent within an account).
+
+### Test coverage
+- **86 / 86 chromium passing** (was 73 in v4.7.0). 13 new tests added under a `v4.8.0 Campaign Manager fixes` describe — one per FIX, plus 2 for the feature. Tests stub UI internals via `page.evaluate` so the wizard state transitions don't depend on slowMo/event timing.
+
+### Engineering notes
+- `CM_VIEW_ID` is now an explicit `var` declaration at the top of the CM module. Previously it was created implicitly on first assignment, which threw `ReferenceError` when read before that first assignment (caught by the new FIX 5 test).
+- The cmRenderContactDetail SSO/SCIM additions originally placed `// comment` lines INSIDE the `+ ... + ... + ...` string-concatenation chain. JS parsed each `+ // comment` as a unary `+` operator coercing the next string to `NaN`, which produced rendered text like `david.kim@acmecorp.comNaNdeployed">Deployed`. Fixed by moving the comment above the concatenation. Caught by the new feature test.
+
+### Spec label
+Shipped as `[4.8.0]`. Firefox + WebKit still blocked by container network policy; run locally with `npx playwright install firefox webkit`.
 
 ---
 

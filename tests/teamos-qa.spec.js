@@ -724,3 +724,233 @@ test.describe('Accessibility', () => {
     expect(errs).toEqual([]);
   });
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.8.0 — Campaign Manager follow-up
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.8.0 Campaign Manager fixes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('campaigns', document.querySelector('[onclick*="goTab(\'campaigns\'"]')));
+    await page.waitForTimeout(200);
+  });
+
+  test('FIX 1: 0-count segment click shows empty-state tooltip', async ({ page }) => {
+    // SSO Active segment has count=0
+    await page.evaluate(() => cmSegmentClick('unengaged-sso', new Event('click')));
+    await page.waitForTimeout(150);
+    const pop = await page.locator('#cm-seg-empty-unengaged-sso.on').count();
+    expect(pop).toBe(1);
+    // Wizard does NOT open
+    const wizOpen = await page.evaluate(() => document.getElementById('cm-wiz-ov')?.classList.contains('on'));
+    expect(wizOpen).toBeFalsy();
+  });
+
+  test('FIX 2: EBR Overdue chip surfaces filter context note in Step 2', async ({ page }) => {
+    await page.evaluate(() => cmSegmentClick('ebr-overdue', new Event('click')));
+    await page.waitForTimeout(250);
+    await expect(page.locator('.cm-wiz-ctx-note')).toBeVisible();
+    const note = await page.locator('.cm-wiz-ctx-note').textContent();
+    expect(note).toMatch(/no EBR completed this quarter/i);
+    await expect(page.locator('.cm-wiz-display-chip.ebr')).toBeVisible();
+    const chipTxt = await page.locator('.cm-wiz-display-chip.ebr').textContent();
+    expect(chipTxt).toMatch(/EBR Status/);
+  });
+
+  test('FIX 4: Pause shows inline confirm + on confirm sets PAUSED + Resume button', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(250);
+    // Click Pause
+    await page.evaluate(() => cmCampPause('cmp1'));
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-cv-drawer .cm-card-confirm.pause')).toBeVisible();
+    // Confirm
+    await page.evaluate(() => cmCampPauseConfirm('cmp1'));
+    await page.waitForTimeout(200);
+    const status = await page.evaluate(() => CM_CAMPAIGNS.find(c => c.id === 'cmp1').status);
+    expect(status).toBe('paused');
+    const btnText = await page.locator('#cm-cv-drawer .cm-drawer-foot button').first().textContent();
+    expect(btnText).toMatch(/Resume Campaign/);
+  });
+
+  test('FIX 5: Archive from drawer shows confirm strip + on confirm closes drawer', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(250);
+    await page.evaluate(() => cmCampArchive('cmp1'));
+    await page.waitForTimeout(150);
+    const strip = await page.locator('#cm-cv-drawer .cm-card-confirm').count();
+    expect(strip).toBe(1);
+    await page.evaluate(() => cmCampArchiveConfirm('cmp1'));
+    await page.waitForTimeout(400);
+    const drawerOpen = await page.evaluate(() => document.getElementById('cm-cv-drawer')?.classList.contains('on'));
+    expect(drawerOpen).toBeFalsy();
+    const status = await page.evaluate(() => CM_CAMPAIGNS.find(c => c.id === 'cmp1').status);
+    expect(status).toBe('archived');
+  });
+
+  test('FIX 6: Export List builds a CSV with the right columns + row count', async ({ page }) => {
+    // Stub URL.createObjectURL to capture the blob content
+    const csv = await page.evaluate(async () => {
+      var captured = null;
+      var origCreate = URL.createObjectURL;
+      URL.createObjectURL = function(blob){
+        return new Promise(function(resolve){
+          var r = new FileReader();
+          r.onload = function(){ captured = r.result; resolve('blob:fake'); };
+          r.readAsText(blob);
+          // Synchronous fallback for test
+        }).then ? 'blob:fake' : 'blob:fake';
+      };
+      // Direct text extraction via FileReader sync workaround
+      var blobText = null;
+      URL.createObjectURL = function(blob){
+        blob.text().then(function(t){ window._csvCaptured = t; });
+        return 'blob:fake';
+      };
+      cmCampExport('cmp1');
+      await new Promise(function(r){ setTimeout(r, 200); });
+      return window._csvCaptured;
+    });
+    expect(csv).toContain('Contact,Account,Email,Touch Reached,Status,Last Activity');
+    const lines = csv.trim().split(/\r?\n/);
+    expect(lines.length).toBeGreaterThanOrEqual(9); // header + 8 contacts
+  });
+
+  test('FIX 7: cmOpenAddContact alias opens the Add Contact modal', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(150);
+    const t = await page.evaluate(() => typeof cmOpenAddContact);
+    expect(t).toBe('function');
+    await page.evaluate(() => cmOpenAddContact());
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-modal-ov')).toHaveClass(/on/);
+    await expect(page.locator('#cm-ac-em')).toBeVisible();
+  });
+
+  test('FIX 8: Active filter shows only enrolled / replied contacts', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmSetCntFilter('active'));
+    await page.waitForTimeout(150);
+    const count = await page.locator('#cm-cnt-list .cm-cnt-row').count();
+    // Only 2 in-sequence contacts seeded (Sarah Chen, Michael Torres). No
+    // "not enrolled" should appear.
+    expect(count).toBe(2);
+    const names = await page.locator('#cm-cnt-list .cm-cnt-nm').allTextContents();
+    expect(names.some(n => /Sarah Chen/.test(n))).toBe(true);
+    expect(names.some(n => /Michael Torres/.test(n))).toBe(true);
+  });
+
+  test('FIX 9: Analytics row click opens campaign detail drawer', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => cmAnalyticsRowClick('cmp1', new Event('click')));
+    await page.waitForTimeout(250);
+    await expect(page.locator('#cm-tab-campaigns')).toHaveClass(/on/);
+    await expect(page.locator('#cm-cv-drawer')).toHaveClass(/on/);
+    const nm = await page.locator('#cm-cv-drawer .cm-drawer-nm').textContent();
+    expect(nm).toMatch(/June Renewal Push/);
+  });
+
+  test('FIX 10: Step 2 search debounce — full words filter correctly', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.step=2; cmWizRender(); });
+    await page.waitForTimeout(200);
+    // Type "jennifer" character by character via .fill (single set)
+    await page.fill('#cm-wiz-search', 'jennifer');
+    await page.waitForTimeout(250); // > 150ms debounce
+    const rows = await page.locator('.cm-wiz-cnt-item').count();
+    // Jennifer Ramos (Meridian) + Jennifer Moss (Klaxton) — both contain "jennifer"
+    expect(rows).toBeGreaterThanOrEqual(2);
+    // Also check the search input still has the full word
+    const val = await page.locator('#cm-wiz-search').inputValue();
+    expect(val).toBe('jennifer');
+  });
+
+  test('FIX 11: Step 3 + Step 5 render editable preview with contact switcher', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c3','c4','c5']; CM_WIZ.template='t3'; CM_WIZ.step=3; cmWizRender(); });
+    await page.waitForTimeout(200);
+    // Step 3 has the switcher
+    await expect(page.locator('.cm-prev-switcher').first()).toBeVisible();
+    const count = await page.locator('.cm-prev-switcher-count').first().textContent();
+    expect(count).toContain('1 of 3');
+    // Body is editable
+    await expect(page.locator('#cm-prev-body-s3')).toBeVisible();
+    // Cycle to next contact
+    await page.evaluate(() => cmCyclePreview(1));
+    await page.waitForTimeout(150);
+    const count2 = await page.locator('.cm-prev-switcher-count').first().textContent();
+    expect(count2).toContain('2 of 3');
+    // Edit the body — saves to CM_WIZ.drafts
+    await page.evaluate(() => {
+      var ta = document.getElementById('cm-prev-body-s3');
+      ta.value = 'Custom edited body for c4';
+      ta.dispatchEvent(new Event('input'));
+    });
+    await page.waitForTimeout(100);
+    const saved = await page.evaluate(() => CM_WIZ.drafts && CM_WIZ.drafts.c4 && CM_WIZ.drafts.c4.body);
+    expect(saved).toContain('Custom edited body for c4');
+    // Reset clears the draft
+    await page.evaluate(() => cmResetDraft('c4'));
+    await page.waitForTimeout(100);
+    const cleared = await page.evaluate(() => !!(CM_WIZ.drafts && CM_WIZ.drafts.c4));
+    expect(cleared).toBe(false);
+    // Step 5 has the same switcher
+    await page.evaluate(() => { CM_WIZ.step=5; cmWizRender(); });
+    await page.waitForTimeout(200);
+    await expect(page.locator('#cm-prev-body-s5')).toBeVisible();
+  });
+
+  test('FIX 11: drafts flush to localStorage on save/send/schedule', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => {
+      CM_WIZ.name='QA Drafts'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c3']; CM_WIZ.template='t3'; CM_WIZ.step=5;
+      CM_WIZ.drafts = { c3: { subject:'Custom', body:'Custom body for Sarah' } };
+      cmWizRender();
+    });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmWizSaveDraft());
+    await page.waitForTimeout(200);
+    const stored = await page.evaluate(() => {
+      try { return JSON.parse(localStorage.getItem('teamos_campaign_drafts')); } catch (e) { return null; }
+    });
+    expect(stored).toBeTruthy();
+    // The new campaign id is the newest one
+    const newId = await page.evaluate(() => CM_CAMPAIGNS[0].id);
+    expect(stored[newId]).toBeTruthy();
+    expect(stored[newId].c3.body).toBe('Custom body for Sarah');
+  });
+
+  test('FEATURE: contact detail panel surfaces SSO / SCIM / ARR / last-active', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmSelectContact('c1')); // David Kim · Acme
+    await page.waitForTimeout(150);
+    const body = await page.locator('#cm-cnt-detail').textContent();
+    expect(body).toMatch(/SSO Status/);
+    expect(body).toMatch(/Deployed/);
+    expect(body).toMatch(/SCIM Status/);
+    expect(body).toMatch(/Active/);
+    expect(body).toMatch(/\$48K/);
+    expect(body).toMatch(/Last active in 1Password/);
+    expect(body).toMatch(/May 15/);
+  });
+
+  test('FEATURE: wizard Step 2 group headers show SSO + ARR per account', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.step=2; cmWizRender(); });
+    await page.waitForTimeout(200);
+    const acmeMeta = await page.evaluate(() => {
+      var groups = document.querySelectorAll('.cm-wiz-grp');
+      for (var i = 0; i < groups.length; i++) {
+        if (/ACME CORP/.test(groups[i].textContent)) {
+          return groups[i].querySelector('.cm-wiz-grp-meta')?.textContent || null;
+        }
+      }
+      return null;
+    });
+    expect(acmeMeta).toMatch(/SSO/);
+    expect(acmeMeta).toMatch(/Deployed/);
+    expect(acmeMeta).toMatch(/\$48K/);
+  });
+});
