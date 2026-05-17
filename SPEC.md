@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.5.0
+**Version:** 4.6.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,48 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.6.0] — 2026-05-17
+
+QA pass — first comprehensive Playwright test suite for TeamOS. The user requested a full-suite run against `tests/teamos-qa.spec.js`, but no test file existed in the repo (only `playwright.config.js` from v4.3.0). Authored a fresh 66-test suite covering every major surface shipped in v4.0–v4.5 and ran it against the production code.
+
+### Result
+- **Chromium: 66 / 66 passing on the first run.**
+- **Firefox + WebKit: not runnable in this container.** The Playwright browser-download endpoint is blocked by the same outbound network policy that prevents direct curl to vercel.app. To run on those engines, install locally: `npx playwright install firefox webkit`, then `npx playwright test --project=firefox` and `--project=webkit`. The config already declares both projects with `slowMo: 100` (Firefox) / `slowMo: 200` (WebKit) per v4.3.0.
+
+### What the suite covers
+Six describe groups, 66 tests total:
+
+**Core (8 tests)** — page title, 9-tab nav, default tab, pulse strip centering + 8 indicators, skip-link Tab focus, nav landmark roles, Service Worker registration, toast role=alert/aria-live.
+
+**Recipe for Success (7 tests)** — hero header + wobble animation, 4 metric cards, status pill count = row count, 3-key legend, notes save → localStorage round-trip, `rcpJumpNotes` wiring on the jump button, history toggle.
+
+**Campaigns (10 tests)** — 4 sub-nav tabs, default sub-section, all three switchable sub-sections (Contacts / Templates / Analytics), 3 demo campaign cards, 7 segmentation chips, 2 disabled chips (SSO Active + SSO+SCIM), At-Risk segment opens wizard at Step 2 with `filterHealth='critical' filterRenewal='60'` 2 contacts pre-selected template `t3`, Analytics time-period filter datasets `[847, 48, 1,204]`.
+
+**Campaign Manager actions (13 tests)** — View opens right drawer with 4 stat tiles + 3 sequence rows + 8 contact rows, Escape closes the drawer, Duplicate creates "Copy of …" DRAFT card, Archive shows confirm strip then sets status, Add Contact modal with required Email + `aria-required` + role="alert" validation + persistence, Template Builder modal with variable picker, Add to Campaign requires explicit picker selection, Schedule modal with date/time/timezone, Send confirmation modal with reviewable recipient list, AI Draft generator produces editable preview with at-risk-specific subject, Step 2 health filter narrows the list, Step 2 groups by account.
+
+**Risk & Signals (9 tests)** — 5 sub-nav tabs, 6 matrix dots, dot click loads snapshot + 3 actions, 11 signals with Title Case severity badges, Critical filter → 3 rows, 2 save plays with 5 steps each (= 10 `.rs-pl-step`), Champion Tracker contains "Ryan Patel" + 2 change cards, Dark Zone has 3 cards + 3 selects, Meridian inbound flag.
+
+**Forecasting (14 tests)** — 4 sub-nav tabs, 6 pipeline rows, `Forecast ($)` column present, override persists to localStorage, status change stamps timestamp + 2 s pending pulse, Ghost-Buster Meridian → `view-meridian`, Ghost-Buster Creston → `view-creston`, Champion Protocol Apex passes `apex` (not Brightex), full 6-row action-button audit (Nova→nova, Brightex→brightex, Meridian→meridian, Creston→creston, Apex→apex, Acme→acme), Reply modal opens with Jennifer template, Timeline drawer in-tab (no nav), Commit rollup with quota gap (quota → localStorage), Column picker 15 items, hidden-column toggle adds to table.
+
+**Accessibility (5 tests)** — Escape closes cm-modal-ov / cm-wiz-ov / fc-acct-drawer (the v4.5.0 chain), CSP meta tag present, zero console errors across a full 9-tab nav sweep (filters out the expected browser warnings for `frame-ancestors` and `X-Frame-Options` delivered via meta — those need HTTP-header delivery via `vercel.json` per v3.4.1).
+
+### Selector + timing discipline used
+- Every modal/drawer assertion waits 150–250 ms after the trigger and asserts on a class state (`.on`) rather than visibility — handles the CSS transitions.
+- `cmShowSection`, `cmOpenWizard`, `fcShowSection`, `rsShow`, `fcSaveOverride`, `fcSetStatus`, `cmSegmentClick`, `fcOpenAcctDrawer` etc. invoked via `page.evaluate` to bypass any UI-event flakiness.
+- The action-button audit reads the actual `onclick` attribute strings rather than firing them — catches Fix 4 regressions (Champion Protocol hardcoded to Brightex) directly at the DOM layer.
+- `localStorage` checks happen after the in-memory state update + a small wait, so writes settle.
+- Toast assertions read `#toast-el` role/aria-live attributes — not the text content, which is ephemeral.
+
+### Engineering notes for future runs
+- `playwright.config.js` updated to use `playwright/test` (works with the bundled Playwright Test runner) instead of `@playwright/test` (a separate package). Adds `testDir: './tests'`, `baseURL: 'http://127.0.0.1:8990'`, retain-on-failure traces, fully sequential workers, list + html reporters.
+- `.gitignore` added to exclude `node_modules/`, `playwright-report/`, `test-results/`.
+- The suite assumes a static server is running on `:8990` before invocation. Locally: `python3 -m http.server 8990 &; npx playwright test`. CI would benefit from adding a `webServer` block to `playwright.config.js` so the server starts/stops automatically.
+
+### Spec label
+Shipped as `[4.6.0]`. **QA pass rate: 66/66 on chromium · 0 failures.** Firefox + WebKit deferred for local execution due to the container's outbound network policy blocking Playwright's browser CDN.
 
 ---
 
