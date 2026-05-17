@@ -917,6 +917,60 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .ah-doc-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
 .ah-doc-btn i{font-size:11px}
 
+/* v3.2.2 — Agent Hub new sections: Account Search, Snapshot, Quick Links, Notes */
+.ah-cur{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ah-cur-l{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
+.ah-cur-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:5px;background:var(--tl-bg);color:var(--tl-dk);border:1px solid var(--tl);letter-spacing:-.01em}
+.ah-search{position:relative;display:flex;align-items:center;gap:7px;background:var(--surf2);border:1px solid var(--bd2);border-radius:7px;padding:7px 10px;transition:border-color .1s}
+.ah-search:focus-within{border-color:var(--tl);background:var(--surf)}
+.ah-search i{color:var(--tx3);font-size:13px;flex-shrink:0}
+.ah-search input{flex:1;border:none;background:transparent;font-family:inherit;font-size:11px;color:var(--tx);outline:none;min-width:0}
+.ah-search input::placeholder{color:var(--tx3)}
+.ah-search-results{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surf);border:1px solid var(--bd);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:50;max-height:240px;overflow-y:auto;flex-direction:column;padding:4px 0}
+.ah-search-results.on{display:flex}
+.ah-search-item{padding:8px 11px;font-size:11px;color:var(--tx2);cursor:pointer;font-weight:600;font-family:inherit;background:none;border:none;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ah-search-item:hover{background:var(--surf2);color:var(--tx)}
+.ah-search-item .ah-search-meta{font-size:9px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.ah-search-empty{font-size:11px;color:var(--tx3);font-style:italic;padding:8px 11px}
+
+/* Snapshot grid */
+.ah-snap-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px 16px;padding:9px 0}
+.ah-snap-cell{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ah-snap-l{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
+.ah-snap-v{font-size:11px;font-weight:700;color:var(--tx);line-height:1.35;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ah-snap-v.g{color:var(--tl-dk)}
+.ah-snap-v.a{color:var(--am-dk)}
+.ah-snap-v.r{color:var(--rd-dk)}
+.ah-snap-v.gy{color:var(--tx2)}
+.ah-snap-v.warn{color:var(--rd-dk)}
+.ah-snap-sum{font-size:11px;color:var(--tx2);line-height:1.55;padding:9px 11px;background:var(--surf2);border-left:3px solid var(--tl);border-radius:0 var(--r) var(--r) 0;margin-top:8px}
+
+/* Quick Links */
+.ah-ql{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ah-ql-btn{font-size:10px;font-weight:700;padding:8px 9px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;justify-content:center;transition:all .1s;min-width:0}
+.ah-ql-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.ah-ql-btn i{font-size:13px;flex-shrink:0}
+.ah-ql-btn-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ah-ql-warn{font-size:9px;font-weight:700;color:var(--rd);margin-left:3px;display:inline-flex;align-items:center;gap:2px}
+.ah-ql-btn.warn{border-color:var(--rd);color:var(--rd-dk)}
+.ah-ql-btn.warn:hover{background:var(--rd-bg)}
+
+/* Quick Note */
+.ah-note-ta{width:100%;min-height:64px;border:1px solid var(--bd2);border-radius:6px;padding:9px 11px;font-family:inherit;font-size:11px;color:var(--tx);background:var(--surf2);outline:none;line-height:1.55;resize:vertical;box-sizing:border-box;transition:border-color .1s}
+.ah-note-ta:focus{border-color:var(--tl);background:var(--surf)}
+.ah-note-ta::placeholder{color:var(--tx3)}
+.ah-note-acts{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.ah-note-btn{font-size:10px;font-weight:700;padding:6px 10px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s}
+.ah-note-btn:hover{background:var(--surf2);border-color:var(--tx2);color:var(--tx)}
+.ah-note-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.ah-note-btn.prim:hover{background:#2a2a28}
+.ah-note-btn i{font-size:11px}
+.ah-note-confirm{display:none;flex-direction:column;gap:7px;padding:10px 12px;margin-top:8px;background:var(--surf2);border:1px solid var(--bd);border-left:3px solid var(--tl);border-radius:var(--r);font-size:11px;color:var(--tx2);line-height:1.5}
+.ah-note-confirm.on{display:flex}
+.ah-note-confirm-meta{font-size:10px;color:var(--tx3);font-weight:600;letter-spacing:.02em}
+.ah-note-confirm-body{font-size:11px;color:var(--tx);background:var(--surf);border:1px solid var(--bd);border-radius:5px;padding:7px 9px;white-space:pre-wrap;max-height:120px;overflow-y:auto}
+.ah-note-confirm-acts{display:flex;justify-content:flex-end;gap:6px;margin-top:2px}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    Ghost-Buster Re-engagement Wizard (v2.6.0)
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -1852,12 +1906,12 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
     <!-- Right: Ask Dust -->
     <div class="bf bf-ask">
-      <div class="bf-hd"><div class="bf-ic tl"><i class="ti ti-sparkles"></i></div><div class="bf-t">Ask Dust</div></div>
-      <div class="bf-sub">Free-text agent &middot; powered by Dust API</div>
+      <div class="bf-hd"><div class="bf-ic tl"><i class="ti ti-sparkles"></i></div><div class="bf-t">Dust Agents</div></div>
+      <div class="bf-sub">Access your Dust agents here</div>
 
       <form class="bf-dust-input" onsubmit="askDust(event)">
         <i class="ti ti-search"></i>
-        <input id="dust-q" type="text" autocomplete="off" placeholder="Ask anything about an account, renewal, or open loop&hellip;" aria-label="Ask Dust" />
+        <input id="dust-q" type="text" autocomplete="off" placeholder="Ask any agent a question&hellip;" aria-label="Ask Dust" />
         <button class="bf-dust-send" type="submit" aria-label="Send to Dust"><i class="ti ti-arrow-right"></i></button>
       </form>
 
@@ -2388,6 +2442,44 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
            Mission Briefing panel regardless of which rp-view is active. -->
       <div class="ah-card">
         <div class="ah-hd"><span class="ah-hd-ic"><i class="ti ti-robot" style="color:var(--tl)"></i></span><span class="ah-hd-t">Agent Hub &amp; Workspace</span></div>
+
+        <!-- v3.2.2 — Section 1: Account Search -->
+        <div class="ah-sec">
+          <div class="ah-sec-t">Account Search</div>
+          <div class="ah-cur">
+            <span class="ah-cur-l">Current account</span>
+            <span class="ah-cur-pill" id="ah-cur-pill">Acme Corp</span>
+          </div>
+          <div class="ah-search">
+            <i class="ti ti-search"></i>
+            <input id="ah-search-q" type="text" autocomplete="off" placeholder="Switch account&hellip;" aria-label="Switch Agent Hub account" oninput="_ahSearch(this.value)" onfocus="_ahSearch(this.value)" />
+            <div class="ah-search-results" id="ah-search-results"></div>
+          </div>
+        </div>
+
+        <!-- v3.2.2 — Section 2: Account Snapshot -->
+        <div class="ah-sec">
+          <div class="ah-sec-t">Account Snapshot</div>
+          <div class="ah-snap-grid" id="ah-snap-grid"></div>
+          <div class="ah-snap-sum" id="ah-snap-sum"></div>
+        </div>
+
+        <!-- v3.2.2 — Section 3: Quick Links -->
+        <div class="ah-sec">
+          <div class="ah-sec-t">Quick Links</div>
+          <div class="ah-ql" id="ah-ql"></div>
+        </div>
+
+        <!-- v3.2.2 — Section 4: Quick Note -->
+        <div class="ah-sec">
+          <div class="ah-sec-t">Quick Note</div>
+          <textarea id="ah-note-ta" class="ah-note-ta" placeholder="Add a note about Acme Corp&hellip;" aria-label="Quick note for the active account"></textarea>
+          <div class="ah-note-acts">
+            <button class="ah-note-btn prim" type="button" onclick="_ahNoteSavePreview()"><i class="ti ti-cloud-upload"></i> Save to Gainsight</button>
+            <button class="ah-note-btn" type="button" onclick="_ahNoteCopy()"><i class="ti ti-copy"></i> Copy</button>
+          </div>
+          <div class="ah-note-confirm" id="ah-note-confirm"></div>
+        </div>
 
         <div class="ah-sec">
           <div class="ah-sec-t">Quick Launch Matrix</div>
@@ -7146,6 +7238,162 @@ function clearRecentOutputs() {
   renderRecentOutputs();
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// Agent Hub data tables (v3.2.2) — Snapshot, Quick Links, Notes
+// ═══════════════════════════════════════════════════════════════════════════
+var AH_SNAP = {
+  acme:     { lbl:'Acme Corp',              health:'82 · Healthy',   healthCls:'g',  arr:'$48K',  renewal:'Aug 12 · 89d',  champion:'David Kim',                championCls:'',     ctas:'0',         ctasCls:'g',    gongDate:'May 10 · SSO',         gongCls:'g',    gongDays:5,  sum:"IT security team scaling across distributed engineering org. SSO rollout in progress. Expansion signal active." },
+  brightex: { lbl:'Brightex Inc',           health:'48 · At Risk',   healthCls:'a',  arr:'$36K',  renewal:'Jun 15 · 31d',  champion:'Sarah Chen',               championCls:'',     ctas:'2 (1 overdue)', ctasCls:'a', gongDate:'May 10 · Competitor', gongCls:'a',    gongDays:5,  sum:"VP Ops-led deployment. Competitor flagged in last 2 Gong calls. SLA question unresolved. Renewal in 31 days." },
+  nova:     { lbl:'NovaVault',              health:'23 · Critical',  healthCls:'r',  arr:'$31K',  renewal:'Jun 1 · 17d',   champion:'Michael Torres (new)',     championCls:'r',    ctas:'4 (2 overdue)', ctasCls:'r', gongDate:'Apr 28 · Champion gone', gongCls:'r', gongDays:19, sum:"Critical save. Champion departed. Contract not opened. 17 days to renewal." },
+  meridian: { lbl:'Meridian Health Systems',health:'Unknown',        healthCls:'gy', arr:'$22K',  renewal:'Jun 30 · 45d',  champion:'Jennifer Ramos',           championCls:'gy',   ctas:'1',         ctasCls:'gy',   gongDate:'73d ago',              gongCls:'warn', gongDays:73, sum:"73 days dark. Jennifer Ramos sent inbound email today — first signal in over 2 months." },
+  creston:  { lbl:'Creston Software',       health:'Unknown',        healthCls:'gy', arr:'$18K',  renewal:'Jul 15 · 60d',  champion:'Marcus Webb (dormant)',    championCls:'gy',   ctas:'1',         ctasCls:'gy',   gongDate:'67d ago',              gongCls:'warn', gongDays:67, sum:"67 days dark. Passive neglect, not risk dark. Champion likely intact but unreachable." },
+  apex:     { lbl:'Apex Dynamics',          health:'Unknown',        healthCls:'gy', arr:'$15K',  renewal:'Aug 1 · 77d',   champion:'Ryan Patel (new — James Wu left)', championCls:'gy', ctas:'0',     ctasCls:'gy',   gongDate:'61d ago',              gongCls:'warn', gongDays:61, sum:"Champion change. Cold intro required. AE warm intro recommended before CSM outreach." }
+};
+
+var _ahNoteAcct = 'acme'; // tracks which account the textarea belongs to
+
+function _ahEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _ahRenderSnapshot(key) {
+  var grid = document.getElementById('ah-snap-grid');
+  var sum  = document.getElementById('ah-snap-sum');
+  if (!grid || !sum) return;
+  var d = AH_SNAP[key] || AH_SNAP.acme;
+  grid.innerHTML = ''
+    + '<div class="ah-snap-cell"><div class="ah-snap-l">Health</div><div class="ah-snap-v ' + d.healthCls + '">' + _ahEscape(d.health) + '</div></div>'
+    + '<div class="ah-snap-cell"><div class="ah-snap-l">ARR</div><div class="ah-snap-v">' + _ahEscape(d.arr) + '</div></div>'
+    + '<div class="ah-snap-cell"><div class="ah-snap-l">Renewal</div><div class="ah-snap-v">' + _ahEscape(d.renewal) + '</div></div>'
+    + '<div class="ah-snap-cell"><div class="ah-snap-l">Champion</div><div class="ah-snap-v ' + d.championCls + '">' + _ahEscape(d.champion) + '</div></div>'
+    + '<div class="ah-snap-cell"><div class="ah-snap-l">Open CTAs</div><div class="ah-snap-v ' + d.ctasCls + '">' + _ahEscape(d.ctas) + '</div></div>'
+    + '<div class="ah-snap-cell"><div class="ah-snap-l">Last Gong</div><div class="ah-snap-v ' + d.gongCls + '">' + _ahEscape(d.gongDate) + '</div></div>';
+  sum.innerHTML = _ahEscape(d.sum);
+}
+
+function _ahRenderQuickLinks(key) {
+  var box = document.getElementById('ah-ql');
+  if (!box) return;
+  var d = AH_SNAP[key] || AH_SNAP.acme;
+  var warn = d.gongDays >= 60;
+  var gongLabel = warn ? ('Last Gong · ' + d.gongDays + 'd ago') : 'Last Gong Call';
+  var gongCls = warn ? ' warn' : '';
+  var gongWarnTag = warn ? '<span class="ah-ql-warn"><i class="ti ti-alert-triangle"></i></span>' : '';
+  box.innerHTML = ''
+    + '<button class="ah-ql-btn" type="button" onclick="_ahOpenLink(\'gainsight\')"><i class="ti ti-chart-pie"></i><span class="ah-ql-btn-l">Gainsight</span></button>'
+    + '<button class="ah-ql-btn" type="button" onclick="_ahOpenLink(\'salesforce\')"><i class="ti ti-cloud"></i><span class="ah-ql-btn-l">Salesforce</span></button>'
+    + '<button class="ah-ql-btn' + gongCls + '" type="button" onclick="_ahOpenLink(\'gong\')"><i class="ti ti-microphone"></i><span class="ah-ql-btn-l">' + gongLabel + '</span>' + gongWarnTag + '</button>'
+    + '<button class="ah-ql-btn" type="button" onclick="_ahOpenLink(\'drive\')"><i class="ti ti-folder"></i><span class="ah-ql-btn-l">Drive</span></button>';
+}
+
+function _ahOpenLink(kind) {
+  var d = AH_SNAP[_ahNoteAcct] || AH_SNAP.acme;
+  var nm = d.lbl;
+  var msg;
+  if (kind === 'gainsight')        msg = 'Opening ' + nm + ' in Gainsight ✓';
+  else if (kind === 'salesforce')  msg = 'Opening ' + nm + ' opportunity in Salesforce ✓';
+  else if (kind === 'gong') {
+    var gongLabel = d.gongDays >= 60 ? (d.gongDate.replace(' ago','') + ' ago') : d.gongDate;
+    msg = 'Opening last Gong call &middot; ' + nm + ' &middot; ' + gongLabel + ' ✓';
+  }
+  else if (kind === 'drive')       msg = 'Opening ' + nm + ' folder in Google Drive ✓';
+  else                             msg = 'Opening ' + nm + ' ✓';
+  toast(msg);
+}
+
+function _ahRenderNotePlaceholder(key) {
+  var ta = document.getElementById('ah-note-ta');
+  if (!ta) return;
+  var d = AH_SNAP[key] || AH_SNAP.acme;
+  ta.placeholder = 'Add a note about ' + d.lbl + '…';
+}
+
+function _ahNoteSavePreview() {
+  var ta = document.getElementById('ah-note-ta');
+  var box = document.getElementById('ah-note-confirm');
+  if (!ta || !box) return;
+  var text = (ta.value || '').trim();
+  if (!text) { toast('Note is empty — type a reflection first'); return; }
+  var d = AH_SNAP[_ahNoteAcct] || AH_SNAP.acme;
+  var now = new Date();
+  var hr = now.getHours(); var min = now.getMinutes();
+  var ampm = hr >= 12 ? 'PM' : 'AM';
+  var hr12 = hr % 12 || 12;
+  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+  var ts = 'Today &middot; ' + hr12 + ':' + pad(min) + ' ' + ampm;
+  box.innerHTML = ''
+    + '<div class="ah-note-confirm-meta">Saving to Gainsight &middot; ' + _ahEscape(d.lbl) + ' &middot; ' + ts + '</div>'
+    + '<div class="ah-note-confirm-body">' + _ahEscape(text) + '</div>'
+    + '<div class="ah-note-confirm-acts">'
+      + '<button class="ah-note-btn" type="button" onclick="_ahNoteCancel()">Cancel</button>'
+      + '<button class="ah-note-btn prim" type="button" onclick="_ahNoteConfirm()"><i class="ti ti-circle-check"></i> Confirm</button>'
+    + '</div>';
+  box.classList.add('on');
+}
+
+function _ahNoteCancel() {
+  var box = document.getElementById('ah-note-confirm');
+  if (box) { box.classList.remove('on'); box.innerHTML = ''; }
+}
+
+function _ahNoteConfirm() {
+  var d = AH_SNAP[_ahNoteAcct] || AH_SNAP.acme;
+  var ta = document.getElementById('ah-note-ta');
+  if (ta) ta.value = '';
+  _ahNoteCancel();
+  toast('Note saved &middot; ' + d.lbl + ' &middot; Gainsight Timeline ✓');
+}
+
+function _ahNoteCopy() {
+  var ta = document.getElementById('ah-note-ta');
+  if (!ta) return;
+  var text = (ta.value || '').trim();
+  if (!text) { toast('Nothing to copy &mdash; type a note first'); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(function(){});
+  }
+  toast('Note copied ✓');
+}
+
+// Account-search dropdown
+function _ahSearch(q) {
+  var box = document.getElementById('ah-search-results');
+  if (!box) return;
+  var query = String(q || '').trim().toLowerCase();
+  var keys = Object.keys(AH_SNAP);
+  var matches = keys.filter(function(k){ return AH_SNAP[k].lbl.toLowerCase().indexOf(query) !== -1; });
+  if (!matches.length) {
+    box.classList.add('on');
+    box.innerHTML = '<div class="ah-search-empty">No accounts matching &ldquo;' + _ahEscape(q) + '&rdquo;</div>';
+    return;
+  }
+  box.classList.add('on');
+  box.innerHTML = matches.map(function(k){
+    var d = AH_SNAP[k];
+    var bandTxt = d.healthCls === 'r' ? 'Critical' : d.healthCls === 'a' ? 'At Risk' : d.healthCls === 'g' ? 'Healthy' : 'Dark';
+    return '<button class="ah-search-item" type="button" onclick="_ahSearchSelect(\'' + k + '\')">' + _ahEscape(d.lbl) + '<span class="ah-search-meta">' + bandTxt + '</span></button>';
+  }).join('');
+}
+
+function _ahSearchSelect(key) {
+  var input = document.getElementById('ah-search-q');
+  var box = document.getElementById('ah-search-results');
+  if (input) input.value = '';
+  if (box) { box.classList.remove('on'); box.innerHTML = ''; }
+  // Switch the hub's active account. This funnels through _updateAgentHubAccount
+  // which now refreshes the snapshot, quick links, note placeholder, AND the
+  // existing Recent Docs section.
+  _updateAgentHubAccount(key);
+}
+
+// Outside-click handler for the account-search results
+document.addEventListener('click', function(e){
+  if (!e.target.closest('.ah-search')) {
+    var b = document.getElementById('ah-search-results');
+    if (b) { b.classList.remove('on'); b.innerHTML = ''; }
+  }
+});
+
 function _updateAgentHubAccount(viewId) {
   var hdr = document.getElementById('ah-doc-acct');
   var box = document.getElementById('ah-docs');
@@ -7155,6 +7403,17 @@ function _updateAgentHubAccount(viewId) {
   else if (['acme','brightex','nova','meridian','creston','apex'].indexOf(viewId) !== -1) key = viewId;
   else return; // dust / draft / slack-sum / taskbrief / agentout — leave the last active account alone
   window._activeAccount = key;
+  _ahNoteAcct = key;
+
+  // v3.2.2 — refresh the new top sections: current-account pill, snapshot,
+  // quick links, and note placeholder.
+  var pill = document.getElementById('ah-cur-pill');
+  if (pill) pill.textContent = (AH_SNAP[key] && AH_SNAP[key].lbl) || (ACCT_LBL[key] || '');
+  _ahRenderSnapshot(key);
+  _ahRenderQuickLinks(key);
+  _ahRenderNotePlaceholder(key);
+
+  // Existing v2.5.0 behavior — Recent Docs section
   hdr.textContent = (ACCT_LBL[key] || '').toUpperCase();
   var docs = DOC_LIBRARY[key];
   if (!docs) {
