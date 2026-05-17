@@ -1978,53 +1978,6 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
               <button class="mb-btn" onclick="agentBtn('save','acme',this)"><i class="ti ti-arrow-right-circle mb-ic"></i><div><div class="mb-bl">Save Strategy</div><div class="mb-bs">Retention play</div></div></button>
             </div>
             <button class="mb-deck" onclick="openDeckModal('acme')"><i class="ti ti-layout-board" style="font-size:14px"></i> Generate QBR Deck</button>
-
-            <div class="ah-card">
-              <div class="ah-hd"><span class="ah-hd-ic"><i class="ti ti-robot" style="color:var(--tl)"></i></span><span class="ah-hd-t">Agent Hub &amp; Workspace</span></div>
-
-              <div class="ah-sec">
-                <div class="ah-sec-t">Quick Launch Matrix</div>
-                <div class="ah-matrix">
-                  <div></div>
-                  <div class="ah-col-hd nova">NovaVault</div>
-                  <div class="ah-col-hd acme">Acme Corp</div>
-                  <div class="ah-col-hd bx">Brightex</div>
-
-                  <div class="ah-row-l"><i class="ti ti-bolt" style="color:var(--tl)"></i> Prep Me</div>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('prep','nova')">Run</button>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('prep','acme')">Run</button>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('prep','brightex')">Run</button>
-
-                  <div class="ah-row-l"><i class="ti ti-shield-check" style="color:var(--am)"></i> Risk Analyst</div>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('risk','nova')">Run</button>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('risk','acme')">Run</button>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('risk','brightex')">Run</button>
-
-                  <div class="ah-row-l"><i class="ti ti-lifebuoy" style="color:var(--rd)"></i> Save Strategy</div>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('save','nova')">Run</button>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('save','acme')">Run</button>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('save','brightex')">Run</button>
-
-                  <div class="ah-row-l"><i class="ti ti-checks" style="color:var(--tl)"></i> Next Steps</div>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('next','nova')">Run</button>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('next','acme')">Run</button>
-                  <button class="ah-run" type="button" onclick="openAgentDrawer('next','brightex')">Run</button>
-                </div>
-              </div>
-
-              <div class="ah-sec">
-                <div class="ah-sec-hd">
-                  <div class="ah-sec-t">Recent Outputs &middot; Session Log</div>
-                  <button class="ah-clear" type="button" onclick="clearRecentOutputs()">Clear history</button>
-                </div>
-                <div id="ah-recent"></div>
-              </div>
-
-              <div class="ah-sec ah-sec-last">
-                <div class="ah-sec-t">Recent Docs &middot; <span id="ah-doc-acct">ACME CORP</span></div>
-                <div id="ah-docs"></div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -2342,6 +2295,56 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
           <div class="rp-back" onclick="resetPanel()"><i class="ti ti-chevron-left" style="font-size:12px"></i> Back</div>
           <div class="rp-hd"><div class="rp-t"><i class="ti ti-sparkles" style="color:var(--tl)"></i> <span id="agentout-title">Agent Output</span></div></div>
           <div class="rp-scroll" id="agentout-out"></div>
+        </div>
+      </div>
+
+      <!-- Agent Hub & Workspace (v3.1.1) — hoisted from view-default's rp-scroll
+           to be a permanent sibling of .rp so it sits directly below the
+           Mission Briefing panel regardless of which rp-view is active. -->
+      <div class="ah-card">
+        <div class="ah-hd"><span class="ah-hd-ic"><i class="ti ti-robot" style="color:var(--tl)"></i></span><span class="ah-hd-t">Agent Hub &amp; Workspace</span></div>
+
+        <div class="ah-sec">
+          <div class="ah-sec-t">Quick Launch Matrix</div>
+          <div class="ah-matrix">
+            <div></div>
+            <div class="ah-col-hd nova">NovaVault</div>
+            <div class="ah-col-hd acme">Acme Corp</div>
+            <div class="ah-col-hd bx">Brightex</div>
+
+            <div class="ah-row-l"><i class="ti ti-bolt" style="color:var(--tl)"></i> Prep Me</div>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('prep','nova')">Run</button>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('prep','acme')">Run</button>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('prep','brightex')">Run</button>
+
+            <div class="ah-row-l"><i class="ti ti-shield-check" style="color:var(--am)"></i> Risk Analyst</div>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('risk','nova')">Run</button>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('risk','acme')">Run</button>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('risk','brightex')">Run</button>
+
+            <div class="ah-row-l"><i class="ti ti-lifebuoy" style="color:var(--rd)"></i> Save Strategy</div>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('save','nova')">Run</button>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('save','acme')">Run</button>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('save','brightex')">Run</button>
+
+            <div class="ah-row-l"><i class="ti ti-checks" style="color:var(--tl)"></i> Next Steps</div>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('next','nova')">Run</button>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('next','acme')">Run</button>
+            <button class="ah-run" type="button" onclick="openAgentDrawer('next','brightex')">Run</button>
+          </div>
+        </div>
+
+        <div class="ah-sec">
+          <div class="ah-sec-hd">
+            <div class="ah-sec-t">Recent Outputs &middot; Session Log</div>
+            <button class="ah-clear" type="button" onclick="clearRecentOutputs()">Clear history</button>
+          </div>
+          <div id="ah-recent"></div>
+        </div>
+
+        <div class="ah-sec ah-sec-last">
+          <div class="ah-sec-t">Recent Docs &middot; <span id="ah-doc-acct">ACME CORP</span></div>
+          <div id="ah-docs"></div>
         </div>
       </div>
     </div>
@@ -2692,20 +2695,15 @@ function adminTask(kind) {
   toast(msg);
 }
 
-// v3.1.0 — Rebuild view-default's content with the Prepare My Day output
-// (replaces the static Acme briefing card) while preserving the Agent Hub
-// card at the bottom. Called on boot and on every resetPanel.
+// v3.1.0 — Rebuild view-default's content with the Prepare My Day output.
+// Replaces the static Acme briefing card that originally lived here.
+// v3.1.1 — Agent Hub was hoisted out of view-default into a permanent slot
+// below .rp, so this function no longer needs to preserve it.
 function _loadPrepareMyDayDefault() {
   var scroll = document.querySelector('#view-default .rp-scroll');
   if (!scroll) return;
   if (typeof DUST_RESP !== 'object' || !DUST_RESP['Prepare My Day']) return;
-  var body = DUST_RESP['Prepare My Day']();
-  // Preserve the Agent Hub card (which lives inside view-default's rp-scroll)
-  // by extracting its outerHTML, rebuilding the scroll content with the
-  // Prepare My Day output first, then re-appending the hub below.
-  var hub = scroll.querySelector('.ah-card');
-  var hubHTML = hub ? hub.outerHTML : '';
-  scroll.innerHTML = body + hubHTML;
+  scroll.innerHTML = DUST_RESP['Prepare My Day']();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

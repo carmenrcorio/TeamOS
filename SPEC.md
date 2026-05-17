@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.1.0
+**Version:** 3.1.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,45 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.1.1] — 2026-05-17
+
+Agent Hub & Workspace promoted from inside `view-default`'s scrollable content to a permanent slot in the center column. The user labeled the changelog `[3.1.0]`; shipped as `[3.1.1]` to keep version numbers monotonic (`[3.1.0]` already shipped). Bullets match the spec verbatim.
+
+### Fixed — Agent Hub restored to a persistent center-column slot
+Investigation: the Agent Hub HTML block (`.ah-card`) was still present in the DOM all along — it lived inside `#view-default .rp-scroll`. The v2.5.0 Agent Hub never actually got displaced when My Accounts shipped in v3.0.0. Two real issues, though, made it look "missing":
+
+1. After v3.1.0 made Prepare My Day the auto-loaded default (much taller than the old Acme briefing card), the Hub got pushed to `y ≈ 1491 px` — below the fold of a typical 1100-tall viewport. The user had to scroll the page to see it.
+2. Because it lived inside `view-default`, switching to any other Mission Briefing view (clicking a calendar event → `view-acme` / `view-brightex` / `view-nova`) hid the Hub entirely.
+
+Fix: **hoisted the Agent Hub HTML block out of `view-default`'s `.rp-scroll` and made it a permanent sibling of `.rp`** inside the center-column wrapper. Now it sits directly below the Mission Briefing panel regardless of which `.rp-view` is active. The same DOM ids (`#ah-recent`, `#ah-docs`, `#ah-doc-acct`) survive the move, so `_updateAgentHubAccount` continues to work without modification.
+
+### Updated
+- `_loadPrepareMyDayDefault()` simplified — no longer needs to preserve the Hub via `outerHTML` copy since the Hub is no longer inside view-default's `.rp-scroll`. Function body shrinks to `scroll.innerHTML = DUST_RESP['Prepare My Day']()`.
+
+### Verified end-to-end in a headless render
+- One `.ah-card` in the DOM (no duplicate). Sibling of `.rp`, not inside `view-default` ✓
+- Default state (PMD active): Hub at `y ≈ 1508`, directly below `.rp` which ends at `y ≈ 1492` ✓
+- After clicking Acme calendar event (→ `view-acme`): Hub stays visible at `y ≈ 1073` (now closer to viewport since view-acme content is shorter than PMD) ✓
+- Quick Launch button (Prep Me NovaVault) → opens drawer in Assistant mode with title "Pre-Call Brief" ✓
+- Restore button (Prep Me Acme) → loads `view-agentout` with title "Pre-Call Brief" ✓
+- `_updateAgentHubAccount` hook in `openPanel` still works: `openPanel('brightex')` → `#ah-doc-acct` updates to `BRIGHTEX` ✓
+- 12 matrix buttons + 3 Recent Outputs rows + 2 Acme doc rows render correctly ✓
+
+### Architecture note — Agent Hub vs. My Accounts tab
+These are two **distinct** features serving different purposes; this commit preserves both:
+
+- **Agent Hub & Workspace** (center column, persistent below Mission Briefing): a quick-access widget. 4×3 launch matrix, recent session log, dynamic doc list. Always visible. Pull / scan / launch. Built in v2.5.0.
+- **My Accounts tab** (4th nav tab): a full AI-powered portfolio workspace. Account search across the full book of 16, structured snapshot per account, 4 Quick Launch agents via Anthropic API, notes / tasks / free-text query. Built in v3.0.0.
+
+No overlap, no displacement.
+
+### Not touched
+- My Accounts tab — completely separate feature, untouched.
+- `openAgentDrawer`, `_updateAgentHubAccount`, `view-agentout` view — untouched.
+- All other widgets, drawers, Mission Briefing views, Ghost-Buster, TeamOS Live, Task Briefs, Drive Docs, Training popover, pulse strip, notification rail, Service Worker.
 
 ---
 
