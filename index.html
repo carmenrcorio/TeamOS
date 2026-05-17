@@ -1749,6 +1749,253 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
 }
 
+/* ═════════════════════════════════════════════════════════════════════════
+   v4.0.0 — Campaign Manager (replaces Coming Soon for #tab-campaigns)
+   ═════════════════════════════════════════════════════════════════════════ */
+.cm-pg{padding:20px 28px 40px;max-width:1400px;margin:0 auto}
+.cm-top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);margin-bottom:18px}
+.cm-subnav{display:flex;gap:0;align-items:center}
+.cm-subnav-btn{display:inline-flex;align-items:center;gap:6px;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx3);background:transparent;border:none;border-bottom:2px solid transparent;padding:14px 16px;cursor:pointer;transition:color .12s,border-color .12s;letter-spacing:-.005em}
+.cm-subnav-btn span{font-size:14px;line-height:1}
+.cm-subnav-btn:hover{color:var(--tx2)}
+.cm-subnav-btn.on{color:#111827;border-bottom-color:var(--tl);font-weight:700}
+.cm-sig-link{font-size:11px;font-weight:600;color:var(--tx2);background:none;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;padding:8px 10px}
+.cm-sig-link:hover{color:var(--tl-dk)}
+.cm-sig-link i{font-size:13px}
+
+.cm-section{display:none}
+.cm-section.on{display:block}
+
+.cm-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.cm-hd-t{font-size:18px;font-weight:800;color:#111827;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:8px}
+.cm-hd-acts{display:flex;gap:6px;flex-wrap:wrap}
+
+.cm-btn{font-size:11px;font-weight:700;padding:7px 11px;border-radius:6px;background:var(--surf);color:var(--tx);border:1px solid var(--bd2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:all .1s}
+.cm-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.cm-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.cm-btn.prim:hover{background:#2a2a28;color:#fff;border-color:#2a2a28}
+.cm-btn.warn{border-color:var(--rd);color:var(--rd-dk)}
+.cm-btn.warn:hover{background:var(--rd-bg);color:var(--rd-dk);border-color:var(--rd)}
+.cm-btn.dim{color:var(--tx3);background:var(--surf2)}
+.cm-btn i{font-size:13px}
+
+.cm-btn-prim{font-size:12px;font-weight:700;padding:8px 14px;border-radius:6px;background:var(--tx);color:#fff;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.cm-btn-prim:hover{background:#2a2a28}
+
+.cm-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.cm-chip{font-size:10px;font-weight:700;padding:5px 11px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .1s;letter-spacing:.01em}
+.cm-chip:hover{border-color:var(--tx2);color:var(--tx)}
+.cm-chip.on{background:var(--tl);color:#fff;border-color:var(--tl)}
+
+.cm-search{width:100%;max-width:520px;border:1px solid var(--bd2);border-radius:8px;padding:9px 13px;font-family:inherit;font-size:13px;color:var(--tx);background:var(--surf);outline:none;margin-bottom:12px;transition:border-color .1s}
+.cm-search:focus{border-color:var(--tl)}
+.cm-search::placeholder{color:var(--tx3)}
+
+.cm-split{display:grid;grid-template-columns:380px 1fr;gap:14px;align-items:start}
+@media (max-width:1100px){.cm-split{grid-template-columns:1fr}}
+
+.cm-list{display:flex;flex-direction:column;gap:6px;max-height:680px;overflow-y:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:#E5E7EB transparent}
+.cm-list::-webkit-scrollbar{width:4px}
+.cm-list::-webkit-scrollbar-thumb{background:#E5E7EB;border-radius:2px}
+
+/* ─── Campaigns section ─────────────────────────────────────────────────── */
+.cm-camp-card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.cm-camp-row1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cm-camp-nm{font-size:14px;font-weight:700;color:#111827;letter-spacing:-.01em;flex:1;min-width:0}
+.cm-pill{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.cm-pill.type{background:var(--tl-bg);color:var(--tl-dk)}
+.cm-pill.type.reeng{background:#FEF3C7;color:#78350F}
+.cm-pill.type.ebr{background:#DBEAFE;color:#1E3A8A}
+.cm-pill.type.renewal{background:#E3F5EE;color:#0A5C41}
+.cm-pill.type.prod{background:#EDE9FE;color:#5B21B6}
+.cm-pill.type.news{background:#F1F5F9;color:#334155}
+.cm-pill.type.custom{background:var(--bg);color:var(--tx2)}
+.cm-pill.status{padding:3px 8px}
+.cm-pill.status.active{background:#D1FAE5;color:#065F46}
+.cm-pill.status.draft{background:var(--bg);color:var(--tx2);border:1px solid var(--bd2)}
+.cm-pill.status.completed{background:#E0E7FF;color:#3730A3}
+.cm-pill.status.scheduled{background:#FEF3C7;color:#78350F}
+.cm-camp-meta{font-size:12px;color:#374151;font-weight:500;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.cm-camp-meta .sep{color:var(--tx3)}
+.cm-camp-rates{font-size:12px;color:#1F2937;font-weight:600;display:inline-flex;gap:12px}
+.cm-camp-rates b{color:#111827;font-weight:800}
+.cm-camp-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+
+/* ─── Contacts section ──────────────────────────────────────────────────── */
+.cm-cnt-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surf);border:1px solid var(--bd);border-radius:8px;cursor:pointer;transition:all .1s;min-height:64px}
+.cm-cnt-row:hover{border-color:var(--bd2);background:var(--surf2)}
+.cm-cnt-row.sel{border-color:var(--tl);background:var(--tl-bg)}
+.cm-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg);color:var(--tx);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;letter-spacing:0;flex-shrink:0;text-transform:uppercase;border:1px solid var(--bd2)}
+.cm-cnt-mid{flex:1;min-width:0}
+.cm-cnt-nm{font-size:12px;font-weight:700;color:#111827;letter-spacing:-.01em;line-height:1.3}
+.cm-cnt-role{font-size:10px;color:#4B5563;font-weight:500;line-height:1.4;margin-top:1px}
+.cm-cnt-co{font-size:10px;color:var(--tx3);font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-top:3px}
+.cm-cnt-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em}
+.cm-cnt-tag.acme{background:var(--tl-bg);color:var(--tl-dk)}
+.cm-cnt-tag.brightex{background:#FEF3C7;color:#78350F}
+.cm-cnt-tag.nova{background:var(--rd-bg);color:var(--rd-dk)}
+.cm-cnt-tag.meridian,.cm-cnt-tag.creston,.cm-cnt-tag.apex{background:var(--bg);color:var(--tx2)}
+.cm-cnt-tag.klaxton,.cm-cnt-tag.pinnacle,.cm-cnt-tag.other{background:var(--bg);color:var(--tx2)}
+.cm-cnt-right{text-align:right;display:flex;flex-direction:column;gap:3px;align-items:flex-end;flex-shrink:0}
+.cm-cnt-seq{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em;background:var(--bg);color:var(--tx3);white-space:nowrap}
+.cm-cnt-seq.in{background:var(--tl-bg);color:var(--tl-dk)}
+.cm-cnt-seq.replied{background:#DBEAFE;color:#1E3A8A}
+.cm-cnt-seq.warn{background:var(--rd-bg);color:var(--rd-dk)}
+.cm-cnt-touch{font-size:9px;color:var(--tx3);font-weight:600}
+
+.cm-detail{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:18px;min-height:300px}
+.cm-detail-empty{font-size:13px;color:var(--tx3);font-style:italic;padding:60px 20px;text-align:center}
+.cm-detail-hd{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bd)}
+.cm-detail-hd .cm-avatar{width:44px;height:44px;font-size:13px}
+.cm-detail-hd-info{flex:1;min-width:0}
+.cm-detail-nm{font-size:16px;font-weight:800;color:#111827;letter-spacing:-.01em;line-height:1.2}
+.cm-detail-sub{font-size:12px;color:#374151;font-weight:500;margin-top:3px}
+.cm-detail-tags{display:flex;gap:6px;align-items:center;margin-top:5px;flex-wrap:wrap}
+.cm-detail-sec{margin-top:14px}
+.cm-detail-sec-t{font-size:9px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}
+.cm-detail-kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:12px;color:#1F2937;line-height:1.55;font-weight:500}
+.cm-detail-kv > div:nth-child(odd){color:#6B7280;font-weight:600}
+.cm-detail-seq{display:flex;flex-direction:column;gap:8px}
+.cm-detail-seq-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--surf2);border-left:3px solid var(--tl);border-radius:6px;font-size:12px;color:#1F2937;font-weight:500}
+.cm-detail-seq-row.pending{border-left-color:var(--am)}
+.cm-detail-seq-row.scheduled{border-left-color:var(--bd2)}
+.cm-detail-seq-t{font-weight:700;color:#111827}
+.cm-detail-seq-meta{margin-left:auto;font-size:11px;color:var(--tx3);font-weight:600}
+.cm-detail-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+
+/* Import dropdown */
+.cm-dd-wrap{position:relative;display:inline-block}
+.cm-dd-pop{position:absolute;top:calc(100% + 4px);right:0;min-width:240px;background:var(--surf);border:1px solid var(--bd);border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.14);z-index:100;display:none;overflow:hidden}
+.cm-dd-pop.on{display:block}
+.cm-dd-item{display:block;width:100%;text-align:left;padding:9px 13px;font-size:12px;font-weight:600;color:#1F2937;background:transparent;border:none;cursor:pointer;font-family:inherit;transition:background .1s}
+.cm-dd-item:hover{background:var(--tl-bg);color:var(--tl-dk)}
+
+/* ─── Templates section ─────────────────────────────────────────────────── */
+.cm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;align-content:start;max-height:680px;overflow-y:auto;padding-right:4px;scrollbar-width:thin}
+.cm-tpl-card{background:var(--surf);border:1px solid var(--bd);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:7px;cursor:pointer;transition:all .12s}
+.cm-tpl-card:hover{border-color:var(--bd2)}
+.cm-tpl-card.sel{border-color:var(--tl);background:var(--tl-bg)}
+.cm-tpl-card-r1{display:flex;align-items:center;gap:8px}
+.cm-tpl-ic{font-size:18px;line-height:1;flex-shrink:0}
+.cm-tpl-nm{font-size:13px;font-weight:700;color:#111827;letter-spacing:-.01em;flex:1;min-width:0;line-height:1.25}
+.cm-tpl-subj{font-size:11px;color:#374151;font-weight:500;line-height:1.45;font-style:italic;border-left:2px solid var(--bd2);padding-left:8px}
+.cm-tpl-meta{font-size:10px;color:#6B7280;font-weight:600;display:flex;gap:8px;align-items:center}
+.cm-tpl-acts{display:flex;gap:5px;margin-top:4px}
+.cm-tpl-mini-btn{font-size:10px;font-weight:700;padding:5px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;flex:1;text-align:center}
+.cm-tpl-mini-btn:hover{background:var(--tl-bg);color:var(--tl-dk);border-color:var(--tl)}
+.cm-tpl-mini-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.cm-tpl-mini-btn.prim:hover{background:#2a2a28;color:#fff;border-color:#2a2a28}
+
+.cm-tpl-preview{font-family:'SF Mono',Menlo,Consolas,monospace;font-size:12px;line-height:1.65;color:#1F2937;white-space:pre-wrap;background:var(--surf2);padding:14px 16px;border-radius:8px;border:1px solid var(--bd);max-height:520px;overflow-y:auto}
+.cm-tpl-subject-line{font-weight:700;color:#111827;font-family:inherit;font-size:13px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.cm-tpl-vars{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.cm-tpl-var-pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:#EDE9FE;color:#5B21B6;font-family:'SF Mono',Menlo,Consolas,monospace;cursor:pointer;border:none}
+.cm-tpl-var-pill:hover{background:#DDD6FE}
+.cm-tpl-editor{width:100%;min-height:380px;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:12px;line-height:1.6;color:#1F2937;background:var(--surf);border:1px solid var(--bd2);border-radius:8px;padding:14px;outline:none;resize:vertical;box-sizing:border-box}
+.cm-tpl-editor:focus{border-color:var(--tl)}
+
+/* ─── Analytics section ─────────────────────────────────────────────────── */
+.cm-sum-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+@media (max-width:900px){.cm-sum-cards{grid-template-columns:1fr 1fr}}
+.cm-sum-card{background:var(--surf);border:1px solid var(--bd);border-radius:10px;padding:14px 16px}
+.cm-sum-l{font-size:10px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.06em}
+.cm-sum-v{font-size:24px;font-weight:800;color:#111827;letter-spacing:-.02em;margin-top:4px;line-height:1.1}
+.cm-sum-sub{font-size:11px;color:#6B7280;font-weight:600;margin-top:2px}
+
+.cm-perf{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;margin-bottom:18px}
+.cm-perf-hd{font-size:11px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+.cm-perf-table{width:100%;border-collapse:collapse}
+.cm-perf-table th{text-align:left;font-size:10px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em;padding:7px 10px;border-bottom:1px solid var(--bd)}
+.cm-perf-table td{font-size:12px;color:#1F2937;font-weight:500;padding:9px 10px;border-bottom:1px solid var(--bd)}
+.cm-perf-table tr:last-child td{border-bottom:none}
+.cm-perf-table td b{color:#111827;font-weight:700}
+.cm-bar{display:inline-block;height:6px;background:var(--bg);border-radius:3px;overflow:hidden;width:80px;vertical-align:middle}
+.cm-bar > div{height:100%;background:var(--tl);border-radius:3px}
+
+.cm-best{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media (max-width:900px){.cm-best{grid-template-columns:1fr}}
+.cm-best-card{background:var(--surf);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;border-left:3px solid var(--tl)}
+.cm-best-card.risk{border-left-color:var(--rd)}
+.cm-best-l{font-size:9px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.07em}
+.cm-best-v{font-size:13px;font-weight:700;color:#111827;margin-top:4px;line-height:1.4}
+.cm-best-sub{font-size:11px;color:#1F2937;font-weight:500;margin-top:4px;line-height:1.5}
+.cm-best-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+
+/* ─── Wizard ──────────────────────────────────────────────────────────────── */
+.cm-wiz-ov{position:fixed;inset:0;background:rgba(17,24,39,.55);display:none;align-items:flex-start;justify-content:center;z-index:9000;padding:40px 20px;overflow-y:auto}
+.cm-wiz-ov.on{display:flex}
+.cm-wiz{background:var(--surf);border-radius:14px;width:100%;max-width:680px;overflow:hidden;box-shadow:0 28px 80px rgba(0,0,0,.32);max-height:calc(100vh - 80px);display:flex;flex-direction:column}
+.cm-wiz-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.cm-wiz-title{font-size:15px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.cm-wiz-close{background:none;border:none;font-size:24px;color:var(--tx3);cursor:pointer;line-height:1;padding:0 4px;font-family:inherit}
+.cm-wiz-close:hover{color:var(--tx)}
+.cm-wiz-progress{display:flex;gap:5px;padding:14px 22px 4px;flex-shrink:0}
+.cm-wiz-step{flex:1;height:4px;background:var(--bd);border-radius:2px}
+.cm-wiz-step.done{background:var(--tl)}
+.cm-wiz-step.current{background:var(--tl-md)}
+.cm-wiz-body{padding:18px 22px;overflow-y:auto;flex:1}
+.cm-wiz-step-l{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.cm-wiz-h{font-size:18px;font-weight:800;color:#111827;letter-spacing:-.01em;margin-bottom:14px}
+.cm-wiz-label{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block}
+.cm-wiz-input,.cm-wiz-select{width:100%;border:1px solid var(--bd2);border-radius:7px;padding:9px 12px;font-family:inherit;font-size:13px;color:#1F2937;background:var(--surf);outline:none;margin-bottom:14px;box-sizing:border-box;transition:border-color .1s}
+.cm-wiz-input:focus,.cm-wiz-select:focus{border-color:var(--tl)}
+.cm-wiz-types{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+@media (max-width:600px){.cm-wiz-types{grid-template-columns:1fr 1fr}}
+.cm-wiz-type{font-size:12px;font-weight:700;padding:9px 8px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;text-align:center;transition:all .1s}
+.cm-wiz-type:hover{border-color:var(--tl);background:var(--tl-bg);color:var(--tl-dk)}
+.cm-wiz-type.on{background:var(--tl);color:#fff;border-color:var(--tl)}
+.cm-wiz-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 22px;border-top:1px solid var(--bd);background:var(--surf2);flex-shrink:0}
+.cm-wiz-foot-l,.cm-wiz-foot-r{display:flex;gap:6px;align-items:center}
+.cm-wiz-counter{font-size:12px;font-weight:700;color:#1F2937;background:var(--bg);padding:6px 10px;border-radius:5px}
+.cm-wiz-filter{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;padding:12px;background:var(--surf2);border:1px solid var(--bd);border-radius:8px}
+.cm-wiz-cnt-list{max-height:300px;overflow-y:auto;border:1px solid var(--bd);border-radius:8px;background:var(--surf2)}
+.cm-wiz-cnt-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-bottom:1px solid var(--bd);cursor:pointer;font-size:12px;color:#1F2937;font-weight:500}
+.cm-wiz-cnt-item:last-child{border-bottom:none}
+.cm-wiz-cnt-item:hover{background:var(--surf)}
+.cm-wiz-cnt-item.sel{background:var(--tl-bg);color:var(--tl-dk);font-weight:700}
+.cm-wiz-cnt-item input[type=checkbox]{accent-color:var(--tl);width:16px;height:16px}
+.cm-wiz-tpls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media (max-width:600px){.cm-wiz-tpls{grid-template-columns:1fr}}
+.cm-wiz-toggle{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--surf2);border:1px solid var(--bd);border-radius:8px;margin-bottom:12px}
+.cm-wiz-toggle-l{flex:1;font-size:12px;color:#1F2937;font-weight:600}
+.cm-wiz-toggle-l small{display:block;font-size:11px;color:#6B7280;font-weight:500;margin-top:3px;font-style:italic}
+.cm-wiz-sw{width:38px;height:22px;background:var(--bd2);border-radius:12px;cursor:pointer;position:relative;transition:background .15s;border:none;padding:0;flex-shrink:0}
+.cm-wiz-sw.on{background:var(--tl)}
+.cm-wiz-sw::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.cm-wiz-sw.on::after{left:18px}
+.cm-wiz-email-preview{background:var(--surf2);border:1px solid var(--bd);border-radius:8px;padding:12px 14px;margin-top:12px;max-height:340px;overflow-y:auto}
+.cm-wiz-em-meta{font-size:11px;color:#374151;font-weight:600;line-height:1.6;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.cm-wiz-em-meta b{color:#111827;font-weight:700}
+.cm-wiz-em-dust{font-size:12px;color:#5B21B6;font-weight:600;font-style:italic;background:#EDE9FE;padding:8px 10px;border-radius:5px;margin-bottom:10px;border-left:3px solid #5B21B6}
+.cm-wiz-em-body{font-size:12px;line-height:1.6;color:#1F2937;font-weight:500;white-space:pre-wrap;font-family:'SF Mono',Menlo,Consolas,monospace}
+.cm-wiz-touch{background:var(--surf2);border:1px solid var(--bd);border-radius:8px;padding:11px 13px;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}
+.cm-wiz-touch-hd{font-size:11px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:.06em}
+.cm-wiz-touch-r{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cm-wiz-touch-r .cm-wiz-input,.cm-wiz-touch-r .cm-wiz-select{margin-bottom:0}
+.cm-wiz-counts{display:flex;gap:5px;margin-bottom:14px}
+.cm-wiz-count-btn{flex:1;font-size:13px;font-weight:700;padding:8px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;transition:all .1s}
+.cm-wiz-count-btn:hover{border-color:var(--tl)}
+.cm-wiz-count-btn.on{background:var(--tl);color:#fff;border-color:var(--tl)}
+.cm-wiz-summary{background:var(--surf2);border:1px solid var(--bd);border-radius:8px;padding:12px 14px;margin-bottom:14px}
+.cm-wiz-summary-r{display:flex;justify-content:space-between;font-size:12px;color:#1F2937;padding:5px 0;border-bottom:1px dashed var(--bd);font-weight:500}
+.cm-wiz-summary-r:last-child{border-bottom:none}
+.cm-wiz-summary-r b{color:#111827;font-weight:700}
+
+/* Signature settings modal */
+.cm-sig-ov{position:fixed;inset:0;background:rgba(17,24,39,.55);display:none;align-items:flex-start;justify-content:center;z-index:9000;padding:80px 20px}
+.cm-sig-ov.on{display:flex}
+.cm-sig-modal{background:var(--surf);border-radius:14px;width:100%;max-width:520px;overflow:hidden;box-shadow:0 28px 80px rgba(0,0,0,.32)}
+.cm-sig-body{padding:18px 22px 22px}
+.cm-sig-help{font-size:12px;color:#374151;line-height:1.55;margin-bottom:12px;font-weight:500}
+.cm-sig-ta{width:100%;min-height:140px;border:1px solid var(--bd2);border-radius:8px;padding:12px 14px;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:12px;line-height:1.6;color:#1F2937;background:var(--surf);outline:none;resize:vertical;box-sizing:border-box}
+.cm-sig-ta:focus{border-color:var(--tl)}
+.cm-sig-acts{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+
+/* Loading state for simulated imports */
+.cm-loading{display:inline-flex;align-items:center;gap:7px;color:var(--tx2);font-weight:600;font-size:12px}
+.cm-spinner{width:14px;height:14px;border:2px solid var(--bd2);border-top-color:var(--tl);border-radius:50%;animation:cm-spin .7s linear infinite}
+@keyframes cm-spin{to{transform:rotate(360deg)}}
+
 </style>
 </head>
 <body>
@@ -3006,17 +3253,55 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 </div>
 
 <div class="tc" id="tab-campaigns">
-  <div class="cs-pg">
-    <div class="cs-ic">📣</div>
-    <h1 class="cs-h">Campaigns</h1>
-    <div class="cs-vision">Templated outreach, automated sequences, and campaign tracking &mdash; built for CSMs, not marketers.</div>
-    <div class="cs-divider"></div>
-    <div class="cs-sec-t">What this tab does</div>
-    <p class="cs-body">Campaigns is the built-in outreach engine that replaces Outreach, Salesloft, and HubSpot for CS-specific communication. Build and manage email templates for re-engagement, EBR invitations, renewal conversations, and product updates. Run multi-touch sequences &mdash; the same 3-touch re-engagement logic built into Ghost-Buster today, extended to any account segment in your book. Dust personalizes each message from Gong call history and Gainsight account context so nothing reads as automated. Build audiences from Gainsight segments: all accounts within 60 days of renewal with no EBR scheduled, all dark accounts over 45 days, all accounts with a champion change in the last 30 days. Track open rates, click rates, and reply rates via Resend webhooks so you know exactly what messaging drives engagement. Send newsletters with unsubscribe management and CAN-SPAM compliance. Each CSM sends from their own Gmail OAuth so every email is personal, not a mass blast from a shared inbox.</p>
-    <div class="cs-sec-t">What it connects to</div>
-    <div class="cs-conn">Gmail &middot; Gainsight &middot; Gong &middot; Salesforce &middot; Resend</div>
-    <div class="cs-divider"></div>
-    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  <!-- v4.0.0 — Campaign Manager. Replaces the Coming Soon placeholder for
+       this tab only. Phase 1: simulation only — every send fires a toast,
+       no real outbound email. -->
+  <div class="cm-pg">
+    <div class="cm-top">
+      <nav class="cm-subnav" role="tablist" aria-label="Campaign Manager sections">
+        <button class="cm-subnav-btn on" id="cm-tab-campaigns" role="tab" aria-selected="true" type="button" onclick="cmShowSection('campaigns')"><span>📣</span> Campaigns</button>
+        <button class="cm-subnav-btn"    id="cm-tab-contacts"  role="tab" aria-selected="false" type="button" onclick="cmShowSection('contacts')"><span>👥</span> Contacts</button>
+        <button class="cm-subnav-btn"    id="cm-tab-templates" role="tab" aria-selected="false" type="button" onclick="cmShowSection('templates')"><span>📄</span> Templates</button>
+        <button class="cm-subnav-btn"    id="cm-tab-analytics" role="tab" aria-selected="false" type="button" onclick="cmShowSection('analytics')"><span>📊</span> Analytics</button>
+      </nav>
+      <button class="cm-sig-link" type="button" onclick="cmOpenSignature()" aria-label="Signature settings"><i class="ti ti-settings"></i> Signature</button>
+    </div>
+
+    <div class="cm-section on" id="cm-sec-campaigns" role="tabpanel" aria-labelledby="cm-tab-campaigns"></div>
+    <div class="cm-section"    id="cm-sec-contacts"  role="tabpanel" aria-labelledby="cm-tab-contacts"  hidden></div>
+    <div class="cm-section"    id="cm-sec-templates" role="tabpanel" aria-labelledby="cm-tab-templates" hidden></div>
+    <div class="cm-section"    id="cm-sec-analytics" role="tabpanel" aria-labelledby="cm-tab-analytics" hidden></div>
+  </div>
+
+  <!-- 5-step campaign wizard modal (hidden until opened). -->
+  <div class="cm-wiz-ov" id="cm-wiz-ov" onclick="cmCloseWizard(event)" aria-hidden="true">
+    <div class="cm-wiz" role="dialog" aria-modal="true" aria-labelledby="cm-wiz-title" onclick="event.stopPropagation()">
+      <div class="cm-wiz-hd">
+        <div class="cm-wiz-title" id="cm-wiz-title">New Campaign</div>
+        <button class="cm-wiz-close" type="button" onclick="cmCloseWizard()" aria-label="Close wizard">&times;</button>
+      </div>
+      <div class="cm-wiz-progress" id="cm-wiz-progress"></div>
+      <div class="cm-wiz-body" id="cm-wiz-body"></div>
+      <div class="cm-wiz-foot" id="cm-wiz-foot"></div>
+    </div>
+  </div>
+
+  <!-- Signature settings modal -->
+  <div class="cm-sig-ov" id="cm-sig-ov" onclick="cmCloseSignature(event)" aria-hidden="true">
+    <div class="cm-sig-modal" role="dialog" aria-modal="true" aria-label="Signature settings" onclick="event.stopPropagation()">
+      <div class="cm-wiz-hd">
+        <div class="cm-wiz-title">Email signature</div>
+        <button class="cm-wiz-close" type="button" onclick="cmCloseSignature()" aria-label="Close">&times;</button>
+      </div>
+      <div class="cm-sig-body">
+        <p class="cm-sig-help">All campaign emails append this signature. Saved to localStorage and shared with Ghost-Buster.</p>
+        <textarea id="cm-sig-ta" class="cm-sig-ta" aria-label="Email signature"></textarea>
+        <div class="cm-sig-acts">
+          <button class="cm-btn" type="button" onclick="cmCloseSignature()">Cancel</button>
+          <button class="cm-btn prim" type="button" onclick="cmSaveSignature()"><i class="ti ti-check"></i> Save signature</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -8608,6 +8893,742 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function(){ /* SW not available — graceful no-op */ });
   });
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// v4.0.0 — Campaign Manager
+// Phase 1: simulation only. Every "send" fires a toast — no real outbound
+// email. Templates persist to localStorage; contacts/campaigns are demo
+// data held in memory. Signature pulls from teamos_signature (shared
+// with Ghost-Buster).
+// ═══════════════════════════════════════════════════════════════════════════
+var CM_TEMPLATES_KEY = 'teamos_templates';
+
+var CM_CONTACTS = [
+  {id:'c1',  fn:'David',    ln:'Kim',     role:'Head of IT Security',  email:'david.kim@acmecorp.com',   acct:'Acme Corp',              acctKey:'acme',     seq:null,                       seqStatus:'',                                 lastTouch:'May 10',     lastGong:'May 10 · SSO interest',        renewal:'Aug 12 · 89d',  note:''},
+  {id:'c2',  fn:'Rachel',   ln:'Torres',  role:'IT Manager',           email:'r.torres@acmecorp.com',    acct:'Acme Corp',              acctKey:'acme',     seq:null,                       seqStatus:'',                                 lastTouch:'Apr 22',     lastGong:'Apr 22 · routine check-in',    renewal:'Aug 12 · 89d',  note:''},
+  {id:'c3',  fn:'Sarah',    ln:'Chen',    role:'VP Operations',        email:'sarah.chen@brightex.com',  acct:'Brightex Inc',           acctKey:'brightex', seq:'Renewal Check-in',         seqStatus:'Touch 1 sent · No reply · 4h',     lastTouch:'May 10',     lastGong:'May 10 · SLA question',        renewal:'Jun 15 · 31d',  note:''},
+  {id:'c4',  fn:'Marcus',   ln:'Webb',    role:'Head of Procurement',  email:'m.webb@brightex.com',      acct:'Brightex Inc',           acctKey:'brightex', seq:null,                       seqStatus:'',                                 lastTouch:'Apr 28',     lastGong:'Apr 28 · pricing inquiry',     renewal:'Jun 15 · 31d',  note:''},
+  {id:'c5',  fn:'Michael',  ln:'Torres',  role:'IT Director',          email:'m.torres@novavault.com',   acct:'NovaVault',              acctKey:'nova',     seq:'Re-engagement',            seqStatus:'Touch 1 pending',                  lastTouch:'Never',      lastGong:'No data',                      renewal:'Jun 1 · 17d',   note:''},
+  {id:'c6',  fn:'James',    ln:'Wu',      role:'Former champion',      email:'j.wu@novavault.com',       acct:'NovaVault',              acctKey:'nova',     seq:'departed',                 seqStatus:'⚠ Departed · Do not contact',      lastTouch:'Apr 28',     lastGong:'Apr 28 · departure announced', renewal:'Jun 1 · 17d',   note:'Departed Apr 28'},
+  {id:'c7',  fn:'Jennifer', ln:'Ramos',   role:'IT Manager',           email:'j.ramos@meridian.com',     acct:'Meridian Health Systems',acctKey:'meridian', seq:null,                       seqStatus:'',                                 lastTouch:'73d ago',    lastGong:'73d ago',                      renewal:'Jun 30 · 45d',  note:'Inbound email yesterday — re-engage today'},
+  {id:'c8',  fn:'Marcus',   ln:'Webb',    role:'VP Engineering',       email:'m.webb@creston.com',       acct:'Creston Software',       acctKey:'creston',  seq:null,                       seqStatus:'',                                 lastTouch:'67d ago',    lastGong:'67d ago',                      renewal:'Jul 15 · 60d',  note:''},
+  {id:'c9',  fn:'Ryan',     ln:'Patel',   role:'IT Director (new)',    email:'r.patel@apex.com',         acct:'Apex Dynamics',          acctKey:'apex',     seq:null,                       seqStatus:'',                                 lastTouch:'Never',      lastGong:'No data',                      renewal:'Aug 1 · 77d',   note:'Warm intro from AE recommended'},
+  {id:'c10', fn:'James',    ln:'Wu',      role:'Former champion',      email:'j.wu@apex.com',            acct:'Apex Dynamics',          acctKey:'apex',     seq:'departed',                 seqStatus:'⚠ Departed · Do not contact',      lastTouch:'61d ago',    lastGong:'No data',                      renewal:'Aug 1 · 77d',   note:'Departed — do not contact'},
+  {id:'c11', fn:'Jennifer', ln:'Moss',    role:'Head of IT',           email:'j.moss@klaxton.com',       acct:'Klaxton Labs',           acctKey:'klaxton',  seq:null,                       seqStatus:'',                                 lastTouch:'May 6',      lastGong:'May 6 · adoption review',      renewal:'Sep 20',        note:''},
+  {id:'c12', fn:'Derek',    ln:'Chan',    role:'VP Engineering',       email:'d.chan@pinnacle.com',      acct:'Pinnacle Systems',       acctKey:'pinnacle', seq:null,                       seqStatus:'',                                 lastTouch:'Apr 30',     lastGong:'Apr 30 · roadmap discussion',  renewal:'Oct 5',         note:''}
+];
+
+var CM_TEMPLATES_DEFAULT = [
+  { id:'t1', name:'Re-engagement',          category:'Re-engagement', icon:'📬',
+    subject:'Checking in — {{company}}',
+    vars:['{{first_name}}','{{company}}','{{last_gong_topic}}','{{csm_name}}','{{meeting_link}}'],
+    body:"Hi {{first_name}},\n\n{{dust_opener}}\n\nI wanted to check in and make sure you're getting everything you need from the platform. It's been a little while since we last connected and I'd love to hear how things are going on your end.\n\nWould you be open to a quick 20-minute call this week? I'll keep it focused and useful.\n\n{{meeting_link}}\n\n{{csm_name}}" },
+  { id:'t2', name:'EBR Invitation',         category:'EBR',           icon:'📈',
+    subject:"Let's schedule your {{quarter}} Business Review — {{company}}",
+    vars:['{{first_name}}','{{company}}','{{quarter}}','{{value_delivered}}','{{csm_name}}','{{meeting_link}}'],
+    body:"Hi {{first_name}},\n\n{{dust_opener}}\n\nAs we head into {{quarter}}, I'd love to schedule your Executive Business Review. This is a dedicated 45 minutes for us to review what's working, share what's coming, and align on your goals for the next quarter.\n\n{{value_delivered}}\n\nHere's a link to book a time that works for you:\n{{meeting_link}}\n\n{{csm_name}}" },
+  { id:'t3', name:'Renewal Check-in',       category:'Renewal',       icon:'🔁',
+    subject:'Your {{company}} renewal — let\'s connect',
+    vars:['{{first_name}}','{{company}}','{{renewal_date}}','{{days_out}}','{{value_delivered}}','{{csm_name}}','{{meeting_link}}'],
+    body:"Hi {{first_name}},\n\n{{dust_opener}}\n\nYour 1Password renewal is coming up on {{renewal_date}} — {{days_out}} days from now. I wanted to get ahead of it and make sure we've addressed everything before then.\n\n{{value_delivered}}\n\nCan we find 30 minutes to connect before the renewal date?\n\n{{meeting_link}}\n\n{{csm_name}}" },
+  { id:'t4', name:'Product Update',         category:'Product Update', icon:'✨',
+    subject:'New from 1Password — {{feature_name}} is live',
+    vars:['{{first_name}}','{{feature_name}}','{{use_case}}','{{company}}','{{csm_name}}'],
+    body:"Hi {{first_name}},\n\n{{dust_opener}}\n\nI wanted to make sure you heard about {{feature_name}} — it just launched and I think it's particularly relevant for {{company}} based on what you've shared with me.\n\n{{use_case}}\n\nHappy to walk you through it on our next call or answer any questions over email.\n\n{{csm_name}}" },
+  { id:'t5', name:'Champion Introduction',  category:'Champion Intro', icon:'👋',
+    subject:'Introducing myself — your 1Password CSM',
+    vars:['{{first_name}}','{{predecessor_name}}','{{company}}','{{what_weve_built}}','{{csm_name}}','{{meeting_link}}'],
+    body:"Hi {{first_name}},\n\nMy name is {{csm_name}} and I'm your Customer Success Manager at 1Password. You may have worked with {{predecessor_name}} previously — I'm taking over and wanted to reach out personally to introduce myself and make sure nothing falls through the cracks.\n\n{{what_weve_built}}\n\nI'd love to schedule a brief intro call to get aligned on your priorities and make sure you have everything you need.\n\n{{meeting_link}}\n\n{{csm_name}}" },
+  { id:'t6', name:'Newsletter',             category:'Newsletter',     icon:'📰',
+    subject:'{{quarter}} Customer Update from 1Password',
+    vars:['{{first_name}}','{{quarter}}','{{csm_name}}'],
+    body:"[HEADER — placeholder for logo/image]\n\n{{quarter}} · Customer Success Update\n\nHi {{first_name}},\n\nHere's what's new from your 1Password team this quarter.\n\nWHAT'S NEW\n[Section placeholder]\n\nTIPS FROM YOUR CSM\n[Section placeholder]\n\nUPCOMING\n[Section placeholder]\n\nAs always, reach out any time.\n\n{{csm_name}}\nCustomer Success Manager, 1Password\n\n— — —\nUnsubscribe · 1Password · 4711 Yonge St, Toronto" }
+];
+
+var CM_CAMPAIGNS = [
+  { id:'cmp1', name:'June Renewal Push',          type:'renewal', typeLabel:'Renewal',       status:'active',    contactCount:8,  touchCount:3, sentDate:'May 14', openRate:62, replyRate:25, progress:'6 on Touch 1 · 2 on Touch 2', contactIds:['c3','c4','c11','c12'], templateId:'t3' },
+  { id:'cmp2', name:'Dark Zone Re-engagement',    type:'reeng',   typeLabel:'Re-engagement', status:'active',    contactCount:3,  touchCount:2, sentDate:'May 15', openRate:0,  replyRate:0,  progress:'Touch 1 sent · Waiting on opens',        contactIds:['c7','c8','c9'],         templateId:'t1' },
+  { id:'cmp3', name:'Q2 EBR Invitations',         type:'ebr',     typeLabel:'EBR Invite',    status:'draft',     contactCount:12, touchCount:1, sentDate:null,     openRate:null, replyRate:null, progress:'Not yet sent',                          contactIds:[],                       templateId:'t2' }
+];
+
+var CM_CONTACT_FILTER = 'all';
+var CM_CAMP_FILTER = 'all';
+var CM_TPL_FILTER = 'all';
+var CM_CONTACT_SEL = null;
+var CM_TPL_SEL = null;
+var CM_CONTACT_SEARCH = '';
+var CM_ACTIVE = 'campaigns';
+var CM_WIZ = null;
+
+function cmEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Templates: load + persist ───────────────────────────────────────────────
+function cmReadTemplates() {
+  try {
+    var raw = localStorage.getItem(CM_TEMPLATES_KEY);
+    if (raw) {
+      var arr = JSON.parse(raw);
+      if (Array.isArray(arr) && arr.length) return arr;
+    }
+  } catch (e) {}
+  return CM_TEMPLATES_DEFAULT.slice();
+}
+function cmWriteTemplates(arr) {
+  try { localStorage.setItem(CM_TEMPLATES_KEY, JSON.stringify(arr)); } catch (e) {}
+}
+var CM_TEMPLATES = cmReadTemplates();
+
+// ── Signature ───────────────────────────────────────────────────────────────
+function cmGetSignature() {
+  if (typeof gbGetSignature === 'function') return gbGetSignature();
+  try { return localStorage.getItem('teamos_signature') || "Carmen Corio\nCustomer Success Manager · 1Password"; }
+  catch (e) { return "Carmen Corio\nCustomer Success Manager · 1Password"; }
+}
+function cmOpenSignature() {
+  var ta = document.getElementById('cm-sig-ta');
+  if (ta) ta.value = cmGetSignature();
+  var ov = document.getElementById('cm-sig-ov');
+  if (ov) ov.classList.add('on');
+}
+function cmCloseSignature(e) {
+  if (e && e.target && e.target.id !== 'cm-sig-ov' && e.type === 'click') return;
+  var ov = document.getElementById('cm-sig-ov');
+  if (ov) ov.classList.remove('on');
+}
+function cmSaveSignature() {
+  var ta = document.getElementById('cm-sig-ta');
+  if (!ta) return;
+  try { localStorage.setItem('teamos_signature', ta.value); } catch (e) {}
+  cmCloseSignature();
+  toast('Signature saved · Will append to all campaign emails ✓');
+}
+
+// ── Section switching ───────────────────────────────────────────────────────
+function cmShowSection(name) {
+  CM_ACTIVE = name;
+  ['campaigns','contacts','templates','analytics'].forEach(function(k){
+    var btn = document.getElementById('cm-tab-' + k);
+    var sec = document.getElementById('cm-sec-' + k);
+    var on = (k === name);
+    if (btn) { btn.classList.toggle('on', on); btn.setAttribute('aria-selected', on ? 'true' : 'false'); }
+    if (sec) { sec.classList.toggle('on', on); if (on) sec.removeAttribute('hidden'); else sec.setAttribute('hidden',''); }
+  });
+  if (name === 'campaigns')  cmRenderCampaigns();
+  if (name === 'contacts')   cmRenderContacts();
+  if (name === 'templates')  cmRenderTemplates();
+  if (name === 'analytics')  cmRenderAnalytics();
+}
+
+// ── Campaigns section ───────────────────────────────────────────────────────
+function cmRenderCampaigns() {
+  var sec = document.getElementById('cm-sec-campaigns');
+  if (!sec) return;
+  var filters = [['all','All'],['active','Active'],['draft','Draft'],['completed','Completed'],['scheduled','Scheduled']];
+  var chips = filters.map(function(f){
+    var on = (CM_CAMP_FILTER === f[0]) ? ' on' : '';
+    return '<button class="cm-chip' + on + '" type="button" onclick="cmSetCampFilter(\'' + f[0] + '\')">' + f[1] + '</button>';
+  }).join('');
+  var rows = CM_CAMPAIGNS.filter(function(c){ return CM_CAMP_FILTER === 'all' || c.status === CM_CAMP_FILTER; });
+  var listHtml = rows.length ? rows.map(cmCampaignCardHTML).join('') : '<div class="cm-detail-empty">No campaigns match this filter.</div>';
+  sec.innerHTML = ''
+    + '<div class="cm-hd">'
+    +   '<div class="cm-hd-t">📣 Campaigns</div>'
+    +   '<button class="cm-btn-prim" type="button" onclick="cmOpenWizard()"><i class="ti ti-plus"></i> New Campaign</button>'
+    + '</div>'
+    + '<div class="cm-filters">' + chips + '</div>'
+    + '<div class="cm-list" style="max-height:none">' + listHtml + '</div>';
+}
+function cmSetCampFilter(f) { CM_CAMP_FILTER = f; cmRenderCampaigns(); }
+function cmCampaignCardHTML(c) {
+  var ratesHtml = (c.openRate != null) ? '<div class="cm-camp-rates"><span>Open <b>' + c.openRate + '%</b></span><span>Reply <b>' + c.replyRate + '%</b></span></div>' : '';
+  var sentLabel = c.sentDate ? 'Sent ' + c.sentDate : (c.status === 'scheduled' ? 'Scheduled' : 'Not sent');
+  return ''
+    + '<div class="cm-camp-card" data-id="' + c.id + '">'
+    +   '<div class="cm-camp-row1">'
+    +     '<div class="cm-camp-nm">' + cmEscape(c.name) + '</div>'
+    +     '<span class="cm-pill type ' + c.type + '">' + cmEscape(c.typeLabel) + '</span>'
+    +     '<span class="cm-pill status ' + c.status + '">' + c.status + '</span>'
+    +   '</div>'
+    +   '<div class="cm-camp-meta">'
+    +     '<span><b>' + c.contactCount + '</b> contacts</span>'
+    +     '<span class="sep">·</span><span><b>' + c.touchCount + '</b>-touch sequence</span>'
+    +     '<span class="sep">·</span><span>' + sentLabel + '</span>'
+    +   '</div>'
+    +   (ratesHtml || '')
+    +   (c.progress ? '<div class="cm-camp-meta" style="font-size:11px;color:#6B7280">Progress: ' + cmEscape(c.progress) + '</div>' : '')
+    +   '<div class="cm-camp-acts">'
+    +     '<button class="cm-btn" type="button" onclick="cmCampView(\'' + c.id + '\')"><i class="ti ti-eye"></i> View</button>'
+    +     '<button class="cm-btn" type="button" onclick="cmCampDuplicate(\'' + c.id + '\')"><i class="ti ti-copy"></i> Duplicate</button>'
+    +     '<button class="cm-btn dim" type="button" onclick="cmCampArchive(\'' + c.id + '\')"><i class="ti ti-archive"></i> Archive</button>'
+    +     (c.status === 'draft' ? '<button class="cm-btn prim" type="button" onclick="cmCampSend(\'' + c.id + '\')"><i class="ti ti-send"></i> Send Campaign</button>' : '')
+    +   '</div>'
+    + '</div>';
+}
+function cmCampView(id)     { var c = CM_CAMPAIGNS.find(function(x){return x.id===id;}); if(c) toast('Viewing &ldquo;' + cmEscape(c.name) + '&rdquo; · ' + c.contactCount + ' contacts ✓'); }
+function cmCampDuplicate(id){ var c = CM_CAMPAIGNS.find(function(x){return x.id===id;}); if(c) toast('Duplicated &ldquo;' + cmEscape(c.name) + '&rdquo; as draft ✓'); }
+function cmCampArchive(id)  { toast('Campaign archived · Hidden from active list ✓'); }
+function cmCampSend(id) {
+  var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+  if (!c) return;
+  c.status = 'active'; c.sentDate = 'Today'; c.openRate = 0; c.replyRate = 0; c.progress = 'Touch 1 sending';
+  cmRenderCampaigns();
+  toast('Campaign &ldquo;' + cmEscape(c.name) + '&rdquo; launched · ' + c.contactCount + ' Touch 1 emails sending · Logged in Gainsight ✓');
+}
+
+// ── Contacts section ────────────────────────────────────────────────────────
+function cmRenderContacts() {
+  var sec = document.getElementById('cm-sec-contacts');
+  if (!sec) return;
+  var filters = [['all','All'],['active','Active'],['dark','Dark Zone'],['inseq','In Sequence'],['replied','Replied'],['unsub','Unsubscribed']];
+  var chips = filters.map(function(f){
+    var on = (CM_CONTACT_FILTER === f[0]) ? ' on' : '';
+    return '<button class="cm-chip' + on + '" type="button" onclick="cmSetCntFilter(\'' + f[0] + '\')">' + f[1] + '</button>';
+  }).join('');
+  sec.innerHTML = ''
+    + '<div class="cm-hd">'
+    +   '<div class="cm-hd-t">👥 Contacts</div>'
+    +   '<div class="cm-hd-acts">'
+    +     '<button class="cm-btn" type="button" onclick="cmAddContactPrompt()"><i class="ti ti-plus"></i> Add Contact</button>'
+    +     '<div class="cm-dd-wrap"><button class="cm-btn" type="button" onclick="cmToggleDD(\'cm-dd-gs\',event)"><i class="ti ti-cloud-download"></i> Import Gainsight <i class="ti ti-chevron-down"></i></button>'
+    +       '<div class="cm-dd-pop" id="cm-dd-gs">'
+    +         '<button class="cm-dd-item" type="button" onclick="cmImport(\'gs\',\'Acme Corp\',2)">Import Acme Corp contacts</button>'
+    +         '<button class="cm-dd-item" type="button" onclick="cmImport(\'gs\',\'Brightex\',2)">Import Brightex contacts</button>'
+    +         '<button class="cm-dd-item" type="button" onclick="cmImport(\'gs\',\'NovaVault\',2)">Import NovaVault contacts</button>'
+    +         '<button class="cm-dd-item" type="button" onclick="cmImport(\'gs\',\'all accounts\',12)">Import all accounts</button>'
+    +       '</div>'
+    +     '</div>'
+    +     '<div class="cm-dd-wrap"><button class="cm-btn" type="button" onclick="cmToggleDD(\'cm-dd-sf\',event)"><i class="ti ti-cloud-download"></i> Import Salesforce <i class="ti ti-chevron-down"></i></button>'
+    +       '<div class="cm-dd-pop" id="cm-dd-sf">'
+    +         '<button class="cm-dd-item" type="button" onclick="cmImport(\'sf\',\'Acme Corp\',2)">Import Acme Corp opportunity</button>'
+    +         '<button class="cm-dd-item" type="button" onclick="cmImport(\'sf\',\'Brightex\',2)">Import Brightex opportunity</button>'
+    +         '<button class="cm-dd-item" type="button" onclick="cmImport(\'sf\',\'NovaVault\',2)">Import NovaVault opportunity</button>'
+    +       '</div>'
+    +     '</div>'
+    +   '</div>'
+    + '</div>'
+    + '<input class="cm-search" type="text" id="cm-cnt-q" placeholder="Search contacts by name or company..." value="' + cmEscape(CM_CONTACT_SEARCH) + '" oninput="cmSetCntSearch(this.value)" aria-label="Search contacts">'
+    + '<div class="cm-filters">' + chips + '</div>'
+    + '<div class="cm-split">'
+    +   '<div class="cm-list" id="cm-cnt-list"></div>'
+    +   '<div class="cm-detail" id="cm-cnt-detail"></div>'
+    + '</div>';
+  cmRenderContactList();
+  cmRenderContactDetail();
+}
+function cmSetCntFilter(f) { CM_CONTACT_FILTER = f; cmRenderContacts(); }
+function cmSetCntSearch(q) { CM_CONTACT_SEARCH = q; cmRenderContactList(); }
+function cmFilteredContacts() {
+  var q = CM_CONTACT_SEARCH.toLowerCase().trim();
+  return CM_CONTACTS.filter(function(c){
+    if (q && (c.fn + ' ' + c.ln + ' ' + c.acct + ' ' + c.email).toLowerCase().indexOf(q) === -1) return false;
+    switch (CM_CONTACT_FILTER) {
+      case 'all':     return true;
+      case 'active':  return c.seq !== 'departed' && c.seqStatus.indexOf('Unsubscribed') === -1;
+      case 'dark':    return ['meridian','creston','apex'].indexOf(c.acctKey) !== -1;
+      case 'inseq':   return c.seq && c.seq !== 'departed';
+      case 'replied': return /replied/i.test(c.seqStatus);
+      case 'unsub':   return /unsub/i.test(c.seqStatus);
+    }
+    return true;
+  });
+}
+function cmRenderContactList() {
+  var box = document.getElementById('cm-cnt-list');
+  if (!box) return;
+  var rows = cmFilteredContacts();
+  if (!rows.length) { box.innerHTML = '<div class="cm-detail-empty" style="padding:30px 10px;font-size:12px">No contacts match.</div>'; return; }
+  box.innerHTML = rows.map(function(c){
+    var inits = (c.fn[0] || '') + (c.ln[0] || '');
+    var sel = (CM_CONTACT_SEL === c.id) ? ' sel' : '';
+    var seqCls = 'cm-cnt-seq';
+    var seqTxt = 'Not enrolled';
+    if (c.seq === 'departed') { seqCls += ' warn'; seqTxt = 'Departed'; }
+    else if (c.seq) { seqCls += ' in'; seqTxt = 'In sequence'; }
+    return '<div class="cm-cnt-row' + sel + '" tabindex="0" role="button" onclick="cmSelectContact(\'' + c.id + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();cmSelectContact(\'' + c.id + '\')}">'
+      + '<div class="cm-avatar">' + cmEscape(inits) + '</div>'
+      + '<div class="cm-cnt-mid">'
+      +   '<div class="cm-cnt-nm">' + cmEscape(c.fn + ' ' + c.ln) + '</div>'
+      +   '<div class="cm-cnt-role">' + cmEscape(c.role) + '</div>'
+      +   '<div class="cm-cnt-co"><span class="cm-cnt-tag ' + c.acctKey + '">' + cmEscape(c.acct) + '</span></div>'
+      + '</div>'
+      + '<div class="cm-cnt-right">'
+      +   '<span class="' + seqCls + '">' + seqTxt + '</span>'
+      +   '<span class="cm-cnt-touch">' + cmEscape(c.lastTouch) + '</span>'
+      + '</div>'
+    + '</div>';
+  }).join('');
+}
+function cmSelectContact(id) { CM_CONTACT_SEL = id; cmRenderContactList(); cmRenderContactDetail(); }
+function cmRenderContactDetail() {
+  var box = document.getElementById('cm-cnt-detail');
+  if (!box) return;
+  if (!CM_CONTACT_SEL) { box.innerHTML = '<div class="cm-detail-empty">Select a contact to see details.</div>'; return; }
+  var c = CM_CONTACTS.find(function(x){return x.id===CM_CONTACT_SEL;});
+  if (!c) { box.innerHTML = '<div class="cm-detail-empty">Contact not found.</div>'; return; }
+  var inits = (c.fn[0] || '') + (c.ln[0] || '');
+  var seqHtml = '';
+  if (c.seq && c.seq !== 'departed') {
+    seqHtml = '<div class="cm-detail-sec"><div class="cm-detail-sec-t">Sequence history</div><div class="cm-detail-seq">'
+      + '<div class="cm-detail-seq-row"><span class="cm-detail-seq-t">Touch 1</span><span>' + cmEscape(c.lastTouch) + '</span><span class="cm-detail-seq-meta">' + cmEscape(c.seqStatus) + '</span></div>'
+      + '<div class="cm-detail-seq-row scheduled"><span class="cm-detail-seq-t">Touch 2</span><span>Scheduled · Day 5</span><span class="cm-detail-seq-meta">Pending</span></div>'
+      + '</div></div>';
+  } else if (c.seq === 'departed') {
+    seqHtml = '<div class="cm-detail-sec"><div class="cm-detail-sec-t">Sequence history</div><div class="cm-detail-seq-row pending" style="border-left-color:var(--rd)"><span class="cm-detail-seq-t" style="color:var(--rd-dk)">⚠ Departed</span><span>Do not contact</span></div></div>';
+  }
+  var disabled = (c.seq === 'departed') ? ' disabled style="opacity:.45;cursor:not-allowed"' : '';
+  box.innerHTML = ''
+    + '<div class="cm-detail-hd">'
+    +   '<div class="cm-avatar">' + cmEscape(inits) + '</div>'
+    +   '<div class="cm-detail-hd-info">'
+    +     '<div class="cm-detail-nm">' + cmEscape(c.fn + ' ' + c.ln) + '</div>'
+    +     '<div class="cm-detail-sub">' + cmEscape(c.role) + ' · ' + cmEscape(c.acct) + '</div>'
+    +     '<div class="cm-detail-tags"><span class="cm-cnt-tag ' + c.acctKey + '">' + cmEscape(c.acct) + '</span>' + (c.seq === 'departed' ? '<span class="cm-cnt-seq warn">Departed</span>' : (c.seq ? '<span class="cm-cnt-seq in">In sequence · ' + cmEscape(c.seq) + '</span>' : '<span class="cm-cnt-seq">Not enrolled</span>')) + '</div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cm-detail-sec"><div class="cm-detail-sec-t">Contact info</div>'
+    +   '<div class="cm-detail-kv">'
+    +     '<div>Email</div><div>' + cmEscape(c.email) + '</div>'
+    +     '<div>Last Gong</div><div>' + cmEscape(c.lastGong) + '</div>'
+    +     '<div>Last CSM touch</div><div>' + cmEscape(c.lastTouch) + '</div>'
+    +     '<div>Renewal</div><div>' + cmEscape(c.renewal || '—') + '</div>'
+    +     (c.note ? '<div>Note</div><div style="color:#6B7280;font-style:italic">' + cmEscape(c.note) + '</div>' : '')
+    +   '</div>'
+    + '</div>'
+    + seqHtml
+    + '<div class="cm-detail-acts">'
+    +   '<button class="cm-btn" type="button"' + disabled + ' onclick="cmAddToCampaign(\'' + c.id + '\')"><i class="ti ti-plus"></i> Add to Campaign</button>'
+    +   '<button class="cm-btn" type="button"' + disabled + ' onclick="cmSendOneOff(\'' + c.id + '\')"><i class="ti ti-mail"></i> Send 1:1 Email</button>'
+    +   '<button class="cm-btn" type="button" onclick="cmAddNote(\'' + c.id + '\')"><i class="ti ti-note"></i> Add Note</button>'
+    + '</div>';
+}
+function cmAddToCampaign(id) {
+  var c = CM_CONTACTS.find(function(x){return x.id===id;});
+  if (!c) return;
+  var active = CM_CAMPAIGNS.filter(function(x){return x.status==='active'||x.status==='draft';}).map(function(x){return x.name;}).join(', ');
+  toast('Added ' + cmEscape(c.fn + ' ' + c.ln) + ' to: ' + cmEscape(active || 'no active campaigns') + ' ✓');
+}
+function cmSendOneOff(id) {
+  var c = CM_CONTACTS.find(function(x){return x.id===id;});
+  if (!c) return;
+  toast('Email sent to ' + cmEscape(c.fn + ' ' + c.ln) + ' · Logged in Gainsight ✓');
+}
+function cmAddNote(id) {
+  var c = CM_CONTACTS.find(function(x){return x.id===id;});
+  if (!c) return;
+  toast('Note added to ' + cmEscape(c.fn + ' ' + c.ln) + ' · Synced to Gainsight contact ✓');
+}
+function cmAddContactPrompt() { toast('Add Contact form · Save to Gainsight + local list ✓'); }
+function cmToggleDD(id, ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  ['cm-dd-gs','cm-dd-sf'].forEach(function(k){
+    var el = document.getElementById(k);
+    if (!el) return;
+    if (k === id) el.classList.toggle('on');
+    else el.classList.remove('on');
+  });
+}
+document.addEventListener('click', function(){ ['cm-dd-gs','cm-dd-sf'].forEach(function(k){ var el = document.getElementById(k); if (el) el.classList.remove('on'); }); });
+function cmImport(src, label, n) {
+  ['cm-dd-gs','cm-dd-sf'].forEach(function(k){ var el = document.getElementById(k); if (el) el.classList.remove('on'); });
+  setTimeout(function(){
+    var srcLabel = src === 'gs' ? 'Gainsight' : 'Salesforce opportunity';
+    toast('Imported ' + n + ' contacts from ' + srcLabel + ' · ' + cmEscape(label) + ' ✓');
+  }, 1500);
+  toast('<span class="cm-loading"><span class="cm-spinner"></span> Importing from ' + (src === 'gs' ? 'Gainsight' : 'Salesforce') + '…</span>');
+}
+
+// ── Templates section ───────────────────────────────────────────────────────
+function cmRenderTemplates() {
+  var sec = document.getElementById('cm-sec-templates');
+  if (!sec) return;
+  var cats = [['all','All'],['Re-engagement','Re-engagement'],['EBR','EBR'],['Renewal','Renewal'],['Product Update','Product Update'],['Champion Intro','Champion Intro'],['Newsletter','Newsletter']];
+  var chips = cats.map(function(f){
+    var on = (CM_TPL_FILTER === f[0]) ? ' on' : '';
+    return '<button class="cm-chip' + on + '" type="button" onclick="cmSetTplFilter(\'' + f[0] + '\')">' + cmEscape(f[1]) + '</button>';
+  }).join('');
+  sec.innerHTML = ''
+    + '<div class="cm-hd">'
+    +   '<div class="cm-hd-t">📄 Templates</div>'
+    +   '<button class="cm-btn-prim" type="button" onclick="cmNewTemplate()"><i class="ti ti-plus"></i> New Template</button>'
+    + '</div>'
+    + '<div class="cm-filters">' + chips + '</div>'
+    + '<div class="cm-split">'
+    +   '<div class="cm-grid" id="cm-tpl-grid"></div>'
+    +   '<div class="cm-detail" id="cm-tpl-detail"></div>'
+    + '</div>';
+  cmRenderTplGrid();
+  cmRenderTplDetail();
+}
+function cmSetTplFilter(f) { CM_TPL_FILTER = f; cmRenderTplGrid(); }
+function cmRenderTplGrid() {
+  var box = document.getElementById('cm-tpl-grid');
+  if (!box) return;
+  var rows = CM_TEMPLATES.filter(function(t){ return CM_TPL_FILTER === 'all' || t.category === CM_TPL_FILTER; });
+  if (!rows.length) { box.innerHTML = '<div class="cm-detail-empty" style="grid-column:1/-1">No templates in this category.</div>'; return; }
+  box.innerHTML = rows.map(function(t){
+    var sel = (CM_TPL_SEL === t.id) ? ' sel' : '';
+    return '<div class="cm-tpl-card' + sel + '" data-id="' + t.id + '" onclick="cmSelectTpl(\'' + t.id + '\')">'
+      + '<div class="cm-tpl-card-r1"><span class="cm-tpl-ic">' + t.icon + '</span><span class="cm-tpl-nm">' + cmEscape(t.name) + '</span></div>'
+      + '<span class="cm-pill type" style="align-self:flex-start">' + cmEscape(t.category) + '</span>'
+      + '<div class="cm-tpl-subj">' + cmEscape(t.subject) + '</div>'
+      + '<div class="cm-tpl-meta">' + t.vars.length + ' vars · Default</div>'
+      + '<div class="cm-tpl-acts">'
+      +   '<button class="cm-tpl-mini-btn" type="button" onclick="event.stopPropagation();cmSelectTpl(\'' + t.id + '\')">Preview</button>'
+      +   '<button class="cm-tpl-mini-btn prim" type="button" onclick="event.stopPropagation();cmTplUseInCampaign(\'' + t.id + '\')">Use</button>'
+      + '</div>'
+    + '</div>';
+  }).join('');
+}
+function cmSelectTpl(id) { CM_TPL_SEL = id; cmRenderTplGrid(); cmRenderTplDetail(); }
+function cmRenderTplDetail() {
+  var box = document.getElementById('cm-tpl-detail');
+  if (!box) return;
+  if (!CM_TPL_SEL) { box.innerHTML = '<div class="cm-detail-empty">Select a template to preview.</div>'; return; }
+  var t = CM_TEMPLATES.find(function(x){return x.id===CM_TPL_SEL;});
+  if (!t) { box.innerHTML = '<div class="cm-detail-empty">Template not found.</div>'; return; }
+  var varPills = t.vars.map(function(v){ return '<span class="cm-tpl-var-pill">' + cmEscape(v) + '</span>'; }).join('');
+  box.innerHTML = ''
+    + '<div class="cm-detail-hd" style="border-bottom:1px solid var(--bd);padding-bottom:12px">'
+    +   '<div style="font-size:22px">' + t.icon + '</div>'
+    +   '<div class="cm-detail-hd-info">'
+    +     '<div class="cm-detail-nm">' + cmEscape(t.name) + '</div>'
+    +     '<div class="cm-detail-sub">' + cmEscape(t.category) + ' · ' + t.vars.length + ' variables</div>'
+    +   '</div>'
+    + '</div>'
+    + '<div class="cm-tpl-preview" id="cm-tpl-preview-box">'
+    +   '<div class="cm-tpl-subject-line">Subject: ' + cmEscape(t.subject) + '</div>'
+    +   cmEscape(t.body)
+    +   '\n\n— — —\n' + cmEscape(cmGetSignature())
+    + '</div>'
+    + '<div style="margin-top:10px">'
+    +   '<div class="cm-detail-sec-t">Variables</div>'
+    +   '<div class="cm-tpl-vars">' + varPills + '</div>'
+    + '</div>'
+    + '<div class="cm-detail-acts">'
+    +   '<button class="cm-btn" type="button" onclick="cmTplEdit(\'' + t.id + '\')"><i class="ti ti-pencil"></i> Edit template</button>'
+    +   '<button class="cm-btn prim" type="button" onclick="cmTplUseInCampaign(\'' + t.id + '\')"><i class="ti ti-rocket"></i> Use in Campaign</button>'
+    + '</div>';
+}
+function cmTplEdit(id) {
+  var t = CM_TEMPLATES.find(function(x){return x.id===id;});
+  if (!t) return;
+  var box = document.getElementById('cm-tpl-detail');
+  if (!box) return;
+  box.innerHTML = ''
+    + '<div class="cm-detail-hd" style="border-bottom:1px solid var(--bd);padding-bottom:12px">'
+    +   '<div style="font-size:22px">' + t.icon + '</div>'
+    +   '<div class="cm-detail-hd-info">'
+    +     '<div class="cm-detail-nm">' + cmEscape(t.name) + '</div>'
+    +     '<div class="cm-detail-sub">Editing · ' + cmEscape(t.category) + '</div>'
+    +   '</div>'
+    + '</div>'
+    + '<label class="cm-wiz-label">Subject</label>'
+    + '<input class="cm-wiz-input" id="cm-tpl-edit-subj" type="text" value="' + cmEscape(t.subject) + '">'
+    + '<label class="cm-wiz-label">Body</label>'
+    + '<textarea class="cm-tpl-editor" id="cm-tpl-edit-body">' + cmEscape(t.body) + '</textarea>'
+    + '<div style="margin-top:10px"><div class="cm-detail-sec-t">Insert variable</div><div class="cm-tpl-vars">'
+    +   t.vars.map(function(v){ return '<button class="cm-tpl-var-pill" type="button" onclick="cmTplInsertVar(\'' + v + '\')">' + cmEscape(v) + '</button>'; }).join('')
+    + '</div></div>'
+    + '<div class="cm-detail-acts">'
+    +   '<button class="cm-btn" type="button" onclick="cmRenderTplDetail()">Cancel</button>'
+    +   '<button class="cm-btn prim" type="button" onclick="cmTplSave(\'' + t.id + '\')"><i class="ti ti-check"></i> Save changes</button>'
+    + '</div>';
+}
+function cmTplInsertVar(v) {
+  var ta = document.getElementById('cm-tpl-edit-body');
+  if (!ta) return;
+  var s = ta.selectionStart, e = ta.selectionEnd;
+  ta.value = ta.value.slice(0, s) + v + ta.value.slice(e);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = s + v.length;
+}
+function cmTplSave(id) {
+  var t = CM_TEMPLATES.find(function(x){return x.id===id;});
+  var subj = document.getElementById('cm-tpl-edit-subj');
+  var body = document.getElementById('cm-tpl-edit-body');
+  if (!t || !subj || !body) return;
+  t.subject = subj.value;
+  t.body = body.value;
+  cmWriteTemplates(CM_TEMPLATES);
+  cmRenderTplGrid();
+  cmRenderTplDetail();
+  toast('Template &ldquo;' + cmEscape(t.name) + '&rdquo; saved ✓');
+}
+function cmNewTemplate() { toast('New Template builder · 6 categories available ✓'); }
+function cmTplUseInCampaign(id) { cmOpenWizard(); CM_WIZ.template = id; CM_WIZ.step = 3; cmWizRender(); }
+
+// ── Analytics section ───────────────────────────────────────────────────────
+function cmRenderAnalytics() {
+  var sec = document.getElementById('cm-sec-analytics');
+  if (!sec) return;
+  var totalSent = 847, avgOpen = 58, avgReply = 22;
+  var activeSeqs = CM_CAMPAIGNS.filter(function(c){return c.status==='active';}).length;
+  sec.innerHTML = ''
+    + '<div class="cm-hd">'
+    +   '<div class="cm-hd-t">📊 Analytics — Campaign Performance</div>'
+    +   '<select class="cm-wiz-select" style="width:auto;margin-bottom:0;padding:7px 10px;font-size:12px"><option>This quarter</option><option>This week</option><option>This month</option><option>Custom…</option></select>'
+    + '</div>'
+    + '<div class="cm-sum-cards">'
+    +   '<div class="cm-sum-card"><div class="cm-sum-l">Total emails sent</div><div class="cm-sum-v">' + totalSent + '</div><div class="cm-sum-sub">Q2 2026</div></div>'
+    +   '<div class="cm-sum-card"><div class="cm-sum-l">Avg open rate</div><div class="cm-sum-v">' + avgOpen + '%</div><div class="cm-sum-sub">+4 pts vs Q1</div></div>'
+    +   '<div class="cm-sum-card"><div class="cm-sum-l">Avg reply rate</div><div class="cm-sum-v">' + avgReply + '%</div><div class="cm-sum-sub">+2 pts vs Q1</div></div>'
+    +   '<div class="cm-sum-card"><div class="cm-sum-l">Active sequences</div><div class="cm-sum-v">' + activeSeqs + '</div><div class="cm-sum-sub">2 campaigns running</div></div>'
+    + '</div>'
+    + '<div class="cm-perf">'
+    +   '<div class="cm-perf-hd">Per-campaign performance</div>'
+    +   '<table class="cm-perf-table">'
+    +     '<thead><tr><th>Campaign</th><th>Type</th><th>Sent</th><th>Opens</th><th>Replies</th><th>Unsub</th><th>Progress</th></tr></thead>'
+    +     '<tbody>'
+    +       '<tr><td><b>June Renewal Push</b></td><td>Renewal</td><td>48</td><td><b>62%</b></td><td><b>25%</b></td><td>0</td><td><span class="cm-bar"><div style="width:65%"></div></span></td></tr>'
+    +       '<tr><td><b>Dark Zone Re-engagement</b></td><td>Re-engagement</td><td>3</td><td>0%</td><td>0%</td><td>0</td><td><span class="cm-bar"><div style="width:30%"></div></span></td></tr>'
+    +       '<tr><td><b>Q2 EBR Invitations</b></td><td>EBR</td><td>0</td><td>—</td><td>—</td><td>—</td><td><span class="cm-pill status draft" style="display:inline-block">Draft</span> <button class="cm-btn" type="button" onclick="cmCampSend(\'cmp3\')" style="margin-left:4px;font-size:10px;padding:4px 8px">Send →</button></td></tr>'
+    +     '</tbody>'
+    +   '</table>'
+    + '</div>'
+    + '<div class="cm-best">'
+    +   '<div class="cm-best-card"><div class="cm-best-l">Best subject line</div><div class="cm-best-v">&ldquo;Your Brightex renewal — let&rsquo;s connect&rdquo;</div><div class="cm-best-sub">Open rate <b>71%</b></div></div>'
+    +   '<div class="cm-best-card"><div class="cm-best-l">Highest reply rate</div><div class="cm-best-v">Re-engagement template</div><div class="cm-best-sub">Reply rate <b>33%</b></div></div>'
+    +   '<div class="cm-best-card risk"><div class="cm-best-l">Risk · zero opens</div><div class="cm-best-v">NovaVault · Apex Dynamics</div><div class="cm-best-sub">0 opens across 1 email each — may need a different channel</div><div class="cm-best-acts"><button class="cm-btn" type="button" onclick="toast(\'LinkedIn outreach drafted ✓\')">Try LinkedIn →</button><button class="cm-btn" type="button" onclick="toast(\'Opening Ghost-Buster for dark accounts ✓\')">Ghost-Buster →</button></div></div>'
+    + '</div>';
+}
+
+// ── Campaign creation wizard ────────────────────────────────────────────────
+function cmOpenWizard() {
+  CM_WIZ = { step:1, name:'', type:'', goal:'', contacts:[], template:'', dust:true, touches:[{c:'email',d:'now',t:''},{c:'email',d:'5',t:''},{c:'email',d:'10',t:''}], touchCount:3 };
+  var ov = document.getElementById('cm-wiz-ov');
+  if (ov) ov.classList.add('on');
+  cmWizRender();
+}
+function cmCloseWizard(e) {
+  if (e && e.target && e.target.id !== 'cm-wiz-ov' && e.type === 'click') return;
+  var ov = document.getElementById('cm-wiz-ov');
+  if (ov) ov.classList.remove('on');
+  CM_WIZ = null;
+}
+function cmWizRender() {
+  if (!CM_WIZ) return;
+  var progress = document.getElementById('cm-wiz-progress');
+  var body = document.getElementById('cm-wiz-body');
+  var foot = document.getElementById('cm-wiz-foot');
+  if (!progress || !body || !foot) return;
+  progress.innerHTML = [1,2,3,4,5].map(function(n){
+    var cls = (n < CM_WIZ.step) ? 'done' : (n === CM_WIZ.step ? 'current' : '');
+    return '<div class="cm-wiz-step ' + cls + '"></div>';
+  }).join('');
+  if (CM_WIZ.step === 1) cmWizStep1(body);
+  else if (CM_WIZ.step === 2) cmWizStep2(body);
+  else if (CM_WIZ.step === 3) cmWizStep3(body);
+  else if (CM_WIZ.step === 4) cmWizStep4(body);
+  else if (CM_WIZ.step === 5) cmWizStep5(body);
+  cmWizRenderFooter(foot);
+}
+function cmWizStep1(body) {
+  var types = [['reeng','Re-engagement'],['ebr','EBR Invite'],['renewal','Renewal'],['prod','Product Update'],['news','Newsletter'],['custom','Custom']];
+  body.innerHTML = ''
+    + '<div class="cm-wiz-step-l">Step 1 of 5</div>'
+    + '<div class="cm-wiz-h">Basics</div>'
+    + '<label class="cm-wiz-label">Campaign name</label>'
+    + '<input class="cm-wiz-input" id="cm-wiz-name" type="text" value="' + cmEscape(CM_WIZ.name) + '" placeholder="e.g. June Renewal Push" oninput="CM_WIZ.name=this.value">'
+    + '<label class="cm-wiz-label">Campaign type</label>'
+    + '<div class="cm-wiz-types">' + types.map(function(t){
+        var on = (CM_WIZ.type === t[0]) ? ' on' : '';
+        return '<button class="cm-wiz-type' + on + '" type="button" onclick="CM_WIZ.type=\'' + t[0] + '\';cmWizRender()">' + cmEscape(t[1]) + '</button>';
+      }).join('') + '</div>'
+    + '<label class="cm-wiz-label">Goal (optional)</label>'
+    + '<input class="cm-wiz-input" id="cm-wiz-goal" type="text" value="' + cmEscape(CM_WIZ.goal) + '" placeholder="e.g. Schedule 5 EBRs before Jun 30" oninput="CM_WIZ.goal=this.value">';
+}
+function cmWizStep2(body) {
+  var items = CM_CONTACTS.map(function(c){
+    var checked = CM_WIZ.contacts.indexOf(c.id) !== -1;
+    var sel = checked ? ' sel' : '';
+    var dis = (c.seq === 'departed') ? ' style="opacity:.45;cursor:not-allowed"' : '';
+    return '<label class="cm-wiz-cnt-item' + sel + '"' + dis + '><input type="checkbox" ' + (checked ? 'checked' : '') + (c.seq === 'departed' ? ' disabled' : '') + ' onchange="cmWizToggleContact(\'' + c.id + '\',this.checked)"><span><b>' + cmEscape(c.fn + ' ' + c.ln) + '</b> · ' + cmEscape(c.acct) + ' · <span style="color:#6B7280">' + cmEscape(c.email) + '</span></span></label>';
+  }).join('');
+  var accts = {};
+  CM_WIZ.contacts.forEach(function(id){ var c = CM_CONTACTS.find(function(x){return x.id===id;}); if (c) accts[c.acctKey] = true; });
+  body.innerHTML = ''
+    + '<div class="cm-wiz-step-l">Step 2 of 5</div>'
+    + '<div class="cm-wiz-h">Who&rsquo;s this campaign for?</div>'
+    + '<div class="cm-wiz-filter">'
+    +   '<div><div class="cm-wiz-label">Health score</div><select class="cm-wiz-select" style="margin-bottom:0"><option>All</option><option>Critical (&lt;50)</option><option>At-Risk (50-74)</option><option>Healthy (75+)</option></select></div>'
+    +   '<div><div class="cm-wiz-label">Renewal window</div><select class="cm-wiz-select" style="margin-bottom:0"><option>All</option><option>Next 30d</option><option>31-60d</option><option>61-90d</option></select></div>'
+    + '</div>'
+    + '<div class="cm-wiz-cnt-list">' + items + '</div>'
+    + '<div style="margin-top:12px"><span class="cm-wiz-counter">' + CM_WIZ.contacts.length + ' contacts selected across ' + Object.keys(accts).length + ' accounts</span></div>';
+}
+function cmWizToggleContact(id, on) {
+  var i = CM_WIZ.contacts.indexOf(id);
+  if (on && i === -1) CM_WIZ.contacts.push(id);
+  if (!on && i !== -1) CM_WIZ.contacts.splice(i, 1);
+  cmWizRender();
+}
+function cmWizStep3(body) {
+  var cards = CM_TEMPLATES.map(function(t){
+    var sel = (CM_WIZ.template === t.id) ? ' sel' : '';
+    return '<div class="cm-tpl-card' + sel + '" onclick="CM_WIZ.template=\'' + t.id + '\';cmWizRender()">'
+      + '<div class="cm-tpl-card-r1"><span class="cm-tpl-ic">' + t.icon + '</span><span class="cm-tpl-nm">' + cmEscape(t.name) + '</span></div>'
+      + '<div class="cm-tpl-subj">' + cmEscape(t.subject) + '</div>'
+    + '</div>';
+  }).join('');
+  var dustToggle = ''
+    + '<div class="cm-wiz-toggle">'
+    +   '<div class="cm-wiz-toggle-l">Dust personalization<small>Generates a personalized opening line per contact from last Gong call + account context.</small></div>'
+    +   '<button class="cm-wiz-sw' + (CM_WIZ.dust ? ' on' : '') + '" type="button" onclick="CM_WIZ.dust=!CM_WIZ.dust;cmWizRender()" aria-label="Toggle Dust personalization" aria-pressed="' + (CM_WIZ.dust ? 'true' : 'false') + '"></button>'
+    + '</div>';
+  var preview = '';
+  if (CM_WIZ.template && CM_WIZ.contacts.length) {
+    var t = CM_TEMPLATES.find(function(x){return x.id===CM_WIZ.template;});
+    var firstId = CM_WIZ.contacts[0];
+    var c = CM_CONTACTS.find(function(x){return x.id===firstId;});
+    if (t && c) preview = cmWizPreviewHTML(t, c);
+  }
+  body.innerHTML = ''
+    + '<div class="cm-wiz-step-l">Step 3 of 5</div>'
+    + '<div class="cm-wiz-h">Choose your template</div>'
+    + '<div class="cm-wiz-tpls">' + cards + '</div>'
+    + dustToggle
+    + (preview ? '<div class="cm-wiz-step-l">Preview · first selected contact</div>' + preview : '<div class="cm-detail-empty" style="font-size:12px;padding:20px 0">Pick a template + at least one contact to see the personalized preview.</div>');
+}
+function cmWizPreviewHTML(t, c) {
+  var sig = cmGetSignature();
+  var company = c.acct;
+  var fn = c.fn;
+  var renewal = c.renewal || 'TBD';
+  var daysOut = (c.renewal && /·\s*(\d+)d/.test(c.renewal)) ? RegExp.$1 : '—';
+  var bodyFilled = t.body
+    .replace(/{{first_name}}/g, fn)
+    .replace(/{{company}}/g, company)
+    .replace(/{{renewal_date}}/g, (renewal.split(' · ')[0] || renewal))
+    .replace(/{{days_out}}/g, daysOut)
+    .replace(/{{csm_name}}/g, 'Carmen Corio')
+    .replace(/{{meeting_link}}/g, 'calendly.com/carmen-corio')
+    .replace(/{{quarter}}/g, 'Q2 2026')
+    .replace(/{{value_delivered}}/g, '[Account-specific value summary]')
+    .replace(/{{feature_name}}/g, '[Feature name]')
+    .replace(/{{use_case}}/g, '[Account use case]')
+    .replace(/{{predecessor_name}}/g, '[Predecessor name]')
+    .replace(/{{what_weve_built}}/g, '[Relationship history]')
+    .replace(/{{last_gong_topic}}/g, (c.lastGong.split(' · ')[1] || 'recent topic'))
+    .replace(/{{dust_opener}}/g, '');
+  var subjFilled = t.subject.replace(/{{company}}/g, company).replace(/{{quarter}}/g,'Q2 2026').replace(/{{feature_name}}/g,'[Feature]');
+  var dustLine = CM_WIZ.dust ? '<div class="cm-wiz-em-dust">Dust opener: "Following up after your ' + cmEscape(c.lastGong.split(' · ')[1] || 'recent conversation') + ' last week — wanted to make sure we address that before ' + (c.renewal ? cmEscape(c.renewal.split(' · ')[0]) : 'our next touch') + '."</div>' : '';
+  return ''
+    + '<div class="cm-wiz-email-preview">'
+    +   '<div class="cm-wiz-em-meta"><b>FROM:</b> Carmen Corio &lt;carmen@1password.com&gt;<br><b>TO:</b> ' + cmEscape(c.fn + ' ' + c.ln) + ' &lt;' + cmEscape(c.email) + '&gt;<br><b>SUBJECT:</b> ' + cmEscape(subjFilled) + '</div>'
+    +   dustLine
+    +   '<div class="cm-wiz-em-body">' + cmEscape(bodyFilled) + '\n\n— — —\n' + cmEscape(sig) + '</div>'
+    + '</div>';
+}
+function cmWizStep4(body) {
+  var counts = [1,2,3,4,5];
+  var countBtns = counts.map(function(n){
+    var on = (CM_WIZ.touchCount === n) ? ' on' : '';
+    return '<button class="cm-wiz-count-btn' + on + '" type="button" onclick="cmWizSetTouchCount(' + n + ')">' + n + '</button>';
+  }).join('');
+  // ensure touches array matches count
+  while (CM_WIZ.touches.length < CM_WIZ.touchCount) CM_WIZ.touches.push({c:'email',d:'7',t:''});
+  CM_WIZ.touches = CM_WIZ.touches.slice(0, CM_WIZ.touchCount);
+  var touchBlocks = CM_WIZ.touches.map(function(tch, i){
+    return '<div class="cm-wiz-touch">'
+      + '<div class="cm-wiz-touch-hd">Touch ' + (i+1) + '</div>'
+      + '<div class="cm-wiz-touch-r">'
+      +   '<select class="cm-wiz-select" onchange="CM_WIZ.touches[' + i + '].c=this.value"><option value="email"' + (tch.c==='email'?' selected':'') + '>📧 Email</option><option value="slack"' + (tch.c==='slack'?' selected':'') + '>💬 Slack DM</option><option value="linkedin"' + (tch.c==='linkedin'?' selected':'') + '>🔗 LinkedIn</option></select>'
+      +   '<select class="cm-wiz-select" onchange="CM_WIZ.touches[' + i + '].d=this.value"><option value="now"' + (tch.d==='now'?' selected':'') + '>Immediately</option><option value="3"' + (tch.d==='3'?' selected':'') + '>Day 3</option><option value="5"' + (tch.d==='5'?' selected':'') + '>Day 5</option><option value="7"' + (tch.d==='7'?' selected':'') + '>Day 7</option><option value="10"' + (tch.d==='10'?' selected':'') + '>Day 10</option><option value="14"' + (tch.d==='14'?' selected':'') + '>Day 14</option><option value="30"' + (tch.d==='30'?' selected':'') + '>Day 30</option></select>'
+      + '</div>'
+      + '<div style="font-size:11px;color:#6B7280;font-weight:600">Template: Same as campaign · Stop sequence if contact replies: <b style="color:#0A5C41">✓ Yes</b></div>'
+    + '</div>';
+  }).join('');
+  body.innerHTML = ''
+    + '<div class="cm-wiz-step-l">Step 4 of 5</div>'
+    + '<div class="cm-wiz-h">How many touches?</div>'
+    + '<div class="cm-wiz-counts">' + countBtns + '</div>'
+    + touchBlocks;
+}
+function cmWizSetTouchCount(n) { CM_WIZ.touchCount = n; cmWizRender(); }
+function cmWizStep5(body) {
+  var t = CM_TEMPLATES.find(function(x){return x.id===CM_WIZ.template;});
+  var firstC = CM_CONTACTS.find(function(x){return x.id===CM_WIZ.contacts[0];});
+  var accts = {};
+  CM_WIZ.contacts.forEach(function(id){ var c = CM_CONTACTS.find(function(x){return x.id===id;}); if (c) accts[c.acctKey] = true; });
+  var totalDays = CM_WIZ.touches.reduce(function(acc, t){ return acc + (t.d === 'now' ? 0 : parseInt(t.d, 10) || 0); }, 0);
+  var preview = (t && firstC) ? cmWizPreviewHTML(t, firstC) : '';
+  body.innerHTML = ''
+    + '<div class="cm-wiz-step-l">Step 5 of 5</div>'
+    + '<div class="cm-wiz-h">Review your campaign</div>'
+    + '<div class="cm-wiz-summary">'
+    +   '<div class="cm-wiz-summary-r"><span>Name</span><b>' + cmEscape(CM_WIZ.name || '(untitled)') + '</b></div>'
+    +   '<div class="cm-wiz-summary-r"><span>Type</span><b>' + cmEscape(CM_WIZ.type || '—') + '</b></div>'
+    +   '<div class="cm-wiz-summary-r"><span>Contacts</span><b>' + CM_WIZ.contacts.length + ' across ' + Object.keys(accts).length + ' accounts</b></div>'
+    +   '<div class="cm-wiz-summary-r"><span>Sequence</span><b>' + CM_WIZ.touchCount + ' touches over ' + totalDays + ' days</b></div>'
+    +   '<div class="cm-wiz-summary-r"><span>Sending from</span><b>Carmen Corio · carmen@1password.com</b></div>'
+    + '</div>'
+    + (preview ? '<div class="cm-wiz-step-l">Preview · first contact</div>' + preview : '');
+}
+function cmWizRenderFooter(foot) {
+  var canNext = true;
+  if (CM_WIZ.step === 1 && (!CM_WIZ.name || !CM_WIZ.type)) canNext = false;
+  if (CM_WIZ.step === 2 && !CM_WIZ.contacts.length) canNext = false;
+  if (CM_WIZ.step === 3 && !CM_WIZ.template) canNext = false;
+  var leftBtn = CM_WIZ.step > 1 ? '<button class="cm-btn" type="button" onclick="cmWizBack()"><i class="ti ti-arrow-left"></i> Back</button>' : '<span></span>';
+  var rightBtn;
+  if (CM_WIZ.step < 5) {
+    rightBtn = '<button class="cm-btn prim" type="button" ' + (canNext ? '' : 'disabled style="opacity:.45;cursor:not-allowed"') + ' onclick="cmWizNext()">Next <i class="ti ti-arrow-right"></i></button>';
+  } else {
+    rightBtn = ''
+      + '<button class="cm-btn" type="button" onclick="cmWizSaveDraft()"><i class="ti ti-file"></i> Save as Draft</button>'
+      + '<button class="cm-btn" type="button" onclick="cmWizSchedule()"><i class="ti ti-calendar"></i> Schedule</button>'
+      + '<button class="cm-btn prim" type="button" onclick="cmWizSend()"><i class="ti ti-send"></i> Send Now</button>';
+  }
+  foot.innerHTML = '<div class="cm-wiz-foot-l">' + leftBtn + '</div><div class="cm-wiz-foot-r">' + rightBtn + '</div>';
+}
+function cmWizBack() { if (CM_WIZ.step > 1) { CM_WIZ.step--; cmWizRender(); } }
+function cmWizNext() { if (CM_WIZ.step < 5) { CM_WIZ.step++; cmWizRender(); } }
+function cmWizSaveDraft() {
+  var c = cmWizBuild('draft', null);
+  CM_CAMPAIGNS.unshift(c);
+  cmCloseWizard();
+  cmShowSection('campaigns');
+  toast('Draft saved · &ldquo;' + cmEscape(c.name) + '&rdquo; ✓');
+}
+function cmWizSchedule() {
+  var c = cmWizBuild('scheduled', 'Jun 1');
+  CM_CAMPAIGNS.unshift(c);
+  cmCloseWizard();
+  cmShowSection('campaigns');
+  toast('Campaign scheduled for Jun 1 ✓');
+}
+function cmWizSend() {
+  var c = cmWizBuild('active', 'Today');
+  CM_CAMPAIGNS.unshift(c);
+  cmCloseWizard();
+  cmShowSection('campaigns');
+  toast('Campaign &ldquo;' + cmEscape(c.name) + '&rdquo; launched · ' + c.contactCount + ' Touch 1 emails sending · Logged in Gainsight ✓');
+}
+function cmWizBuild(status, sentDate) {
+  var typeMap = { reeng:'Re-engagement', ebr:'EBR Invite', renewal:'Renewal', prod:'Product Update', news:'Newsletter', custom:'Custom' };
+  return {
+    id: 'cmp' + Date.now(),
+    name: CM_WIZ.name || 'Untitled campaign',
+    type: CM_WIZ.type || 'custom',
+    typeLabel: typeMap[CM_WIZ.type] || 'Custom',
+    status: status,
+    contactCount: CM_WIZ.contacts.length,
+    touchCount: CM_WIZ.touchCount,
+    sentDate: sentDate,
+    openRate: status === 'active' ? 0 : null,
+    replyRate: status === 'active' ? 0 : null,
+    progress: status === 'active' ? 'Touch 1 sending' : (status === 'scheduled' ? 'Awaiting send date' : 'Not yet sent'),
+    contactIds: CM_WIZ.contacts.slice(),
+    templateId: CM_WIZ.template
+  };
+}
+
+// ── Boot: render default Campaigns section on tab open ──────────────────────
+// goTab will call cmShowSection on first activation; pre-render so opening
+// the tab is instant.
+cmRenderCampaigns();
 
 </script>
 
