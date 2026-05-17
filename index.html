@@ -372,6 +372,47 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .rcp-history-body{display:none;margin-top:8px}
 .rcp-history-body.on{display:block}
 
+/* v3.2.7 — Recipe-only typography upgrade. Adds weight + color contrast to
+   every label, header, and metric in the Recipe tab. Scoped via
+   #tab-recipe so other tabs are unaffected. +1–2px max on any existing
+   size; the contrast comes from weight and color, not size. */
+#tab-recipe .sc-sync{color:#4B5563;font-weight:600}
+#tab-recipe .sc-port-l{color:#111827;font-size:11px;font-weight:700}
+#tab-recipe .sc-port-k{color:#374151;font-weight:600;font-size:12px}
+#tab-recipe .sc-port-v{color:#111827;font-weight:700;font-size:13px}
+#tab-recipe .sc-legend{color:#374151}
+#tab-recipe .sc-legend-l{color:#111827;font-size:10px}
+#tab-recipe .sc-legend-i{color:#374151;font-weight:600}
+#tab-recipe .sc-ct{color:#111827;font-size:12px;font-weight:700}
+#tab-recipe .sc-ml{color:#1F2937;font-size:13px;font-weight:600}
+#tab-recipe .sc-mt{color:#6B7280;font-size:11px;font-weight:500}
+#tab-recipe .sc-mv{font-size:15px;font-weight:700}
+#tab-recipe .sc-fin > div:first-child{color:#111827 !important;font-size:11px !important}
+#tab-recipe .sc-sn{color:#111827;font-size:13px;font-weight:600}
+#tab-recipe .sc-sw{color:#374151;font-weight:600;font-size:11px}
+#tab-recipe .sc-pct{font-weight:700}
+#tab-recipe .sc-rating{color:#1F2937;font-weight:700;font-size:12px}
+#tab-recipe .sc-tick-lbl{color:#6B7280;font-weight:700}
+#tab-recipe .sc-fin-row > div:first-child{font-weight:700}
+#tab-recipe .rcp-proj-l{font-size:11px}
+#tab-recipe .rcp-proj-line{color:#1F2937;font-size:13px}
+#tab-recipe .rcp-proj-line strong{color:#111827}
+#tab-recipe .rcp-dust-s{color:#374151}
+#tab-recipe .rcp-card-t{color:#111827;font-size:14px}
+#tab-recipe .rcp-card-b{color:#1F2937;font-size:12px;font-weight:500}
+#tab-recipe .rcp-notes-hd{color:#111827}
+#tab-recipe .rcp-notes-hd-q{color:#374151;font-weight:600}
+#tab-recipe .rcp-notes-hist-t{color:#111827;font-size:11px;font-weight:700}
+#tab-recipe .rcp-notes-cat{color:#374151;font-weight:600}
+#tab-recipe .rcp-notes-cat.on{color:#fff}
+#tab-recipe .rcp-notes-pill{font-weight:700;font-size:10px}
+#tab-recipe .rcp-notes-ts{color:#6B7280;font-weight:600;font-size:10px}
+#tab-recipe .rcp-notes-txt{color:#1F2937;font-size:13px;font-weight:500}
+#tab-recipe .rcp-notes-empty,#tab-recipe .bf-result-empty{color:#6B7280}
+#tab-recipe .rcp-history-toggle{color:#374151;font-weight:700}
+#tab-recipe .sc-notes-jump{color:#111827;font-weight:700}
+#tab-recipe .sc-stat{font-weight:800}
+
 /* Enablement tab (v2.14.0) — Seismic placeholder */
 .en-pg{padding:20px 28px}
 .en-hd{margin-bottom:20px}

@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.2.6
+**Version:** 3.2.7
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,39 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.2.7] — 2026-05-17
+
+CSS-only typography upgrade scoped to the Recipe for Success tab. Every label, metric, and section header gains weight + color contrast. Sizes bumped by 1–2 px at most so cards don't overflow — the visual upgrade comes from `font-weight` and color, not size. All other tabs, dashboard widgets, JS, scoring logic, and layout are untouched.
+
+### Changed — Recipe tab typography
+- All overrides live in a single `#tab-recipe …` selector block at the end of the Recipe CSS section so other tabs inherit nothing.
+- Metric card titles (`.sc-ct`) — 10→12px, weight 700, color #111827.
+- Metric row labels (`.sc-ml`) — 12→13px, weight 600, color #1F2937.
+- Metric sub-labels / targets (`.sc-mt`) — color bumped to #6B7280 so even the muted line still passes the readability rule.
+- Metric values (`.sc-mv`) — 14→15px, weight 700.
+- Score category labels (`.sc-sn`) — 12→13px, weight 600, color #111827.
+- Score weight column (`.sc-sw`) — color #374151, weight 600.
+- Rating band labels (`.sc-rating`) — 11→12px, weight 700, color #1F2937.
+- Tick mark labels under each bar (`.sc-tick-lbl`) — color #6B7280, weight 700.
+- "Live weighted score" header — color #111827, weight 700.
+- Portfolio bar (`.sc-port-*`) — `Account Portfolio` label color #111827; data keys color #374151 weight 600; values color #111827 weight 700 size 13px.
+- Status legend (`.sc-legend-*`) — label color #111827, item text color #374151 weight 600.
+- Status pills (`.sc-stat`) — weight bumped to 800 so On Track / At Risk / Below read like the hard signals they are.
+- Quarter Projection lines (`.rcp-proj-line`) — 12→13px color #1F2937; bold spans color #111827.
+- Dust Action Plan card titles (`.rcp-card-t`) and bodies (`.rcp-card-b`) — darker, slightly heavier; subtext color #374151 throughout.
+- Notes panel — saved-notes header color #111827 weight 700; quarter label color #374151; category chips weight 600 color #374151; pills weight 700; timestamps color #6B7280 weight 600; note body color #1F2937 size 13px weight 500.
+- Tab-header `Notes (N)` jump pill — color #111827 weight 700.
+- Sync timestamp at the top (`.sc-sync`) — color #4B5563 weight 600. Still a one-line muted pill, but no longer disappearing into the bg.
+
+### The rule that drove it
+Nothing on the Recipe tab is lighter than #6B7280 for text that conveys meaning. Identifying labels are ≥600 weight; performance values are 700+ weight.
+
+### Implementation notes
+- The existing color tokens (`--tx` #111110 / `--tx2` #52524E / `--tx3` #8A8A86) were close but not aligned with the spec greys — I used the spec hex values directly inside the `#tab-recipe` override rather than retuning the global vars, so other tabs' color hierarchy is preserved.
+- Spec label note: the user requested this entry as `[3.2.5]`; shipped as `[3.2.7]` to preserve monotonic versioning above the existing 3.2.6 entry.
 
 ---
 
