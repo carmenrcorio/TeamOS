@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.3.3
+**Version:** 3.4.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,67 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.4.0] — 2026-05-17
+
+Polish, accessibility, and mobile-readiness sprint. Four areas: pulse-strip centering, tablet + mobile responsive layout, WCAG 2.1 AA foundation, and enterprise security/privacy meta. No feature content changed, no agent outputs or scoring logic touched.
+
+### Pulse strip centering
+- `.pulse-strip` now uses `justify-content:center; overflow-x:auto` with a hidden scrollbar. Indicators centre on wide viewports; narrow viewports get horizontal scroll instead of wrapping. Verified at 1280 / 1440 / 1920 / 900 / 390 px.
+
+### Mobile responsive layout
+- **Tablet (≤1279 px)**: `.main` collapses to 2 columns (left + center) with the right column re-flowing below at full width. Daily Command Brief stacks as Priority Stack full-width + (Next Up | Dust Agents) below. Drawer narrows to `min(80vw, 640px)`.
+- **Mobile (≤767 px)**: single-column stack for `.main` and `.brief-strip`. Dust Agents chip grid drops from 3 to 2 columns. Pulse strip becomes horizontally scrollable with a right-edge mask-image fade hint. Touch targets ≥ 44 × 44 px on every interactive element via a `min-height: 44px` rule scoped to the breakpoint. Agent drawer transforms into a bottom sheet (slides up from the bottom, 90 vh tall, rounded top corners, drag-handle indicator). Popovers turn into full-width bottom sheets.
+
+### Accessibility (WCAG 2.1 AA foundation)
+- **Skip link**: `<a class="skip-link" href="#main-content">` is the first body child; only visible when keyboard-focused. Jumps past the nav and pulse strip.
+- **`<h1 class="sr-only">`** at the top of body provides a page-level heading for screen readers without affecting layout.
+- **Landmarks + labels**: `<nav role="navigation" aria-label="Main navigation">`, `<div class="pulse-strip" role="navigation" aria-label="Portfolio pulse">`, `.rp` mission briefing → `role="region" aria-label="Mission Briefing" aria-live="polite"`, `.drawer` → `role="dialog" aria-modal="true" aria-label="Agent output" aria-labelledby="drawer-title"`. Drive Docs and Training popovers → `role="dialog" aria-modal="false"` with `aria-label`.
+- **Live regions**: `toast()` now stamps `role="alert" aria-live="assertive" aria-atomic="true"` on the toast element. Mission Briefing has `aria-live="polite"` so panel content swaps are announced.
+- **Focus ring**: global `:focus-visible { outline:2px solid #0EA5E9; outline-offset:2px; border-radius:4px }`. Mouse clicks don't draw the ring; keyboard tabs do.
+- **Escape key**: global listener closes any open drawer (returning focus to `window._drawerTrigger` if set), then falls through to `closeAllDropdowns` for popovers. `openAgentDrawer` is wrapped to snapshot the current activeElement so focus can return on close.
+- **Color contrast fixes**: overrides for the listed failing combinations — `.tag.red` → `#DC2626`, `.tag.amber` → `#92400E`. Skip link bg switched to `#0284C7` for AA on white. `--rd-dk` / `--am-dk` already pass at their existing values.
+- **Icons**: existing decorative icons stay as-is; the new toast icon gets `aria-hidden="true"`. Existing aria-labels on close buttons preserved.
+- **`prefers-reduced-motion`** disables animation + transitions globally (the Recipe hero wobble already honoured this; now everything does).
+
+### Enterprise readiness
+- **CSP meta** in `<head>`: `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.anthropic.com; frame-ancestors 'none';`. Adjusted origins to the actual Tabler webfont host (`cdn.jsdelivr.net`) rather than the spec's `cdnjs.cloudflare.com`.
+- **Security meta**: `<meta name="referrer" content="strict-origin">`, `<meta http-equiv="X-Content-Type-Options" content="nosniff">`, `<meta http-equiv="X-Frame-Options" content="DENY">`.
+- **Known browser limitation**: `frame-ancestors` and `X-Frame-Options` are ignored when delivered via `<meta>` — the browser surfaces a console warning. Both directives are kept in the markup as the intended policy; for them to actually enforce, ops needs to mirror them as HTTP response headers via Vercel project config (`/vercel.json` headers block). Documented inline.
+- **localStorage audit comment block** added next to the first `localStorage` usage: no auth tokens, no customer PII, no API keys persisted client-side; Anthropic API key is server-proxied via `/api/anthropic`.
+- **Console statements**: zero `console.log` / `console.error` / `console.warn` / `console.info` / `console.debug` confirmed via grep across the file. Standing rule documented.
+- **Simulated failure helper**: new `actWithFailure(fn)` utility — 5% probability of rendering an error toast with a clickable Retry link instead of running the action. Not retro-wired across every existing onclick handler (too high blast radius for a single pass); available for new callsites and selective opt-in.
+- **Privacy notes**: `.pop-privacy-ft` strip at the bottom of the Drive Docs and Training popovers — `🔒 TeamOS processes account data per 1Password's data handling policy. No customer data is stored externally.`
+
+### What was NOT done this turn (called out so it's visible)
+- **Exhaustive aria-label coverage** on every icon-only button in the file (there are hundreds). The high-traffic dialogs/popovers/landmarks now have labels; a follow-on sweep can audit chip buttons, drawer footer buttons, and inline action buttons. `grep -c "aria-label="` went from 27 → 33; more remain.
+- **Focus trap inside the drawer**: Tab cycling within the drawer is not yet bounded. Escape closes the drawer + returns focus, which addresses the dominant a11y need; full trap requires careful Tab/Shift+Tab handling and is queued for a follow-on.
+- **Retro-wiring `actWithFailure` across every action button**: the helper exists and is documented; rolling it out across `dustQuick`, `agentBtn`, `openAgentDrawer`, GB sequence sends, etc. is a behavior change with demo-affecting ripple effects. Left for an explicit opt-in pass.
+- **Semantic heading levels (h2/h3)** across the file: most section headers are styled `<div>`s rather than headings. Re-tagging them is a sweep across every widget. The page-level `<h1>` is in place; the deeper hierarchy is queued.
+- **"Show 3 + Show more" on mobile Priority Stack**, mobile-only Dark Zone auto-collapse, nav "icons-only" mode, calendar "compact list only": these are behavior changes that need JS. The mobile media queries cover the layout reflow; the behavior toggles are queued.
+
+### Acceptance verification (headless)
+- CSP / referrer / X-Frame-Options / X-Content-Type-Options meta tags all present.
+- Skip link present and `focused: true` after first Tab.
+- `nav role=navigation aria-label="Main navigation"` ✓
+- `.pulse-strip` computed `justify-content: center; overflow-x: auto` ✓
+- `.rp` computed `role=region aria-live=polite` ✓
+- `#drawer` computed `role=dialog aria-modal=true` ✓
+- Tablet @ 900 px: `.main` resolves to 2 columns ✓
+- Mobile @ 390 px: `.main` resolves to 1 column; sample pulse button height = 44 px ✓
+- Pulse popover opens, Escape closes it ✓
+- `toast()` element computed `role=alert aria-live=assertive` ✓
+- Drive Docs + Training privacy footers both rendered ✓
+- `typeof actWithFailure === "function"` ✓
+- Console statement count: 0 ✓
+
+### Implementation notes
+- One new `<style>` block scoped to v3.4.0 changes — focus ring, skip link, sr-only utility, pulse centering, color overrides, tablet + mobile breakpoints, prefers-reduced-motion override.
+- HTML attribute changes are non-invasive (role/aria-label/aria-modal on existing elements; skip link + sr-only h1 added at top of body).
+- JS additions: `toast()` attribute stamping, Escape handler, `openAgentDrawer` wrapper for focus return, `actWithFailure` helper, localStorage security comment block. No existing JS logic touched.
+- Spec label note: shipped as `[3.4.0]` matching the user's requested label — the version bump is appropriate for a behavior-and-platform readiness pass of this size.
 
 ---
 

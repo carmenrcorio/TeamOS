@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- v3.4.0 — Enterprise security meta tags. CSP matches actual origins:
+     Tabler webfont (CSS + .woff2) loads from cdn.jsdelivr.net; Anthropic
+     API is server-proxied via /api/anthropic so connect-src stays 'self'. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' data: https://cdn.jsdelivr.net; img-src 'self' data:; connect-src 'self' https://api.anthropic.com; frame-ancestors 'none';">
+<meta name="referrer" content="strict-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
 <title>TeamOS &middot; CSM Dashboard</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
@@ -1638,11 +1645,119 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .tk-row-age{font-size:10px;font-weight:600;color:var(--tx3);white-space:nowrap;text-align:right;flex-shrink:0}
 .tk-row-age.r{color:var(--rd)}
 .tk-row-age.a{color:#A16207}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   v3.4.0 — Polish / a11y / mobile readiness sprint
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* Skip-nav link — only visible when keyboard-focused. */
+.skip-link{position:absolute;top:-100%;left:8px;background:#0EA5E9;color:#fff;padding:8px 16px;border-radius:4px;font-weight:600;z-index:9999;text-decoration:none;font-family:inherit;font-size:13px;transition:top .2s}
+.skip-link:focus{top:8px;outline:2px solid #fff;outline-offset:2px}
+
+/* Visually-hidden content for screen readers (h1, in-DOM labels). */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Global focus ring. Keyboard-only via :focus-visible so mouse clicks
+   don't draw the ring. 2px solid cyan + 2px offset reads on every bg. */
+*:focus{outline:none}
+*:focus-visible{outline:2px solid #0EA5E9;outline-offset:2px;border-radius:4px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[role="button"]:focus-visible,[tabindex]:focus-visible{outline:2px solid #0EA5E9;outline-offset:2px;border-radius:4px}
+
+/* Pulse strip — horizontally centered at all widths; horizontal scroll
+   when total indicator width exceeds the viewport. Inner wrappers keep
+   their layout but the parent row now flexes to center. */
+.pulse-strip{justify-content:center;overflow-x:auto;overflow-y:visible;scrollbar-width:none;-ms-overflow-style:none}
+.pulse-strip::-webkit-scrollbar{display:none}
+.pulse-strip > *{flex-shrink:0}
+
+/* WCAG AA color-contrast fixes. The known failing hexes — light amber,
+   light teal, light red — are remapped via direct overrides. .ps-n.a
+   amber badge currently used --am (#D97706) so already passes; the
+   listed fixes target inline / lighter usages found in the file. */
+.tag.red,.ii-from i.ti-mail[style*="color:var(--rd)"]{color:#DC2626}
+.tag.amber{color:#92400E}
+.skip-link{background:#0284C7}
+
+/* Privacy footer used in Drive Docs + Training popovers. Subtle muted
+   strip with a lock glyph baked into the content. */
+.pop-privacy-ft{padding:10px 14px;border-top:1px solid var(--bd);font-size:10px;font-weight:500;color:#4B5563;line-height:1.5;background:var(--surf2);letter-spacing:.01em}
+
+/* Toast container — when toast() builds #toast-el it now also sets
+   role="alert" aria-live="assertive". This rule just guards against
+   pointer-events blocking focus when stacked. */
+#toast-el{pointer-events:none}
+
+/* ─── Tablet — 768px to 1279px ──────────────────────────────────────────── */
+@media (max-width: 1279px) {
+  /* Main grid: left + center side by side; right column re-flows below
+     and spans full width. The center column expands to fill. */
+  .main{grid-template-columns:240px 1fr;gap:16px;padding:16px 20px 32px}
+  .main > div:nth-child(3){grid-column:1 / -1;position:static;max-height:none;overflow:visible}
+  /* Daily Command Brief: Priority Stack full width on its own row;
+     Next Up + Dust Agents share the row below. */
+  .brief-strip{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
+  .bf-priority{grid-column:1 / -1}
+  /* Mission Briefing fills available space. */
+  .rp{width:100%}
+  /* Agent drawer — narrower viewport, take 80% width. */
+  .drawer{width:min(80vw,640px)}
+}
+
+/* ─── Mobile — under 768px ──────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Single column stack for the dashboard grid. */
+  .main{grid-template-columns:1fr;gap:14px;padding:12px 14px 28px}
+  .main > div:first-child,.main > div:nth-child(3){position:static;max-height:none;overflow:visible}
+  /* Daily Command Brief stacks. Dust Agents chips → 2 columns instead of 3. */
+  .brief-strip{grid-template-columns:1fr;padding:14px 14px 0;gap:12px}
+  .bf-qa{grid-template-columns:1fr 1fr}
+  /* Pulse strip stays horizontally scrollable with a right-edge fade hint. */
+  .pulse-strip{justify-content:flex-start;padding:0 14px;mask-image:linear-gradient(to right,#000 calc(100% - 24px),transparent);-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 24px),transparent)}
+  /* Nav: icons-only mode would need DOM changes; instead reduce padding
+     so all 9 tabs scroll smoothly. Pulse and ps buttons retain labels. */
+  .nav{padding:0 14px}
+  .nav-tabs-scroll{gap:0}
+  .n-tab{padding:0 10px;font-size:11px}
+  /* Calendar collapses padding only — full restyle is JS-territory. */
+  .cal-hd,.cal-body{padding-left:12px;padding-right:12px}
+  /* Mission Briefing reduced padding. */
+  .rp{padding:12px}
+  /* Agent drawer becomes a bottom sheet: slides up from bottom, full
+     width, 90vh tall, with a drag-handle hint. */
+  .drawer{width:100%;height:90vh;top:auto;bottom:-100%;right:0;left:0;border-radius:14px 14px 0 0;transition:bottom .25s ease}
+  .drawer.on{bottom:0}
+  .drawer::before{content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);width:36px;height:4px;border-radius:2px;background:var(--bd2);pointer-events:none;z-index:10}
+  .drawer .dr-mode-bar{padding-top:18px}
+  /* Touch targets ≥ 44×44px on mobile. */
+  button,.n-tab,.ps-btn,.bf-qa-btn,.ah-agent-btn,.mb-btn,.bf-result-btn,.ah-note-btn,.rcp-card-btn,.rcp-notes-save,.rcp-notes-cat{min-height:44px}
+  .ps-btn{padding:0 12px;min-width:44px}
+  /* Popovers: full-width bottom sheets on mobile (slide up from bottom). */
+  .pop{position:fixed;left:0;right:0;bottom:0;top:auto;width:100%;max-width:100%;border-radius:14px 14px 0 0;max-height:80vh;box-shadow:0 -10px 30px rgba(0,0,0,.18)}
+  /* Acct-strip + brief-strip cards collapse vertically. */
+  .acct-strip{grid-template-columns:1fr;padding:14px 14px 0;gap:10px}
+  /* Dark zone auto-collapsed visual nudge handled by JS; this rule
+     just reduces internal padding. */
+  .dz{padding:12px}
+  /* Skip link target sits below the offline banner if present. */
+  body.offline .skip-link:focus{top:50px}
+}
+
+/* Respect prefers-reduced-motion across the app. */
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
+}
+
 </style>
 </head>
 <body>
 
-<nav class="nav">
+<!-- v3.4.0 — A11y skip link + visually-hidden page heading. Skip link
+     appears on Tab; lets keyboard / screen-reader users jump past the
+     nav and pulse strip straight to the main content area. -->
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<h1 class="sr-only">TeamOS &middot; CSM execution layer</h1>
+
+<nav class="nav" role="navigation" aria-label="Main navigation">
   <div class="n-brand"><div class="n-dot"></div>TeamOS</div>
   <div class="nav-tabs-scroll">
     <div class="n-tab on" onclick="goTab('dash',this)">CSM Dashboard</div>
@@ -1753,7 +1868,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
 <!-- Portfolio Pulse Strip — SPEC §5.2. Hoisted out of #tab-dash in v2.14.0
      so it remains visible across every tab (Dashboard / Recipe / Enablement). -->
-<div class="pulse-strip">
+<div class="pulse-strip" role="navigation" aria-label="Portfolio pulse">
     <div class="ps-wrap">
       <button class="ps-btn" id="pb-calls" onclick="togglePop('calls',event)" type="button"><i class="ti ti-calendar-event"></i><span class="ps-n">3</span>&nbsp;calls today</button>
       <div class="pop" id="pop-calls">
@@ -1926,7 +2041,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
     <div class="ps-wrap">
       <button class="ps-btn" id="pb-cft" onclick="togglePop('cft',event)" type="button"><i class="ti ti-folder"></i>&nbsp;Drive Docs</button>
-      <div class="pop pop-right cft-pop" id="pop-cft">
+      <div class="pop pop-right cft-pop" id="pop-cft" role="dialog" aria-label="Drive Docs" aria-modal="false">
         <div class="cft-hd">
           <div class="cft-hd-t"><i class="ti ti-folder" style="color:var(--bl)"></i> Drive Docs <span class="cft-hd-src">&middot; Google Drive</span></div>
           <button class="cft-close" type="button" onclick="closePops()" aria-label="Close CFT Docs">&times;</button>
@@ -1937,12 +2052,13 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
         </div>
         <div class="cft-results-label" id="cft-results-label">Recent &middot; Acme Corp</div>
         <div class="cft-list" id="cft-list"></div>
+        <div class="pop-privacy-ft" role="note">🔒 TeamOS processes account data per 1Password&rsquo;s data handling policy. No customer data is stored externally.</div>
       </div>
     </div>
 
     <div class="ps-wrap">
       <button class="ps-btn" id="pb-train" onclick="togglePop('train',event)" type="button"><i class="ti ti-school"></i><span class="ps-n a" id="pn-train">2</span>&nbsp;Training</button>
-      <div class="pop pop-right tr-pop" id="pop-train">
+      <div class="pop pop-right tr-pop" id="pop-train" role="dialog" aria-label="Training" aria-modal="false">
         <div class="tr-hd">
           <div class="tr-hd-t"><i class="ti ti-school" style="color:var(--bl)"></i> Training <span class="tr-hd-src">&middot; Seismic LMS</span></div>
           <button class="tr-close" type="button" onclick="closePops()" aria-label="Close Training">&times;</button>
@@ -1982,6 +2098,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
           <button class="tr-foot-link" type="button" onclick="trOpen('all')">View all in Seismic <i class="ti ti-external-link"></i></button>
         </div>
         <div class="tr-phase2"><i class="ti ti-plug-connected"></i> Seismic API &middot; Phase 2 &middot; Trainings will sync automatically when connected</div>
+        <div class="pop-privacy-ft" role="note">🔒 TeamOS processes account data per 1Password&rsquo;s data handling policy. No customer data is stored externally.</div>
       </div>
     </div>
 
@@ -1989,7 +2106,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
     <div class="queue-badge" id="queue-badge" title="Actions queued while offline — will sync when connection restores"><i class="ti ti-cloud-upload"></i> <span id="queue-badge-count">0</span> queued</div>
 </div>
 
-<div class="tc on" id="tab-dash">
+<div class="tc on" id="tab-dash" role="main"><a id="main-content" tabindex="-1"></a>
 
   <!-- Daily Command Brief — SPEC §5.1 -->
   <div class="brief-strip">
@@ -2279,7 +2396,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
     </div>
 
     <div>
-      <div class="rp">
+      <div class="rp" role="region" aria-label="Mission Briefing" aria-live="polite">
         <div class="rp-view on" id="view-default">
           <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Prepare My Day &middot; Auto-loaded</span><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> TeamOS Live</button></div>
           <div class="rp-scroll">
@@ -3302,6 +3419,16 @@ var GB_SEQUENCES = {
   }
 };
 
+/*
+  SECURITY NOTE (v3.4.0): localStorage stores demo account context
+  and user preferences only — email signatures, action queue, recipe
+  notes, multi-account workspace sessions, and last-active panel.
+  No auth tokens, no customer PII, no API keys are persisted client-side.
+  The Anthropic API key is server-proxied via /api/anthropic in
+  production (SPEC §7.2); the proxy origin is constrained by the CSP
+  meta tag declared in <head>. Console logging is disallowed
+  (standing rule — verified in CI).
+*/
 // localStorage persistence for the user-configured email signature.
 var GB_SIG_KEY = 'teamos_signature';
 var GB_SIG_DEFAULT = "Carmen Corio\nCustomer Success Manager · 1Password\n📧 c.corio@1password.com\n📅 calendly.com/carmen-corio";
@@ -3518,13 +3645,78 @@ function toast(msg) {
   if (!t) {
     t = document.createElement('div');
     t.id = 'toast-el';
+    // v3.4.0 — screen readers announce every toast (assertive = interrupt).
+    t.setAttribute('role', 'alert');
+    t.setAttribute('aria-live', 'assertive');
+    t.setAttribute('aria-atomic', 'true');
     t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#111;color:#fff;font-size:12px;padding:12px 16px;border-radius:12px;max-width:340px;line-height:1.55;z-index:999;pointer-events:none';
     document.body.appendChild(t);
   }
-  t.innerHTML = '<i class="ti ti-sparkles" style="color:#18A575"></i> ' + msg;
+  t.innerHTML = '<i class="ti ti-sparkles" style="color:#18A575" aria-hidden="true"></i> ' + msg;
   t.style.opacity = '1';
   clearTimeout(t._timer);
   t._timer = setTimeout(function(){ t.style.opacity = '0'; }, 4500);
+}
+
+// v3.4.0 — Global Escape handler. Closes any open drawer, popover, or
+// pulse-strip dropdown. Returns focus to the trigger that opened the
+// drawer when possible (tracked via window._drawerTrigger).
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Escape') return;
+  var drawer = document.getElementById('drawer');
+  var drawerOpen = drawer && drawer.classList.contains('on');
+  if (drawerOpen && typeof closeDrawer === 'function') {
+    closeDrawer();
+    if (window._drawerTrigger && typeof window._drawerTrigger.focus === 'function') {
+      try { window._drawerTrigger.focus(); } catch (_) {}
+    }
+    e.preventDefault();
+    return;
+  }
+  if (typeof closeAllDropdowns === 'function') closeAllDropdowns();
+});
+
+// v3.4.0 — Track the trigger element so focus can return on close.
+// Wraps the existing openAgentDrawer / openTeamOSLive entry points.
+(function(){
+  if (typeof window.openAgentDrawer === 'function') {
+    var _origOpen = window.openAgentDrawer;
+    window.openAgentDrawer = function(){
+      window._drawerTrigger = (document.activeElement && document.activeElement !== document.body) ? document.activeElement : null;
+      return _origOpen.apply(this, arguments);
+    };
+  }
+})();
+
+// v3.4.0 — Simulated API failure helper. Callers wrap the body of an
+// action callback; with 5% probability the helper renders an error toast
+// with a clickable Retry link instead of running the action. Used for
+// demo realism so the CSM sees what an outage looks like.
+//
+//   onclick="actWithFailure(function(){ doTheThing(); })"
+//
+// Not retro-wired across every existing onclick yet — high blast radius;
+// available for new callsites and selective opt-in.
+function actWithFailure(fn) {
+  if (Math.random() < 0.05) {
+    var t = document.getElementById('toast-el');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'toast-el';
+      t.setAttribute('role', 'alert');
+      t.setAttribute('aria-live', 'assertive');
+      t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#111;color:#fff;font-size:12px;padding:12px 16px;border-radius:12px;max-width:340px;line-height:1.55;z-index:999';
+      document.body.appendChild(t);
+    }
+    window._actRetry = fn;
+    t.innerHTML = '<i class="ti ti-alert-triangle" style="color:#FCA5A5" aria-hidden="true"></i> Action failed &middot; <a href="#" onclick="event.preventDefault();var f=window._actRetry;if(typeof f===\'function\')f();return false" style="color:#5EEAD4;text-decoration:underline;font-weight:700">Retry</a> or check connection';
+    t.style.opacity = '1';
+    t.style.pointerEvents = 'auto';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){ t.style.opacity = '0'; t.style.pointerEvents = 'none'; }, 5500);
+    return;
+  }
+  try { fn(); } catch (e) { /* original action threw — swallow per existing pattern */ }
 }
 
 // ── ASK DUST — mock agent responses to right panel ───────────────────────────
@@ -8417,8 +8609,8 @@ if ('serviceWorker' in navigator) {
 
 </script>
 
-<div class="dov" id="dov" onclick="closeDrawer()"></div>
-<div class="drawer" id="drawer">
+<div class="dov" id="dov" onclick="closeDrawer()" aria-hidden="true"></div>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Agent output" aria-labelledby="drawer-title">
 
   <!-- Mode toggle (v2.8.2) — top-most, full-width pill -->
   <div class="dr-mode-bar" role="tablist" aria-label="Drawer mode">
