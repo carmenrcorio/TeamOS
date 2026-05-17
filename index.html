@@ -1996,6 +1996,183 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cm-spinner{width:14px;height:14px;border:2px solid var(--bd2);border-top-color:var(--tl);border-radius:50%;animation:cm-spin .7s linear infinite}
 @keyframes cm-spin{to{transform:rotate(360deg)}}
 
+/* ═════════════════════════════════════════════════════════════════════════
+   v4.1.0 — Risk & Signals (replaces Coming Soon for #tab-risk)
+   ═════════════════════════════════════════════════════════════════════════ */
+.rs-pg{padding:20px 28px 40px;max-width:1400px;margin:0 auto}
+.rs-top{border-bottom:1px solid var(--bd);margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
+.rs-subnav{display:flex;gap:0;align-items:center;flex-wrap:wrap}
+.rs-subnav-btn{display:inline-flex;align-items:center;gap:6px;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx3);background:transparent;border:none;border-bottom:2px solid transparent;padding:14px 16px;cursor:pointer;transition:color .12s,border-color .12s;letter-spacing:-.005em}
+.rs-subnav-btn span{font-size:14px;line-height:1}
+.rs-subnav-btn:hover{color:var(--tx2)}
+.rs-subnav-btn.on{color:#111827;border-bottom-color:var(--tl);font-weight:700}
+.rs-section{display:none}
+.rs-section.on{display:block}
+
+.rs-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.rs-hd-t{font-size:18px;font-weight:800;color:#111827;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:8px}
+.rs-hd-meta{font-size:12px;color:#6B7280;font-weight:600}
+
+.rs-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.rs-chip{font-size:10px;font-weight:700;padding:5px 11px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .1s;letter-spacing:.01em}
+.rs-chip:hover{border-color:var(--tx2);color:var(--tx)}
+.rs-chip.on{background:var(--tx);color:#fff;border-color:var(--tx)}
+.rs-chip.crit.on{background:var(--rd);border-color:var(--rd);color:#fff}
+.rs-chip.high.on{background:var(--am);border-color:var(--am);color:#fff}
+.rs-chip.watch.on{background:#6B7280;border-color:#6B7280;color:#fff}
+.rs-chip.opp.on{background:var(--tl);border-color:var(--tl);color:#fff}
+.rs-sort-l{font-size:10px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.07em;margin-left:auto;margin-right:6px}
+.rs-sort-sel{font-size:11px;font-weight:600;padding:5px 24px 5px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238A8A86' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 7px center}
+
+/* ─── Risk Matrix ───────────────────────────────────────────────────────── */
+.rs-mx-split{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+@media (max-width:1100px){.rs-mx-split{grid-template-columns:1fr}}
+.rs-mx-wrap{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:18px 18px 22px}
+.rs-mx-l{font-size:10px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.rs-mx-axis-title{font-size:11px;font-weight:700;color:#374151;text-align:center;margin-top:8px}
+.rs-mx{position:relative;width:100%;height:360px;background:linear-gradient(135deg,#FEE2E2 0%,#FEE2E2 25%,#FEF3C7 25%,#FEF3C7 50%,#FEF3C7 50%,#FEF3C7 75%,#D1FAE5 75%,#D1FAE5 100%);background:linear-gradient(to top right,#FEE2E2,#FEF3C7 50%,#D1FAE5);border:1px solid var(--bd2);border-radius:8px;margin-top:6px;overflow:visible}
+.rs-mx-quad{position:absolute;font-size:9px;font-weight:800;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;padding:6px 8px;background:rgba(255,255,255,.7);border-radius:4px;pointer-events:none}
+.rs-mx-quad.tr{top:6px;right:8px;color:#065F46;background:rgba(209,250,229,.85)}
+.rs-mx-quad.tl{top:6px;left:8px;color:#78350F;background:rgba(254,243,199,.85)}
+.rs-mx-quad.br{bottom:6px;right:8px;color:#78350F;background:rgba(254,243,199,.85)}
+.rs-mx-quad.bl{bottom:6px;left:8px;color:#7F1D1D;background:rgba(254,226,226,.85)}
+.rs-mx-grid{position:absolute;inset:0;pointer-events:none}
+.rs-mx-grid::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(0,0,0,.07)}
+.rs-mx-grid::after{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(0,0,0,.07)}
+.rs-mx-dot{position:absolute;border-radius:50%;cursor:pointer;transform:translate(-50%,-50%);transition:transform .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.rs-mx-dot:hover{transform:translate(-50%,-50%) scale(1.1);z-index:5}
+.rs-mx-dot.sel{outline:3px solid var(--tx);outline-offset:2px}
+.rs-mx-dot.r{background:#DC2626}
+.rs-mx-dot.a{background:#D97706}
+.rs-mx-dot.g{background:#059669}
+.rs-mx-dot.gy{background:#9CA3AF;color:#1F2937;text-shadow:none}
+.rs-mx-lbl{position:absolute;font-size:10px;font-weight:700;color:#111827;background:rgba(255,255,255,.9);padding:1px 5px;border-radius:3px;white-space:nowrap;transform:translate(-50%,calc(-50% - 26px));pointer-events:none;letter-spacing:-.01em;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.rs-mx-axis{position:absolute;font-size:10px;font-weight:600;color:#6B7280}
+.rs-mx-axis.x-min{left:0;bottom:-18px}
+.rs-mx-axis.x-mid{left:50%;bottom:-18px;transform:translateX(-50%)}
+.rs-mx-axis.x-max{right:0;bottom:-18px}
+.rs-mx-axis.y-min{left:-30px;bottom:0}
+.rs-mx-axis.y-mid{left:-30px;top:50%;transform:translateY(-50%)}
+.rs-mx-axis.y-max{left:-30px;top:0}
+.rs-mx-axis-x{text-align:center;margin-top:24px;font-size:11px;font-weight:700;color:#374151}
+.rs-mx-axis-y{writing-mode:vertical-rl;transform:rotate(180deg);position:absolute;left:-58px;top:50%;transform:rotate(180deg) translateY(50%);font-size:11px;font-weight:700;color:#374151}
+.rs-mx-legend{display:flex;gap:14px;font-size:10px;color:#374151;font-weight:600;margin-top:14px;flex-wrap:wrap}
+.rs-mx-legend-d{display:inline-flex;align-items:center;gap:5px}
+.rs-mx-legend-d::before{content:'';width:10px;height:10px;border-radius:50%;display:inline-block}
+.rs-mx-legend-d.r::before{background:#DC2626}
+.rs-mx-legend-d.a::before{background:#D97706}
+.rs-mx-legend-d.g::before{background:#059669}
+.rs-mx-legend-d.gy::before{background:#9CA3AF}
+
+.rs-mx-detail{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;min-height:340px}
+.rs-mx-detail-empty{font-size:13px;color:#6B7280;font-style:italic;padding:40px 10px;text-align:center}
+.rs-mx-detail-hd{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;gap:10px}
+.rs-mx-detail-nm{font-size:16px;font-weight:800;color:#111827;letter-spacing:-.01em;line-height:1.2}
+.rs-mx-detail-band{font-size:9px;font-weight:800;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
+.rs-mx-detail-band.r{background:var(--rd-bg);color:var(--rd-dk)}
+.rs-mx-detail-band.a{background:#FEF3C7;color:#78350F}
+.rs-mx-detail-band.g{background:#D1FAE5;color:#065F46}
+.rs-mx-detail-band.gy{background:var(--bg);color:#4B5563}
+.rs-mx-kv{display:grid;grid-template-columns:90px 1fr;gap:6px 12px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55}
+.rs-mx-kv > div:nth-child(odd){color:#6B7280;font-weight:600}
+.rs-mx-acts{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+
+.rs-portfolio{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px 18px;margin-top:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:900px){.rs-portfolio{grid-template-columns:1fr 1fr}}
+.rs-portfolio-cell{display:flex;flex-direction:column;gap:3px}
+.rs-portfolio-l{font-size:10px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.07em}
+.rs-portfolio-v{font-size:18px;font-weight:800;color:#111827;letter-spacing:-.02em}
+.rs-portfolio-v.r{color:#DC2626}
+.rs-portfolio-v.gy{color:#6B7280}
+.rs-portfolio-v.g{color:#059669}
+.rs-portfolio-sub{font-size:11px;color:#6B7280;font-weight:600}
+
+/* ─── All Signals ───────────────────────────────────────────────────────── */
+.rs-sig-list{display:flex;flex-direction:column;gap:8px}
+.rs-sig-row{background:var(--surf);border:1px solid var(--bd);border-radius:8px;padding:11px 14px;display:flex;align-items:flex-start;gap:12px;border-left:3px solid var(--bd2);transition:border-color .1s}
+.rs-sig-row.crit{border-left-color:var(--rd)}
+.rs-sig-row.high{border-left-color:var(--am)}
+.rs-sig-row.watch{border-left-color:#6B7280}
+.rs-sig-row.opp{border-left-color:var(--tl)}
+.rs-sig-row:hover{border-color:var(--bd2)}
+.rs-sig-sev{font-size:9px;font-weight:800;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;flex-shrink:0;margin-top:1px;display:inline-flex;align-items:center;gap:4px}
+.rs-sig-sev.crit{background:var(--rd-bg);color:var(--rd-dk)}
+.rs-sig-sev.high{background:#FEF3C7;color:#78350F}
+.rs-sig-sev.watch{background:var(--bg);color:#374151}
+.rs-sig-sev.opp{background:#D1FAE5;color:#065F46}
+.rs-sig-mid{flex:1;min-width:0}
+.rs-sig-acct{font-size:12px;font-weight:800;color:#111827;letter-spacing:-.01em;cursor:pointer}
+.rs-sig-acct:hover{text-decoration:underline;color:var(--tl-dk)}
+.rs-sig-desc{font-size:12px;color:#1F2937;font-weight:500;line-height:1.5;margin-top:2px}
+.rs-sig-context{font-size:10px;color:#6B7280;font-weight:600;margin-top:3px}
+.rs-sig-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;margin-top:1px}
+
+.rs-btn{font-size:11px;font-weight:700;padding:6px 10px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;white-space:nowrap}
+.rs-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.rs-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.rs-btn.prim:hover{background:#2a2a28;color:#fff;border-color:#2a2a28}
+.rs-btn.danger{border-color:var(--rd);color:var(--rd-dk)}
+.rs-btn.danger:hover{background:var(--rd-bg);color:var(--rd-dk);border-color:var(--rd)}
+.rs-btn i{font-size:12px}
+
+/* ─── Save Plays ────────────────────────────────────────────────────────── */
+.rs-play-card{background:var(--surf);border:1px solid var(--bd);border-left:3px solid var(--rd);border-radius:var(--rlg);padding:18px 20px;margin-bottom:14px}
+.rs-play-card.at-risk{border-left-color:var(--am)}
+.rs-play-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;flex-wrap:wrap}
+.rs-play-nm{font-size:16px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.rs-play-status{font-size:9px;font-weight:800;padding:3px 9px;border-radius:4px;text-transform:uppercase;letter-spacing:.07em;background:var(--rd-bg);color:var(--rd-dk)}
+.rs-play-status.at-risk{background:#FEF3C7;color:#78350F}
+.rs-play-meta{font-size:12px;color:#374151;font-weight:600;display:flex;gap:14px;flex-wrap:wrap}
+.rs-play-meta .sep{color:var(--tx3)}
+.rs-play-sec{margin-top:12px}
+.rs-play-sec-t{font-size:9px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.rs-play-steps{display:flex;flex-direction:column;gap:6px}
+.rs-play-step{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surf2);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.45}
+.rs-play-step-ic{font-size:14px;line-height:1;flex-shrink:0;width:18px;text-align:center}
+.rs-play-step.done{border-left:3px solid var(--tl);background:#F0FDF4}
+.rs-play-step.in-prog{border-left:3px solid var(--am);background:#FFFBEB}
+.rs-play-step.pending{border-left:3px solid var(--bd2)}
+.rs-play-step-t{font-weight:700;color:#111827}
+.rs-play-step-meta{margin-left:auto;font-size:11px;color:#6B7280;font-weight:600}
+.rs-play-sig{display:flex;flex-direction:column;gap:3px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.5}
+.rs-play-sig div{padding-left:14px;position:relative}
+.rs-play-sig div::before{content:'·';position:absolute;left:4px;color:var(--tx3);font-weight:800}
+.rs-play-acts{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}
+
+/* ─── Champion Tracker ──────────────────────────────────────────────────── */
+.rs-champ-card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;margin-bottom:12px;border-left:3px solid var(--rd)}
+.rs-champ-card.high{border-left-color:var(--am)}
+.rs-champ-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.rs-champ-nm{font-size:15px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.rs-champ-band{font-size:9px;font-weight:800;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.07em;background:var(--rd-bg);color:var(--rd-dk)}
+.rs-champ-band.high{background:#FEF3C7;color:#78350F}
+.rs-champ-kv{display:grid;grid-template-columns:170px 1fr;gap:5px 14px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55;margin-bottom:10px}
+.rs-champ-kv > div:nth-child(odd){color:#6B7280;font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.06em;align-self:center}
+.rs-champ-rec{background:var(--surf2);border-left:3px solid var(--tl);padding:9px 12px;border-radius:5px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55;margin:10px 0}
+.rs-champ-rec strong{color:#111827;font-weight:700}
+.rs-champ-acts{display:flex;gap:7px;flex-wrap:wrap}
+.rs-stable-hd{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em;margin:18px 0 8px}
+.rs-stable-row{background:var(--surf2);border:1px solid var(--bd);border-radius:7px;padding:9px 12px;display:flex;align-items:center;gap:10px;font-size:12px;color:#1F2937;font-weight:500;margin-bottom:6px}
+.rs-stable-ic{font-size:14px;color:var(--tl)}
+.rs-stable-nm{font-weight:700;color:#111827}
+.rs-stable-meta{flex:1;color:#6B7280;font-weight:600;font-size:11px}
+.rs-stable-warn{color:#78350F;font-weight:700}
+
+/* ─── Dark Zone (this tab's version) ────────────────────────────────────── */
+.rs-dark-card{background:var(--surf);border:1px solid var(--bd);border-left:3px solid #6B7280;border-radius:var(--rlg);padding:16px 18px;margin-bottom:14px}
+.rs-dark-card.inbound{border-left-color:var(--tl)}
+.rs-dark-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.rs-dark-nm{font-size:15px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.rs-dark-band{font-size:9px;font-weight:800;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.07em;background:var(--bg);color:#4B5563}
+.rs-dark-meta{font-size:12px;color:#374151;font-weight:600;display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.rs-dark-meta .sep{color:var(--tx3)}
+.rs-dark-inbound{background:#D1FAE5;border:1px solid #6EE7B7;color:#065F46;font-size:12px;font-weight:700;padding:8px 11px;border-radius:6px;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.rs-dark-sec{font-size:11px;color:#4B5563;font-weight:600;margin-top:6px}
+.rs-dark-sec b{color:#111827;font-weight:800;text-transform:uppercase;font-size:10px;letter-spacing:.06em;display:block;margin-bottom:3px}
+.rs-dark-rec{background:var(--surf2);border-left:3px solid var(--tl);padding:9px 12px;border-radius:5px;font-size:12px;color:#1F2937;font-weight:500;font-style:italic;line-height:1.55;margin:10px 0}
+.rs-dark-acts{display:flex;gap:7px;flex-wrap:wrap}
+.rs-dark-status{font-size:10px;font-weight:700;padding:4px 24px 4px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:#1F2937;font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238A8A86' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 7px center}
+
 </style>
 </head>
 <body>
@@ -3193,17 +3370,25 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 </div>
 
 <div class="tc" id="tab-risk">
-  <div class="cs-pg">
-    <div class="cs-ic">🛡</div>
-    <h1 class="cs-h">Risk &amp; Signals</h1>
-    <div class="cs-vision">Every risk signal across your book, ranked and ready to act on.</div>
-    <div class="cs-divider"></div>
-    <div class="cs-sec-t">What this tab does</div>
-    <p class="cs-body">Risk &amp; Signals is the portfolio-level risk command center. Every account in your book is plotted on a risk matrix (health score vs. days to renewal) so you can see concentration and exposure at a glance. The full Live Signals feed shows every Gong flag, health drop, champion change, Gong silence, and engagement gap across all accounts &mdash; not just the 5 visible on the dashboard. Save play tracker shows which accounts have active save plays in progress and where each stands. Champion change tracker logs every stakeholder departure and introduction with re-engagement status and which Ghost-Buster touches have been sent. The Dark Zone lives here permanently as a managed re-engagement pipeline, not a passive list.</p>
-    <div class="cs-sec-t">What it connects to</div>
-    <div class="cs-conn">Gainsight &middot; Gong &middot; Salesforce &middot; Ironclad</div>
-    <div class="cs-divider"></div>
-    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  <!-- v4.1.0 — Risk & Signals. Replaces the Coming Soon placeholder.
+       5 sections: Risk Matrix, All Signals, Save Plays, Champion Tracker,
+       Dark Zone. -->
+  <div class="rs-pg">
+    <div class="rs-top">
+      <nav class="rs-subnav" role="tablist" aria-label="Risk & Signals sections">
+        <button class="rs-subnav-btn on" id="rs-tab-matrix"    role="tab" aria-selected="true"  type="button" onclick="rsShow('matrix')"><span>⚡</span> Risk Matrix</button>
+        <button class="rs-subnav-btn"    id="rs-tab-signals"   role="tab" aria-selected="false" type="button" onclick="rsShow('signals')"><span>📡</span> All Signals</button>
+        <button class="rs-subnav-btn"    id="rs-tab-plays"     role="tab" aria-selected="false" type="button" onclick="rsShow('plays')"><span>🎯</span> Save Plays</button>
+        <button class="rs-subnav-btn"    id="rs-tab-champions" role="tab" aria-selected="false" type="button" onclick="rsShow('champions')"><span>👤</span> Champions</button>
+        <button class="rs-subnav-btn"    id="rs-tab-dark"      role="tab" aria-selected="false" type="button" onclick="rsShow('dark')"><span>👻</span> Dark Zone</button>
+      </nav>
+    </div>
+
+    <div class="rs-section on" id="rs-sec-matrix"    role="tabpanel" aria-labelledby="rs-tab-matrix"></div>
+    <div class="rs-section"    id="rs-sec-signals"   role="tabpanel" aria-labelledby="rs-tab-signals"   hidden></div>
+    <div class="rs-section"    id="rs-sec-plays"     role="tabpanel" aria-labelledby="rs-tab-plays"     hidden></div>
+    <div class="rs-section"    id="rs-sec-champions" role="tabpanel" aria-labelledby="rs-tab-champions" hidden></div>
+    <div class="rs-section"    id="rs-sec-dark"      role="tabpanel" aria-labelledby="rs-tab-dark"      hidden></div>
   </div>
 </div>
 
@@ -9629,6 +9814,395 @@ function cmWizBuild(status, sentDate) {
 // goTab will call cmShowSection on first activation; pre-render so opening
 // the tab is instant.
 cmRenderCampaigns();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// v4.1.0 — Risk & Signals
+// 5 sections: Risk Matrix, All Signals, Save Plays, Champion Tracker,
+// Dark Zone. All data is session-scoped (in-memory); status updates apply
+// for the current session and fire toasts confirming the simulated
+// Gainsight sync.
+// ═══════════════════════════════════════════════════════════════════════════
+var RS_ACCOUNTS = [
+  { key:'nova',     name:'NovaVault',              health:23,  daysOut:17, arr:31, arrLabel:'$31K', renewal:'Jun 1',  band:'r',  champion:'Michael Torres (cold intro)',  gong:'Apr 28 · champion departure' },
+  { key:'brightex', name:'Brightex Inc',           health:48,  daysOut:31, arr:36, arrLabel:'$36K', renewal:'Jun 15', band:'a',  champion:'Sarah Chen',                   gong:'May 10 · SLA question' },
+  { key:'acme',     name:'Acme Corp',              health:82,  daysOut:89, arr:48, arrLabel:'$48K', renewal:'Aug 12', band:'g',  champion:'David Kim',                    gong:'May 10 · SSO interest' },
+  { key:'meridian', name:'Meridian Health Systems',health:42,  daysOut:45, arr:22, arrLabel:'$22K', renewal:'Jun 30', band:'gy', champion:'Jennifer Ramos',               gong:'73d ago',     unknown:true, daysDark:73 },
+  { key:'creston',  name:'Creston Software',       health:38,  daysOut:60, arr:18, arrLabel:'$18K', renewal:'Jul 15', band:'gy', champion:'Marcus Webb (dormant)',        gong:'67d ago',     unknown:true, daysDark:67 },
+  { key:'apex',     name:'Apex Dynamics',          health:40,  daysOut:77, arr:15, arrLabel:'$15K', renewal:'Aug 1',  band:'gy', champion:'Ryan Patel (new)',             gong:'61d ago',     unknown:true, daysDark:61 }
+];
+
+var RS_SIGNALS = [
+  { id:1,  sev:'crit',  acct:'nova',     acctName:'NovaVault',   desc:'Champion departed — James Wu left, Michael Torres cold intro',                       ctx:'17d to renewal · $31K ARR', action:'save',    actionLabel:'Open Save Strategy' },
+  { id:2,  sev:'crit',  acct:'nova',     acctName:'NovaVault',   desc:'Contract not opened — sent Jun 1, 0 views, 17 days elapsed',                         ctx:'Ironclad: Not Opened',      action:'save',    actionLabel:'Open Save Play' },
+  { id:3,  sev:'crit',  acct:'nova',     acctName:'NovaVault',   desc:'45 days Gong silence — no call since Apr 28 champion call',                          ctx:'45d since last touch',      action:'gb',      actionLabel:'Ghost-Buster' },
+  { id:4,  sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'Health score drop — 71 → 48 in 30 days (−23 points)',                                ctx:'31d to renewal · $36K ARR', action:'risk',    actionLabel:'Run Risk Analyst' },
+  { id:5,  sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'Competitor flagged in last 2 Gong calls — alternative vendor mentioned by Sarah Chen',ctx:'Last Gong: May 10',         action:'save',    actionLabel:'Open Save Strategy' },
+  { id:6,  sev:'high',  acct:'brightex', acctName:'Brightex',    desc:'SLA question unanswered — Sarah Chen emailed 4h ago, no reply from CSM',             ctx:'Inbox · 4h overdue',        action:'draft',   actionLabel:'Draft Reply' },
+  { id:7,  sev:'watch', acct:'meridian', acctName:'Meridian',    desc:'73 days dark — no Gong call, no CSM touch since March',                              ctx:'Inbound: Jennifer emailed yesterday', action:'gb', actionLabel:'Ghost-Buster' },
+  { id:8,  sev:'watch', acct:'creston',  acctName:'Creston',     desc:'67 days dark — passive neglect, health was 76 at last contact',                      ctx:'67d since last touch',      action:'gb',      actionLabel:'Ghost-Buster' },
+  { id:9,  sev:'watch', acct:'apex',     acctName:'Apex',        desc:'Champion change — James Wu departed, Ryan Patel new IT Director, no intro made',     ctx:'77d to renewal',            action:'champion',actionLabel:'Champion Change Protocol' },
+  { id:10, sev:'opp',   acct:'acme',     acctName:'Acme',        desc:'Expansion signal — David Kim flagged enterprise tier + SSO interest unprompted',     ctx:'89d to renewal · $48K ARR', action:'prep',    actionLabel:'Open Prep Me' },
+  { id:11, sev:'watch', acct:'brightex', acctName:'Brightex',    desc:'Support ticket spike — 3 tickets opened in last 7 days, above normal baseline',     ctx:'Zendesk · last 7d',         action:'risk',    actionLabel:'Run Risk Analyst' }
+];
+
+var RS_PLAYS = [
+  { acct:'nova',     name:'NovaVault Save Play',  status:'EMERGENCY', statusCls:'',         started:'May 15', day:2, arr:'$31K', renewal:'Jun 1',
+    steps:[
+      { s:'done',    n:1, t:'Champion change logged in Gainsight',                meta:'Done (May 15)' },
+      { s:'in-prog', n:2, t:'Cold intro to Michael Torres',                       meta:'In progress · Touch 1 sent' },
+      { s:'pending', n:3, t:'Executive sponsor call',                             meta:'Scheduled for May 20' },
+      { s:'pending', n:4, t:'Contract re-engagement',                             meta:'Pending Torres response' },
+      { s:'pending', n:5, t:'Renewal conversation',                               meta:'Target: May 28' }
+    ],
+    signals:['Health: 23 (Critical)','Champion: departed','Contract: not opened','Gong: 45d silence']
+  },
+  { acct:'brightex', name:'Brightex Save Play',   status:'AT RISK',   statusCls:'at-risk',  started:'May 14', day:3, arr:'$36K', renewal:'Jun 15',
+    steps:[
+      { s:'done',    n:1, t:'Risk CTA created in Gainsight',                       meta:'Done (May 14)' },
+      { s:'done',    n:2, t:'SLA question identified',                             meta:'Done (May 10 Gong + email)' },
+      { s:'in-prog', n:3, t:'Draft SLA response',                                  meta:'In progress' },
+      { s:'pending', n:4, t:'Renewal conversation with Sarah Chen',                meta:'Pending' },
+      { s:'pending', n:5, t:'Renewal close',                                       meta:'Target: Jun 10' }
+    ],
+    signals:['Health: 48 (↓ from 71)','Competitor: flagged ×2','SLA question: unanswered','Champion: Sarah Chen (intact)']
+  }
+];
+
+var RS_CHAMPS_CHANGES = [
+  { acct:'nova', acctName:'NovaVault', risk:'crit', riskLabel:'CRITICAL', renewalDays:17,
+    prev:'James Wu (Head of IT Security) · Departed Apr 28',
+    next:'Michael Torres (IT Director) · Cold intro — no prior 1Password contact',
+    reStatus:'IN PROGRESS — Touch 1 sent May 15 · No reply · Touch 2 scheduled May 20',
+    rec:'AE warm intro before CSM cold email. Check AE relationship with Torres first.'
+  },
+  { acct:'apex', acctName:'Apex Dynamics', risk:'high', riskLabel:'HIGH', renewalDays:77,
+    prev:'James Wu (Head of IT) · Departed ~Mar 2026',
+    next:'Ryan Patel (IT Director) · No prior contact',
+    reStatus:'NOT STARTED — No outreach sent',
+    rec:'Request AE warm intro before any CSM outreach. Do not cold email without intro.'
+  }
+];
+
+var RS_CHAMPS_STABLE = [
+  { acct:'acme',     nm:'Acme Corp',              champ:'David Kim · Head of IT Security · Last Gong May 10',  warn:false },
+  { acct:'brightex', nm:'Brightex',               champ:'Sarah Chen · VP Operations · Last Gong May 10',       warn:false },
+  { acct:'meridian', nm:'Meridian',               champ:'Jennifer Ramos · IT Manager · Last Gong 73d ago',     warn:true }
+];
+
+var RS_DARK = [
+  { acct:'meridian', nm:'Meridian Health Systems', days:73, arr:'$22K', renewal:'Jun 30', renewalDays:45, lastGong:'March 15 · SSO rollout', lastTouch:'March 15', inbound:true, inboundMsg:'Jennifer Ramos emailed yesterday — RESPOND TODAY', history:'No outreach sent yet', rec:'Jennifer’s inbound email is the opening. Reply within the hour — don’t let it go cold again. Reference the SSO rollout from March 15.' },
+  { acct:'creston',  nm:'Creston Software',        days:67, arr:'$18K', renewal:'Jul 15', renewalDays:60, lastGong:'March · Onboarding review', lastTouch:'March', inbound:false, history:'Ghost-Buster Touch 1 not yet sent', rec:'Passive neglect, not risk dark. Marcus Webb is likely intact. Lead with a specific product update — not a generic check-in.' },
+  { acct:'apex',     nm:'Apex Dynamics',           days:61, arr:'$15K', renewal:'Aug 1',  renewalDays:77, lastGong:'~March · Champion: James Wu (departed)', lastTouch:'March', inbound:false, history:'Champion change active (see Champion Tracker). AE warm intro not yet made.', rec:'Do not cold email Ryan Patel. Get AE warm intro first. 61 days gives enough runway to do this right.' }
+];
+
+var RS_ACTIVE = 'matrix';
+var RS_SIG_FILTER = 'all';
+var RS_SIG_SORT = 'newest';
+var RS_MX_SEL = null;
+
+function rsEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function rsShow(name) {
+  RS_ACTIVE = name;
+  ['matrix','signals','plays','champions','dark'].forEach(function(k){
+    var btn = document.getElementById('rs-tab-' + k);
+    var sec = document.getElementById('rs-sec-' + k);
+    var on = (k === name);
+    if (btn) { btn.classList.toggle('on', on); btn.setAttribute('aria-selected', on ? 'true' : 'false'); }
+    if (sec) { sec.classList.toggle('on', on); if (on) sec.removeAttribute('hidden'); else sec.setAttribute('hidden',''); }
+  });
+  if (name === 'matrix')    rsRenderMatrix();
+  if (name === 'signals')   rsRenderSignals();
+  if (name === 'plays')     rsRenderPlays();
+  if (name === 'champions') rsRenderChamps();
+  if (name === 'dark')      rsRenderDark();
+}
+
+// ── Risk Matrix ──────────────────────────────────────────────────────────────
+function rsRenderMatrix() {
+  var sec = document.getElementById('rs-sec-matrix');
+  if (!sec) return;
+  // X = daysOut / 120 (0 on left → 120 on right). Y = health (0 bottom → 100 top).
+  // CSS gradient runs bottom-left red → top-right green to match quadrant zones.
+  var dots = RS_ACCOUNTS.map(function(a){
+    var x = Math.min(100, (a.daysOut / 120) * 100);
+    var y = Math.max(0, Math.min(100, a.health));
+    var size = 26 + Math.min(28, a.arr * 0.55); // 26-54px range; ARR sized
+    var sel = (RS_MX_SEL === a.key) ? ' sel' : '';
+    var initials = a.name.split(' ').filter(Boolean).slice(0,2).map(function(w){return w[0];}).join('');
+    return '<button class="rs-mx-dot ' + a.band + sel + '" type="button" '
+      + 'style="left:' + x + '%;top:' + (100 - y) + '%;width:' + size + 'px;height:' + size + 'px;font-size:' + Math.max(10, Math.round(size/3.2)) + 'px" '
+      + 'onclick="rsMxSelect(\'' + a.key + '\')" aria-label="' + rsEscape(a.name + ' — Health ' + (a.unknown ? 'Unknown' : a.health) + ', ' + a.daysOut + ' days to renewal, ' + a.arrLabel + ' ARR') + '">' + initials
+      + '<span class="rs-mx-lbl">' + rsEscape(a.name) + '</span>'
+    + '</button>';
+  }).join('');
+  var atRisk = RS_ACCOUNTS.filter(function(a){return a.band === 'r' || a.band === 'a';});
+  var dark   = RS_ACCOUNTS.filter(function(a){return a.band === 'gy';});
+  var healthy= RS_ACCOUNTS.filter(function(a){return a.band === 'g';});
+  var sumARR = function(arr){ return arr.reduce(function(s,a){return s + a.arr;}, 0); };
+  var totalARR = sumARR(RS_ACCOUNTS);
+  sec.innerHTML = ''
+    + '<div class="rs-hd"><div class="rs-hd-t">⚡ Risk Matrix</div><div class="rs-hd-meta">' + RS_ACCOUNTS.length + ' accounts · Health × Days to Renewal</div></div>'
+    + '<div class="rs-mx-split">'
+    +   '<div>'
+    +     '<div class="rs-mx-wrap">'
+    +       '<div class="rs-mx-l">Health score (0–100) vs. days to renewal (0–120)</div>'
+    +       '<div class="rs-mx" style="margin-left:30px;margin-bottom:24px">'
+    +         '<div class="rs-mx-grid"></div>'
+    +         '<div class="rs-mx-quad tl">⚠ Watch</div>'
+    +         '<div class="rs-mx-quad tr">✓ Stable</div>'
+    +         '<div class="rs-mx-quad bl">⚡ Act Now</div>'
+    +         '<div class="rs-mx-quad br">👁 Monitor</div>'
+    +         dots
+    +         '<span class="rs-mx-axis y-max">100</span>'
+    +         '<span class="rs-mx-axis y-mid">50</span>'
+    +         '<span class="rs-mx-axis y-min">0</span>'
+    +         '<span class="rs-mx-axis x-min">0d</span>'
+    +         '<span class="rs-mx-axis x-mid">60d</span>'
+    +         '<span class="rs-mx-axis x-max">120d+</span>'
+    +       '</div>'
+    +       '<div class="rs-mx-axis-x" style="margin-left:30px">Days to renewal →</div>'
+    +       '<div class="rs-mx-legend"><span class="rs-mx-legend-d r">Critical</span><span class="rs-mx-legend-d a">At-Risk</span><span class="rs-mx-legend-d g">Healthy</span><span class="rs-mx-legend-d gy">Unknown (dark)</span><span style="color:#6B7280">· Circle size = ARR</span></div>'
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="rs-mx-detail" id="rs-mx-detail"></div>'
+    + '</div>'
+    + '<div class="rs-portfolio">'
+    +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Total accounts at risk</div><div class="rs-portfolio-v r">' + atRisk.length + '</div><div class="rs-portfolio-sub">$' + sumARR(atRisk) + 'K ARR</div></div>'
+    +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Dark zone</div><div class="rs-portfolio-v gy">' + dark.length + '</div><div class="rs-portfolio-sub">$' + sumARR(dark) + 'K ARR</div></div>'
+    +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Healthy</div><div class="rs-portfolio-v g">' + healthy.length + '</div><div class="rs-portfolio-sub">$' + sumARR(healthy) + 'K ARR</div></div>'
+    +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Total ARR managed</div><div class="rs-portfolio-v">$' + totalARR + 'K</div><div class="rs-portfolio-sub">' + RS_ACCOUNTS.length + ' accounts</div></div>'
+    + '</div>';
+  rsMxRenderDetail();
+}
+function rsMxSelect(key) { RS_MX_SEL = key; rsRenderMatrix(); }
+function rsMxRenderDetail() {
+  var box = document.getElementById('rs-mx-detail');
+  if (!box) return;
+  if (!RS_MX_SEL) { box.innerHTML = '<div class="rs-mx-detail-empty">Click any account on the matrix to see its full snapshot.</div>'; return; }
+  var a = RS_ACCOUNTS.find(function(x){return x.key===RS_MX_SEL;});
+  if (!a) { box.innerHTML = '<div class="rs-mx-detail-empty">Account not found.</div>'; return; }
+  var bandLabel = { r:'Critical', a:'At-Risk', g:'Healthy', gy:'Unknown' }[a.band] || '';
+  var ctas = a.band === 'r' ? '4 open · 2 overdue' : (a.band === 'a' ? '2 open · 1 overdue' : (a.band === 'g' ? '0 open' : '1 open'));
+  box.innerHTML = ''
+    + '<div class="rs-mx-detail-hd">'
+    +   '<div><div class="rs-mx-detail-nm">' + rsEscape(a.name) + '</div><div style="font-size:11px;color:#6B7280;font-weight:600;margin-top:2px">' + (a.unknown ? 'Health unknown · last data ' + a.daysDark + 'd ago' : ('Health ' + a.health)) + '</div></div>'
+    +   '<span class="rs-mx-detail-band ' + a.band + '">' + bandLabel + '</span>'
+    + '</div>'
+    + '<div class="rs-mx-kv">'
+    +   '<div>Health</div><div>' + (a.unknown ? 'Unknown (dark)' : a.health) + '</div>'
+    +   '<div>ARR</div><div>' + a.arrLabel + '</div>'
+    +   '<div>Renewal</div><div>' + a.renewal + ' · ' + a.daysOut + 'd</div>'
+    +   '<div>Champion</div><div>' + rsEscape(a.champion) + '</div>'
+    +   '<div>Open CTAs</div><div>' + ctas + '</div>'
+    +   '<div>Last Gong</div><div>' + rsEscape(a.gong) + '</div>'
+    + '</div>'
+    + '<div class="rs-mx-acts">'
+    +   '<button class="rs-btn prim" type="button" onclick="rsOpenMB(\'' + a.key + '\')"><i class="ti ti-arrow-right"></i> Open in Mission Briefing</button>'
+    +   '<button class="rs-btn" type="button" onclick="rsRunRisk(\'' + a.key + '\')"><i class="ti ti-shield-check"></i> Run Risk Analyst</button>'
+    +   '<button class="rs-btn" type="button" onclick="rsOpenSave(\'' + a.key + '\')"><i class="ti ti-lifebuoy"></i> Open Save Play</button>'
+    + '</div>';
+}
+
+// ── All Signals ─────────────────────────────────────────────────────────────
+function rsRenderSignals() {
+  var sec = document.getElementById('rs-sec-signals');
+  if (!sec) return;
+  var filters = [['all','All'],['crit','Critical'],['high','High'],['watch','Watch'],['opp','Opportunity']];
+  var chips = filters.map(function(f){
+    var on = (RS_SIG_FILTER === f[0]) ? ' on' : '';
+    return '<button class="rs-chip ' + f[0] + on + '" type="button" onclick="rsSigFilter(\'' + f[0] + '\')">' + f[1] + '</button>';
+  }).join('');
+  var sortSel = ''
+    + '<span class="rs-sort-l">Sort</span>'
+    + '<select class="rs-sort-sel" onchange="rsSigSort(this.value)" aria-label="Sort signals">'
+    +   '<option value="newest"' + (RS_SIG_SORT === 'newest' ? ' selected' : '') + '>Newest</option>'
+    +   '<option value="severity"' + (RS_SIG_SORT === 'severity' ? ' selected' : '') + '>Severity</option>'
+    +   '<option value="arr"' + (RS_SIG_SORT === 'arr' ? ' selected' : '') + '>ARR at risk</option>'
+    + '</select>';
+  var rows = RS_SIGNALS.filter(function(s){ return RS_SIG_FILTER === 'all' || s.sev === RS_SIG_FILTER; });
+  var sevOrder = { crit:0, high:1, watch:2, opp:3 };
+  if (RS_SIG_SORT === 'severity') rows = rows.slice().sort(function(a,b){ return sevOrder[a.sev] - sevOrder[b.sev]; });
+  if (RS_SIG_SORT === 'arr') {
+    var arrMap = {}; RS_ACCOUNTS.forEach(function(a){ arrMap[a.key] = a.arr; });
+    rows = rows.slice().sort(function(a,b){ return (arrMap[b.acct]||0) - (arrMap[a.acct]||0); });
+  }
+  var sevIcon = { crit:'🔴', high:'🟡', watch:'👁', opp:'✅' };
+  var sevLabel = { crit:'CRITICAL', high:'HIGH', watch:'WATCH', opp:'OPPORTUNITY' };
+  var listHtml = rows.length ? rows.map(function(s){
+    return '<div class="rs-sig-row ' + s.sev + '">'
+      + '<span class="rs-sig-sev ' + s.sev + '">' + sevIcon[s.sev] + ' ' + sevLabel[s.sev] + '</span>'
+      + '<div class="rs-sig-mid">'
+      +   '<span class="rs-sig-acct acct-lk" onclick="rsOpenMB(\'' + s.acct + '\')">' + rsEscape(s.acctName) + '</span>'
+      +   '<div class="rs-sig-desc">' + rsEscape(s.desc) + '</div>'
+      +   '<div class="rs-sig-context">' + rsEscape(s.ctx) + '</div>'
+      + '</div>'
+      + '<div class="rs-sig-actions"><button class="rs-btn" type="button" onclick="rsSigAction(\'' + s.action + '\',\'' + s.acct + '\')">' + rsEscape(s.actionLabel) + '</button></div>'
+    + '</div>';
+  }).join('') : '<div class="rs-mx-detail-empty" style="background:var(--surf);border:1px solid var(--bd);border-radius:8px">No signals match this filter.</div>';
+  sec.innerHTML = ''
+    + '<div class="rs-hd"><div class="rs-hd-t">📡 Live Signals · ' + RS_SIGNALS.length + ' signals</div></div>'
+    + '<div class="rs-filters">' + chips + sortSel + '</div>'
+    + '<div class="rs-sig-list">' + listHtml + '</div>';
+}
+function rsSigFilter(f) { RS_SIG_FILTER = f; rsRenderSignals(); }
+function rsSigSort(s)   { RS_SIG_SORT = s;   rsRenderSignals(); }
+function rsSigAction(kind, acct) {
+  switch (kind) {
+    case 'save':     rsOpenSave(acct); break;
+    case 'risk':     rsRunRisk(acct); break;
+    case 'prep':     rsRunPrep(acct); break;
+    case 'gb':       rsOpenGB(acct); break;
+    case 'draft':    if (typeof draftReply === 'function') draftReply(acct); else toast('Draft Reply · ' + rsEscape(acct) + ' ✓'); break;
+    case 'champion': rsShow('champions'); toast('Opening Champion Change Protocol · ' + rsEscape(acct) + ' ✓'); break;
+    default: toast('Action: ' + kind + ' · ' + rsEscape(acct) + ' ✓');
+  }
+}
+
+// ── Save Plays ──────────────────────────────────────────────────────────────
+function rsRenderPlays() {
+  var sec = document.getElementById('rs-sec-plays');
+  if (!sec) return;
+  var totalARR = RS_PLAYS.reduce(function(s,p){ return s + parseInt(p.arr.replace(/[^0-9]/g,''),10); }, 0);
+  var cards = RS_PLAYS.map(rsPlayCardHTML).join('');
+  sec.innerHTML = ''
+    + '<div class="rs-hd"><div class="rs-hd-t">🎯 Save Plays · ' + RS_PLAYS.length + ' active · $' + totalARR + 'K ARR</div><button class="rs-btn prim" type="button" onclick="rsStartPlay()"><i class="ti ti-plus"></i> Start New Save Play</button></div>'
+    + cards;
+}
+function rsPlayCardHTML(p) {
+  var stepIc = { done:'✅', 'in-prog':'⏳', pending:'○' };
+  var steps = p.steps.map(function(st){
+    return '<div class="rs-play-step ' + st.s + '"><span class="rs-play-step-ic">' + stepIc[st.s] + '</span><span class="rs-play-step-t">Step ' + st.n + ':</span><span>' + rsEscape(st.t) + '</span><span class="rs-play-step-meta">' + rsEscape(st.meta) + '</span></div>';
+  }).join('');
+  var sigs = p.signals.map(function(s){ return '<div>' + rsEscape(s) + '</div>'; }).join('');
+  return '<div class="rs-play-card ' + (p.statusCls || '') + '">'
+    + '<div class="rs-play-hd">'
+    +   '<div><div class="rs-play-nm">' + rsEscape(p.name) + ' — ACTIVE</div><div class="rs-play-meta" style="margin-top:3px"><span>Started: ' + p.started + '</span><span class="sep">·</span><span>Day ' + p.day + ' of play</span><span class="sep">·</span><span>ARR at stake: <b>' + p.arr + '</b></span><span class="sep">·</span><span>Renewal: ' + p.renewal + '</span></div></div>'
+    +   '<span class="rs-play-status ' + (p.statusCls || '') + '">' + p.status + '</span>'
+    + '</div>'
+    + '<div class="rs-play-sec"><div class="rs-play-sec-t">Play steps</div><div class="rs-play-steps">' + steps + '</div></div>'
+    + '<div class="rs-play-sec"><div class="rs-play-sec-t">Signals driving this play</div><div class="rs-play-sig">' + sigs + '</div></div>'
+    + '<div class="rs-play-acts">'
+    +   '<button class="rs-btn" type="button" onclick="rsPlayUpdate(\'' + p.acct + '\')"><i class="ti ti-edit"></i> Update play status</button>'
+    +   '<button class="rs-btn" type="button" onclick="rsPlayNote(\'' + p.acct + '\')"><i class="ti ti-note"></i> Add note</button>'
+    +   '<button class="rs-btn" type="button" onclick="rsPlayPush(\'' + p.acct + '\')"><i class="ti ti-cloud-upload"></i> Push to Gainsight</button>'
+    +   '<button class="rs-btn danger" type="button" onclick="rsPlayEscalate(\'' + p.acct + '\')"><i class="ti ti-arrow-up-circle"></i> Escalate to TL</button>'
+    + '</div>'
+  + '</div>';
+}
+function rsPlayUpdate(acct) {
+  var p = RS_PLAYS.find(function(x){return x.acct===acct;});
+  if (!p) return;
+  var nextStep = p.steps.find(function(s){return s.s==='in-prog';}) || p.steps.find(function(s){return s.s==='pending';});
+  if (nextStep) { nextStep.s = nextStep.s === 'in-prog' ? 'done' : 'in-prog'; nextStep.meta = nextStep.s === 'done' ? 'Done (Today)' : 'In progress · Today'; }
+  rsRenderPlays();
+  toast('Step ' + (nextStep ? nextStep.n : '') + ' updated · ' + rsEscape(p.name) + ' ✓');
+}
+function rsPlayNote(acct) { toast('Note added to ' + rsEscape(acct) + ' save play · Gainsight ✓'); }
+function rsPlayPush(acct) { toast('Save play updated · Gainsight ✓'); }
+function rsPlayEscalate(acct) {
+  var p = RS_PLAYS.find(function(x){return x.acct===acct;});
+  toast('Situation brief sent to Team Lead · ' + rsEscape(p ? p.name : acct) + ' · Dust summary attached ✓');
+}
+function rsStartPlay() { toast('Save play started · New account · Created in Gainsight ✓'); }
+
+// ── Champion Tracker ────────────────────────────────────────────────────────
+function rsRenderChamps() {
+  var sec = document.getElementById('rs-sec-champions');
+  if (!sec) return;
+  var changes = RS_CHAMPS_CHANGES.map(function(c){
+    var actsHtml = c.acct === 'apex'
+      ? '<button class="rs-btn prim" type="button" onclick="rsStartReeng(\'apex\')"><i class="ti ti-rocket"></i> Start Re-engagement</button><button class="rs-btn" type="button" onclick="rsNotifyAE(\'apex\')"><i class="ti ti-brand-slack"></i> Notify AE</button><button class="rs-btn" type="button" onclick="rsChampUpdate(\'apex\')"><i class="ti ti-edit"></i> Update status</button>'
+      : '<button class="rs-btn prim" type="button" onclick="rsOpenGB(\'nova\')"><i class="ti ti-eye"></i> View Ghost-Buster</button><button class="rs-btn" type="button" onclick="rsNotifyAE(\'nova\')"><i class="ti ti-brand-slack"></i> Notify AE</button><button class="rs-btn" type="button" onclick="rsChampUpdate(\'nova\')"><i class="ti ti-edit"></i> Update status</button>';
+    return '<div class="rs-champ-card ' + c.risk + '">'
+      + '<div class="rs-champ-hd"><div class="rs-champ-nm">' + rsEscape(c.acctName) + '</div><span class="rs-champ-band ' + c.risk + '">' + rsEscape(c.riskLabel) + ' · ' + c.renewalDays + 'd to renewal</span></div>'
+      + '<div class="rs-champ-kv">'
+      +   '<div>Previous champion</div><div>' + rsEscape(c.prev) + '</div>'
+      +   '<div>New contact</div><div>' + rsEscape(c.next) + '</div>'
+      +   '<div>Re-engagement</div><div>' + rsEscape(c.reStatus) + '</div>'
+      + '</div>'
+      + '<div class="rs-champ-rec"><strong>Recommendation:</strong> ' + rsEscape(c.rec) + '</div>'
+      + '<div class="rs-champ-acts">' + actsHtml + '</div>'
+    + '</div>';
+  }).join('');
+  var stable = RS_CHAMPS_STABLE.map(function(s){
+    return '<div class="rs-stable-row">'
+      + '<span class="rs-stable-ic">' + (s.warn ? '⚠' : '✅') + '</span>'
+      + '<span class="rs-stable-nm">' + rsEscape(s.nm)+ '</span>'
+      + '<span class="rs-stable-meta' + (s.warn ? ' rs-stable-warn' : '') + '">' + rsEscape(s.champ) + (s.warn ? ' ⚠' : '') + '</span>'
+      + '<button class="rs-btn" type="button" onclick="rsChampUpdate(\'' + s.acct + '\')"><i class="ti ti-edit"></i> Update champion</button>'
+    + '</div>';
+  }).join('');
+  sec.innerHTML = ''
+    + '<div class="rs-hd"><div class="rs-hd-t">👤 Champion Tracker · ' + RS_CHAMPS_CHANGES.length + ' changes active</div></div>'
+    + changes
+    + '<div class="rs-stable-hd">Stable champions (no changes)</div>'
+    + stable;
+}
+function rsStartReeng(acct)  { toast('Re-engagement sequence started · ' + rsEscape(acct) + ' · AE intro flagged ✓'); }
+function rsNotifyAE(acct)    { toast('Slack DM sent to AE · ' + rsEscape(acct) + ' · Warm intro requested ✓'); }
+function rsChampUpdate(acct) { toast('Champion updated · ' + rsEscape(acct) + ' · Gainsight ✓'); }
+
+// ── Dark Zone (this tab) ────────────────────────────────────────────────────
+function rsRenderDark() {
+  var sec = document.getElementById('rs-sec-dark');
+  if (!sec) return;
+  var totalARR = RS_DARK.reduce(function(s,d){ return s + parseInt(d.arr.replace(/[^0-9]/g,''),10); }, 0);
+  var cards = RS_DARK.map(function(d){
+    var inboundHtml = d.inbound ? '<div class="rs-dark-inbound">📬 ' + rsEscape(d.inboundMsg) + '</div>' : '';
+    var actsHtml = d.acct === 'apex'
+      ? '<button class="rs-btn prim" type="button" onclick="rsNotifyAE(\'apex\')"><i class="ti ti-brand-slack"></i> Notify AE first</button><button class="rs-btn" type="button" onclick="rsOpenGB(\'apex\')"><i class="ti ti-ghost"></i> Ghost-Buster after intro</button>'
+      : '<button class="rs-btn prim" type="button" onclick="rsOpenGB(\'' + d.acct + '\')"><i class="ti ti-ghost"></i> Ghost-Buster</button><button class="rs-btn" type="button" onclick="rsLogTouch(\'' + d.acct + '\')"><i class="ti ti-note"></i> Log touch</button>';
+    return '<div class="rs-dark-card' + (d.inbound ? ' inbound' : '') + '">'
+      + '<div class="rs-dark-hd"><div class="rs-dark-nm">' + rsEscape(d.nm) + '</div><span class="rs-dark-band">' + d.days + ' days dark</span></div>'
+      + '<div class="rs-dark-meta"><span>ARR: <b style="color:#111827">' + d.arr + '</b></span><span class="sep">·</span><span>Renewal: ' + d.renewal + ' (' + d.renewalDays + 'd)</span><span class="sep">·</span><span>Last Gong: ' + rsEscape(d.lastGong) + '</span><span class="sep">·</span><span>Last CSM touch: ' + rsEscape(d.lastTouch) + '</span></div>'
+      + inboundHtml
+      + '<div class="rs-dark-sec"><b>Re-engagement history</b>' + rsEscape(d.history) + '</div>'
+      + '<div class="rs-dark-rec">' + rsEscape(d.rec) + '</div>'
+      + '<div class="rs-dark-acts">' + actsHtml
+      +   '<select class="rs-dark-status" aria-label="Re-engagement status" onchange="rsDarkStatusUpdate(\'' + d.acct + '\',this.value)">'
+      +     '<option>Not started</option><option>AE intro requested</option><option>Touch 1 sent</option><option>Touch 2 sent</option><option>Responded</option><option>Closed lost</option>'
+      +   '</select>'
+      + '</div>'
+    + '</div>';
+  }).join('');
+  sec.innerHTML = ''
+    + '<div class="rs-hd"><div class="rs-hd-t">👻 Dark Zone · ' + RS_DARK.length + ' accounts · $' + totalARR + 'K ARR</div></div>'
+    + cards;
+}
+function rsLogTouch(acct) { toast('Touch logged · ' + rsEscape(acct) + ' · Gainsight ✓'); }
+function rsDarkStatusUpdate(acct, status) {
+  if (!status) return;
+  toast('Status updated · ' + rsEscape(acct) + ' · ' + rsEscape(status) + ' · Gainsight ✓');
+}
+
+// ── Cross-section action helpers ────────────────────────────────────────────
+function rsOpenMB(acct) {
+  // Route to CSM Dashboard and open the account's Mission Briefing panel
+  // when the helpers exist; otherwise fall back to a toast.
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'dash\'"]');
+    if (tab) goTab('dash', tab);
+  }
+  setTimeout(function(){
+    if (typeof openPanel === 'function') {
+      try { openPanel(acct); return; } catch (_) {}
+    }
+    toast('Mission Briefing · ' + rsEscape(acct) + ' ✓');
+  }, 80);
+}
+function rsRunRisk(acct) { if (typeof openAgentDrawer === 'function') openAgentDrawer('risk', acct); else toast('Risk Analyst · ' + rsEscape(acct) + ' ✓'); }
+function rsRunPrep(acct) { if (typeof openAgentDrawer === 'function') openAgentDrawer('prep', acct); else toast('Prep Me · ' + rsEscape(acct) + ' ✓'); }
+function rsOpenSave(acct){ if (typeof openAgentDrawer === 'function') openAgentDrawer('save', acct); else toast('Save Strategy · ' + rsEscape(acct) + ' ✓'); }
+function rsOpenGB(acct)  {
+  if (typeof openGhostBusterFromPopover === 'function') { try { openGhostBusterFromPopover(acct); return; } catch (_) {} }
+  toast('Ghost-Buster · ' + rsEscape(acct) + ' ✓');
+}
+
+// Pre-render default section so opening the tab is instant.
+rsRenderMatrix();
 
 </script>
 
