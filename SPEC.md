@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.1.0
+**Version:** 4.2.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,65 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.2.0] — 2026-05-17
+
+Forecasting tab replaces the Coming Soon placeholder. Pipeline, Timeline, Dust Forecast, and ARR Trends — the full-depth surface behind the dashboard's "$67K ARR at risk" pulse popover. All existing tabs and the pulse popover itself are untouched.
+
+### Tab structure
+- New `fc-subnav` at the top of `#tab-forecast` with four tabs: 📈 Pipeline · ⏱ Timeline · 🔮 Dust Forecast · 📊 ARR Trends. `role="tablist"` + per-button `aria-selected`. Default: Pipeline.
+
+### Pipeline
+- Renewal pipeline table sorted by urgency (NovaVault 17d at top → Acme 89d at bottom), with 8 columns: Account · Health · ARR · Renewal · Days Out · Forecast Status · Risk Weight · Action.
+- Health column shows a coloured dot + score (Unknown ⬜ for dark accounts).
+- Days-out values gain red/amber tint when <30 / 31–45 days.
+- Forecast status renders as a clickable pill that opens an inline dropdown with all 6 spec states (On Track / At Risk / Likely Churn / Expansion Likely / Committed / Pushed to Next Quarter). Selecting an option mutates in-memory state and toasts the simulated Salesforce sync; outside-click closes the dropdown.
+- Risk weight pill (Critical / High / Medium / Low) colour-keyed.
+- Action button per row routes through `fcAction(kind, acct)`: Save Play → drawer · Risk Analyst → drawer · Ghost-Buster → existing helper · Champion Protocol → save drawer (Apex) · Prep Me → drawer.
+- Account names are `.acct-lk` clickable and route to Mission Briefing on the dashboard.
+- 4-cell ARR summary strip below the table: Committed ($48K · Acme) · At Risk ($67K · Nova + Brightex) · Unknown ($55K · 3 dark accounts) · Total ($170K · 6 accounts · Q2–Q3).
+
+### Timeline
+- 3-column 90-day timeline bucketed by calendar month of the renewal date (matches the spec labels "Jun 1–Jun 30 · $89K at risk" → Brightex 31d and Meridian 45d both fall in Jun, not strict 30-day windows).
+- Column colour scheme: Jun light red · Jul light amber · Aug light green.
+- Each account card: clickable name (→ Mission Briefing) · renewal date · ARR · health dot · status badge per account (Critical Save Active / At Risk / Dark 73 days / Dark 67 days / Champion change / Healthy · Expansion signal).
+- Column footer: Total ARR + account count for that window.
+- Per-column results: Jun → 3 accounts $89K (Nova + Brightex + Meridian); Jul → 1 account $18K (Creston); Aug → 2 accounts $63K (Apex + Acme).
+
+### Dust Forecast
+- Indigo summary card matching the Recipe Quarter Projection styling — full prose summary including the $48K committed / $67K at risk / $55K unknown breakdown, the Meridian inbound-signal hook, and the "72% uncertain or at risk" attainment frame.
+- Three action cards beneath the summary (Act Now · High Leverage · Protect) with red / teal / amber left borders. Each carries a one-line context + a primary action button: NovaVault save play, reply to Jennifer (Meridian), draft reply to Sarah (Brightex).
+- `Regenerate ↻` button shows a spinner for 1.5 s, updates the "Generated" timestamp to the current time, and toasts "Forecast regenerated · Dust analysis complete ✓". Phase 1 keeps the body static.
+
+### ARR Trends
+- 6-month chart (Dec → May) showing healthy ARR (green) stacked with at-risk ARR (red) per month. The first column (Dec, $0 risk) shows a single healthy bar; the remaining columns show both bands with the risk delta growing each month ($12K → $18K → $24K → $45K → $67K).
+- Legend + commentary strip: "ARR at risk has grown from $0 to $67K over 6 months. Primary drivers: NovaVault health decline (Jan–May) and Brightex health drop (Apr–May)."
+- Per-account history table with monthly ARR columns (Jan–May) + trend column. Six account rows + total row at the bottom. Trend column colour-keyed by trajectory.
+- Expansion opportunity callout (teal left border) for Acme — Current ARR $48K · Potential +$12K–$18K · Signal line · `Open Expansion Play — Acme →` routes to `openAgentDrawer('prep','acme')`.
+
+### Verification (headless, end-to-end)
+- Sub-nav: 4 buttons; Pipeline active by default; section visibility toggles on click ✓
+- Pipeline: 6 rows render with NovaVault at top, Acme at bottom; 6 status pills clickable; 4 summary cells render ✓
+- Forecast status edit: clicking opens the dropdown; selecting "Committed" updates the pill text + toasts ✓
+- Timeline: 3 columns; 6 account cards (3+1+2); footer totals [$89K, $18K, $63K] match the spec exactly ✓
+- Dust Forecast: summary card + 3 action cards render; Regenerate triggers a spinner + updates the timestamp to the current time ✓
+- ARR Trends: 6 chart columns, 5 risk bars (Dec has none), 7 table rows (6 accounts + total), expansion callout present ✓
+- Action wiring: `fcAction('save','nova')` → `openAgentDrawer('save','nova')`; `fcAction('prep','acme')` → `openAgentDrawer('prep','acme')` ✓
+- Zero JS errors.
+
+### What was NOT done this turn
+- Dust regenerate currently re-renders the same body content with an updated timestamp — Phase 1 is static. Live re-summarization would need the `/api/anthropic` proxy + a server-side forecasting prompt.
+- Custom range picker for ARR Trends (currently fixed at 6 months).
+- Drag-to-move accounts between timeline columns (out of scope for Phase 1).
+- Push-to-Salesforce status updates — currently just toast confirmations.
+
+### Implementation notes
+- One CSS block (`fc-*` namespace, ~135 lines) appended to the end of the main `<style>`, after the v4.1.0 Risk & Signals block.
+- One JS module (~210 lines) appended after the v4.1.0 module — data tables (FC_PIPELINE / FC_STATUS_OPTS / FC_ACCT_HISTORY / FC_BOOK_HISTORY) + render functions per section + the `fcAction` / `fcOpenMB` helpers wiring to existing `openAgentDrawer` / `openGhostBusterFromPopover` / `openPanel` / `draftReply` functions.
+- Coming Soon placeholder for `#tab-forecast` fully replaced; the five remaining Coming Soon tabs (Success Plans, Team View, My Accounts, Analytics) untouched.
+- Spec label note: shipped as `[4.2.0]` per spec — third minor in the 4.x line after Campaign Manager and Risk & Signals.
 
 ---
 

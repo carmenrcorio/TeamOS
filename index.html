@@ -2173,6 +2173,177 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .rs-dark-acts{display:flex;gap:7px;flex-wrap:wrap}
 .rs-dark-status{font-size:10px;font-weight:700;padding:4px 24px 4px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:#1F2937;font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238A8A86' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 7px center}
 
+/* ═════════════════════════════════════════════════════════════════════════
+   v4.2.0 — Forecasting (replaces Coming Soon for #tab-forecast)
+   ═════════════════════════════════════════════════════════════════════════ */
+.fc-pg{padding:20px 28px 40px;max-width:1400px;margin:0 auto}
+.fc-top{border-bottom:1px solid var(--bd);margin-bottom:18px}
+.fc-subnav{display:flex;gap:0;align-items:center;flex-wrap:wrap}
+.fc-subnav-btn{display:inline-flex;align-items:center;gap:6px;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx3);background:transparent;border:none;border-bottom:2px solid transparent;padding:14px 16px;cursor:pointer;transition:color .12s,border-color .12s;letter-spacing:-.005em}
+.fc-subnav-btn span{font-size:14px;line-height:1}
+.fc-subnav-btn:hover{color:var(--tx2)}
+.fc-subnav-btn.on{color:#111827;border-bottom-color:var(--tl);font-weight:700}
+.fc-section{display:none}
+.fc-section.on{display:block}
+
+.fc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.fc-hd-t{font-size:18px;font-weight:800;color:#111827;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:8px}
+.fc-hd-meta{font-size:12px;color:#374151;font-weight:600;display:flex;gap:14px;flex-wrap:wrap}
+.fc-hd-meta b{color:#111827;font-weight:800}
+.fc-hd-meta .sep{color:var(--tx3)}
+
+.fc-btn{font-size:11px;font-weight:700;padding:6px 10px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;white-space:nowrap}
+.fc-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.fc-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.fc-btn.prim:hover{background:#2a2a28;color:#fff;border-color:#2a2a28}
+.fc-btn i{font-size:12px}
+
+/* ─── Pipeline ──────────────────────────────────────────────────────────── */
+.fc-pipe{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden}
+.fc-pipe-tbl{width:100%;border-collapse:collapse}
+.fc-pipe-tbl thead th{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em;padding:11px 14px;text-align:left;border-bottom:1px solid var(--bd);background:var(--surf2);white-space:nowrap}
+.fc-pipe-tbl tbody td{font-size:12px;color:#1F2937;font-weight:500;padding:13px 14px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.fc-pipe-tbl tbody tr:last-child td{border-bottom:none}
+.fc-pipe-tbl tbody tr:hover{background:var(--surf2)}
+.fc-pipe-nm{font-weight:700;color:#111827;letter-spacing:-.01em;cursor:pointer}
+.fc-pipe-nm:hover{color:var(--tl-dk);text-decoration:underline}
+.fc-pipe-health{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:#1F2937}
+.fc-pipe-health .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.fc-pipe-health .dot.g{background:#059669}
+.fc-pipe-health .dot.a{background:#D97706}
+.fc-pipe-health .dot.r{background:#DC2626}
+.fc-pipe-health .dot.gy{background:#9CA3AF}
+.fc-pipe-arr{font-weight:800;color:#111827}
+.fc-pipe-days{font-weight:700;color:#1F2937}
+.fc-pipe-days.r{color:#DC2626}
+.fc-pipe-days.a{color:#D97706}
+.fc-pipe-weight{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;display:inline-block}
+.fc-pipe-weight.crit{background:var(--rd-bg);color:var(--rd-dk)}
+.fc-pipe-weight.high{background:#FEF3C7;color:#78350F}
+.fc-pipe-weight.med{background:#E0E7FF;color:#3730A3}
+.fc-pipe-weight.low{background:#D1FAE5;color:#065F46}
+.fc-pipe-status{font-size:10px;font-weight:800;padding:4px 9px;border-radius:5px;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;border:none;font-family:inherit}
+.fc-pipe-status.churn{background:var(--rd-bg);color:var(--rd-dk)}
+.fc-pipe-status.atrisk{background:#FEF3C7;color:#78350F}
+.fc-pipe-status.unknown{background:var(--bg);color:#4B5563;border:1px solid var(--bd2)}
+.fc-pipe-status.ontrack{background:#D1FAE5;color:#065F46}
+.fc-pipe-status.expansion{background:var(--tl-bg);color:var(--tl-dk)}
+.fc-pipe-status.committed{background:#DBEAFE;color:#1E3A8A}
+.fc-pipe-status.pushed{background:#F1F5F9;color:#334155}
+.fc-pipe-status:hover{filter:brightness(.93)}
+
+.fc-pipe-status-wrap{position:relative;display:inline-block}
+.fc-pipe-status-pop{position:absolute;top:calc(100% + 4px);left:0;min-width:200px;background:var(--surf);border:1px solid var(--bd);border-radius:7px;box-shadow:0 12px 28px rgba(0,0,0,.15);z-index:100;display:none;overflow:hidden}
+.fc-pipe-status-pop.on{display:block}
+.fc-pipe-status-opt{display:block;width:100%;text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:#1F2937;background:transparent;border:none;cursor:pointer;font-family:inherit;transition:background .1s}
+.fc-pipe-status-opt:hover{background:var(--tl-bg);color:var(--tl-dk)}
+
+.fc-pipe-sum{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px 18px;margin-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:900px){.fc-pipe-sum{grid-template-columns:1fr 1fr}}
+.fc-pipe-sum-l{font-size:10px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.07em}
+.fc-pipe-sum-v{font-size:20px;font-weight:800;color:#111827;letter-spacing:-.02em;margin-top:3px}
+.fc-pipe-sum-v.r{color:#DC2626}
+.fc-pipe-sum-v.gy{color:#6B7280}
+.fc-pipe-sum-v.g{color:#059669}
+.fc-pipe-sum-sub{font-size:11px;color:#6B7280;font-weight:600;margin-top:2px}
+
+/* ─── Timeline ──────────────────────────────────────────────────────────── */
+.fc-tl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+@media (max-width:900px){.fc-tl{grid-template-columns:1fr}}
+.fc-tl-col{border:1px solid var(--bd);border-radius:var(--rlg);padding:16px;background:var(--surf)}
+.fc-tl-col.m1{background:#FEF2F2;border-color:#FECACA}
+.fc-tl-col.m2{background:#FFFBEB;border-color:#FDE68A}
+.fc-tl-col.m3{background:#F0FDF4;border-color:#BBF7D0}
+.fc-tl-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,.07);flex-wrap:wrap;gap:6px}
+.fc-tl-hd-t{font-size:11px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em}
+.fc-tl-hd-meta{font-size:12px;color:#1F2937;font-weight:700}
+.fc-tl-hd-meta b{color:#111827;font-weight:800;font-size:14px}
+.fc-tl-acct{background:var(--surf);border:1px solid var(--bd);border-radius:8px;padding:11px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:5px}
+.fc-tl-acct:last-child{margin-bottom:0}
+.fc-tl-r1{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.fc-tl-nm{font-size:13px;font-weight:800;color:#111827;letter-spacing:-.01em;cursor:pointer}
+.fc-tl-nm:hover{color:var(--tl-dk);text-decoration:underline}
+.fc-tl-date{font-size:11px;color:#6B7280;font-weight:700;white-space:nowrap}
+.fc-tl-r2{display:flex;align-items:center;gap:10px;font-size:11px;color:#374151;font-weight:600}
+.fc-tl-arr{font-weight:800;color:#111827;font-size:13px}
+.fc-tl-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.fc-tl-dot.g{background:#059669}
+.fc-tl-dot.a{background:#D97706}
+.fc-tl-dot.r{background:#DC2626}
+.fc-tl-dot.gy{background:#9CA3AF}
+.fc-tl-badge{font-size:9px;font-weight:800;padding:3px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;align-self:flex-start}
+.fc-tl-badge.crit{background:var(--rd-bg);color:var(--rd-dk)}
+.fc-tl-badge.atrisk{background:#FEF3C7;color:#78350F}
+.fc-tl-badge.dark{background:var(--bg);color:#4B5563;border:1px solid var(--bd2)}
+.fc-tl-badge.champ{background:#EDE9FE;color:#5B21B6}
+.fc-tl-badge.healthy{background:#D1FAE5;color:#065F46}
+.fc-tl-foot{margin-top:8px;padding-top:9px;border-top:1px dashed rgba(0,0,0,.12);font-size:11px;color:#374151;font-weight:700}
+.fc-tl-foot b{color:#111827;font-weight:800;font-size:13px}
+
+/* ─── Dust Forecast ─────────────────────────────────────────────────────── */
+.fc-dust-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.fc-dust-gen{font-size:11px;color:#6B7280;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.fc-dust-summary{background:#EEF2FF;border:1px solid #DDD6FE;border-left:3px solid #4F46E5;border-radius:var(--rlg);padding:18px 22px;margin-bottom:16px}
+.fc-dust-summary-l{font-size:10px;font-weight:800;color:#4F46E5;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fc-dust-summary-b{font-size:13px;color:#1F2937;line-height:1.7;font-weight:500;white-space:pre-wrap}
+.fc-dust-summary-b strong{color:#111827;font-weight:800}
+.fc-dust-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:1100px){.fc-dust-cards{grid-template-columns:1fr}}
+.fc-dust-card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px 16px;border-left:4px solid var(--bd2);display:flex;flex-direction:column;gap:8px}
+.fc-dust-card.actnow{border-left-color:var(--rd)}
+.fc-dust-card.leverage{border-left-color:var(--tl)}
+.fc-dust-card.protect{border-left-color:var(--am)}
+.fc-dust-card-l{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3)}
+.fc-dust-card.actnow .fc-dust-card-l{color:var(--rd-dk)}
+.fc-dust-card.leverage .fc-dust-card-l{color:var(--tl-dk)}
+.fc-dust-card.protect .fc-dust-card-l{color:#78350F}
+.fc-dust-card-t{font-size:13px;font-weight:800;color:#111827;letter-spacing:-.01em;line-height:1.3}
+.fc-dust-card-b{font-size:12px;color:#1F2937;line-height:1.6;font-weight:500;flex:1}
+.fc-dust-card-act{align-self:flex-start;font-size:11px;font-weight:700;padding:8px 12px;border-radius:6px;background:var(--tx);color:#fff;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;margin-top:4px}
+.fc-dust-card-act:hover{background:#2a2a28}
+
+/* ─── ARR Trends ────────────────────────────────────────────────────────── */
+.fc-trends-chart{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:18px 22px;margin-bottom:14px}
+.fc-trends-l{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
+.fc-trends-bars{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;align-items:end;height:200px;padding:0 6px}
+.fc-trend-col{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%}
+.fc-trend-bar-wrap{flex:1;width:100%;display:flex;flex-direction:column-reverse;align-items:stretch;position:relative;min-height:0}
+.fc-trend-bar-healthy{background:#D1FAE5;border:1px solid #6EE7B7;border-radius:4px 4px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:3px;font-size:9px;font-weight:800;color:#065F46;min-height:6px}
+.fc-trend-bar-risk{background:#FEE2E2;border:1px solid #FECACA;border-top:none;border-radius:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#7F1D1D;min-height:0;border-radius:0 0 4px 4px}
+.fc-trend-col.first .fc-trend-bar-healthy{border-radius:4px}
+.fc-trend-col.first .fc-trend-bar-risk{display:none}
+.fc-trend-lbl{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.04em}
+.fc-trends-key{display:flex;gap:14px;font-size:11px;color:#374151;font-weight:600;margin-top:14px;flex-wrap:wrap}
+.fc-trends-key-d{display:inline-flex;align-items:center;gap:5px}
+.fc-trends-key-d::before{content:'';width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid}
+.fc-trends-key-d.h::before{background:#D1FAE5;border-color:#6EE7B7}
+.fc-trends-key-d.r::before{background:#FEE2E2;border-color:#FECACA}
+.fc-trends-note{font-size:12px;color:#1F2937;font-weight:500;line-height:1.6;background:var(--surf2);border-left:3px solid var(--rd);padding:10px 14px;border-radius:5px;margin-top:14px}
+.fc-trends-note strong{color:#111827;font-weight:700}
+
+.fc-acct-table{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden;margin-bottom:14px}
+.fc-acct-tbl{width:100%;border-collapse:collapse}
+.fc-acct-tbl thead th{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em;padding:11px 14px;text-align:left;border-bottom:1px solid var(--bd);background:var(--surf2);white-space:nowrap}
+.fc-acct-tbl tbody td{font-size:12px;color:#1F2937;font-weight:500;padding:11px 14px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.fc-acct-tbl tbody tr:last-child td{border-bottom:none}
+.fc-acct-tbl tbody tr.total td{background:var(--surf2);font-weight:800;color:#111827}
+.fc-acct-tbl td.nm{font-weight:700;color:#111827}
+.fc-acct-tbl td.trend{font-weight:700}
+.fc-acct-tbl td.trend.r{color:#DC2626}
+.fc-acct-tbl td.trend.a{color:#D97706}
+.fc-acct-tbl td.trend.g{color:#059669}
+.fc-acct-tbl td.trend.gy{color:#6B7280}
+
+.fc-exp{background:var(--surf);border:1px solid var(--bd);border-left:4px solid var(--tl);border-radius:var(--rlg);padding:16px 18px}
+.fc-exp-l{font-size:10px;font-weight:800;color:var(--tl-dk);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.fc-exp-t{font-size:15px;font-weight:800;color:#111827;letter-spacing:-.01em;margin-bottom:6px}
+.fc-exp-kv{display:grid;grid-template-columns:170px 1fr;gap:4px 14px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55;margin-bottom:12px}
+.fc-exp-kv > div:nth-child(odd){color:#6B7280;font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.06em;align-self:center}
+.fc-exp-kv b{color:#111827;font-weight:800}
+
+/* Loading spinner reuse for Regenerate */
+.fc-loading{display:inline-flex;align-items:center;gap:7px;color:var(--tx2);font-weight:600;font-size:12px}
+
 </style>
 </head>
 <body>
@@ -3393,17 +3564,22 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 </div>
 
 <div class="tc" id="tab-forecast">
-  <div class="cs-pg">
-    <div class="cs-ic">📈</div>
-    <h1 class="cs-h">Forecasting</h1>
-    <div class="cs-vision">Your renewal pipeline, risk-weighted and intelligently summarized.</div>
-    <div class="cs-divider"></div>
-    <div class="cs-sec-t">What this tab does</div>
-    <p class="cs-body">Forecasting gives you a live view of your renewal pipeline sorted by risk-weighted ARR. A 90-day timeline buckets every renewal into 0&ndash;30, 31&ndash;60, and 61&ndash;90 day windows so you always know where urgency is concentrated. Dust generates a rolling forecast summary identifying which accounts are on track, which are at risk, and exactly which actions would change the outcome &mdash; sourced from Gainsight health, Gong sentiment, and Salesforce opportunity stage simultaneously. License trend data shows seat growth or contraction per account so expansion signals and early churn indicators surface before they appear in health scores. The $67K ARR at risk figure visible in the pulse strip today routes here for full pipeline context.</p>
-    <div class="cs-sec-t">What it connects to</div>
-    <div class="cs-conn">Salesforce &middot; Gainsight &middot; Gong &middot; Ironclad</div>
-    <div class="cs-divider"></div>
-    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  <!-- v4.2.0 — Forecasting. Replaces the Coming Soon placeholder. 4 sections:
+       Pipeline, Timeline, Dust Forecast, ARR Trends. -->
+  <div class="fc-pg">
+    <div class="fc-top">
+      <nav class="fc-subnav" role="tablist" aria-label="Forecasting sections">
+        <button class="fc-subnav-btn on" id="fc-tab-pipeline" role="tab" aria-selected="true"  type="button" onclick="fcShow('pipeline')"><span>📈</span> Pipeline</button>
+        <button class="fc-subnav-btn"    id="fc-tab-timeline" role="tab" aria-selected="false" type="button" onclick="fcShow('timeline')"><span>⏱</span> Timeline</button>
+        <button class="fc-subnav-btn"    id="fc-tab-dust"     role="tab" aria-selected="false" type="button" onclick="fcShow('dust')"><span>🔮</span> Dust Forecast</button>
+        <button class="fc-subnav-btn"    id="fc-tab-trends"   role="tab" aria-selected="false" type="button" onclick="fcShow('trends')"><span>📊</span> ARR Trends</button>
+      </nav>
+    </div>
+
+    <div class="fc-section on" id="fc-sec-pipeline" role="tabpanel" aria-labelledby="fc-tab-pipeline"></div>
+    <div class="fc-section"    id="fc-sec-timeline" role="tabpanel" aria-labelledby="fc-tab-timeline" hidden></div>
+    <div class="fc-section"    id="fc-sec-dust"     role="tabpanel" aria-labelledby="fc-tab-dust"     hidden></div>
+    <div class="fc-section"    id="fc-sec-trends"   role="tabpanel" aria-labelledby="fc-tab-trends"   hidden></div>
   </div>
 </div>
 
@@ -10203,6 +10379,305 @@ function rsOpenGB(acct)  {
 
 // Pre-render default section so opening the tab is instant.
 rsRenderMatrix();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// v4.2.0 — Forecasting
+// 4 sections: Pipeline, Timeline, Dust Forecast, ARR Trends. Pipeline status
+// edits update in-memory state and toast the simulated Salesforce sync.
+// ═══════════════════════════════════════════════════════════════════════════
+var FC_PIPELINE = [
+  { key:'nova',     nm:'NovaVault',              health:23, healthCls:'r',  healthLabel:'23 🔴',          arr:31, arrLabel:'$31K', renewal:'Jun 1',  daysOut:17, daysCls:'r', status:'churn',    statusLabel:'Likely Churn', weight:'crit', weightLabel:'Critical', action:'save',     actionAcct:'nova',     actionLabel:'Open Save Play' },
+  { key:'brightex', nm:'Brightex Inc',           health:48, healthCls:'a',  healthLabel:'48 🟡',          arr:36, arrLabel:'$36K', renewal:'Jun 15', daysOut:31, daysCls:'a', status:'atrisk',   statusLabel:'At Risk',      weight:'high', weightLabel:'High',     action:'risk',     actionAcct:'brightex', actionLabel:'Run Risk Analyst' },
+  { key:'meridian', nm:'Meridian Health',        health:'?',healthCls:'gy', healthLabel:'Unknown ⬜',     arr:22, arrLabel:'$22K', renewal:'Jun 30', daysOut:45, daysCls:'a', status:'unknown',  statusLabel:'Unknown',      weight:'high', weightLabel:'High',     action:'gb',       actionAcct:'meridian', actionLabel:'Ghost-Buster' },
+  { key:'creston',  nm:'Creston Software',       health:'?',healthCls:'gy', healthLabel:'Unknown ⬜',     arr:18, arrLabel:'$18K', renewal:'Jul 15', daysOut:60, daysCls:'',  status:'unknown',  statusLabel:'Unknown',      weight:'med',  weightLabel:'Medium',   action:'gb',       actionAcct:'creston',  actionLabel:'Ghost-Buster' },
+  { key:'apex',     nm:'Apex Dynamics',          health:'?',healthCls:'gy', healthLabel:'Unknown ⬜',     arr:15, arrLabel:'$15K', renewal:'Aug 1',  daysOut:77, daysCls:'',  status:'unknown',  statusLabel:'Unknown',      weight:'med',  weightLabel:'Medium',   action:'champion', actionAcct:'apex',     actionLabel:'Champion Protocol' },
+  { key:'acme',     nm:'Acme Corp',              health:82, healthCls:'g',  healthLabel:'82 🟢',          arr:48, arrLabel:'$48K', renewal:'Aug 12', daysOut:89, daysCls:'',  status:'ontrack',  statusLabel:'On Track',     weight:'low',  weightLabel:'Low',      action:'prep',     actionAcct:'acme',     actionLabel:'Prep Me' }
+];
+
+var FC_STATUS_OPTS = [
+  ['ontrack',   'On Track'],
+  ['atrisk',    'At Risk'],
+  ['churn',     'Likely Churn'],
+  ['expansion', 'Expansion Likely'],
+  ['committed', 'Committed'],
+  ['pushed',    'Pushed to Next Quarter']
+];
+
+var FC_ACCT_HISTORY = [
+  { nm:'Acme Corp',         row:['$48K','$48K','$48K','$48K','$48K'], trend:'→ Stable',                              trendCls:'g' },
+  { nm:'Brightex Inc',      row:['$36K','$36K','$36K','$36K','$36K'], trend:'↓ At risk (health trending down)',     trendCls:'a' },
+  { nm:'NovaVault',         row:['$31K','$31K','$31K','$31K','$31K'], trend:'🔴 Critical',                           trendCls:'r' },
+  { nm:'Meridian Health',   row:['$22K','$22K','$22K','$22K','$22K'], trend:'↓ Dark',                                trendCls:'gy' },
+  { nm:'Creston Software',  row:['$18K','$18K','$18K','$18K','$18K'], trend:'↓ Dark',                                trendCls:'gy' },
+  { nm:'Apex Dynamics',     row:['$15K','$15K','$15K','$15K','$15K'], trend:'↓ Champion',                            trendCls:'a' }
+];
+
+var FC_BOOK_HISTORY = [
+  { m:'Dec', managed:170, risk:0  },
+  { m:'Jan', managed:170, risk:12 },
+  { m:'Feb', managed:170, risk:18 },
+  { m:'Mar', managed:170, risk:24 },
+  { m:'Apr', managed:170, risk:45 },
+  { m:'May', managed:170, risk:67 }
+];
+
+var FC_ACTIVE = 'pipeline';
+var FC_STATUS_OPEN = null;
+var FC_DUST_GEN = 'Today · May 16 · 9:00 AM';
+
+function fcEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fcShow(name) {
+  FC_ACTIVE = name;
+  ['pipeline','timeline','dust','trends'].forEach(function(k){
+    var btn = document.getElementById('fc-tab-' + k);
+    var sec = document.getElementById('fc-sec-' + k);
+    var on = (k === name);
+    if (btn) { btn.classList.toggle('on', on); btn.setAttribute('aria-selected', on ? 'true' : 'false'); }
+    if (sec) { sec.classList.toggle('on', on); if (on) sec.removeAttribute('hidden'); else sec.setAttribute('hidden',''); }
+  });
+  if (name === 'pipeline') fcRenderPipeline();
+  if (name === 'timeline') fcRenderTimeline();
+  if (name === 'dust')     fcRenderDust();
+  if (name === 'trends')   fcRenderTrends();
+}
+
+// ── Pipeline ────────────────────────────────────────────────────────────────
+function fcRenderPipeline() {
+  var sec = document.getElementById('fc-sec-pipeline');
+  if (!sec) return;
+  var totalARR  = FC_PIPELINE.reduce(function(s,r){ return s + r.arr; }, 0);
+  var atRiskARR = FC_PIPELINE.filter(function(r){return r.status==='churn'||r.status==='atrisk';}).reduce(function(s,r){return s+r.arr;}, 0);
+  var atRiskCount = FC_PIPELINE.filter(function(r){return r.status==='churn'||r.status==='atrisk';}).length;
+  var committedARR = FC_PIPELINE.filter(function(r){return r.status==='ontrack'||r.status==='committed';}).reduce(function(s,r){return s+r.arr;}, 0);
+  var unknownARR = FC_PIPELINE.filter(function(r){return r.status==='unknown';}).reduce(function(s,r){return s+r.arr;}, 0);
+  var unknownCount = FC_PIPELINE.filter(function(r){return r.status==='unknown';}).length;
+  var rowsHtml = FC_PIPELINE.map(fcPipeRowHTML).join('');
+  sec.innerHTML = ''
+    + '<div class="fc-hd">'
+    +   '<div class="fc-hd-t">📈 Renewal Pipeline · Q2–Q3 2026</div>'
+    +   '<div class="fc-hd-meta"><span>Total at-risk ARR: <b style="color:#DC2626">$' + atRiskARR + 'K</b> across ' + atRiskCount + ' accounts</span><span class="sep">·</span><span>Total pipeline: <b>$' + totalARR + 'K</b> across ' + FC_PIPELINE.length + ' accounts</span></div>'
+    + '</div>'
+    + '<div class="fc-pipe"><table class="fc-pipe-tbl"><thead><tr>'
+    +   '<th>Account</th><th>Health</th><th>ARR</th><th>Renewal</th><th>Days Out</th><th>Forecast Status</th><th>Risk Weight</th><th>Action</th>'
+    + '</tr></thead><tbody>' + rowsHtml + '</tbody></table></div>'
+    + '<div class="fc-pipe-sum">'
+    +   '<div><div class="fc-pipe-sum-l">Committed ARR</div><div class="fc-pipe-sum-v g">$' + committedARR + 'K</div><div class="fc-pipe-sum-sub">Acme Corp · Healthy</div></div>'
+    +   '<div><div class="fc-pipe-sum-l">At Risk ARR</div><div class="fc-pipe-sum-v r">$' + atRiskARR + 'K</div><div class="fc-pipe-sum-sub">Nova + Brightex</div></div>'
+    +   '<div><div class="fc-pipe-sum-l">Unknown ARR</div><div class="fc-pipe-sum-v gy">$' + unknownARR + 'K</div><div class="fc-pipe-sum-sub">' + unknownCount + ' dark accounts</div></div>'
+    +   '<div><div class="fc-pipe-sum-l">Total pipeline</div><div class="fc-pipe-sum-v">$' + totalARR + 'K</div><div class="fc-pipe-sum-sub">' + FC_PIPELINE.length + ' accounts · Q2–Q3</div></div>'
+    + '</div>';
+}
+function fcPipeRowHTML(r) {
+  var statusPop = (FC_STATUS_OPEN === r.key) ? ' on' : '';
+  var optsHtml = FC_STATUS_OPTS.map(function(o){
+    return '<button class="fc-pipe-status-opt" type="button" onclick="fcSetStatus(\'' + r.key + '\',\'' + o[0] + '\')">' + fcEscape(o[1]) + '</button>';
+  }).join('');
+  return '<tr>'
+    + '<td><span class="fc-pipe-nm acct-lk" onclick="fcOpenMB(\'' + r.key + '\')">' + fcEscape(r.nm) + '</span></td>'
+    + '<td><span class="fc-pipe-health"><span class="dot ' + r.healthCls + '"></span>' + fcEscape(r.healthLabel) + '</span></td>'
+    + '<td class="fc-pipe-arr">' + r.arrLabel + '</td>'
+    + '<td>' + r.renewal + '</td>'
+    + '<td class="fc-pipe-days ' + r.daysCls + '">' + r.daysOut + 'd</td>'
+    + '<td><span class="fc-pipe-status-wrap"><button class="fc-pipe-status ' + r.status + '" type="button" onclick="fcToggleStatus(\'' + r.key + '\',event)">' + fcEscape(r.statusLabel) + '</button><div class="fc-pipe-status-pop' + statusPop + '">' + optsHtml + '</div></span></td>'
+    + '<td><span class="fc-pipe-weight ' + r.weight + '">' + fcEscape(r.weightLabel) + '</span></td>'
+    + '<td><button class="fc-btn" type="button" onclick="fcAction(\'' + r.action + '\',\'' + r.actionAcct + '\')">' + fcEscape(r.actionLabel) + '</button></td>'
+  + '</tr>';
+}
+function fcToggleStatus(key, ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  FC_STATUS_OPEN = (FC_STATUS_OPEN === key) ? null : key;
+  fcRenderPipeline();
+}
+function fcSetStatus(key, status) {
+  var r = FC_PIPELINE.find(function(x){return x.key===key;});
+  var o = FC_STATUS_OPTS.find(function(x){return x[0]===status;});
+  if (!r || !o) return;
+  r.status = status;
+  r.statusLabel = o[1];
+  FC_STATUS_OPEN = null;
+  fcRenderPipeline();
+  toast('Forecast updated · ' + fcEscape(r.nm) + ' · Salesforce ✓');
+}
+// Close status popover on outside click.
+document.addEventListener('click', function(){ if (FC_STATUS_OPEN !== null) { FC_STATUS_OPEN = null; if (FC_ACTIVE === 'pipeline') fcRenderPipeline(); } });
+
+// ── Timeline ────────────────────────────────────────────────────────────────
+function fcRenderTimeline() {
+  var sec = document.getElementById('fc-sec-timeline');
+  if (!sec) return;
+  // Bucket by calendar month of the renewal date — matches the spec labels
+  // (Jun 1–Jun 30 / Jul 1–Jul 31 / Aug 1–Aug 31). Brightex (31d) and
+  // Meridian (45d) both land in Jun even though their daysOut > 30.
+  var m1 = FC_PIPELINE.filter(function(r){return r.renewal.indexOf('Jun') === 0;});
+  var m2 = FC_PIPELINE.filter(function(r){return r.renewal.indexOf('Jul') === 0;});
+  var m3 = FC_PIPELINE.filter(function(r){return r.renewal.indexOf('Aug') === 0;});
+  var badges = {
+    nova:     ['crit',    'Critical Save Active'],
+    brightex: ['atrisk',  'At Risk · Save play active'],
+    meridian: ['dark',    'Dark 73 days'],
+    creston:  ['dark',    'Dark 67 days'],
+    apex:     ['champ',   'Champion change'],
+    acme:     ['healthy', 'Healthy · Expansion signal']
+  };
+  function bucketHTML(rows) {
+    return rows.map(function(r){
+      var b = badges[r.key] || ['dark', '—'];
+      return '<div class="fc-tl-acct">'
+        + '<div class="fc-tl-r1"><span class="fc-tl-nm acct-lk" onclick="fcOpenMB(\'' + r.key + '\')">' + fcEscape(r.nm) + '</span><span class="fc-tl-date">' + r.renewal + '</span></div>'
+        + '<div class="fc-tl-r2"><span class="fc-tl-arr">' + r.arrLabel + '</span><span class="fc-tl-dot ' + r.healthCls + '"></span></div>'
+        + '<span class="fc-tl-badge ' + b[0] + '">' + fcEscape(b[1]) + '</span>'
+      + '</div>';
+    }).join('') || '<div style="font-size:11px;color:#6B7280;font-style:italic;padding:10px 4px">No renewals in this window.</div>';
+  }
+  function sumARR(rows) { return rows.reduce(function(s,r){return s+r.arr;}, 0); }
+  sec.innerHTML = ''
+    + '<div class="fc-hd"><div class="fc-hd-t">⏱ 90-Day Renewal Timeline</div></div>'
+    + '<div class="fc-tl">'
+    +   '<div class="fc-tl-col m1">'
+    +     '<div class="fc-tl-hd"><div class="fc-tl-hd-t">This month</div><div class="fc-tl-hd-meta">Jun 1–Jun 30 · <b>$' + sumARR(m1) + 'K</b> at risk</div></div>'
+    +     bucketHTML(m1)
+    +     '<div class="fc-tl-foot">Total: <b>$' + sumARR(m1) + 'K</b> · ' + m1.length + ' account' + (m1.length === 1 ? '' : 's') + '</div>'
+    +   '</div>'
+    +   '<div class="fc-tl-col m2">'
+    +     '<div class="fc-tl-hd"><div class="fc-tl-hd-t">Next month</div><div class="fc-tl-hd-meta">Jul 1–Jul 31 · <b>$' + sumARR(m2) + 'K</b></div></div>'
+    +     bucketHTML(m2)
+    +     '<div class="fc-tl-foot">Total: <b>$' + sumARR(m2) + 'K</b> · ' + m2.length + ' account' + (m2.length === 1 ? '' : 's') + '</div>'
+    +   '</div>'
+    +   '<div class="fc-tl-col m3">'
+    +     '<div class="fc-tl-hd"><div class="fc-tl-hd-t">61–90 days</div><div class="fc-tl-hd-meta">Aug 1–Aug 31 · <b>$' + sumARR(m3) + 'K</b></div></div>'
+    +     bucketHTML(m3)
+    +     '<div class="fc-tl-foot">Total: <b>$' + sumARR(m3) + 'K</b> · ' + m3.length + ' account' + (m3.length === 1 ? '' : 's') + '</div>'
+    +   '</div>'
+    + '</div>';
+}
+
+// ── Dust Forecast ───────────────────────────────────────────────────────────
+function fcRenderDust() {
+  var sec = document.getElementById('fc-sec-dust');
+  if (!sec) return;
+  sec.innerHTML = ''
+    + '<div class="fc-hd"><div class="fc-hd-t">🔮 Dust Forecast · Q2 2026</div></div>'
+    + '<div class="fc-dust-head">'
+    +   '<div class="fc-dust-gen"><i class="ti ti-sparkles" style="color:#4F46E5"></i> Generated: <span id="fc-dust-gen">' + fcEscape(FC_DUST_GEN) + '</span></div>'
+    +   '<button class="fc-btn" type="button" onclick="fcRegenerate()" id="fc-regen-btn"><i class="ti ti-refresh"></i> Regenerate</button>'
+    + '</div>'
+    + '<div class="fc-dust-summary">'
+    +   '<div class="fc-dust-summary-l"><i class="ti ti-sparkles"></i> Forecast summary</div>'
+    +   '<div class="fc-dust-summary-b">Based on current signals across your 6-account book, you are tracking to close <strong>$48K</strong> of your <strong>$170K</strong> pipeline cleanly (Acme Corp). Two accounts totaling <strong>$67K</strong> are at active risk — NovaVault’s renewal is in 17 days with no champion contact made and the contract unopened, and Brightex has a competitor evaluation in progress with an unanswered SLA question.\n\nThree dark accounts (<strong>$55K</strong>) have unknown renewal intent. Meridian Health has an inbound signal today that, if acted on within the next 4 hours, significantly improves re-engagement probability.\n\nYour attainment risk this quarter: <strong>$122K of $170K (72%)</strong> is uncertain or at risk. The three actions below would materially change this outcome.</div>'
+    + '</div>'
+    + '<div class="fc-dust-cards">'
+    +   '<div class="fc-dust-card actnow">'
+    +     '<div class="fc-dust-card-l">Act Now — NovaVault ($31K, 17d)</div>'
+    +     '<div class="fc-dust-card-t">Every hour without Michael Torres contact reduces close probability</div>'
+    +     '<div class="fc-dust-card-b">The contract has not been opened. Initiate AE warm intro and run Save Strategy today.</div>'
+    +     '<button class="fc-dust-card-act" type="button" onclick="fcAction(\'save\',\'nova\')"><i class="ti ti-lifebuoy"></i> Open NovaVault Save Play &rarr;</button>'
+    +   '</div>'
+    +   '<div class="fc-dust-card leverage">'
+    +     '<div class="fc-dust-card-l">High leverage — Meridian ($22K, 45d)</div>'
+    +     '<div class="fc-dust-card-t">Jennifer Ramos emailed today — first inbound in 73 days</div>'
+    +     '<div class="fc-dust-card-b">Respond within the hour. This is the re-engagement window you’ve been waiting for.</div>'
+    +     '<button class="fc-dust-card-act" type="button" onclick="fcAction(\'draft\',\'meridian\')"><i class="ti ti-mail"></i> Reply to Jennifer &rarr;</button>'
+    +   '</div>'
+    +   '<div class="fc-dust-card protect">'
+    +     '<div class="fc-dust-card-l">Protect — Brightex ($36K, 31d)</div>'
+    +     '<div class="fc-dust-card-t">Answer Sarah Chen’s SLA question today</div>'
+    +     '<div class="fc-dust-card-b">An unanswered question 10 days before a renewal is a stall signal or a churn signal — treat it as urgent either way.</div>'
+    +     '<button class="fc-dust-card-act" type="button" onclick="fcAction(\'draft\',\'brightex\')"><i class="ti ti-mail"></i> Draft Reply to Sarah &rarr;</button>'
+    +   '</div>'
+    + '</div>';
+}
+function fcRegenerate() {
+  var btn = document.getElementById('fc-regen-btn');
+  if (btn) btn.innerHTML = '<span class="fc-loading"><span class="cm-spinner"></span> Regenerating…</span>';
+  setTimeout(function(){
+    var now = new Date();
+    var hr = now.getHours();
+    var min = now.getMinutes();
+    var ampm = hr >= 12 ? 'PM' : 'AM';
+    var hr12 = hr % 12 || 12;
+    var pad = function(n){ return n < 10 ? '0' + n : '' + n; };
+    FC_DUST_GEN = 'Today · ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()] + ' ' + now.getDate() + ' · ' + hr12 + ':' + pad(min) + ' ' + ampm;
+    fcRenderDust();
+    toast('Forecast regenerated · Dust analysis complete ✓');
+  }, 1500);
+}
+
+// ── ARR Trends ──────────────────────────────────────────────────────────────
+function fcRenderTrends() {
+  var sec = document.getElementById('fc-sec-trends');
+  if (!sec) return;
+  // Chart: each month shows healthy (top) + risk (bottom). Max managed = 170K
+  // across the dataset, so column heights are normalized to 170.
+  var max = 170;
+  var cols = FC_BOOK_HISTORY.map(function(m, i){
+    var healthyPct = Math.max(0, ((m.managed - m.risk) / max) * 100);
+    var riskPct = (m.risk / max) * 100;
+    var first = i === 0 ? ' first' : '';
+    return '<div class="fc-trend-col' + first + '">'
+      + '<div class="fc-trend-bar-wrap">'
+      +   '<div class="fc-trend-bar-healthy" style="height:' + healthyPct + '%">$' + (m.managed - m.risk) + 'K</div>'
+      +   (m.risk ? '<div class="fc-trend-bar-risk" style="height:' + riskPct + '%">$' + m.risk + 'K</div>' : '')
+      + '</div>'
+      + '<div class="fc-trend-lbl">' + m.m + '</div>'
+    + '</div>';
+  }).join('');
+  var acctRows = FC_ACCT_HISTORY.map(function(a){
+    return '<tr><td class="nm">' + fcEscape(a.nm) + '</td>' + a.row.map(function(v){return '<td>' + v + '</td>';}).join('') + '<td class="trend ' + a.trendCls + '">' + fcEscape(a.trend) + '</td></tr>';
+  }).join('');
+  sec.innerHTML = ''
+    + '<div class="fc-hd"><div class="fc-hd-t">📊 ARR Trends · Last 6 months</div></div>'
+    + '<div class="fc-trends-chart">'
+    +   '<div class="fc-trends-l">Book health over time</div>'
+    +   '<div class="fc-trends-bars">' + cols + '</div>'
+    +   '<div class="fc-trends-key"><span class="fc-trends-key-d h">Healthy ARR</span><span class="fc-trends-key-d r">At-risk ARR</span></div>'
+    +   '<div class="fc-trends-note"><strong>ARR at risk has grown from $0 to $67K over 6 months.</strong> Primary drivers: NovaVault health decline (Jan–May) and Brightex health drop (Apr–May).</div>'
+    + '</div>'
+    + '<div class="fc-acct-table">'
+    +   '<table class="fc-acct-tbl"><thead><tr><th>Account</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Trend</th></tr></thead>'
+    +   '<tbody>' + acctRows + '<tr class="total"><td>Total</td><td>$170K</td><td>$170K</td><td>$170K</td><td>$170K</td><td>$170K</td><td>ARR stable · Risk worsening</td></tr></tbody></table>'
+    + '</div>'
+    + '<div class="fc-exp">'
+    +   '<div class="fc-exp-l">Expansion opportunity</div>'
+    +   '<div class="fc-exp-t">Acme Corp — Enterprise tier interest confirmed</div>'
+    +   '<div class="fc-exp-kv">'
+    +     '<div>Current ARR</div><div><b>$48K</b></div>'
+    +     '<div>Potential expansion</div><div><b>+$12K–$18K ARR</b></div>'
+    +     '<div>Signal</div><div>David Kim flagged enterprise tier + SSO unprompted · May 10 Gong</div>'
+    +   '</div>'
+    +   '<button class="fc-btn prim" type="button" onclick="fcAction(\'prep\',\'acme\')"><i class="ti ti-rocket"></i> Open Expansion Play — Acme &rarr;</button>'
+    + '</div>';
+}
+
+// ── Action helpers ──────────────────────────────────────────────────────────
+function fcAction(kind, acct) {
+  switch (kind) {
+    case 'save':     if (typeof openAgentDrawer === 'function') openAgentDrawer('save', acct); else toast('Save Strategy · ' + fcEscape(acct) + ' ✓'); break;
+    case 'risk':     if (typeof openAgentDrawer === 'function') openAgentDrawer('risk', acct); else toast('Risk Analyst · ' + fcEscape(acct) + ' ✓'); break;
+    case 'prep':     if (typeof openAgentDrawer === 'function') openAgentDrawer('prep', acct); else toast('Prep Me · ' + fcEscape(acct) + ' ✓'); break;
+    case 'gb':       if (typeof openGhostBusterFromPopover === 'function') { try { openGhostBusterFromPopover(acct); return; } catch (_) {} } toast('Ghost-Buster · ' + fcEscape(acct) + ' ✓'); break;
+    case 'champion': if (typeof openAgentDrawer === 'function') openAgentDrawer('save', acct); else toast('Champion Protocol · ' + fcEscape(acct) + ' ✓'); break;
+    case 'draft':    if (typeof draftReply === 'function') draftReply(acct); else toast('Draft Reply · ' + fcEscape(acct) + ' ✓'); break;
+    default: toast('Action: ' + kind + ' · ' + fcEscape(acct) + ' ✓');
+  }
+}
+function fcOpenMB(acct) {
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'dash\'"]');
+    if (tab) goTab('dash', tab);
+  }
+  setTimeout(function(){
+    if (typeof openPanel === 'function') {
+      try { openPanel(acct); return; } catch (_) {}
+    }
+    toast('Mission Briefing · ' + fcEscape(acct) + ' ✓');
+  }, 80);
+}
+
+// Pre-render default section so opening the tab is instant.
+fcRenderPipeline();
 
 </script>
 
