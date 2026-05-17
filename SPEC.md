@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.6.0
+**Version:** 4.7.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,89 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.7.0] — 2026-05-17
+
+Forecasting tab follow-up. The user spec listed 9 items; 4 (Pipeline Open Save Play, Ghost-Buster Meridian + Creston, Champion Protocol accountKey audit, reply modals) were already shipped in v4.4.0 and re-verified by the v4.6.0 test suite that ran 73/73 last hour. The 5 genuinely new items (Timeline click → Pipeline jump, ARR Trends row click + chart tooltips, FORECAST_STATUS_CROSSWALK constant, Phase-2 localStorage shape, Copy Forecast Summary button) landed in this release.
+
+### Verified already shipped (FIX 1–4 from the spec)
+- **Pipeline "Open Save Play"** is the row action button. NovaVault: `fcAction('save','nova')` → `openAgentDrawer('save','nova')`. Brightex: `fcAction('risk','brightex')` (row's action is Risk Analyst per `FC_PIPELINE` data; the actual save-strategy entry point for Brightex lives in the Dust Forecast Protect card and Pipeline's status filter). No code change needed.
+- **Ghost-Buster Meridian + Creston** route through `openGhostBuster(key)` → `openGhostBusterFromPopover(key)` → `openPanel(key, null)` → `view-{key}` activates. Both `view-meridian` and `view-creston` are registered. Test pair from v4.6.0 still green: `activeView: "view-meridian"` and `"view-creston"`.
+- **Champion Protocol Apex** passes `apex` (not Brightex). Full 6-row audit in v4.6.0 confirmed each row passes its own key. Audit reinforced as a v4.7.0 test that asserts each onclick string contains the matching account key.
+- **Reply modals** for Jennifer (Meridian) + Sarah (Brightex) were built in v4.4.0 via `fcOpenReply(key)`. The body templates differ slightly from this turn's spec wording but carry the same intent. Updated the Brightex subject to match spec verbatim: `Re: SLA question — Brightex`.
+
+### Added — FORECAST_STATUS_CROSSWALK constant (FIX 7)
+- Top-level `FORECAST_STATUS_CROSSWALK` constant carrying the spec's exact mapping:
+  - `Committed` → `Commit`
+  - `On Track` → `Best Case`
+  - `At Risk` → `Pipeline`
+  - `Likely Churn` → `Omitted`
+  - `Expansion Likely` → `Best Case`
+  - `Pushed to Next Quarter` → `Omitted`
+  - `Unknown` → `Pipeline`
+- Block comment above documents the Phase 2 PATCH path: target fields `CSM_Forecast_Amount__c` and `Forecast_Category__c` on the renewal record via `PATCH /v1/renewal/{gainsight_renewal_id}`, and flags the nickname → renewal-ID lookup as the unresolved mapping.
+
+### Changed — localStorage forecast structure (FIX 8)
+- Persistence shape upgraded from `{ "nova": 28000 }` to:
+  ```js
+  { "nova": {
+      "display_name":         "NovaVault",
+      "forecast_amount":      28000,
+      "forecast_status":      "Likely Churn",
+      "gainsight_status":     "Omitted",
+      "quarter":              "Q2-2026",
+      "updated_at":           "<ISO timestamp>",
+      "updated_by":           "carmen@1password.com",
+      "gainsight_renewal_id": "PENDING_OAUTH",
+      "salesforce_opp_id":    "PENDING_OAUTH"
+    }
+  }
+  ```
+- New `fcBuildOverrideRecord(key, amount, status)` helper composes the record with the crosswalked `gainsight_status` and an ISO timestamp.
+- New `fcOverrideAmount(key)` helper reads the amount field — accepts both the legacy `number` and the new object shape so existing in-browser state migrates transparently.
+- `fcReadOverrides` detects legacy `{ key: number }` entries on first read, calls `fcBuildOverrideRecord` to upgrade each, and writes the migrated object back to localStorage before returning.
+- `fcSaveOverride` snapshots the current row's `statusLabel` when persisting, so the crosswalked `gainsight_status` is correct without a second user action.
+- `fcCommitTotal` reads through `fcOverrideAmount` so the rollup totals work for both shapes. Status weights reset to the spec values (Committed 100%, On Track 85%, At Risk 40%, Likely Churn 10%; Expansion 110%, Unknown 50%, Pushed 0%).
+
+### Changed — Timeline cards navigate to Pipeline (FIX 5)
+- New `fcJumpToPipelineRow(key)` helper. Switches to the Pipeline sub-section, locates the row by matching its account name to the FC_PIPELINE entry, scrolls it into center view, and applies a `.fc-row-highlight` class for 2 seconds (teal outline + tinted background, fades via a `fc-row-fade` keyframe animation).
+- Timeline `.fc-tl-nm` clicks rebound from `fcOpenAcctDrawer` → `fcJumpToPipelineRow`. CSM stays on the Forecasting tab. The Pipeline-cell account-name link still opens the right-side drawer — different surface, different behavior.
+
+### Added — ARR Trends interactivity (FIX 6)
+- Account rows in the ARR history table render with `onclick="fcJumpToPipelineRow(key)"` when the row's account is known (uses a `FC_ACCT_KEY_BY_NAME` lookup). `tabindex="0"` + `Enter` key handler for keyboard parity. `:focus-visible` style added.
+- Chart-column tooltips: each `.fc-trend-col` renders with `data-month` + `onmouseenter`/`onmouseleave` handlers calling `fcTrendBarTip(ev, month)` / `fcTrendBarTipHide`. Tooltip is a single shared `<div id="fc-trend-tip">` appended to `<body>` and positioned over the hovered column. Content: month + year, healthy ARR, at-risk ARR, dark/unknown ARR, and a one-line top-account summary. Backed by a `FC_MONTH_BREAKDOWN` map (Dec → May, with the same numbers the `FC_BOOK_HISTORY` chart bars already render).
+
+### Added — Copy Forecast Summary button (FIX 9)
+- `[📋 Copy Forecast Summary]` button in the commit-rollup header next to the timestamp.
+- `fcBuildForecastSummary()` generates plain-text clipboard content dynamically from current `FC_OVERRIDES` + `FC_PIPELINE` + `fcReadQuota()` state. Format:
+  ```
+  Q2 2026 Forecast · Carmen Corio · May 17, 2026
+  Commit: $134K | At Risk: $67K | Gap to Quota: −$16K (vs $150K target)
+  —
+  NovaVault: $28K · Likely Churn (Renewal Jun 1) [−$3K vs contract]
+  Brightex Inc: $30K · At Risk (Renewal Jun 15) [−$6K vs contract]
+  Meridian Health Systems: $22K · Unknown (Renewal Jun 30)
+  …
+  ```
+  Per-account line uses the override amount when set, else contract ARR. The bracketed delta only appears when an override is set and differs from contract. Gap line is omitted when no quota is set.
+- `fcCopyForecastSummary()` writes to `navigator.clipboard` and toasts "Forecast summary copied ✓".
+
+### Verification — 73/73 Playwright tests passing on chromium
+- Existing 66 tests from v4.6.0 still green (one assertion updated for the new localStorage shape).
+- 7 new tests for v4.7.0 added under the Forecasting describe:
+  1. `FORECAST_STATUS_CROSSWALK` constant exposes the full Gainsight mapping.
+  2. Legacy `{ key: number }` overrides migrate to Phase-2 shape on read.
+  3. Timeline card click navigates to Pipeline + highlights the row + clears after 2s.
+  4. ARR Trends account row click navigates to Pipeline.
+  5. ARR Trends chart bars show a tooltip on hover.
+  6. Copy Forecast Summary generates dynamic clipboard text containing Q2 + Carmen + Commit + At Risk + account names.
+  7. Pipeline action-button audit (kept under v4.7.0 to catch any future hardcoded-account regression).
+
+### What was NOT done this turn
+- Firefox + WebKit still blocked by the container's outbound-network policy (Playwright browser CDN download fails). Run locally with `npx playwright install firefox webkit`.
+- Phase 2 PATCH to Gainsight is still a no-op — the toast is the simulation. The crosswalk and the localStorage shape are now ready for the real API call; the missing piece is the `gainsight_renewal_id` lookup that requires the OAuth approval.
 
 ---
 

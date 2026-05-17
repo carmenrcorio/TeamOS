@@ -2464,6 +2464,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .fc-pipe-tbl tbody td{font-size:12px;color:#1F2937;font-weight:500;padding:13px 14px;border-bottom:1px solid var(--bd);vertical-align:middle}
 .fc-pipe-tbl tbody tr:last-child td{border-bottom:none}
 .fc-pipe-tbl tbody tr:hover{background:var(--surf2)}
+/* v4.7.0 — Brief teal outline applied when Timeline/ARR Trends jumps to a
+   Pipeline row. Auto-removed after 2s by fcJumpToPipelineRow. */
+.fc-pipe-tbl tbody tr.fc-row-highlight{outline:2px solid var(--tl);outline-offset:-2px;background:var(--tl-bg);animation:fc-row-fade 2s ease-out forwards}
+@keyframes fc-row-fade{0%{background:var(--tl-bg);outline-color:var(--tl)}80%{background:var(--tl-bg);outline-color:var(--tl)}100%{background:var(--surf);outline-color:transparent}}
 .fc-pipe-nm{font-weight:700;color:#111827;letter-spacing:-.01em;cursor:pointer}
 .fc-pipe-nm:hover{color:var(--tl-dk);text-decoration:underline}
 .fc-pipe-health{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:#1F2937}
@@ -2565,7 +2569,22 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .fc-trends-chart{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:18px 22px;margin-bottom:14px}
 .fc-trends-l{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
 .fc-trends-bars{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;align-items:end;height:200px;padding:0 6px}
-.fc-trend-col{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%}
+.fc-trend-col{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;cursor:default;transition:transform .12s}
+.fc-trend-col:hover{transform:translateY(-2px)}
+.fc-trend-col:focus-visible{outline:2px solid #0EA5E9;outline-offset:2px;border-radius:4px}
+/* v4.7.0 — Chart hover tooltip */
+.fc-trend-tip{position:absolute;background:#111827;color:#fff;border-radius:7px;padding:8px 11px;font-size:11px;font-weight:600;z-index:9500;transform:translate(-50%,-100%);box-shadow:0 8px 24px rgba(0,0,0,.28);display:none;pointer-events:none;min-width:170px}
+.fc-trend-tip.on{display:block}
+.fc-trend-tip-t{font-size:12px;font-weight:800;margin-bottom:5px;letter-spacing:-.01em}
+.fc-trend-tip-row{display:flex;align-items:center;gap:7px;line-height:1.7;font-weight:500;color:#E5E7EB}
+.fc-trend-tip-sw{width:9px;height:9px;border-radius:2px;display:inline-block;flex-shrink:0}
+.fc-trend-tip-sw.h{background:#6EE7B7}
+.fc-trend-tip-sw.r{background:#FCA5A5}
+.fc-trend-tip-sw.gy{background:#9CA3AF}
+.fc-trend-tip-sub{font-size:10px;font-style:italic;margin-top:5px;color:#9CA3AF;font-weight:500}
+/* v4.7.0 — Clickable rows in the ARR Trends history table */
+.fc-acct-tbl tbody tr[onclick]:hover{background:var(--surf2)}
+.fc-acct-tbl tbody tr[onclick]:focus-visible{outline:2px solid #0EA5E9;outline-offset:-2px;border-radius:4px}
 .fc-trend-bar-wrap{flex:1;width:100%;display:flex;flex-direction:column-reverse;align-items:stretch;position:relative;min-height:0}
 .fc-trend-bar-healthy{background:#D1FAE5;border:1px solid #6EE7B7;border-radius:4px 4px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:3px;font-size:9px;font-weight:800;color:#065F46;min-height:6px}
 .fc-trend-bar-risk{background:#FEE2E2;border:1px solid #FECACA;border-top:none;border-radius:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#7F1D1D;min-height:0;border-radius:0 0 4px 4px}
@@ -11555,19 +11574,90 @@ function fcShowSection(name) { return fcShow(name); }
 // have no override by default — input renders the contract ARR as a grayed
 // placeholder. Edits commit on blur/Enter, fire a toast, and update the
 // commit rollup at the top of Dust Forecast.
+//
+// v4.7.0 — Persistence shape upgraded to Phase-2-ready objects:
+//   { "nova": {
+//       "display_name": "NovaVault",
+//       "forecast_amount": 28000,
+//       "forecast_status": "Committed",
+//       "gainsight_status": "Commit",
+//       "quarter": "Q2-2026",
+//       "updated_at": "<ISO>",
+//       "updated_by": "carmen@1password.com",
+//       "gainsight_renewal_id": "PENDING_OAUTH",
+//       "salesforce_opp_id": "PENDING_OAUTH"
+//     } }
+// gainsight_renewal_id and salesforce_opp_id populated at Phase 2 API
+// connection; PENDING_OAUTH placeholders flag the unresolved mapping.
+// PHASE 2: Replace the toast in fcSaveOverride with a real
+// PATCH /v1/renewal/{gainsight_renewal_id}. Use
+// FORECAST_STATUS_CROSSWALK[status] as the Forecast_Category__c value.
+// Account lookup: teamos_forecast_overrides key (e.g. "nova") must map to
+// gainsight_renewal_id before the PATCH fires — the nickname is not a
+// valid Gainsight identifier.
+var FORECAST_STATUS_CROSSWALK = {
+  'Committed':              'Commit',
+  'On Track':               'Best Case',
+  'At Risk':                'Pipeline',
+  'Likely Churn':           'Omitted',
+  'Expansion Likely':       'Best Case',
+  'Pushed to Next Quarter': 'Omitted',
+  'Unknown':                'Pipeline'
+};
 var FC_OVERRIDE_KEY = 'teamos_forecast_overrides';
+var FC_QUARTER = 'Q2-2026';
+var FC_OWNER   = 'carmen@1password.com';
+var FC_DISPLAY_NAMES = { nova:'NovaVault', brightex:'Brightex Inc', meridian:'Meridian Health Systems', creston:'Creston Software', apex:'Apex Dynamics', acme:'Acme Corp' };
+// Backward-compatible reader: accepts both the legacy { key: number } shape
+// from earlier sessions and the new { key: { forecast_amount, ... } } shape.
+// Returns the new shape so the rest of the module can read uniformly.
 function fcReadOverrides() {
   try {
     var raw = localStorage.getItem(FC_OVERRIDE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      var migrated = false;
+      Object.keys(parsed).forEach(function(k){
+        if (typeof parsed[k] === 'number') {
+          parsed[k] = fcBuildOverrideRecord(k, parsed[k], '');
+          migrated = true;
+        }
+      });
+      if (migrated) { try { localStorage.setItem(FC_OVERRIDE_KEY, JSON.stringify(parsed)); } catch (e) {} }
+      return parsed;
+    }
   } catch (e) {}
-  // First-load defaults per spec.
-  var seed = { nova:28000, brightex:30000 };
+  // First-load defaults per spec — Nova $28K, Brightex $30K with the new
+  // Phase-2 structure baked in.
+  var seed = {
+    nova:     fcBuildOverrideRecord('nova',     28000, 'Likely Churn'),
+    brightex: fcBuildOverrideRecord('brightex', 30000, 'At Risk')
+  };
   try { localStorage.setItem(FC_OVERRIDE_KEY, JSON.stringify(seed)); } catch (e) {}
   return seed;
 }
+function fcBuildOverrideRecord(key, amount, status) {
+  var label = status || 'Unknown';
+  return {
+    display_name:         FC_DISPLAY_NAMES[key] || key,
+    forecast_amount:      amount,
+    forecast_status:      label,
+    gainsight_status:     FORECAST_STATUS_CROSSWALK[label] || 'Pipeline',
+    quarter:              FC_QUARTER,
+    updated_at:           new Date().toISOString(),
+    updated_by:           FC_OWNER,
+    gainsight_renewal_id: 'PENDING_OAUTH',
+    salesforce_opp_id:    'PENDING_OAUTH'
+  };
+}
 function fcWriteOverrides(obj) {
   try { localStorage.setItem(FC_OVERRIDE_KEY, JSON.stringify(obj)); } catch (e) {}
+}
+function fcOverrideAmount(key) {
+  var rec = FC_OVERRIDES[key];
+  if (rec == null) return null;
+  if (typeof rec === 'number') return rec;
+  return rec.forecast_amount != null ? rec.forecast_amount : null;
 }
 var FC_OVERRIDES = fcReadOverrides();
 
@@ -11656,8 +11746,9 @@ function fcPipeRowHTML(r) {
   var ts = FC_STATUS_TS[r.key];
   var pending = FC_STATUS_PENDING[r.key];
   var tsHtml = (ts || pending) ? '<div class="fc-pipe-status-meta">' + (pending ? '<span class="fc-pipe-status-pending"></span> Syncing…' : ('Updated ' + fcEscape(ts))) + '</div>' : '';
-  // Forecast $ override input.
-  var raw = FC_OVERRIDES[r.key];
+  // Forecast $ override input — read the amount through the helper so both
+  // the legacy (number) and new (object) localStorage shapes work.
+  var raw = fcOverrideAmount(r.key);
   var fcVal = (raw != null && raw !== '') ? '$' + Math.round(raw / 1000) + 'K' : '';
   var contractLabel = '$' + r.arr + 'K';
   var deltaHtml = '';
@@ -11706,7 +11797,7 @@ function fcColsToggle(key) {
   col.visible = !col.visible;
   fcRenderPipeline();
 }
-// Forecast $ override commit.
+// Forecast $ override commit. Persists the full Phase-2-shaped record.
 function fcSaveOverride(key, raw) {
   var num = String(raw || '').replace(/[^0-9.]/g, '');
   var r = FC_PIPELINE.find(function(x){return x.key===key;});
@@ -11716,13 +11807,16 @@ function fcSaveOverride(key, raw) {
     if (!isNaN(v)) {
       // Accept either dollar amount (e.g. 28000) or shorthand $28K → 28.
       if (v <= 999) v *= 1000;
-      FC_OVERRIDES[key] = Math.round(v);
+      var amount = Math.round(v);
+      var statusLabel = (r && r.statusLabel) ? r.statusLabel : 'Unknown';
+      FC_OVERRIDES[key] = fcBuildOverrideRecord(key, amount, statusLabel);
     }
   }
   fcWriteOverrides(FC_OVERRIDES);
   fcRenderPipeline();
   if (r) {
-    var displayed = FC_OVERRIDES[key] != null ? ('$' + Math.round(FC_OVERRIDES[key] / 1000) + 'K') : 'cleared';
+    var amt = fcOverrideAmount(key);
+    var displayed = amt != null ? ('$' + Math.round(amt / 1000) + 'K') : 'cleared';
     toast('Forecast updated · ' + fcEscape(r.nm) + ' · ' + displayed + ' · Logged ✓');
   }
 }
@@ -11790,7 +11884,7 @@ function fcRenderTimeline() {
     return rows.map(function(r){
       var b = badges[r.key] || ['dark', '—'];
       return '<div class="fc-tl-acct">'
-        + '<div class="fc-tl-r1"><span class="fc-tl-nm acct-lk" tabindex="0" onclick="fcOpenAcctDrawer(\'' + r.key + '\')" onkeydown="if(event.key===\'Enter\'){fcOpenAcctDrawer(\'' + r.key + '\')}">' + fcEscape(r.nm) + '</span><span class="fc-tl-date">' + r.renewal + '</span></div>'
+        + '<div class="fc-tl-r1"><span class="fc-tl-nm acct-lk" tabindex="0" onclick="fcJumpToPipelineRow(\'' + r.key + '\')" onkeydown="if(event.key===\'Enter\'){fcJumpToPipelineRow(\'' + r.key + '\')}">' + fcEscape(r.nm) + '</span><span class="fc-tl-date">' + r.renewal + '</span></div>'
         + '<div class="fc-tl-r2"><span class="fc-tl-arr">' + r.arrLabel + '</span><span class="fc-tl-dot ' + r.healthCls + '"></span></div>'
         + '<span class="fc-tl-badge ' + b[0] + '">' + fcEscape(b[1]) + '</span>'
       + '</div>';
@@ -11825,11 +11919,14 @@ function fcRenderTimeline() {
 var FC_QUOTA_KEY = 'teamos_forecast_quota';
 function fcReadQuota() { try { var v = parseInt(localStorage.getItem(FC_QUOTA_KEY), 10); return isNaN(v) ? null : v; } catch (e) { return null; } }
 function fcWriteQuota(v) { try { localStorage.setItem(FC_QUOTA_KEY, String(v)); } catch (e) {} }
+// v4.7.0 — Status weights reset to the user-spec values (Committed 100% /
+// On Track 85% / At Risk 40% / Likely Churn 10%). Expansion + pushed + unknown
+// keep sensible interim values until the spec calls them out.
 function fcCommitTotal() {
   // Per-account commit = override when set, else status-weighted contract ARR.
-  var statusWeight = { ontrack:1, committed:1, expansion:1.1, atrisk:0.7, churn:0.3, unknown:0.5, pushed:0 };
+  var statusWeight = { committed:1.00, ontrack:0.85, atrisk:0.40, churn:0.10, expansion:1.10, unknown:0.50, pushed:0 };
   return FC_PIPELINE.reduce(function(sum, r){
-    var override = FC_OVERRIDES[r.key];
+    var override = fcOverrideAmount(r.key);
     if (override != null && override !== '') return sum + override;
     var w = statusWeight[r.status] != null ? statusWeight[r.status] : 0.5;
     return sum + Math.round(r.arr * 1000 * w);
@@ -11844,13 +11941,58 @@ function fcRenderRollup() {
   if (gap == null) gapHtml = '<div class="fc-rollup-cell-v mute">—</div><button class="fc-rollup-quota" type="button" onclick="fcOpenQuotaForm()">Set quota</button><div class="fc-rollup-quota-form" id="fc-quota-form"><input type="number" id="fc-quota-input" placeholder="$ target" aria-label="Quota target"><button class="cm-btn prim" type="button" onclick="fcSaveQuota()">Set</button></div>';
   else gapHtml = '<div class="fc-rollup-cell-v ' + (gap >= 0 ? 'g' : 'r') + '">' + (gap >= 0 ? '+' : '−') + '$' + Math.round(Math.abs(gap) / 1000) + 'K</div><div class="fc-rollup-cell-sub">Quota: $' + Math.round(quota / 1000) + 'K · <button class="fc-rollup-quota" type="button" onclick="fcOpenQuotaForm()">Change</button></div>';
   return '<div class="fc-rollup">'
-    + '<div class="fc-rollup-hd"><div class="fc-rollup-l">My forecast commit · Q2 2026</div><div class="fc-rollup-ts">Updated: ' + fcEscape(FC_DUST_GEN) + '</div></div>'
+    + '<div class="fc-rollup-hd">'
+    +   '<div><div class="fc-rollup-l">My forecast commit · Q2 2026</div><div class="fc-rollup-ts">Updated: ' + fcEscape(FC_DUST_GEN) + '</div></div>'
+    +   '<button class="fc-btn" id="fc-copy-summary-btn" type="button" onclick="fcCopyForecastSummary()" aria-label="Copy forecast summary to clipboard"><i class="ti ti-clipboard"></i> 📋 Copy Forecast Summary</button>'
+    + '</div>'
     + '<div class="fc-rollup-cells">'
     +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">Commit total</div><div class="fc-rollup-cell-v">$' + Math.round(commit / 1000) + 'K</div></div>'
     +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">At Risk</div><div class="fc-rollup-cell-v r">$' + Math.round(atRisk / 1000) + 'K</div></div>'
     +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">Gap to Quota</div>' + gapHtml + '</div>'
     + '</div>'
     + '</div>';
+}
+// v4.7.0 — Generate forecast summary clipboard text dynamically from current
+// FC_OVERRIDES + FC_PIPELINE state. Per-account line uses the override amount
+// if set, else the contract ARR. Gap line is omitted when no quota is set.
+function fcBuildForecastSummary() {
+  var now = new Date();
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var date = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+  var commit = fcCommitTotal();
+  var atRisk = FC_PIPELINE.filter(function(r){return r.status==='churn'||r.status==='atrisk';}).reduce(function(s,r){return s+r.arr*1000;}, 0);
+  var quota = fcReadQuota();
+  var lines = [];
+  lines.push('Q2 2026 Forecast · Carmen Corio · ' + date);
+  var header = 'Commit: $' + Math.round(commit / 1000) + 'K | At Risk: $' + Math.round(atRisk / 1000) + 'K';
+  if (quota != null) {
+    var gap = commit - quota;
+    header += ' | Gap to Quota: ' + (gap >= 0 ? '+' : '−') + '$' + Math.round(Math.abs(gap) / 1000) + 'K (vs $' + Math.round(quota / 1000) + 'K target)';
+  }
+  lines.push(header);
+  lines.push('—');
+  FC_PIPELINE.forEach(function(r){
+    var override = fcOverrideAmount(r.key);
+    var amount = (override != null && override !== '') ? override : (r.arr * 1000);
+    var line = (FC_DISPLAY_NAMES[r.key] || r.nm) + ': $' + Math.round(amount / 1000) + 'K · ' + r.statusLabel + ' (Renewal ' + r.renewal + ')';
+    if (override != null && override !== '') {
+      var diff = Math.round((override - r.arr * 1000) / 1000);
+      if (diff !== 0) line += ' [' + (diff < 0 ? '−' : '+') + '$' + Math.abs(diff) + 'K vs contract]';
+    }
+    lines.push(line);
+  });
+  return lines.join('\n');
+}
+function fcCopyForecastSummary() {
+  var txt = fcBuildForecastSummary();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(
+      function(){ toast('Forecast summary copied ✓'); },
+      function(){ toast('Could not copy automatically — see console'); }
+    );
+  } else {
+    toast('Forecast summary ready · copy from console');
+  }
 }
 function fcOpenQuotaForm() {
   var form = document.getElementById('fc-quota-form');
@@ -11921,6 +12063,18 @@ function fcRegenerate() {
 }
 
 // ── ARR Trends ──────────────────────────────────────────────────────────────
+// v4.7.0 — Account rows are clickable (navigate to Pipeline + highlight, same
+// as Timeline). Chart bars get a hover tooltip showing the month's healthy /
+// at-risk / dark-unknown ARR breakdown.
+var FC_MONTH_BREAKDOWN = {
+  Dec: { healthy:170, risk:0,  dark:0,  topAccts:'No risk' },
+  Jan: { healthy:158, risk:12, dark:0,  topAccts:'Nova trending down' },
+  Feb: { healthy:152, risk:18, dark:0,  topAccts:'Nova drop deepens' },
+  Mar: { healthy:146, risk:24, dark:22, topAccts:'Meridian goes dark' },
+  Apr: { healthy:125, risk:45, dark:40, topAccts:'Brightex health drop · Creston dark' },
+  May: { healthy:103, risk:67, dark:55, topAccts:'Nova + Brightex at risk · 3 dark accounts' }
+};
+var FC_ACCT_KEY_BY_NAME = { 'Acme Corp':'acme','Brightex Inc':'brightex','NovaVault':'nova','Meridian Health':'meridian','Creston Software':'creston','Apex Dynamics':'apex' };
 function fcRenderTrends() {
   var sec = document.getElementById('fc-arrtrends');
   if (!sec) return;
@@ -11931,7 +12085,7 @@ function fcRenderTrends() {
     var healthyPct = Math.max(0, ((m.managed - m.risk) / max) * 100);
     var riskPct = (m.risk / max) * 100;
     var first = i === 0 ? ' first' : '';
-    return '<div class="fc-trend-col' + first + '">'
+    return '<div class="fc-trend-col' + first + '" data-month="' + m.m + '" onmouseenter="fcTrendBarTip(event,\'' + m.m + '\')" onmouseleave="fcTrendBarTipHide()" onfocus="fcTrendBarTip(event,\'' + m.m + '\')" onblur="fcTrendBarTipHide()" tabindex="0">'
       + '<div class="fc-trend-bar-wrap">'
       +   '<div class="fc-trend-bar-healthy" style="height:' + healthyPct + '%">$' + (m.managed - m.risk) + 'K</div>'
       +   (m.risk ? '<div class="fc-trend-bar-risk" style="height:' + riskPct + '%">$' + m.risk + 'K</div>' : '')
@@ -11940,7 +12094,9 @@ function fcRenderTrends() {
     + '</div>';
   }).join('');
   var acctRows = FC_ACCT_HISTORY.map(function(a){
-    return '<tr><td class="nm">' + fcEscape(a.nm) + '</td>' + a.row.map(function(v){return '<td>' + v + '</td>';}).join('') + '<td class="trend ' + a.trendCls + '">' + fcEscape(a.trend) + '</td></tr>';
+    var key = FC_ACCT_KEY_BY_NAME[a.nm];
+    var onclick = key ? ' onclick="fcJumpToPipelineRow(\'' + key + '\')" style="cursor:pointer" tabindex="0" onkeydown="if(event.key===\'Enter\'){fcJumpToPipelineRow(\'' + key + '\')}"' : '';
+    return '<tr' + onclick + '><td class="nm">' + fcEscape(a.nm) + '</td>' + a.row.map(function(v){return '<td>' + v + '</td>';}).join('') + '<td class="trend ' + a.trendCls + '">' + fcEscape(a.trend) + '</td></tr>';
   }).join('');
   sec.innerHTML = ''
     + '<div class="fc-hd"><div class="fc-hd-t">📊 ARR Trends · Last 6 months</div></div>'
@@ -11964,6 +12120,34 @@ function fcRenderTrends() {
     +   '</div>'
     +   '<button class="fc-btn prim" type="button" onclick="fcAction(\'prep\',\'acme\')"><i class="ti ti-rocket"></i> Open Expansion Play — Acme &rarr;</button>'
     + '</div>';
+}
+// v4.7.0 — Chart bar hover tooltip. Single shared tooltip div positioned
+// over the hovered column. Hidden on mouseleave / blur.
+function fcTrendBarTip(ev, monthKey) {
+  var br = FC_MONTH_BREAKDOWN[monthKey] || { healthy:0, risk:0, dark:0, topAccts:'' };
+  var year = monthKey === 'Dec' ? '2025' : '2026';
+  var tip = document.getElementById('fc-trend-tip');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.id = 'fc-trend-tip';
+    tip.className = 'fc-trend-tip';
+    tip.setAttribute('role', 'tooltip');
+    document.body.appendChild(tip);
+  }
+  tip.innerHTML = ''
+    + '<div class="fc-trend-tip-t">' + fcEscape(monthKey) + ' ' + year + '</div>'
+    + '<div class="fc-trend-tip-row"><span class="fc-trend-tip-sw h"></span>Healthy: $' + br.healthy + 'K</div>'
+    + '<div class="fc-trend-tip-row"><span class="fc-trend-tip-sw r"></span>At risk: $' + br.risk + 'K</div>'
+    + '<div class="fc-trend-tip-row"><span class="fc-trend-tip-sw gy"></span>Dark/unknown: $' + br.dark + 'K</div>'
+    + (br.topAccts ? '<div class="fc-trend-tip-sub">' + fcEscape(br.topAccts) + '</div>' : '');
+  var rect = ev.currentTarget.getBoundingClientRect();
+  tip.style.left = (rect.left + window.pageXOffset + rect.width / 2) + 'px';
+  tip.style.top  = (rect.top  + window.pageYOffset - 8) + 'px';
+  tip.classList.add('on');
+}
+function fcTrendBarTipHide() {
+  var tip = document.getElementById('fc-trend-tip');
+  if (tip) tip.classList.remove('on');
 }
 
 // ── Action helpers ──────────────────────────────────────────────────────────
@@ -12005,6 +12189,29 @@ function fcOpenMB(acct) {
 // v4.4.0 — In-tab account drawer. Slides in from right without navigating
 // away. Clicking the same account toggles it closed. Used by Timeline + the
 // Pipeline account-name links.
+// v4.7.0 — Timeline + ARR Trends cards navigate to Pipeline and highlight the
+// matching row instead of opening the right-side drawer. The CSM stays on the
+// Forecasting tab; the row gains a teal outline that fades after 2s.
+function fcJumpToPipelineRow(key) {
+  fcShow('pipeline');
+  // Wait a tick for the section to render, then locate the row by walking
+  // the table and matching its first cell's account-name span text to the
+  // FC_PIPELINE entry. Falls back gracefully if the row isn't found.
+  setTimeout(function(){
+    var r = FC_PIPELINE.find(function(x){return x.key===key;});
+    if (!r) return;
+    var rows = document.querySelectorAll('#fc-pipeline .fc-pipe-tbl tbody tr');
+    var target = null;
+    for (var i = 0; i < rows.length; i++) {
+      var nm = rows[i].querySelector('.fc-pipe-nm');
+      if (nm && nm.textContent.trim() === r.nm) { target = rows[i]; break; }
+    }
+    if (!target) return;
+    target.classList.add('fc-row-highlight');
+    if (typeof target.scrollIntoView === 'function') target.scrollIntoView({ behavior:'smooth', block:'center' });
+    setTimeout(function(){ target.classList.remove('fc-row-highlight'); }, 2000);
+  }, 80);
+}
 var FC_ACCT_DRAWER_KEY = null;
 function fcOpenAcctDrawer(key) {
   if (FC_ACCT_DRAWER_KEY === key) { fcCloseAcctDrawer(); return; }
