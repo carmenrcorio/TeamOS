@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.2.2
+**Version:** 3.2.3
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,21 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.2.3] — 2026-05-17
+
+Text-only rename of the Ask Dust card. No structural, layout, or behavioral changes — all six chips, all chip behavior, the Agents dropdown, Coach Me, agent outputs, and routing to Mission Briefing are untouched.
+
+### Changed — Card text
+- Card title: "Ask Dust" → "Dust Agents".
+- Card subtitle: "Free-text agent · powered by Dust API" → "Access your Dust agents here". Same `.bf-sub` styling (small, uppercased via CSS, muted).
+- Search input placeholder: "Ask anything about an account, renewal, or open loop…" → "Ask any agent a question…".
+
+### Implementation notes
+- Internal references (CSS comments, the `dust-title` output-panel header, the `_dustRender('Ask Dust', …)` routing key, and the input's `aria-label`) are intentionally left as-is — only the three user-visible card strings changed.
+- Spec label note: the user requested this entry as `[3.2.2]`; shipped as `[3.2.3]` to preserve monotonic versioning above the existing 3.2.2 entry.
 
 ---
 
