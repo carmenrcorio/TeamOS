@@ -537,8 +537,8 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 /* ═══════════════════════════════════════════════════════════════════════════
    Offline resilience (v2.4.0) — banner + cached badges + queue badge
    ═══════════════════════════════════════════════════════════════════════════ */
-.offline-banner{position:fixed;top:0;left:0;right:0;height:36px;background:#1C1917;color:#FCD34D;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font-size:11px;font-weight:600;z-index:60;transform:translateY(-100%);transition:transform 200ms ease;letter-spacing:.02em}
-body.offline .offline-banner{transform:translateY(44px)}
+.offline-banner{position:fixed;top:0;left:0;right:0;height:36px;background:#1C1917;color:#FCD34D;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font-size:11px;font-weight:600;z-index:60;transform:translateY(-100%);transition:transform 200ms ease;letter-spacing:.02em;pointer-events:none}
+body.offline .offline-banner{transform:translateY(44px);pointer-events:auto}
 body.offline .pulse-strip{top:80px}
 .offline-banner-l{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .offline-banner-l i{font-size:14px;flex-shrink:0}
@@ -722,8 +722,11 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 /* ═══════════════════════════════════════════════════════════════════════════
    CFT Docs popover (v2.10.0) — 7th pulse-strip indicator
    ═══════════════════════════════════════════════════════════════════════════ */
-.cft-pop{width:380px;max-height:520px;display:none;flex-direction:column;overflow:hidden}
+.cft-pop{width:380px;max-width:min(380px,90vw);max-height:520px;display:none;flex-direction:column;overflow:hidden;right:0;left:auto}
 .cft-pop.on{display:flex}
+/* Defensive: if even with right:0 the popover still overflows the right edge
+   of a narrow viewport, the max-width:90vw clamp takes over and the content
+   stays within the screen at any width. */
 .cft-hd{padding:12px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--surf2);flex-shrink:0}
 .cft-hd-t{font-size:11px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:6px;letter-spacing:.02em}
 .cft-hd-t i{font-size:14px}
@@ -859,12 +862,17 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .ls-row{padding:0 14px;gap:10px;min-height:48px;display:flex;align-items:center}
 .ls-row:last-child{border-bottom:none}
 .ls-ic{width:28px;height:28px;border-radius:6px;font-size:13px}
-.ls-mid{display:grid;grid-template-columns:140px auto 1fr auto auto auto;align-items:center;gap:10px;min-width:0;flex:1}
-.ls-acct{font-size:11px;color:var(--tx);font-weight:700;text-transform:none;letter-spacing:0;margin-bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ls-type{font-size:10px;font-weight:600;color:var(--tx2);letter-spacing:0;white-space:nowrap}
+/* v2.10.1 Bug 11 — collapsed from 6 cols to 4. Account name + description +
+   severity + action are the required visible elements. Type label and
+   timestamp are hidden in this compact layout (still in the DOM for
+   accessibility / future wider layouts). minmax(0,1fr) on the description
+   column lets it shrink to give the account-name column its natural width. */
+.ls-mid{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:8px 10px;min-width:0;flex:1}
+.ls-acct{font-size:11px;color:var(--tx);font-weight:700;text-transform:none;letter-spacing:0;margin-bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;min-width:60px}
+.ls-type{display:none}
 .ls-ctx{font-size:10px;color:var(--tx3);margin-bottom:0;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.ls-sev{font-size:9px;padding:1px 6px;font-weight:700;border-radius:3px;letter-spacing:.04em;text-transform:uppercase}
-.ls-time{font-size:10px;color:var(--tx3);font-weight:500;white-space:nowrap}
+.ls-sev{font-size:9px;padding:1px 6px;font-weight:700;border-radius:3px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.ls-time{display:none}
 .ls-act{font-size:10px;font-weight:700;padding:5px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;white-space:nowrap;flex-shrink:0}
 .ls-act:hover{background:var(--surf2);border-color:var(--tx2)}
 .ls-foot{padding:10px 14px;text-align:center;background:var(--surf2);border-top:1px solid var(--bd)}
@@ -1245,7 +1253,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
         <div class="pop-row">
           <div class="pop-left">
             <div class="pop-main"><span class="acct-lk" onclick="acctClickFromPulse('apex',event)">Apex Dynamics</span></div>
-            <div class="pop-sub">61 days silent &middot; $15K &middot; Renews Jul 15</div>
+            <div class="pop-sub">61 days silent &middot; $15K &middot; Renews Aug 1</div>
           </div>
           <div class="pop-btns"><button class="gb-btn" onclick="openGhostBusterFromPopover('apex')" type="button">Ghost-Buster</button></div>
         </div>
@@ -1265,10 +1273,10 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
     </div>
 
     <div class="ps-wrap">
-      <button class="ps-btn" id="pb-cft" onclick="togglePop('cft',event)" type="button"><i class="ti ti-folder"></i>&nbsp;CFT Docs</button>
+      <button class="ps-btn" id="pb-cft" onclick="togglePop('cft',event)" type="button"><i class="ti ti-folder"></i>&nbsp;Drive Docs</button>
       <div class="pop pop-right cft-pop" id="pop-cft">
         <div class="cft-hd">
-          <div class="cft-hd-t"><i class="ti ti-folder" style="color:var(--bl)"></i> CFT Docs <span class="cft-hd-src">&middot; Google Drive</span></div>
+          <div class="cft-hd-t"><i class="ti ti-folder" style="color:var(--bl)"></i> Drive Docs <span class="cft-hd-src">&middot; Google Drive</span></div>
           <button class="cft-close" type="button" onclick="closePops()" aria-label="Close CFT Docs">&times;</button>
         </div>
         <div class="cft-search">
@@ -1478,7 +1486,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
           <div class="dz-acct">
             <div class="dz-left">
               <div class="dz-nm"><span class="acct-lk" onclick="acctClick('apex',event)">Apex Dynamics</span> &middot; $15K</div>
-              <div class="dz-row"><span class="dz-days">61d dark</span><span class="dz-renewal">Renews Jul 15</span></div>
+              <div class="dz-row"><span class="dz-days">61d dark</span><span class="dz-renewal">Renews Aug 1</span></div>
               <div class="dz-last">&ldquo;Champion changed &mdash; Ryan Patel not yet reached (Salesforce)&rdquo;</div>
             </div>
             <button class="dz-btn" onclick="openPanel('apex',null)">Ghost-Buster</button>
@@ -2275,7 +2283,21 @@ function acctClickFromNotif(key, ev) {
 function toggleAgentsDropdown(ev) {
   if (ev && ev.stopPropagation) ev.stopPropagation();
   var p = document.getElementById('dust-agents-pop');
-  if (p) p.classList.toggle('on');
+  if (!p) return;
+  var willOpen = !p.classList.contains('on');
+  // Enforce single-dropdown invariant: close every other surface first.
+  if (willOpen) closeAllDropdowns();
+  if (willOpen) p.classList.add('on');
+}
+
+// Single-dropdown invariant: closes pulse-strip popovers, notification rail
+// popovers, AND the Ask Dust Agents dropdown. Call this at the start of any
+// dropdown-opener handler that wants to enforce "one at a time".
+function closeAllDropdowns() {
+  if (typeof closePops === 'function') closePops();
+  if (typeof closeNotifPops === 'function') closeNotifPops();
+  var p = document.getElementById('dust-agents-pop');
+  if (p) p.classList.remove('on');
 }
 document.addEventListener('click', function(e){
   if (!e.target.closest('.bf-qa-wrap')) {
@@ -2298,6 +2320,10 @@ function resetPanel() {
   document.querySelectorAll('.rp-view').forEach(function(v){ v.classList.remove('on'); });
   document.querySelectorAll('.ce').forEach(function(c){ c.classList.remove('sel'); });
   document.getElementById('view-default').classList.add('on');
+  // Restore the Mission Briefing default "Next Up · Auto-loaded" tag in case
+  // any prior code path mutated it.
+  var tag = document.querySelector('#view-default .rp-hd.pl .pl-tag');
+  if (tag) tag.innerHTML = '<span class="pl-dot"></span>Next Up &middot; Auto-loaded';
   if (typeof _updateAgentHubAccount === 'function') _updateAgentHubAccount('default');
   if (typeof _updateCFTDocs === 'function') _updateCFTDocs('default');
   scrollPanelIntoView();
@@ -2647,7 +2673,7 @@ function toggleNotifPop(kind, e) {
   var btn = document.getElementById('nb-' + kind);
   if (!pop || !btn) return;
   var isOn = pop.classList.contains('on');
-  closeNotifPops();
+  closeAllDropdowns();
   if (!isOn) { pop.classList.add('on'); btn.classList.add('on'); }
 }
 
@@ -2819,7 +2845,7 @@ function togglePop(id, e) {
   e.stopPropagation();
   var el = document.getElementById('pop-' + id);
   var isOn = el.classList.contains('on');
-  closePops();
+  closeAllDropdowns();
   if (!isOn) { el.classList.add('on'); document.getElementById('pb-' + id).classList.add('on'); }
 }
 function closePops() {
@@ -2837,20 +2863,15 @@ function markCtaDone(rowId, e) {
   e.stopPropagation();
   var row = document.getElementById(rowId);
   row.classList.add('done-row');
-  setTimeout(function() {
-    row.style.opacity = '0'; row.style.transition = 'opacity .3s';
-    setTimeout(function() {
-      row.style.display = 'none';
-      ctaDone++;
-      var remaining = 3 - ctaDone;
-      var el = document.getElementById('pn-ctas');
-      if (el) {
-        el.textContent = remaining;
-        if (remaining === 0) { el.className = 'ps-n g'; el.textContent = '0'; }
-      }
-      if (remaining === 0) toast('All CTAs resolved ✓');
-    }, 300);
-  }, 500);
+  row.style.display = 'none';
+  ctaDone++;
+  var remaining = 3 - ctaDone;
+  var el = document.getElementById('pn-ctas');
+  if (el) {
+    el.textContent = remaining;
+    if (remaining === 0) { el.className = 'ps-n g'; el.textContent = '0'; }
+  }
+  if (remaining === 0) toast('All CTAs resolved ✓');
 }
 
 buildRecipe();
@@ -3570,7 +3591,7 @@ function togglePop(id, e) {
   e.stopPropagation();
   var el = document.getElementById('pop-' + id);
   var isOn = el.classList.contains('on');
-  closePops();
+  closeAllDropdowns();
   if (!isOn) { el.classList.add('on'); document.getElementById('pb-' + id).classList.add('on'); }
 }
 function closePops() {
@@ -3588,20 +3609,15 @@ function markCtaDone(rowId, e) {
   e.stopPropagation();
   var row = document.getElementById(rowId);
   row.classList.add('done-row');
-  setTimeout(function() {
-    row.style.opacity = '0'; row.style.transition = 'opacity .3s';
-    setTimeout(function() {
-      row.style.display = 'none';
-      ctaDone++;
-      var remaining = 3 - ctaDone;
-      var el = document.getElementById('pn-ctas');
-      if (el) {
-        el.textContent = remaining;
-        if (remaining === 0) { el.className = 'ps-n g'; el.textContent = '0'; }
-      }
-      if (remaining === 0) toast('All CTAs resolved ✓');
-    }, 300);
-  }, 500);
+  row.style.display = 'none';
+  ctaDone++;
+  var remaining = 3 - ctaDone;
+  var el = document.getElementById('pn-ctas');
+  if (el) {
+    el.textContent = remaining;
+    if (remaining === 0) { el.className = 'ps-n g'; el.textContent = '0'; }
+  }
+  if (remaining === 0) toast('All CTAs resolved ✓');
 }
 
 buildRecipe();
@@ -3982,9 +3998,6 @@ function setDrawerMode(mode, opts) {
   });
 
   if (mode === 'assistant') {
-    // If there's no rendered agent, leave the header at its current state
-    // (or default to "Agent / Select an agent"). openAgentDrawer handles the
-    // populated case directly and skips this branch.
     if (!opts.skipReinit) {
       // Replay the last loaded agent if present so the body isn't blank when
       // user toggles Live → Assistant.
@@ -3992,10 +4005,16 @@ function setDrawerMode(mode, opts) {
         openAgentDrawer(_drawerCtx.lastAgent.type, _drawerCtx.lastAgent.acct);
         return;
       }
+      // Drawer never had agent content this session — show a default prompt
+      // rather than a blank body. Header gets a friendly placeholder too.
       var t = document.getElementById('drawer-title');
       var s = document.getElementById('drawer-sub');
-      if (t && !t.textContent.trim()) t.textContent = 'Agent';
-      if (s && !s.textContent.trim()) s.textContent = 'Select an agent';
+      var scroll = document.getElementById('drawer-scroll');
+      var ft = document.getElementById('drawer-ft');
+      if (t) t.textContent = 'Assistant';
+      if (s) s.textContent = 'No agent loaded yet';
+      if (scroll) scroll.innerHTML = '<div style="padding:32px 18px;text-align:center;color:var(--tx3);font-size:12px;line-height:1.6"><i class="ti ti-sparkles" style="font-size:28px;color:var(--tl);display:block;margin-bottom:12px"></i>Select an agent above or use Quick Launch to load a brief for any account.</div>';
+      if (ft) ft.innerHTML = '';
     }
     _tlCancelSignal();
     return;

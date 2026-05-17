@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.10.0
+**Version:** 2.10.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,59 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.10.1] — 2026-05-17
+
+QA sprint covering 10 bugs reported against v2.10.0 plus the "CFT Docs" → "Drive Docs" rename. No new features.
+
+### Fixed
+
+- **Bug 3 — Apex renewal date now consistent at Aug 1 everywhere.** The pulse-strip Dark Accounts popover and the Dark Zone widget row for Apex both said "Renews Jul 15"; the Ghost-Buster `view-apex` already said "Renews Aug 1" (correct). Updated both stale instances. Verified with `grep "Renews Jul 15"` (zero remaining hits for Apex). Creston's "Jul 15" in the Ghost-Buster view-creston is for Creston, not Apex, and was left as-is per spec.
+- **Bug 5 — CTA Done button decrements instantly.** Removed the chained `setTimeout(500ms → setTimeout(300ms))` inside `markCtaDone`. The 800ms artificial delay was masquerading as an API call simulation but ended up looking broken. Now: click → `display: none` on the row + count decrement in the same tick. Verified: 5ms elapsed from click to DOM update in the headless test.
+- **Bug 4 — Offline banner positioning defensive cleanup.** The existing CSS (`top: 0; transform: translateY(-100%)` hidden / `translateY(44px)` visible) was geometrically correct (verified: hidden rect `[-36, 0]`, visible rect `[44, 80]`). Added `pointer-events: none` to the hidden state and `pointer-events: auto` to the visible state so the off-screen banner never intercepts clicks against the nav even in browsers where the transform doesn't fully lift it out of the hit-test layer.
+- **Bug 6 — Assistant mode no longer renders a blank body.** Two paths fixed:
+  - **Toggle Live → Assistant when an agent was previously loaded:** already worked in v2.8.2 via `_drawerCtx.lastAgent` replay. Re-verified — toggling back restores "Save Strategy" / "NovaVault" content.
+  - **Toggle to Assistant when no agent has ever been loaded:** previously left the body empty. Now renders a centered placeholder: `<i class="ti ti-sparkles"></i> Select an agent above or use Quick Launch to load a brief for any account.` Header reads `Assistant / No agent loaded yet`.
+- **Bug 7 — Single-dropdown invariant.** Added `closeAllDropdowns()` which calls `closePops()` (pulse-strip popovers) + `closeNotifPops()` (notification rail popovers) + closes the Ask Dust Agents dropdown by removing the `.on` class from `#dust-agents-pop`. Wired into the three opener handlers: `togglePop` (pulse strip — was calling `closePops()` alone), `toggleNotifPop` (notification rail — was calling `closeNotifPops()` alone), and `toggleAgentsDropdown` (Ask Dust Agents — was calling `.classList.toggle('on')` with no cleanup). Verified: opening any one dropdown now closes the other two.
+- **Bug 8 — Tasks popover ellipsis.** `.tk-row-title` already had `overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0` (set in v1.8.0). Re-verified in headless test — properties present and applied to every row. No CSS change needed; the bug may have been observed against an older build or under a non-`min-width: 0` parent grid track. Kept the existing properties unchanged.
+- **Bug 9 — NEXT UP tag restored on Back.** Added explicit restoration of the `#view-default .rp-hd.pl .pl-tag` innerHTML to `<span class="pl-dot"></span>Next Up &middot; Auto-loaded` inside `resetPanel()` so the tag is always in the correct state after any Back-button path, regardless of whether anything mutated it earlier. Defensive — verified the tag now reads "Next Up · Auto-loaded" after `openPanel('brightex')` → `resetPanel()`.
+- **Bug 11 — Live Signals account names readable at all viewports.** The `.ls-mid` grid was 6 cols (`140px auto 1fr auto auto auto`) which over-committed the row width at narrow Live Signals widget widths and squeezed `.ls-acct` to 0–18 px. Restructured to 4 cols (`auto minmax(0,1fr) auto auto` = account / description / severity / action). Hid `.ls-type` and `.ls-time` (still in the DOM for future wider layouts). Set `.ls-acct { min-width: 60px; max-width: 140px }` so the account name always shows at least 6 characters + ellipsis. Verified at 1280×900: all 5 rows now render the account name at ≥60 px wide. Account name `.acct-lk` click still routes to Mission Briefing — verified clicking the NovaVault name opens `view-nova`.
+
+### Changed (UI rename)
+- **`CFT Docs` → `📁 Drive Docs` everywhere.** Pulse-strip indicator label, dropdown header (`Drive Docs · Google Drive`), and SPEC references all renamed. The internal id `pop-cft` / `pb-cft` and the `cft-*` CSS namespace are unchanged to keep the diff scoped to user-visible copy.
+
+### Changed (CFT/Drive Docs viewport safety)
+- **Bug 2 — Drive Docs dropdown can no longer overflow the viewport.** Added `max-width: min(380px, 90vw)` to `.cft-pop` so the dropdown is clamped to 90% of the viewport at narrow widths regardless of how far right the trigger sits. Also added explicit `right: 0; left: auto` to keep the popover anchored to the right edge of its `.ps-wrap` (default `.pop` rule was `left: 0`). Verified at 1280 px: pop right-edge=865, well within viewport=1280. The 90vw clamp kicks in defensively at viewports narrower than ~422 px (none of the supported breakpoints, but safe).
+
+### Investigated, no functional change required
+- **Bug 1 — "Agent Hub invisible".** Could not reproduce. The Agent Hub card renders at 601×560 px at 1280 px viewport with all expected counts (12 Quick Launch chips, 3 Recent Outputs rows, 2 Active Account doc rows). All CSS in the chain (`.ah-card`, `.rp-scroll`, `.rp-view.on`, `.rp`, `.main`) is sound: `.rp` is content-height since v1.9.0, `.rp-scroll` is content-height, `.rp-view.on` is `display: flex; flex-direction: column`, no flex collapses occur. The likely source of the user's "doesn't appear" report is that the card sits at y≈1029 px and is below the fold of an 800-tall viewport — the user must scroll down within the page to see it. **No CSS change made.** Documented here for trace-back if the bug recurs.
+
+### Verified end-to-end in a headless render
+| Bug | Status | Evidence |
+|---|---|---|
+| 1 — Agent Hub | Not reproducible | 601×560 with 12/3/2 counts |
+| 2 — Drive Docs overflow | Fixed | right=865 ≤ vw=1280 at narrow widths |
+| 3 — Apex date | Fixed | All Apex surfaces say "Aug 1" |
+| 4 — Offline banner | Verified + hardened | hidden top=-36 pe=none / visible top=44 pe=auto |
+| 5 — CTA Done delay | Fixed | 5ms elapsed click→update |
+| 6 — Assistant blank state | Fixed | "Select an agent above…" placeholder renders |
+| 6.b — Live → Assistant restore | Fixed | Returns to last-loaded agent title |
+| 7 — Two dropdowns open | Fixed | Opening Agents closes Drive Docs and vice versa |
+| 8 — Tasks ellipsis | Verified | `overflow: hidden; text-overflow: ellipsis` present |
+| 9 — NEXT UP tag | Fixed | Tag reads "Next Up · Auto-loaded" after Back |
+| 11 — Live Signals account widths | Fixed | All ≥60 px; click routes to Mission Briefing |
+
+### Not touched
+- All working features. All Mission Briefing content. All agent outputs. All Ghost-Buster wizard content. All TeamOS Live content. All notification rail rows + behavior. Recipe for Success tab. Service Worker logic. Offline resilience layers (snapshot, queue, banner content, retry handler). All Ask Dust templates. Universal account-click handlers. Calendar onclicks. Pulse-strip popover content (calls / risk / arr / ctas / dark / tasks). Tasks dropdown rendering (`renderTasksList`). Task Brief panel. Drive Docs dropdown content + search behavior + data tables. Next Up card content. Priority Stack rows.
+
+### Engineering
+- Two CSS rule patches: `.cft-pop` (added `max-width`, `right: 0`, `left: auto`), `.offline-banner` (added `pointer-events: none`/`auto` per state).
+- One CSS namespace rewrite: `.ls-mid` grid template + `.ls-acct` constraints + `.ls-type`/`.ls-time` hidden.
+- Three JS function patches: `markCtaDone` (delay removed), `resetPanel` (tag restore line), `setDrawerMode` (default-state body when no `lastAgent`).
+- One new JS function: `closeAllDropdowns()`. Wired into `togglePop`, `toggleNotifPop`, `toggleAgentsDropdown`.
+- Three HTML string changes: `"CFT Docs"` → `"Drive Docs"` (pulse-strip button label + dropdown header) and `"Jul 15"` → `"Aug 1"` on two Apex surfaces.
 
 ---
 
