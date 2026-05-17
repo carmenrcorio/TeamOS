@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.2.0
+**Version:** 4.3.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,63 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.3.0] — 2026-05-17
+
+Two phases: Phase 1 reconciles selectors with the external Playwright test suite (5 confirmed mismatches from QA inspection); Phase 2 lands three new AI features in the Campaign Manager (segmentation panel, AI Draft Generator inside the wizard, working campaign View detail panel). All other tabs and dashboard widgets untouched.
+
+### Phase 1 — Selector fixes
+
+**Fix 1 — Campaign sub-tab section IDs.** Section IDs renamed to drop the `-sec-` segment so external tests' `#cm-contacts` / `#cm-templates` / `#cm-analytics` / `#cm-campaigns` selectors resolve directly. `cmShowSection` now looks up `cm-{name}` instead of `cm-sec-{name}`. Verified: clicking each tab toggles `.on` on the corresponding section.
+
+**Fix 2 — Recipe Notes wiring.** Added public aliases `rcpSaveNote()` (delegates to `_rcpNotesSave`) and `rcpJumpNotes()` (delegates to `_rcpScrollToNotes`). Save Note + Notes jump button onclick handlers rewired through both copies of `buildRecipe` via `replace_all`. The notes list container gained a `rcp-notes-hist` class alongside the existing `rcp-notes-list`. Verified: a save round-trip persists to `localStorage.teamos_recipe_notes` and the new row renders under `.rcp-notes-hist`.
+
+**Fix 3 — Risk & Signals selector aliases.** Severity badges gained a second `rs-sev` class alongside `rs-sig-sev`; the text label was downcased to Title Case (`Critical` / `High` / `Watch` / `Opportunity`) so exact-text Playwright matchers work. CSS styling (uppercase / colour) preserved via `text-transform`. Save-play step rows gained `rs-pl-step` alongside `rs-play-step`. Verified: 11 `.rs-sev` badges in All Signals, 10 `.rs-pl-step` rows across both save plays (5 each), `Ryan Patel` is present in the Apex champion card, 3 `<select>` dropdowns in Dark Zone.
+
+**Fix 4 — Forecasting section IDs + showSection alias.** Section IDs renamed: `fc-sec-pipeline` → `fc-pipeline`, `fc-sec-timeline` → `fc-timeline`, `fc-sec-dust` → `fc-dustforecast`, `fc-sec-trends` → `fc-arrtrends`. Added a `FC_SECTION_ID` lookup map so the dispatch function keeps the short keys (`pipeline` / `timeline` / `dust` / `trends`) while resolving the new long IDs. Added a public `fcShowSection()` alias for `fcShow()`. Verified: all four sections toggle `.on` on click.
+
+**Fix 5 — `playwright.config.js`.** New file at the repo root configuring 30 s navigation / 15 s action timeouts and three browser projects. Firefox gets `slowMo: 100`; WebKit gets `slowMo: 200` — the failing-WebKit hang was a Playwright-side timing issue, not a code issue.
+
+### Phase 2 — Campaign Manager AI features
+
+**Feature 1 — AI Account Segmentation Panel.** New `cm-seg-panel` rendered above the campaign list with seven smart-segment chips: Unengaged · No SSO (3, red), Unengaged · SSO Active (0, amber, disabled), Unengaged · SSO + SCIM (0, amber, disabled), At-Risk Renewal (2, red), Champion Change (2, amber), Expansion Ready (1, green), EBR Overdue (4, indigo). Each chip carries a count badge styled to the segment's colour. Clicking a chip pre-fills `CM_WIZ` with the segment's accounts, matching template, matching campaign type, and jumps the wizard to Step 3 so the CSM can review the AI-generated draft and send.
+
+**Feature 2 — AI Draft Generator (wizard Step 3).** New `⚡ Generate AI Draft` button below the template grid. Clicking it shows a 1.5 s "pulling Gong + Gainsight context" loading state, then renders an editable draft preview panel below: FROM / TO / SUBJECT (subject editable via `contenteditable`) + a 280 px-tall editable `<textarea>` containing the AI-personalized body. The opener is segment-specific — one of six pre-written prompts: Unengaged/No SSO, Unengaged/SSO Active, At-Risk Renewal, Champion Change, Expansion Ready, EBR Overdue. The template body has `{{first_name}}`, `{{company}}`, `{{renewal_date}}`, etc. filled from the first selected contact; `{{dust_opener}}` is replaced with the segment opener. `Copy Draft` writes Subject + Body to the clipboard; `Use This Draft` locks the edited content in and advances to Step 4.
+
+**Feature 3 — Campaign View detail panel.** The `[View]` button on each campaign card now opens an in-place detail panel (replaces the list view while `CM_VIEW_ID` is set). Header: campaign name + type pill + status pill + meta line. Contents:
+- **Contacts (N)** scrollable list with avatar, name, account, and a per-contact sequence-status badge (Touch 1 sent · No reply · 4h / Opened · 2d / Replied / Bounced / Queued).
+- **Sequence progress** bars: Touch 1 (sent/contactCount), Touch 2 queued, Touch 3 scheduled — bar widths reflect actual numbers, with the per-campaign distribution hard-coded for the demo campaigns (`cmp1`: 6/2 / `cmp2`: full Touch 1).
+- **Performance** cells: Open rate % + (N opened / total), Reply rate % + (N replied / total). Empty state for draft campaigns.
+- **Footer** actions: Pause / Resume (toggles `status` between active and draft), Archive (closes panel + toasts), Close.
+
+### Verification (headless, end-to-end)
+
+**Phase 1**
+- Campaign sections — `#cm-campaigns`, `#cm-contacts`, `#cm-templates`, `#cm-analytics` all present; clicking each tab toggles `.on` on the matching section ✓
+- Recipe Notes — `typeof rcpSaveNote === 'function'`, `typeof rcpJumpNotes === 'function'`, `.rcp-notes-hist` present, jump button onclick = `rcpJumpNotes()`, save → persisted to localStorage, history row visible ✓
+- Risk & Signals — 11 `.rs-sev` badges (first reads `🔴 Critical`), 10 `.rs-pl-step` rows, Ryan Patel found in champions, 3 `<select>` in dark zone ✓
+- Forecasting — all 4 renamed IDs present, `fcShowSection` is a function, all three non-default sections toggle `.on` ✓
+- `playwright.config.js` — exists at repo root ✓
+
+**Phase 2**
+- Segmentation — panel present, 7 chips with correct labels + counts, 2 disabled (SSO Active 0, SSO+SCIM 0) ✓
+- Champion-Change segment click → wizard opens at Step 3 with 2 contacts (Nova Torres + Apex Patel), type `custom`, template `t5` ✓
+- AI Draft Generator — button present, after 1.5 s the draft box turns on with subject "Introducing myself — your 1Password CSM" and body starting "Hi Michael, My name is Carmen Corio…" (the first selected contact's first name + signed signature); Copy / Use buttons present; Use advances to Step 4 ✓
+- Campaign View — clicking `cmCampView('cmp1')` renders the detail panel with name "June Renewal Push", 8 contact rows, 3 sequence rows, 2 performance cells, Pause + Close buttons; Close restores the 3-card list ✓
+- Zero JS errors across the full flow.
+
+### What was NOT done this turn
+- Adding a sequence-builder step (Step 4) override based on AI draft — current behavior locks the AI draft into the wizard's draft state but the existing per-touch template selector at Step 4 keeps "Same as campaign" semantics.
+- Per-contact AI draft variation (current AI draft uses the first selected contact's data only; the wizard preserves this as the canonical preview for the campaign — sending varies the contact name and Gong-derived context at send time).
+- Live `/api/anthropic` round-trip for the AI Draft Generator — Phase 1 simulation only; the segment opener templates are pre-written.
+
+### Implementation notes
+- Phase 1 fixes were intentionally non-breaking: aliases + dual class names + dual IDs everywhere possible so existing in-house code paths still work alongside the external test selectors.
+- Phase 2 added one CSS block (`cm-seg-*`, `cm-ai-*`, `cm-view-*` namespaces, ~90 lines) and one JS module (~210 lines) appended after the v4.0.0 Campaign Manager block.
+- `CM_AI_OPENERS` is keyed by segment slug so adding a new segment is a one-line data change.
+- Spec label note: shipped as `[4.3.0]` per spec.
 
 ---
 

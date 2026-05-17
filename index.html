@@ -1996,6 +1996,77 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cm-spinner{width:14px;height:14px;border:2px solid var(--bd2);border-top-color:var(--tl);border-radius:50%;animation:cm-spin .7s linear infinite}
 @keyframes cm-spin{to{transform:rotate(360deg)}}
 
+/* v4.3.0 — AI Account Segmentation panel */
+.cm-seg-panel{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;margin-bottom:18px}
+.cm-seg-hd{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:inline-flex;align-items:center;gap:6px}
+.cm-seg-hd-sub{font-size:11px;font-weight:600;color:#6B7280;text-transform:none;letter-spacing:0;margin-left:8px}
+.cm-seg-row{display:flex;gap:8px;flex-wrap:wrap}
+.cm-seg-chip{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;padding:9px 13px;border-radius:7px;border:1px solid var(--bd2);background:var(--surf);color:#111827;cursor:pointer;font-family:inherit;transition:all .12s;letter-spacing:-.01em;position:relative}
+.cm-seg-chip:hover{background:var(--surf2);border-color:var(--bd2)}
+.cm-seg-chip.r{border-color:#FCA5A5;background:#FEF2F2;color:#7F1D1D}
+.cm-seg-chip.r:hover{background:#FEE2E2}
+.cm-seg-chip.a{border-color:#FDE68A;background:#FFFBEB;color:#78350F}
+.cm-seg-chip.a:hover{background:#FEF3C7}
+.cm-seg-chip.g{border-color:#6EE7B7;background:#F0FDF4;color:#065F46}
+.cm-seg-chip.g:hover{background:#D1FAE5}
+.cm-seg-chip.i{border-color:#C7D2FE;background:#EEF2FF;color:#3730A3}
+.cm-seg-chip.i:hover{background:#E0E7FF}
+.cm-seg-chip.disabled{opacity:.45;cursor:not-allowed;background:var(--bg);color:#6B7280;border-color:var(--bd2)}
+.cm-seg-chip.disabled:hover{background:var(--bg)}
+.cm-seg-count{font-size:11px;font-weight:800;padding:2px 7px;border-radius:99px;background:rgba(255,255,255,.7);color:#111827;min-width:18px;text-align:center}
+.cm-seg-chip.r .cm-seg-count{background:#DC2626;color:#fff}
+.cm-seg-chip.a .cm-seg-count{background:#D97706;color:#fff}
+.cm-seg-chip.g .cm-seg-count{background:#059669;color:#fff}
+.cm-seg-chip.i .cm-seg-count{background:#4F46E5;color:#fff}
+
+/* v4.3.0 — AI Draft Generator in wizard Step 3 */
+.cm-ai-gen-wrap{margin-top:12px;padding-top:12px;border-top:1px dashed var(--bd2)}
+.cm-ai-gen-btn{font-size:12px;font-weight:800;padding:10px 14px;border-radius:7px;background:#4F46E5;color:#fff;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;letter-spacing:-.01em;transition:background .12s}
+.cm-ai-gen-btn:hover{background:#4338CA}
+.cm-ai-gen-btn[disabled]{opacity:.6;cursor:wait}
+.cm-ai-draft{margin-top:12px;background:var(--surf2);border:1px solid var(--bd);border-radius:8px;padding:14px 16px;display:none}
+.cm-ai-draft.on{display:block}
+.cm-ai-draft-l{font-size:10px;font-weight:800;color:#4F46E5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:inline-flex;align-items:center;gap:5px}
+.cm-ai-draft-meta{font-size:11px;color:#374151;font-weight:600;line-height:1.6;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.cm-ai-draft-meta b{color:#111827;font-weight:700}
+.cm-ai-draft-body{min-height:280px;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:12px;line-height:1.65;color:#1F2937;background:var(--surf);border:1px solid var(--bd);border-radius:6px;padding:12px 14px;outline:none;white-space:pre-wrap;resize:vertical;width:100%;box-sizing:border-box;font-weight:500}
+.cm-ai-draft-body:focus{border-color:#4F46E5}
+.cm-ai-draft-acts{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+
+/* v4.3.0 — Campaign View detail panel */
+.cm-view-pg{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:20px 22px}
+.cm-view-hd{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:16px;gap:12px;flex-wrap:wrap}
+.cm-view-hd-l{flex:1;min-width:0}
+.cm-view-nm{font-size:20px;font-weight:800;color:#111827;letter-spacing:-.02em;line-height:1.2}
+.cm-view-meta{font-size:12px;color:#374151;font-weight:600;margin-top:5px;display:flex;gap:12px;flex-wrap:wrap}
+.cm-view-meta .sep{color:var(--tx3)}
+.cm-view-meta b{color:#111827;font-weight:700}
+.cm-view-tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.cm-view-hd-acts{display:flex;gap:6px;flex-wrap:wrap;align-self:flex-start}
+.cm-view-sec{margin-bottom:18px}
+.cm-view-sec-t{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.cm-view-contacts{display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto;border:1px solid var(--bd);border-radius:7px;padding:6px;scrollbar-width:thin}
+.cm-view-cnt-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--surf2);border-radius:5px;font-size:12px;color:#1F2937;font-weight:500}
+.cm-view-cnt-nm{font-weight:800;color:#111827}
+.cm-view-cnt-co{color:#6B7280;font-weight:600}
+.cm-view-cnt-status{margin-left:auto;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--tl-bg);color:var(--tl-dk);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.cm-view-cnt-status.warn{background:#FEF3C7;color:#78350F}
+.cm-view-cnt-status.norep{background:#FEE2E2;color:#7F1D1D}
+.cm-view-cnt-age{font-size:10px;color:var(--tx3);font-weight:600;white-space:nowrap}
+.cm-view-seq{display:flex;flex-direction:column;gap:10px}
+.cm-view-seq-row{display:flex;align-items:center;gap:12px;font-size:12px;color:#1F2937;font-weight:600}
+.cm-view-seq-lbl{font-weight:800;color:#111827;min-width:60px}
+.cm-view-seq-bar{flex:1;height:10px;background:var(--bg);border-radius:5px;overflow:hidden;border:1px solid var(--bd)}
+.cm-view-seq-fill{height:100%;background:var(--tl);border-radius:5px}
+.cm-view-seq-fill.queued{background:#A78BFA}
+.cm-view-seq-meta{font-size:11px;color:#374151;font-weight:700;min-width:120px;text-align:right;white-space:nowrap}
+.cm-view-perf{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.cm-view-perf-cell{background:var(--surf2);border:1px solid var(--bd);border-radius:7px;padding:11px 14px}
+.cm-view-perf-l{font-size:10px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.06em}
+.cm-view-perf-v{font-size:22px;font-weight:800;color:#111827;letter-spacing:-.02em;margin-top:2px}
+.cm-view-perf-sub{font-size:11px;color:#6B7280;font-weight:600;margin-top:2px}
+.cm-view-foot{display:flex;gap:7px;margin-top:16px;padding-top:14px;border-top:1px solid var(--bd);flex-wrap:wrap}
+
 /* ═════════════════════════════════════════════════════════════════════════
    v4.1.0 — Risk & Signals (replaces Coming Soon for #tab-risk)
    ═════════════════════════════════════════════════════════════════════════ */
@@ -3576,10 +3647,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       </nav>
     </div>
 
-    <div class="fc-section on" id="fc-sec-pipeline" role="tabpanel" aria-labelledby="fc-tab-pipeline"></div>
-    <div class="fc-section"    id="fc-sec-timeline" role="tabpanel" aria-labelledby="fc-tab-timeline" hidden></div>
-    <div class="fc-section"    id="fc-sec-dust"     role="tabpanel" aria-labelledby="fc-tab-dust"     hidden></div>
-    <div class="fc-section"    id="fc-sec-trends"   role="tabpanel" aria-labelledby="fc-tab-trends"   hidden></div>
+    <div class="fc-section on" id="fc-pipeline" role="tabpanel" aria-labelledby="fc-tab-pipeline"></div>
+    <div class="fc-section"    id="fc-timeline" role="tabpanel" aria-labelledby="fc-tab-timeline" hidden></div>
+    <div class="fc-section"    id="fc-dustforecast"     role="tabpanel" aria-labelledby="fc-tab-dust"     hidden></div>
+    <div class="fc-section"    id="fc-arrtrends"   role="tabpanel" aria-labelledby="fc-tab-trends"   hidden></div>
   </div>
 </div>
 
@@ -3628,10 +3699,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       <button class="cm-sig-link" type="button" onclick="cmOpenSignature()" aria-label="Signature settings"><i class="ti ti-settings"></i> Signature</button>
     </div>
 
-    <div class="cm-section on" id="cm-sec-campaigns" role="tabpanel" aria-labelledby="cm-tab-campaigns"></div>
-    <div class="cm-section"    id="cm-sec-contacts"  role="tabpanel" aria-labelledby="cm-tab-contacts"  hidden></div>
-    <div class="cm-section"    id="cm-sec-templates" role="tabpanel" aria-labelledby="cm-tab-templates" hidden></div>
-    <div class="cm-section"    id="cm-sec-analytics" role="tabpanel" aria-labelledby="cm-tab-analytics" hidden></div>
+    <div class="cm-section on" id="cm-campaigns" role="tabpanel" aria-labelledby="cm-tab-campaigns"></div>
+    <div class="cm-section"    id="cm-contacts"  role="tabpanel" aria-labelledby="cm-tab-contacts"  hidden></div>
+    <div class="cm-section"    id="cm-templates" role="tabpanel" aria-labelledby="cm-tab-templates" hidden></div>
+    <div class="cm-section"    id="cm-analytics" role="tabpanel" aria-labelledby="cm-tab-analytics" hidden></div>
   </div>
 
   <!-- 5-step campaign wizard modal (hidden until opened). -->
@@ -4994,7 +5065,7 @@ function buildRecipe() {
   // green advisory banner and the duplicate "Last synced" footer block.
   h += '<div class="sc-tophdr">'
      +   '<div class="sc-sync"><i class="ti ti-refresh"></i> Last synced: Today &middot; 9:00 AM &middot; Gainsight API</div>'
-     +   '<button class="sc-notes-jump" type="button" onclick="_rcpScrollToNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
+     +   '<button class="sc-notes-jump" type="button" onclick="rcpJumpNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
      + '</div>';
 
   // Account Portfolio context bar.
@@ -5188,7 +5259,7 @@ function _rcpNotesHTML() {
       + '<div class="rcp-notes-input">'
         + '<textarea id="rcp-notes-ta" class="rcp-notes-ta" placeholder="' + _rcpNotesPlaceholder() + '"></textarea>'
         + '<div class="rcp-notes-cats" id="rcp-notes-cats">' + catBtns + '</div>'
-        + '<button class="rcp-notes-save" type="button" onclick="_rcpNotesSave()"><i class="ti ti-circle-check"></i> Save Note</button>'
+        + '<button class="rcp-notes-save" type="button" onclick="rcpSaveNote()"><i class="ti ti-circle-check"></i> Save Note</button>'
       + '</div>'
       + '<button class="rcp-history-toggle" id="rcp-history-toggle" type="button" onclick="_rcpToggleHistory()" aria-expanded="false">View note history <i class="ti ti-chevron-down chev"></i></button>'
       + '<div class="rcp-history-body" id="rcp-history-body">'
@@ -5197,7 +5268,7 @@ function _rcpNotesHTML() {
           + '<select class="rcp-quarter-sel" id="rcp-quarter-sel" onchange="_rcpQuarterChange(this.value)" aria-label="Select quarter">' + quarterOpts + '</select>'
         + '</div>'
         + '<div class="rcp-notes-cats" style="margin-bottom:10px">' + filterBtns + '</div>'
-        + '<div class="rcp-notes-list" id="rcp-notes-list"></div>'
+        + '<div class="rcp-notes-list rcp-notes-hist" id="rcp-notes-list"></div>'
       + '</div>'
     + '</div>';
 }
@@ -5275,6 +5346,9 @@ function _rcpNotesSave() {
   _rcpNotesUpdateCount();
   toast('Note saved &middot; ' + RCP_NOTES_QUARTER + ' ✓');
 }
+// v4.3.0 — public aliases matching external test selectors.
+function rcpSaveNote()  { return _rcpNotesSave(); }
+function rcpJumpNotes() { return _rcpScrollToNotes(); }
 
 function _rcpNotesEscape(s) {
   return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -6934,7 +7008,7 @@ function buildRecipe() {
   // green advisory banner and the duplicate "Last synced" footer block.
   h += '<div class="sc-tophdr">'
      +   '<div class="sc-sync"><i class="ti ti-refresh"></i> Last synced: Today &middot; 9:00 AM &middot; Gainsight API</div>'
-     +   '<button class="sc-notes-jump" type="button" onclick="_rcpScrollToNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
+     +   '<button class="sc-notes-jump" type="button" onclick="rcpJumpNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
      + '</div>';
 
   // Account Portfolio context bar.
@@ -7128,7 +7202,7 @@ function _rcpNotesHTML() {
       + '<div class="rcp-notes-input">'
         + '<textarea id="rcp-notes-ta" class="rcp-notes-ta" placeholder="' + _rcpNotesPlaceholder() + '"></textarea>'
         + '<div class="rcp-notes-cats" id="rcp-notes-cats">' + catBtns + '</div>'
-        + '<button class="rcp-notes-save" type="button" onclick="_rcpNotesSave()"><i class="ti ti-circle-check"></i> Save Note</button>'
+        + '<button class="rcp-notes-save" type="button" onclick="rcpSaveNote()"><i class="ti ti-circle-check"></i> Save Note</button>'
       + '</div>'
       + '<button class="rcp-history-toggle" id="rcp-history-toggle" type="button" onclick="_rcpToggleHistory()" aria-expanded="false">View note history <i class="ti ti-chevron-down chev"></i></button>'
       + '<div class="rcp-history-body" id="rcp-history-body">'
@@ -7137,7 +7211,7 @@ function _rcpNotesHTML() {
           + '<select class="rcp-quarter-sel" id="rcp-quarter-sel" onchange="_rcpQuarterChange(this.value)" aria-label="Select quarter">' + quarterOpts + '</select>'
         + '</div>'
         + '<div class="rcp-notes-cats" style="margin-bottom:10px">' + filterBtns + '</div>'
-        + '<div class="rcp-notes-list" id="rcp-notes-list"></div>'
+        + '<div class="rcp-notes-list rcp-notes-hist" id="rcp-notes-list"></div>'
       + '</div>'
     + '</div>';
 }
@@ -7215,6 +7289,9 @@ function _rcpNotesSave() {
   _rcpNotesUpdateCount();
   toast('Note saved &middot; ' + RCP_NOTES_QUARTER + ' ✓');
 }
+// v4.3.0 — public aliases matching external test selectors.
+function rcpSaveNote()  { return _rcpNotesSave(); }
+function rcpJumpNotes() { return _rcpScrollToNotes(); }
 
 function _rcpNotesEscape(s) {
   return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -9371,7 +9448,7 @@ function cmShowSection(name) {
   CM_ACTIVE = name;
   ['campaigns','contacts','templates','analytics'].forEach(function(k){
     var btn = document.getElementById('cm-tab-' + k);
-    var sec = document.getElementById('cm-sec-' + k);
+    var sec = document.getElementById('cm-' + k);
     var on = (k === name);
     if (btn) { btn.classList.toggle('on', on); btn.setAttribute('aria-selected', on ? 'true' : 'false'); }
     if (sec) { sec.classList.toggle('on', on); if (on) sec.removeAttribute('hidden'); else sec.setAttribute('hidden',''); }
@@ -9383,9 +9460,57 @@ function cmShowSection(name) {
 }
 
 // ── Campaigns section ───────────────────────────────────────────────────────
+// v4.3.0 — AI Account Segmentation. 7 smart segments above the list. Clicking
+// a chip opens the campaign wizard pre-filled with the segment's accounts,
+// matching template, and matching campaign type — landing on Step 3 so the
+// CSM can review the generated draft and send.
+var CM_SEGMENTS = [
+  { key:'unengaged-nossso', lbl:'Unengaged · No SSO',     count:3, color:'r', accountKeys:['c7','c8','c9'],     campType:'reeng',   tplId:'t1', opener:'unengaged-nossso' },
+  { key:'unengaged-sso',    lbl:'Unengaged · SSO Active', count:0, color:'a', accountKeys:[],                    campType:'reeng',   tplId:'t1', opener:'unengaged-sso' },
+  { key:'unengaged-scim',   lbl:'Unengaged · SSO + SCIM', count:0, color:'a', accountKeys:[],                    campType:'reeng',   tplId:'t1', opener:'unengaged-scim' },
+  { key:'at-risk',          lbl:'At-Risk Renewal',        count:2, color:'r', accountKeys:['c5','c3'],           campType:'renewal', tplId:'t3', opener:'at-risk' },
+  { key:'champion-change',  lbl:'Champion Change',        count:2, color:'a', accountKeys:['c5','c9'],           campType:'custom',  tplId:'t5', opener:'champion-change' },
+  { key:'expansion',        lbl:'Expansion Ready',        count:1, color:'g', accountKeys:['c1'],                campType:'prod',    tplId:'t4', opener:'expansion' },
+  { key:'ebr-overdue',      lbl:'EBR Overdue',            count:4, color:'i', accountKeys:['c7','c8','c11','c12'],campType:'ebr',     tplId:'t2', opener:'ebr-overdue' }
+];
+function cmRenderSegments() {
+  return ''
+    + '<div class="cm-seg-panel" id="cm-seg-panel">'
+    +   '<div class="cm-seg-hd">🧠 AI Account Segmentation <span class="cm-seg-hd-sub">Click a segment to auto-create a campaign</span></div>'
+    +   '<div class="cm-seg-row">'
+    +     CM_SEGMENTS.map(function(s){
+            var dis = s.count === 0 ? ' disabled' : '';
+            var onclick = s.count === 0 ? '' : ' onclick="cmSegmentClick(\'' + s.key + '\')"';
+            return '<button class="cm-seg-chip ' + s.color + dis + '" type="button"' + onclick + ' aria-label="' + cmEscape(s.lbl + ' — ' + s.count + ' accounts') + '">' + cmEscape(s.lbl) + '<span class="cm-seg-count">' + s.count + '</span></button>';
+          }).join('')
+    +   '</div>'
+    + '</div>';
+}
+function cmSegmentClick(key) {
+  var seg = CM_SEGMENTS.find(function(x){return x.key===key;});
+  if (!seg || seg.count === 0) return;
+  // Open the wizard with segment-derived state, then jump to Step 3.
+  cmOpenWizard();
+  CM_WIZ.name = seg.lbl + ' — ' + new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
+  CM_WIZ.type = seg.campType;
+  CM_WIZ.contacts = seg.accountKeys.slice();
+  CM_WIZ.template = seg.tplId;
+  CM_WIZ.segmentKey = key;
+  CM_WIZ.step = 3;
+  cmWizRender();
+  // Scroll campaign section into view in case the panel was below the fold.
+  var panel = document.getElementById('cm-campaigns');
+  if (panel && typeof panel.scrollIntoView === 'function') panel.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
 function cmRenderCampaigns() {
-  var sec = document.getElementById('cm-sec-campaigns');
+  var sec = document.getElementById('cm-campaigns');
   if (!sec) return;
+  // If a campaign is being viewed, render the detail panel instead of the list.
+  if (CM_VIEW_ID) {
+    sec.innerHTML = cmRenderCampaignView(CM_VIEW_ID);
+    return;
+  }
   var filters = [['all','All'],['active','Active'],['draft','Draft'],['completed','Completed'],['scheduled','Scheduled']];
   var chips = filters.map(function(f){
     var on = (CM_CAMP_FILTER === f[0]) ? ' on' : '';
@@ -9394,13 +9519,15 @@ function cmRenderCampaigns() {
   var rows = CM_CAMPAIGNS.filter(function(c){ return CM_CAMP_FILTER === 'all' || c.status === CM_CAMP_FILTER; });
   var listHtml = rows.length ? rows.map(cmCampaignCardHTML).join('') : '<div class="cm-detail-empty">No campaigns match this filter.</div>';
   sec.innerHTML = ''
+    + cmRenderSegments()
     + '<div class="cm-hd">'
     +   '<div class="cm-hd-t">📣 Campaigns</div>'
     +   '<button class="cm-btn-prim" type="button" onclick="cmOpenWizard()"><i class="ti ti-plus"></i> New Campaign</button>'
     + '</div>'
     + '<div class="cm-filters">' + chips + '</div>'
-    + '<div class="cm-list" style="max-height:none">' + listHtml + '</div>';
+    + '<div class="cm-list" id="cm-camp-list-anchor" style="max-height:none">' + listHtml + '</div>';
 }
+var CM_VIEW_ID = null;
 function cmSetCampFilter(f) { CM_CAMP_FILTER = f; cmRenderCampaigns(); }
 function cmCampaignCardHTML(c) {
   var ratesHtml = (c.openRate != null) ? '<div class="cm-camp-rates"><span>Open <b>' + c.openRate + '%</b></span><span>Reply <b>' + c.replyRate + '%</b></span></div>' : '';
@@ -9427,7 +9554,86 @@ function cmCampaignCardHTML(c) {
     +   '</div>'
     + '</div>';
 }
-function cmCampView(id)     { var c = CM_CAMPAIGNS.find(function(x){return x.id===id;}); if(c) toast('Viewing &ldquo;' + cmEscape(c.name) + '&rdquo; · ' + c.contactCount + ' contacts ✓'); }
+function cmCampView(id) { CM_VIEW_ID = id; cmRenderCampaigns(); }
+function cmCampViewClose() { CM_VIEW_ID = null; cmRenderCampaigns(); }
+function cmCampPause(id) {
+  var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+  if (!c) return;
+  c.status = (c.status === 'active') ? 'draft' : 'active';
+  cmRenderCampaigns();
+  toast('Campaign &ldquo;' + cmEscape(c.name) + '&rdquo; ' + (c.status === 'active' ? 'resumed' : 'paused') + ' ✓');
+}
+
+// v4.3.0 — Campaign detail panel. For demo coherence, the contacts list is
+// derived from the campaign's contactIds when present, else falls back to a
+// representative subset of CM_CONTACTS. Sequence + perf numbers reflect the
+// campaign's existing fields with progressive states per touch.
+function cmRenderCampaignView(id) {
+  var c = CM_CAMPAIGNS.find(function(x){return x.id===id;});
+  if (!c) return '<div class="cm-detail-empty">Campaign not found.</div>';
+  // Build a representative contact list.
+  var contactPool = (c.contactIds && c.contactIds.length) ? c.contactIds.map(function(cid){ return CM_CONTACTS.find(function(x){return x.id===cid;}); }).filter(Boolean) : CM_CONTACTS.slice(0, Math.min(c.contactCount, CM_CONTACTS.length));
+  // Pad to contactCount with the first few CM_CONTACTS that aren't already in the list.
+  if (contactPool.length < c.contactCount) {
+    var have = {}; contactPool.forEach(function(x){ have[x.id] = true; });
+    for (var i = 0; i < CM_CONTACTS.length && contactPool.length < c.contactCount; i++) {
+      if (!have[CM_CONTACTS[i].id] && CM_CONTACTS[i].seq !== 'departed') contactPool.push(CM_CONTACTS[i]);
+    }
+  }
+  var STATUS_STATES = ['Touch 1 sent · No reply · 4h ago','Touch 1 sent · Opened · 2d ago','Touch 1 replied · Booked call','Touch 1 sent · No reply · 1d ago','Touch 2 sent · Opened · 8h ago','Touch 1 queued · Sending today','Touch 1 sent · Bounced','Touch 2 queued · Day 5','Touch 1 sent · No reply · 3d ago','Touch 1 replied · Forwarded to AE','Touch 1 sent · Opened · 6h ago','Touch 2 sent · No reply · 12h ago'];
+  var contactsHtml = contactPool.map(function(cnt, i){
+    var statusTxt = STATUS_STATES[i % STATUS_STATES.length];
+    var cls = /replied/i.test(statusTxt) ? '' : (/bounced/i.test(statusTxt) ? 'norep' : (/no reply/i.test(statusTxt) ? 'warn' : ''));
+    return '<div class="cm-view-cnt-row">'
+      + '<div class="cm-avatar">' + cmEscape((cnt.fn[0] || '') + (cnt.ln[0] || '')) + '</div>'
+      + '<div><span class="cm-view-cnt-nm">' + cmEscape(cnt.fn + ' ' + cnt.ln) + '</span> · <span class="cm-view-cnt-co">' + cmEscape(cnt.acct) + '</span></div>'
+      + '<span class="cm-view-cnt-status ' + cls + '">' + cmEscape(statusTxt) + '</span>'
+    + '</div>';
+  }).join('') || '<div class="cm-detail-empty" style="padding:14px">No contacts in this campaign yet.</div>';
+
+  // Sequence progress: derive sent/queued counts from the campaign's progress string
+  // when possible, else default to a sensible mix.
+  var t1Sent = Math.max(0, Math.min(c.contactCount, Math.round(c.contactCount * 0.75)));
+  var t2Queued = c.contactCount - t1Sent;
+  var t3Scheduled = c.touchCount >= 3 ? c.contactCount : 0;
+  if (c.status === 'draft') { t1Sent = 0; t2Queued = 0; t3Scheduled = 0; }
+  if (c.id === 'cmp1') { t1Sent = 6; t2Queued = 2; t3Scheduled = c.contactCount; }
+  if (c.id === 'cmp2') { t1Sent = c.contactCount; t2Queued = 0; t3Scheduled = c.touchCount >= 2 ? c.contactCount : 0; }
+  var seqRowsHtml = ''
+    + '<div class="cm-view-seq-row"><span class="cm-view-seq-lbl">Touch 1</span><span class="cm-view-seq-bar"><span class="cm-view-seq-fill" style="width:' + (c.contactCount ? Math.round((t1Sent / c.contactCount) * 100) : 0) + '%"></span></span><span class="cm-view-seq-meta">' + t1Sent + '/' + c.contactCount + ' sent</span></div>';
+  if (c.touchCount >= 2) seqRowsHtml += '<div class="cm-view-seq-row"><span class="cm-view-seq-lbl">Touch 2</span><span class="cm-view-seq-bar"><span class="cm-view-seq-fill queued" style="width:' + (c.contactCount ? Math.round((t2Queued / c.contactCount) * 100) : 0) + '%"></span></span><span class="cm-view-seq-meta">' + t2Queued + '/' + c.contactCount + ' queued</span></div>';
+  if (c.touchCount >= 3) seqRowsHtml += '<div class="cm-view-seq-row"><span class="cm-view-seq-lbl">Touch 3</span><span class="cm-view-seq-bar"></span><span class="cm-view-seq-meta">scheduled Day 10</span></div>';
+
+  var openedCount  = (c.openRate  != null && c.contactCount) ? Math.round((c.openRate  / 100) * c.contactCount) : 0;
+  var repliedCount = (c.replyRate != null && c.contactCount) ? Math.round((c.replyRate / 100) * c.contactCount) : 0;
+  var perfHtml = (c.openRate != null) ? ''
+    + '<div class="cm-view-perf">'
+    +   '<div class="cm-view-perf-cell"><div class="cm-view-perf-l">Open rate</div><div class="cm-view-perf-v">' + c.openRate + '%</div><div class="cm-view-perf-sub">' + openedCount + '/' + c.contactCount + ' opened</div></div>'
+    +   '<div class="cm-view-perf-cell"><div class="cm-view-perf-l">Reply rate</div><div class="cm-view-perf-v">' + c.replyRate + '%</div><div class="cm-view-perf-sub">' + repliedCount + '/' + c.contactCount + ' replied</div></div>'
+    + '</div>' : '<div style="font-size:12px;color:#6B7280;font-weight:600;font-style:italic">No performance data yet — campaign hasn’t sent.</div>';
+
+  var sentLabel = c.sentDate ? 'Started: ' + c.sentDate : (c.status === 'scheduled' ? 'Scheduled to start' : 'Not yet sent');
+
+  return ''
+    + '<div class="cm-view-pg">'
+    +   '<div class="cm-view-hd">'
+    +     '<div class="cm-view-hd-l">'
+    +       '<div class="cm-view-nm">' + cmEscape(c.name) + '</div>'
+    +       '<div class="cm-view-meta"><span>Type: <b>' + cmEscape(c.typeLabel) + '</b></span><span class="sep">·</span><span>Status: <b>' + cmEscape(c.status.toUpperCase()) + '</b></span><span class="sep">·</span><span>' + sentLabel + '</span><span class="sep">·</span><span>Sending from: <b>carmen@1password.com</b></span></div>'
+    +       '<div class="cm-view-tags"><span class="cm-pill type ' + c.type + '">' + cmEscape(c.typeLabel) + '</span><span class="cm-pill status ' + c.status + '">' + c.status + '</span></div>'
+    +     '</div>'
+    +     '<div class="cm-view-hd-acts"><button class="cm-btn" type="button" onclick="cmCampViewClose()" aria-label="Close detail panel"><i class="ti ti-x"></i> Close</button></div>'
+    +   '</div>'
+    +   '<div class="cm-view-sec"><div class="cm-view-sec-t">Contacts (' + c.contactCount + ')</div><div class="cm-view-contacts">' + contactsHtml + '</div></div>'
+    +   '<div class="cm-view-sec"><div class="cm-view-sec-t">Sequence progress</div><div class="cm-view-seq">' + seqRowsHtml + '</div></div>'
+    +   '<div class="cm-view-sec"><div class="cm-view-sec-t">Performance</div>' + perfHtml + '</div>'
+    +   '<div class="cm-view-foot">'
+    +     '<button class="cm-btn" type="button" onclick="cmCampPause(\'' + c.id + '\')"><i class="ti ti-' + (c.status === 'active' ? 'player-pause' : 'player-play') + '"></i> ' + (c.status === 'active' ? 'Pause Campaign' : 'Resume Campaign') + '</button>'
+    +     '<button class="cm-btn" type="button" onclick="cmCampArchive(\'' + c.id + '\');cmCampViewClose()"><i class="ti ti-archive"></i> Archive</button>'
+    +     '<button class="cm-btn dim" type="button" onclick="cmCampViewClose()"><i class="ti ti-x"></i> Close</button>'
+    +   '</div>'
+    + '</div>';
+}
 function cmCampDuplicate(id){ var c = CM_CAMPAIGNS.find(function(x){return x.id===id;}); if(c) toast('Duplicated &ldquo;' + cmEscape(c.name) + '&rdquo; as draft ✓'); }
 function cmCampArchive(id)  { toast('Campaign archived · Hidden from active list ✓'); }
 function cmCampSend(id) {
@@ -9440,7 +9646,7 @@ function cmCampSend(id) {
 
 // ── Contacts section ────────────────────────────────────────────────────────
 function cmRenderContacts() {
-  var sec = document.getElementById('cm-sec-contacts');
+  var sec = document.getElementById('cm-contacts');
   if (!sec) return;
   var filters = [['all','All'],['active','Active'],['dark','Dark Zone'],['inseq','In Sequence'],['replied','Replied'],['unsub','Unsubscribed']];
   var chips = filters.map(function(f){
@@ -9602,7 +9808,7 @@ function cmImport(src, label, n) {
 
 // ── Templates section ───────────────────────────────────────────────────────
 function cmRenderTemplates() {
-  var sec = document.getElementById('cm-sec-templates');
+  var sec = document.getElementById('cm-templates');
   if (!sec) return;
   var cats = [['all','All'],['Re-engagement','Re-engagement'],['EBR','EBR'],['Renewal','Renewal'],['Product Update','Product Update'],['Champion Intro','Champion Intro'],['Newsletter','Newsletter']];
   var chips = cats.map(function(f){
@@ -9722,7 +9928,7 @@ function cmTplUseInCampaign(id) { cmOpenWizard(); CM_WIZ.template = id; CM_WIZ.s
 
 // ── Analytics section ───────────────────────────────────────────────────────
 function cmRenderAnalytics() {
-  var sec = document.getElementById('cm-sec-analytics');
+  var sec = document.getElementById('cm-analytics');
   if (!sec) return;
   var totalSent = 847, avgOpen = 58, avgReply = 22;
   var activeSeqs = CM_CAMPAIGNS.filter(function(c){return c.status==='active';}).length;
@@ -9845,12 +10051,126 @@ function cmWizStep3(body) {
     var c = CM_CONTACTS.find(function(x){return x.id===firstId;});
     if (t && c) preview = cmWizPreviewHTML(t, c);
   }
+  // v4.3.0 — AI Draft Generator block below the template grid. Renders even
+  // before draft is generated (button only); after generation the editable
+  // preview + Copy / Use This Draft actions populate.
+  var canGen = !!(CM_WIZ.template && CM_WIZ.contacts.length);
+  var draftHtml = CM_WIZ.aiDraft ? cmRenderAIDraft() : '';
+  var aiBlock = ''
+    + '<div class="cm-ai-gen-wrap">'
+    +   '<button class="cm-ai-gen-btn" type="button" id="cm-ai-gen-btn" onclick="cmWizGenerateDraft()"' + (canGen ? '' : ' disabled') + '>⚡ Generate AI Draft</button>'
+    +   (canGen ? '' : '<span style="font-size:11px;color:#6B7280;font-weight:600;margin-left:10px">Pick a template + at least one contact first</span>')
+    +   '<div class="cm-ai-draft' + (CM_WIZ.aiDraft ? ' on' : '') + '" id="cm-ai-draft">' + draftHtml + '</div>'
+    + '</div>';
   body.innerHTML = ''
     + '<div class="cm-wiz-step-l">Step 3 of 5</div>'
     + '<div class="cm-wiz-h">Choose your template</div>'
     + '<div class="cm-wiz-tpls">' + cards + '</div>'
     + dustToggle
-    + (preview ? '<div class="cm-wiz-step-l">Preview · first selected contact</div>' + preview : '<div class="cm-detail-empty" style="font-size:12px;padding:20px 0">Pick a template + at least one contact to see the personalized preview.</div>');
+    + (preview ? '<div class="cm-wiz-step-l">Preview · first selected contact</div>' + preview : '<div class="cm-detail-empty" style="font-size:12px;padding:20px 0">Pick a template + at least one contact to see the personalized preview.</div>')
+    + aiBlock;
+}
+
+// v4.3.0 — AI Draft Generator. Builds a personalized email for the first
+// selected contact using the active segment's opener + template body with
+// variables filled. 1.5s simulated "pulling Gong + Gainsight context" delay.
+var CM_AI_OPENERS = {
+  'unengaged-nossso': "Following our conversation earlier this year — I wanted to reconnect and share how teams similar to yours are using 1Password's SSO integration to reduce IT overhead by 60%.",
+  'unengaged-sso':    "Since {{company}} rolled out SSO, I've been thinking about what's next for your team. SCIM provisioning is the natural next step and takes about 2 hours to configure — happy to walk through it.",
+  'unengaged-scim':   "{{company}}'s SSO + SCIM rollout has been one of the smoother deployments I've seen — I'd love to show your exec team the ROI numbers and talk about what's next.",
+  'at-risk':          "Your renewal is coming up on {{renewal_date}} and I want to make sure we've addressed everything before then. {{last_gong_topic}} was the last thing we discussed — wanted to make sure that's resolved.",
+  'champion-change':  "Hi {{first_name}} — I'm Carmen, your Customer Success Manager at 1Password. {{predecessor_name}} spoke very highly of what your team has built. I'd love to introduce myself and make sure you have everything you need.",
+  'expansion':        "I caught something in our last Gong call that I didn't want to let slide — your team mentioned enterprise tier and SSO in the same breath. I'd love to show you what that unlocks.",
+  'ebr-overdue':      "We're halfway through Q2 and I haven't yet had the chance to sit down with {{company}} for a proper business review. 45 minutes — I'll make it worth it."
+};
+function cmInferSegmentKey() {
+  if (CM_WIZ.segmentKey) return CM_WIZ.segmentKey;
+  switch (CM_WIZ.type) {
+    case 'reeng':   return 'unengaged-nossso';
+    case 'renewal': return 'at-risk';
+    case 'ebr':     return 'ebr-overdue';
+    case 'prod':    return 'expansion';
+    case 'custom':  return 'champion-change';
+    case 'news':    return 'expansion';
+  }
+  return 'unengaged-nossso';
+}
+function cmFillVars(text, c) {
+  var renewal = c.renewal || 'TBD';
+  var daysOut = (c.renewal && /·\s*(\d+)d/.test(c.renewal)) ? RegExp.$1 : '—';
+  return text
+    .replace(/{{first_name}}/g, c.fn)
+    .replace(/{{company}}/g, c.acct)
+    .replace(/{{renewal_date}}/g, (renewal.split(' · ')[0] || renewal))
+    .replace(/{{days_out}}/g, daysOut)
+    .replace(/{{csm_name}}/g, 'Carmen Corio')
+    .replace(/{{meeting_link}}/g, 'calendly.com/carmen-corio')
+    .replace(/{{quarter}}/g, 'Q2 2026')
+    .replace(/{{value_delivered}}/g, '[Account-specific value summary]')
+    .replace(/{{feature_name}}/g, '[Feature name]')
+    .replace(/{{use_case}}/g, '[Account use case]')
+    .replace(/{{predecessor_name}}/g, '[Predecessor name]')
+    .replace(/{{what_weve_built}}/g, '[Relationship history]')
+    .replace(/{{last_gong_topic}}/g, (c.lastGong && c.lastGong.split(' · ')[1] || 'recent topic'));
+}
+function cmWizGenerateDraft() {
+  if (!CM_WIZ || !CM_WIZ.template || !CM_WIZ.contacts.length) return;
+  var btn = document.getElementById('cm-ai-gen-btn');
+  var box = document.getElementById('cm-ai-draft');
+  if (!btn || !box) return;
+  var c = CM_CONTACTS.find(function(x){return x.id===CM_WIZ.contacts[0];});
+  btn.setAttribute('disabled', 'true');
+  btn.innerHTML = '<span class="cm-spinner"></span> Generating personalized draft for ' + cmEscape(c.fn + ' ' + c.ln) + '… pulling Gong + Gainsight context';
+  setTimeout(function(){
+    var t = CM_TEMPLATES.find(function(x){return x.id===CM_WIZ.template;});
+    var segKey = cmInferSegmentKey();
+    var openerTemplate = CM_AI_OPENERS[segKey] || CM_AI_OPENERS['unengaged-nossso'];
+    var opener = cmFillVars(openerTemplate, c);
+    var subject = cmFillVars(t.subject, c);
+    var body = cmFillVars(t.body, c).replace(/{{dust_opener}}/g, opener);
+    var sig = cmGetSignature();
+    CM_WIZ.aiDraft = {
+      to: c.fn + ' ' + c.ln + ' <' + c.email + '>',
+      subject: subject,
+      opener: opener,
+      body: body + '\n\n— — —\n' + sig,
+      segmentKey: segKey
+    };
+    btn.removeAttribute('disabled');
+    btn.innerHTML = '⚡ Regenerate AI Draft';
+    box.classList.add('on');
+    box.innerHTML = cmRenderAIDraft();
+  }, 1500);
+}
+function cmRenderAIDraft() {
+  var d = CM_WIZ.aiDraft; if (!d) return '';
+  return ''
+    + '<div class="cm-ai-draft-l">⚡ AI-Generated Draft · Editable</div>'
+    + '<div class="cm-ai-draft-meta"><b>FROM:</b> Carmen Corio &lt;carmen@1password.com&gt;<br><b>TO:</b> ' + cmEscape(d.to) + '<br><b>SUBJECT:</b> <span contenteditable="true" id="cm-ai-subj">' + cmEscape(d.subject) + '</span></div>'
+    + '<textarea class="cm-ai-draft-body" id="cm-ai-body" aria-label="Editable email body" oninput="if(CM_WIZ&&CM_WIZ.aiDraft)CM_WIZ.aiDraft.body=this.value">' + cmEscape(d.body) + '</textarea>'
+    + '<div class="cm-ai-draft-acts">'
+    +   '<button class="cm-btn" type="button" onclick="cmCopyDraft()"><i class="ti ti-copy"></i> Copy Draft</button>'
+    +   '<button class="cm-btn prim" type="button" onclick="cmUseDraft()"><i class="ti ti-check"></i> Use This Draft</button>'
+    + '</div>';
+}
+function cmCopyDraft() {
+  var ta = document.getElementById('cm-ai-body');
+  var subjEl = document.getElementById('cm-ai-subj');
+  if (!ta || !CM_WIZ || !CM_WIZ.aiDraft) return;
+  var text = 'Subject: ' + (subjEl ? subjEl.textContent : CM_WIZ.aiDraft.subject) + '\n\n' + ta.value;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){ toast('Draft copied to clipboard ✓'); }, function(){ toast('Draft ready · select-all + copy from preview'); });
+  } else {
+    toast('Draft ready · select-all + copy from preview');
+  }
+}
+function cmUseDraft() {
+  var ta = document.getElementById('cm-ai-body');
+  var subjEl = document.getElementById('cm-ai-subj');
+  if (ta && CM_WIZ.aiDraft) CM_WIZ.aiDraft.body = ta.value;
+  if (subjEl && CM_WIZ.aiDraft) CM_WIZ.aiDraft.subject = subjEl.textContent;
+  toast('AI draft locked in · Advancing to sequence builder ✓');
+  cmWizNext();
 }
 function cmWizPreviewHTML(t, c) {
   var sig = cmGetSignature();
@@ -10206,10 +10526,12 @@ function rsRenderSignals() {
     rows = rows.slice().sort(function(a,b){ return (arrMap[b.acct]||0) - (arrMap[a.acct]||0); });
   }
   var sevIcon = { crit:'🔴', high:'🟡', watch:'👁', opp:'✅' };
-  var sevLabel = { crit:'CRITICAL', high:'HIGH', watch:'WATCH', opp:'OPPORTUNITY' };
+  // v4.3.0 — Title Case so external selectors matching exact text content
+  // (e.g. text="Critical") resolve. Visual styling stays uppercased via CSS.
+  var sevLabel = { crit:'Critical', high:'High', watch:'Watch', opp:'Opportunity' };
   var listHtml = rows.length ? rows.map(function(s){
     return '<div class="rs-sig-row ' + s.sev + '">'
-      + '<span class="rs-sig-sev ' + s.sev + '">' + sevIcon[s.sev] + ' ' + sevLabel[s.sev] + '</span>'
+      + '<span class="rs-sig-sev rs-sev ' + s.sev + '">' + sevIcon[s.sev] + ' ' + sevLabel[s.sev] + '</span>'
       + '<div class="rs-sig-mid">'
       +   '<span class="rs-sig-acct acct-lk" onclick="rsOpenMB(\'' + s.acct + '\')">' + rsEscape(s.acctName) + '</span>'
       +   '<div class="rs-sig-desc">' + rsEscape(s.desc) + '</div>'
@@ -10250,7 +10572,7 @@ function rsRenderPlays() {
 function rsPlayCardHTML(p) {
   var stepIc = { done:'✅', 'in-prog':'⏳', pending:'○' };
   var steps = p.steps.map(function(st){
-    return '<div class="rs-play-step ' + st.s + '"><span class="rs-play-step-ic">' + stepIc[st.s] + '</span><span class="rs-play-step-t">Step ' + st.n + ':</span><span>' + rsEscape(st.t) + '</span><span class="rs-play-step-meta">' + rsEscape(st.meta) + '</span></div>';
+    return '<div class="rs-play-step rs-pl-step ' + st.s + '"><span class="rs-play-step-ic">' + stepIc[st.s] + '</span><span class="rs-play-step-t">Step ' + st.n + ':</span><span>' + rsEscape(st.t) + '</span><span class="rs-play-step-meta">' + rsEscape(st.meta) + '</span></div>';
   }).join('');
   var sigs = p.signals.map(function(s){ return '<div>' + rsEscape(s) + '</div>'; }).join('');
   return '<div class="rs-play-card ' + (p.statusCls || '') + '">'
@@ -10429,11 +10751,15 @@ function fcEscape(s) {
   return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// v4.3.0 — section IDs renamed to drop the "-sec-" segment so external test
+// selectors (#fc-pipeline, #fc-timeline, #fc-dustforecast, #fc-arrtrends)
+// resolve directly. Dust + Trends gain longer suffixes to match the spec.
+var FC_SECTION_ID = { pipeline:'fc-pipeline', timeline:'fc-timeline', dust:'fc-dustforecast', trends:'fc-arrtrends' };
 function fcShow(name) {
   FC_ACTIVE = name;
   ['pipeline','timeline','dust','trends'].forEach(function(k){
     var btn = document.getElementById('fc-tab-' + k);
-    var sec = document.getElementById('fc-sec-' + k);
+    var sec = document.getElementById(FC_SECTION_ID[k]);
     var on = (k === name);
     if (btn) { btn.classList.toggle('on', on); btn.setAttribute('aria-selected', on ? 'true' : 'false'); }
     if (sec) { sec.classList.toggle('on', on); if (on) sec.removeAttribute('hidden'); else sec.setAttribute('hidden',''); }
@@ -10443,10 +10769,12 @@ function fcShow(name) {
   if (name === 'dust')     fcRenderDust();
   if (name === 'trends')   fcRenderTrends();
 }
+// v4.3.0 — public alias matching the external test convention.
+function fcShowSection(name) { return fcShow(name); }
 
 // ── Pipeline ────────────────────────────────────────────────────────────────
 function fcRenderPipeline() {
-  var sec = document.getElementById('fc-sec-pipeline');
+  var sec = document.getElementById('fc-pipeline');
   if (!sec) return;
   var totalARR  = FC_PIPELINE.reduce(function(s,r){ return s + r.arr; }, 0);
   var atRiskARR = FC_PIPELINE.filter(function(r){return r.status==='churn'||r.status==='atrisk';}).reduce(function(s,r){return s+r.arr;}, 0);
@@ -10506,7 +10834,7 @@ document.addEventListener('click', function(){ if (FC_STATUS_OPEN !== null) { FC
 
 // ── Timeline ────────────────────────────────────────────────────────────────
 function fcRenderTimeline() {
-  var sec = document.getElementById('fc-sec-timeline');
+  var sec = document.getElementById('fc-timeline');
   if (!sec) return;
   // Bucket by calendar month of the renewal date — matches the spec labels
   // (Jun 1–Jun 30 / Jul 1–Jul 31 / Aug 1–Aug 31). Brightex (31d) and
@@ -10556,7 +10884,7 @@ function fcRenderTimeline() {
 
 // ── Dust Forecast ───────────────────────────────────────────────────────────
 function fcRenderDust() {
-  var sec = document.getElementById('fc-sec-dust');
+  var sec = document.getElementById('fc-dustforecast');
   if (!sec) return;
   sec.innerHTML = ''
     + '<div class="fc-hd"><div class="fc-hd-t">🔮 Dust Forecast · Q2 2026</div></div>'
@@ -10607,7 +10935,7 @@ function fcRegenerate() {
 
 // ── ARR Trends ──────────────────────────────────────────────────────────────
 function fcRenderTrends() {
-  var sec = document.getElementById('fc-sec-trends');
+  var sec = document.getElementById('fc-arrtrends');
   if (!sec) return;
   // Chart: each month shows healthy (top) + risk (bottom). Max managed = 170K
   // across the dataset, so column heights are normalized to 170.
