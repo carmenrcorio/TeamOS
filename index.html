@@ -4585,11 +4585,23 @@ function toast(msg) {
   t._timer = setTimeout(function(){ t.style.opacity = '0'; }, 4500);
 }
 
-// v3.4.0 — Global Escape handler. Closes any open drawer, popover, or
-// pulse-strip dropdown. Returns focus to the trigger that opened the
-// drawer when possible (tracked via window._drawerTrigger).
+// v3.4.0 / v4.5.0 — Global Escape handler. Order of precedence: generic
+// modal (#cm-modal-ov) → campaign-view drawer (#cm-cv-drawer) →
+// forecasting account drawer (#fc-acct-drawer) → wizard (#cm-wiz-ov) →
+// signature modal (#cm-sig-ov) → agent drawer (#drawer) → dropdowns.
+// First open layer Escape consumes is what closes; nothing further fires.
 document.addEventListener('keydown', function(e){
   if (e.key !== 'Escape') return;
+  var modalOv = document.getElementById('cm-modal-ov');
+  if (modalOv && modalOv.classList.contains('on') && typeof cmCloseModal === 'function') { cmCloseModal(); e.preventDefault(); return; }
+  var cvDrawer = document.getElementById('cm-cv-drawer');
+  if (cvDrawer && cvDrawer.classList.contains('on') && typeof cmCampViewClose === 'function') { cmCampViewClose(); e.preventDefault(); return; }
+  var fcDrawer = document.getElementById('fc-acct-drawer');
+  if (fcDrawer && fcDrawer.classList.contains('on') && typeof fcCloseAcctDrawer === 'function') { fcCloseAcctDrawer(); e.preventDefault(); return; }
+  var wizOv = document.getElementById('cm-wiz-ov');
+  if (wizOv && wizOv.classList.contains('on') && typeof cmCloseWizard === 'function') { cmCloseWizard(); e.preventDefault(); return; }
+  var sigOv = document.getElementById('cm-sig-ov');
+  if (sigOv && sigOv.classList.contains('on') && typeof cmCloseSignature === 'function') { cmCloseSignature(); e.preventDefault(); return; }
   var drawer = document.getElementById('drawer');
   var drawerOpen = drawer && drawer.classList.contains('on');
   if (drawerOpen && typeof closeDrawer === 'function') {
