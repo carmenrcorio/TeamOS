@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.14.0
+**Version:** 3.0.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,72 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.0.0] — 2026-05-17
+
+My Accounts tab — live AI-powered account workspace. Fourth tab in the top nav (CSM Dashboard · Recipe for Success · Enablement · My Accounts). Pull-only by design: the CSM comes here intentionally for deep dives, no unsolicited surfacing.
+
+### Added — Tab + layout
+- New `n-tab` "My Accounts" wired to `goTab('myacct', this)`. New `#tab-myacct` container.
+- Two-column workspace (`.ma-grid` = `300px minmax(0,1fr)`):
+  - **Left** (sticky at top:88px under the pulse strip): search bar + live results dropdown + Recent sessions list (last 5, persisted to `localStorage` key `teamos_ma_sessions`).
+  - **Right**: workspace content — default state (recent sessions list) when no account is loaded; Account Snapshot + Quick Launch + Ask-anything bar when an account is selected; agent output card when a Quick Launch agent has run.
+- Collapses to single column at <1080 px.
+
+### Added — Account search across full book
+- `MA_BOOK` = 16 accounts: 6 known (Acme Corp / Brightex Inc / NovaVault / Meridian Health Systems / Creston Software / Apex Dynamics) + 10 additional book accounts per spec (Klaxton Labs / Pinnacle Systems / Redwood Analytics / Hartwell Technologies / Cascade Partners / Summit Digital / Ironbridge Corp / Vantage Solutions / Palo Data / Crestmont Group).
+- `_maSearch(q)` filters live on `oninput` (case-insensitive substring). Results show account name + status pill (`Healthy` / `At Risk` / `Critical` / `Dark` / `Book`). Click loads the account.
+
+### Added — Structured Account Snapshot
+- `MA_KNOWN` table holds canonical snapshot data for the 6 known accounts — populated from the existing dashboard data objects per the spec's data-injection block.
+- For the 10 book accounts: `_maGenerateBookSnapshot(name)` produces a deterministic placeholder snap from a name-derived seed and tags the card with a `Demo data · Gainsight sync pending` banner. Cached in session memory (`MA_BOOK_CACHE`).
+- Snapshot card structure exactly per spec:
+  - Header: `[Account name] · Health [n] · [Healthy / At Risk / Critical / Dark]`
+  - 5-row KV grid: Renewal · Licenses · Last Gong · Open CTAs · Last touch
+  - 2-sentence summary in a teal-left-border card
+  - 2×2 Quick Launch grid: `⚡ Risk Analysis` · `📅 Renewal Forecast` · `🔍 Discovery Questions` · `📄 Account Brief`
+  - Tools row: `📝 Log Note` · `✅ Create Task / CTA`
+  - Ask-anything free-text input at the bottom
+
+### Added — Anthropic API integration with safe fallback
+- `_maCallAnthropic(systemPrompt, userMessage, mockFn)` POSTs to `MA_API_ENDPOINT` (default `/api/anthropic` — Vercel serverless proxy per SPEC §7.2 so the API key never touches the browser). Uses `AbortController` with a 10-second timeout. On any failure (proxy unavailable, network error, timeout), it falls back to `mockFn()` — a deterministic spec-formatted response.
+- `MA_SYSTEM_PROMPT` matches the spec verbatim.
+- `_maBuildUserMessage(type, name, snap)` injects the snapshot data line into the per-agent user message template — Risk Analysis / Renewal Forecast / Discovery Questions / Account Brief.
+- `_maMockAgent(type, name, snap)` returns realistic content in the exact spec format for every agent type. Output adapts to the snapshot's risk band (`r` / `a` / `gy` / `g`) so a Critical account produces a Critical-toned response, etc. Source-line footer indicates whether the response came from the live API (`Live response · Dust + Anthropic`) or the prototype mock (`Phase 1 prototype response · Live Anthropic API connects via /api/anthropic Vercel proxy in Phase 2`).
+- `[Push to Gainsight]` button on every agent output → toast `[Agent] pushed to Gainsight · [Account] · Logged ✓`.
+- `[Back to Snapshot]` link in the agent header + secondary button restore the snapshot view.
+
+### Added — Free-text Ask
+- `<form class="ma-ask">` at the bottom of every snapshot view. Submits via `_maFreeQuery` which builds `"Context — [Account] snapshot: [snapshot line]. Question: [user input]"` and routes through the same `_maCallAnthropic` plumbing. Response renders in a chat-style card with the quoted question + answer + source line.
+
+### Added — Notes panel (Gainsight AI Notes sync)
+- `[📝 Log Note]` toggles an inline form: Note type dropdown (Account Update / Call Summary / Stakeholder Change / Risk Flag / General) + free-text area + `Preview Sync` button.
+- Preview card shows the confirmation per spec: `Syncing to Gainsight AI Notes · Account: [Name] · Type: [Type] · [Timestamp]` + the note body verbatim + `Edit` / `Confirm` buttons.
+- Confirm → toast `Synced · [Account] · Gainsight AI Notes · [Timestamp] ✓`. Note content is never modified. Push doesn't fire until Confirm is clicked.
+
+### Added — Task / CTA push (Gainsight)
+- `[✅ Create Task / CTA]` toggles an inline form: Task name · Due date (default: today) · Priority (High/Medium/Low) · Type (CTA/Email/Call/Internal Task) + `Preview` button.
+- Preview card: `Creating in Gainsight · [Account] · Task: [Name] · Due: [Date] · Priority: [Level] · Type: [Type] · Assigned to: Carmen` + `Edit` / `Confirm`.
+- Confirm → toast `Created · [Account] · Gainsight · [Timestamp] ✓`. No push until confirmed.
+
+### Added — Recent sessions persistence + restore
+- Every snapshot open, agent run, and (intentionally not) free-text query writes to `localStorage` under `teamos_ma_sessions` (last 5 entries, FIFO). Each entry: `{ account, type, ts, preview, body, live }`.
+- Restore button on each session re-opens the account and renders the saved agent output without re-firing the API.
+- Default state (no account selected) shows the recent sessions inline in the main content area so the CSM can pick up where they left off.
+
+### Engineering
+- All API calls guarded with `try/catch` per SPEC §6.5. Mock fallback ensures the UI is always usable, even with no network.
+- All user input HTML-escaped via `_maEscape` before being injected into innerHTML.
+- `localStorage` writes wrapped in `try/catch` to silently no-op when storage is denied (private browsing, quota exceeded).
+- New `.ma-*` CSS namespace (~60 rules) bound to existing tokens. No new color values.
+- The Anthropic API endpoint is configurable via the `MA_API_ENDPOINT` constant at the top of the module — Phase 2 deployment just needs to ship a Vercel serverless function at `/api/anthropic` that forwards to `https://api.anthropic.com/v1/messages` with the secret key from `DUST_API_KEY` / `ANTHROPIC_API_KEY` env var. No client-side change required.
+- Model identifier from spec (`claude-sonnet-4-20250514`) preserved in the API payload.
+
+### Not touched
+- All existing tabs (CSM Dashboard / Recipe for Success / Enablement) and their content — unchanged.
+- All dashboard widgets, drawers, agent outputs, Ghost-Buster views, TeamOS Live drawer, Agent Hub, Task Briefs, Drive Docs, pulse strip indicators, notification rail, Service Worker, offline-resilience layer.
 
 ---
 

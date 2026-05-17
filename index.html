@@ -281,6 +281,123 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .en-btn i{font-size:12px}
 .en-foot{font-size:10px;color:var(--tx3);font-style:italic;text-align:center;padding:12px;background:var(--surf);border:1px dashed var(--bd2);border-radius:var(--rlg);display:flex;align-items:center;justify-content:center;gap:7px;line-height:1.5}
 .en-foot i{font-size:13px;color:var(--bl);flex-shrink:0}
+
+/* My Accounts tab (v3.0.0) — live AI account workspace */
+.ma-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;padding:20px 28px;align-items:start}
+.ma-side{display:flex;flex-direction:column;gap:14px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px;position:sticky;top:88px}
+.ma-search{display:flex;align-items:center;gap:7px;background:var(--surf2);border:1px solid var(--bd2);border-radius:8px;padding:8px 11px;transition:border-color .1s}
+.ma-search:focus-within{border-color:var(--tl);background:var(--surf)}
+.ma-search i{color:var(--tx3);font-size:14px;flex-shrink:0}
+.ma-search input{flex:1;border:none;background:transparent;font-family:inherit;font-size:12px;color:var(--tx);outline:none;min-width:0}
+.ma-search input::placeholder{color:var(--tx3)}
+.ma-results{display:none;flex-direction:column;gap:2px;max-height:240px;overflow-y:auto;border:1px solid var(--bd);border-radius:6px;background:var(--surf);padding:4px 0}
+.ma-results.on{display:flex}
+.ma-results-item{padding:8px 12px;font-size:12px;color:var(--tx2);cursor:pointer;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:inherit;border:none;background:none;text-align:left;width:100%}
+.ma-results-item:hover{background:var(--surf2);color:var(--tx)}
+.ma-results-item .ma-results-meta{font-size:10px;color:var(--tx3);font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+.ma-results-empty{padding:10px 12px;font-size:11px;color:var(--tx3);font-style:italic}
+.ma-recent-hd{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;padding-top:8px;border-top:1px solid var(--bd)}
+.ma-recent{display:flex;flex-direction:column;gap:6px}
+.ma-recent-item{display:flex;flex-direction:column;gap:3px;padding:9px 11px;background:var(--surf2);border:1px solid var(--bd);border-radius:6px;cursor:pointer;transition:all .1s;font-family:inherit;text-align:left}
+.ma-recent-item:hover{border-color:var(--tl);background:var(--tl-bg)}
+.ma-recent-item-top{font-size:11px;font-weight:700;color:var(--tx);display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.ma-recent-item-ago{font-size:9px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
+.ma-recent-item-prev{font-size:10px;color:var(--tx2);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ma-recent-empty{font-size:11px;color:var(--tx3);font-style:italic;padding:4px 0}
+
+.ma-main{min-height:400px}
+.ma-empty{background:var(--surf);border:1px dashed var(--bd2);border-radius:var(--rlg);padding:40px 28px;text-align:center;color:var(--tx3);font-size:12px;line-height:1.6}
+.ma-empty i{font-size:32px;color:var(--tl);display:block;margin-bottom:12px}
+.ma-empty strong{color:var(--tx);font-weight:700;font-size:13px;display:block;margin-bottom:6px}
+
+.ma-snap{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:20px 22px}
+.ma-snap-hd{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.ma-snap-nm{font-size:20px;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.ma-snap-health{font-size:12px;color:var(--tx2);font-weight:600}
+.ma-snap-tag{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase}
+.ma-snap-tag.r{background:var(--rd-bg);color:var(--rd-dk)}
+.ma-snap-tag.a{background:var(--am-bg);color:var(--am-dk)}
+.ma-snap-tag.g{background:var(--tl-bg);color:var(--tl-dk)}
+.ma-snap-tag.gy{background:var(--surf2);color:var(--tx2);border:1px solid var(--bd)}
+.ma-snap-kv{display:grid;grid-template-columns:120px 1fr;gap:8px 16px;font-size:11px;color:var(--tx2);line-height:1.55;margin-bottom:14px}
+.ma-snap-kv-l{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;align-self:start;padding-top:2px}
+.ma-snap-kv-v{color:var(--tx);font-weight:500}
+.ma-snap-sum{font-size:12px;color:var(--tx2);line-height:1.6;padding:12px 14px;background:var(--surf2);border-left:3px solid var(--tl);border-radius:0 var(--r) var(--r) 0;margin-bottom:16px}
+.ma-snap-demo{font-size:10px;color:var(--am-dk);background:var(--am-bg);border:1px solid var(--am);border-radius:4px;padding:6px 10px;margin-bottom:12px;display:flex;align-items:center;gap:6px;font-weight:600}
+.ma-snap-demo i{font-size:12px;color:var(--am)}
+
+.ma-launch{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.ma-launch-btn{font-size:12px;font-weight:700;padding:12px 14px;border-radius:8px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;transition:all .1s;text-align:left}
+.ma-launch-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.ma-launch-btn i{font-size:15px;color:var(--tl);flex-shrink:0}
+
+.ma-tools{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.ma-tool-btn{font-size:11px;font-weight:700;padding:8px 12px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:all .1s}
+.ma-tool-btn:hover{background:var(--surf2);border-color:var(--tx2);color:var(--tx)}
+.ma-tool-btn i{font-size:13px}
+
+.ma-ask{display:flex;align-items:center;gap:8px;background:var(--surf2);border:1px solid var(--bd2);border-radius:8px;padding:9px 11px;transition:border-color .1s}
+.ma-ask:focus-within{border-color:var(--tl);background:var(--surf)}
+.ma-ask i{color:var(--tx3);font-size:14px;flex-shrink:0}
+.ma-ask input{flex:1;border:none;background:transparent;font-family:inherit;font-size:12px;color:var(--tx);outline:none;min-width:0}
+.ma-ask input::placeholder{color:var(--tx3)}
+.ma-ask-send{background:var(--tx);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.ma-ask-send:hover{background:#2a2a28}
+
+/* Inline note + task forms */
+.ma-form{display:none;flex-direction:column;gap:10px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;margin-bottom:14px}
+.ma-form.on{display:flex}
+.ma-form-hd{font-size:11px;font-weight:700;color:var(--tx);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ma-form-row{display:grid;grid-template-columns:110px 1fr;gap:8px;align-items:center}
+.ma-form-l{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em}
+.ma-form-row input, .ma-form-row select, .ma-form textarea{border:1px solid var(--bd2);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;color:var(--tx);background:var(--surf2);outline:none;box-sizing:border-box;width:100%}
+.ma-form-row input:focus, .ma-form-row select:focus, .ma-form textarea:focus{border-color:var(--tl);background:var(--surf)}
+.ma-form textarea{min-height:96px;line-height:1.55;resize:vertical}
+.ma-form-acts{display:flex;justify-content:flex-end;gap:6px}
+
+/* Preview confirmation card */
+.ma-preview{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:13px 15px;display:flex;flex-direction:column;gap:8px}
+.ma-preview-l{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
+.ma-preview-meta{font-size:11px;color:var(--tx2);line-height:1.5}
+.ma-preview-meta strong{color:var(--tx);font-weight:700}
+.ma-preview-body{font-size:11px;color:var(--tx);line-height:1.55;padding:9px 11px;background:var(--surf);border-radius:5px;border:1px solid var(--bd);white-space:pre-wrap;max-height:200px;overflow-y:auto}
+.ma-preview-acts{display:flex;justify-content:flex-end;gap:6px}
+
+/* Agent output */
+.ma-agent{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:20px 22px}
+.ma-agent-back{font-size:11px;color:var(--tx3);cursor:pointer;background:none;border:none;font-family:inherit;padding:0 0 10px;display:inline-flex;align-items:center;gap:5px;font-weight:600}
+.ma-agent-back:hover{color:var(--tx)}
+.ma-agent-hd{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--tx);margin-bottom:4px;letter-spacing:-.01em}
+.ma-agent-hd i{font-size:16px;color:var(--tl)}
+.ma-agent-sub{font-size:11px;color:var(--tx3);margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bd)}
+.ma-agent-body{font-size:12px;color:var(--tx);line-height:1.7;white-space:pre-wrap;font-family:inherit;padding:0 0 14px}
+.ma-agent-load{display:flex;align-items:center;gap:8px;padding:14px 0;font-size:12px;color:var(--tx2)}
+.ma-agent-load i{animation:spin 1s linear infinite;color:var(--tl);font-size:14px}
+.ma-agent-source{font-size:10px;color:var(--tx3);font-style:italic;padding-top:12px;border-top:1px dashed var(--bd);display:flex;align-items:center;gap:6px}
+.ma-agent-source.live{color:var(--tl-dk)}
+.ma-agent-acts{display:flex;gap:8px;padding-top:14px;border-top:1px solid var(--bd);margin-top:14px;flex-wrap:wrap}
+.ma-agent-acts .ma-tool-btn{background:var(--tx);color:#fff;border-color:var(--tx);padding:9px 14px;font-size:11px}
+.ma-agent-acts .ma-tool-btn:hover{background:#2a2a28;color:#fff}
+.ma-agent-acts .ma-tool-btn.sec{background:var(--surf);color:var(--tx2);border:1px solid var(--bd2)}
+.ma-agent-acts .ma-tool-btn.sec:hover{background:var(--surf2);color:var(--tx);border-color:var(--tx2)}
+
+/* Free-text Ask response card */
+.ma-ask-out{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.ma-ask-out-q{font-size:11px;color:var(--tx3);font-style:italic;padding-bottom:8px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:6px}
+.ma-ask-out-q i{color:var(--tl);font-size:13px;flex-shrink:0;margin-top:1px}
+.ma-ask-out-a{font-size:12px;color:var(--tx);line-height:1.7;white-space:pre-wrap}
+
+/* Error banner */
+.ma-err{background:var(--am-bg);border:1px solid var(--am);border-left:4px solid var(--am);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--am-dk);margin-bottom:12px}
+.ma-err i{font-size:14px;color:var(--am);flex-shrink:0}
+.ma-err-act{margin-left:auto;background:none;border:1px solid var(--am);color:var(--am-dk);padding:4px 10px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit}
+.ma-err-act:hover{background:var(--am);color:#fff}
+
+@media (max-width:1080px){
+  .ma-grid{grid-template-columns:1fr}
+  .ma-side{position:static}
+  .ma-launch{grid-template-columns:1fr}
+}
 .sc-sr{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd)}
 .sc-sr:last-child{border-bottom:none}
 .sc-sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -1104,6 +1221,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
   <div class="n-tab on" onclick="goTab('dash',this)">CSM Dashboard</div>
   <div class="n-tab" onclick="goTab('recipe',this)">Recipe for Success</div>
   <div class="n-tab" onclick="goTab('enable',this)">Enablement</div>
+  <div class="n-tab" onclick="goTab('myacct',this)">My Accounts</div>
   <div class="n-right">
     <div class="n-notif">
 
@@ -2206,6 +2324,29 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
   </div>
 </div>
 
+<!-- My Accounts tab (v3.0.0) — live AI-powered account workspace -->
+<div class="tc" id="tab-myacct">
+  <div class="ma-grid">
+
+    <!-- LEFT COLUMN: search + recent sessions -->
+    <div class="ma-side">
+      <div class="ma-search">
+        <i class="ti ti-search"></i>
+        <input id="ma-q" type="text" autocomplete="off" placeholder="Search any account&hellip;" aria-label="Search any account" oninput="_maSearch(this.value)" onfocus="_maSearch(this.value)" />
+      </div>
+      <div class="ma-results" id="ma-results"></div>
+      <div class="ma-recent-hd">Recent sessions</div>
+      <div class="ma-recent" id="ma-recent"></div>
+    </div>
+
+    <!-- RIGHT COLUMN: workspace content -->
+    <div class="ma-main" id="ma-main">
+      <!-- Default state rendered by _maRenderDefault() at boot -->
+    </div>
+
+  </div>
+</div>
+
 <script>
 var tasksDone = 0;
 
@@ -3192,6 +3333,566 @@ function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &mid
 function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
 function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// My Accounts workspace (v3.0.0)
+// Pull-only AI account workspace. Live API calls route through /api/anthropic
+// (a Vercel server-side proxy in Phase 2) so the key never touches the
+// browser per SPEC §7.2. When the proxy isn't reachable (e.g. running the
+// static prototype locally), we fall back to deterministic mock responses
+// formatted to the exact agent spec — the UI is fully usable without an API.
+// ═══════════════════════════════════════════════════════════════════════════
+var MA_API_ENDPOINT = '/api/anthropic';
+var MA_API_TIMEOUT  = 10000;
+var MA_MODEL        = 'claude-sonnet-4-20250514';
+
+var MA_SESSIONS_KEY = 'teamos_ma_sessions';
+
+// Known accounts — data injected into every prompt (no AI generation)
+var MA_KNOWN = {
+  'Acme Corp':              { health:'82',  band:'Healthy',   bandCls:'g',  renewal:'Aug 12', daysOut:'89d',  arr:'$48K', seats:'142', active:'140', churned:'0',  gongDate:'May 10', gongSignal:'David Kim flagged enterprise tier and SSO interest', ctas:'0', ctaTop:'—', lastTouch:'May 10', channel:'Gong', sum:"Healthy expansion candidate. David Kim is signaling enterprise tier interest and the SSO rollout is the immediate lever — confirm pilot commitment in today's QBR before the renewal window narrows the conversation to price." },
+  'Brightex Inc':           { health:'48',  band:'At Risk',   bandCls:'a',  renewal:'Jun 15', daysOut:'31d',  arr:'$36K', seats:'87',  active:'82',  churned:'5',  gongDate:'May 10', gongSignal:'competitor mentioned, SLA question raised',         ctas:'2', ctaTop:'Reply to Sarah Chen re: renewal (1d overdue)', lastTouch:'May 10', channel:'Gong', sum:"At-risk renewal with an unanswered SLA question from Sarah Chen and a competitor flagged in the last two Gong calls. Today's job is to answer the SLA question directly — not route it to support — before the competitor narrative hardens." },
+  'NovaVault':              { health:'23',  band:'Critical',  bandCls:'r',  renewal:'Jun 1',  daysOut:'17d',  arr:'$31K', seats:'64',  active:'56',  churned:'8',  gongDate:'Apr 28', gongSignal:'James Wu departure confirmed, Torres intro',         ctas:'4', ctaTop:'Update NovaVault renewal forecast (2d overdue)', lastTouch:'Apr 28', channel:'Gong', sum:"Critical emergency. Champion James Wu has departed, Michael Torres is the new contact with zero relationship to 1Password, and the contract sits unopened with 17 days to renewal. Every hour without contact widens the gap." },
+  'Meridian Health Systems':{ health:'—',   band:'Dark',      bandCls:'gy', renewal:'Jun 30', daysOut:'45d',  arr:'$22K', seats:'—',   active:'—',   churned:'—',  gongDate:'73d ago',gongSignal:'No data',                                            ctas:'1', ctaTop:'Log re-engagement attempt (today)',          lastTouch:'73d ago', channel:'Gong',     sum:"Longest-dark account in the book at 73 days silent. Jennifer Ramos sent an inbound check-in yesterday — the highest-value re-engagement signal possible. Lead with technical help on the SSO rollout, not commercial language." },
+  'Creston Software':       { health:'—',   band:'Dark',      bandCls:'gy', renewal:'Jul 15', daysOut:'60d',  arr:'$18K', seats:'—',   active:'—',   churned:'—',  gongDate:'67d ago',gongSignal:'No data',                                            ctas:'1', ctaTop:'Update health score rationale (today)',     lastTouch:'67d ago', channel:'Gong',     sum:"Neglect-dark, not risk-dark. Champion Marcus Webb (VP Engineering) likely intact, just dormant. Lead with one specific product update relevant to a VP Eng — not a generic check-in." },
+  'Apex Dynamics':          { health:'—',   band:'Dark',      bandCls:'gy', renewal:'Aug 1',  daysOut:'77d',  arr:'$15K', seats:'—',   active:'—',   churned:'—',  gongDate:'61d ago',gongSignal:'Champion change: James Wu → Ryan Patel',              ctas:'0', ctaTop:'—',                                          lastTouch:'61d ago', channel:'Gong',     sum:"Champion change is the only signal. James Wu departed, Ryan Patel is the new IT Director with no prior 1Password relationship. Do not cold-email Patel — request a warm intro through the AE first." }
+};
+
+// Full book — 6 known + 10 additional book accounts
+var MA_BOOK = [
+  'Acme Corp', 'Brightex Inc', 'NovaVault',
+  'Meridian Health Systems', 'Creston Software', 'Apex Dynamics',
+  'Klaxton Labs', 'Pinnacle Systems', 'Redwood Analytics',
+  'Hartwell Technologies', 'Cascade Partners', 'Summit Digital',
+  'Ironbridge Corp', 'Vantage Solutions', 'Palo Data', 'Crestmont Group'
+];
+
+// Session-only cache for book accounts whose snapshot the API generated.
+var MA_BOOK_CACHE = {};
+var _maCurrent = null; // { name, snap, view: 'snap' | 'agent' | 'note' | 'task' }
+
+function _maEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── API plumbing ────────────────────────────────────────────────────────────
+// Tries the configured proxy endpoint; on any failure falls back to a
+// deterministic mock so the UI is always usable. Returns
+// { text, live } — `live: true` when the response came from the real API,
+// `live: false` when the mock served.
+async function _maCallAnthropic(systemPrompt, userMessage, mockFn) {
+  var controller = (typeof AbortController === 'function') ? new AbortController() : null;
+  var timer = controller ? setTimeout(function(){ controller.abort(); }, MA_API_TIMEOUT) : null;
+  try {
+    var res = await fetch(MA_API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MA_MODEL,
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }]
+      }),
+      signal: controller ? controller.signal : undefined
+    });
+    if (timer) clearTimeout(timer);
+    if (!res.ok) throw new Error('proxy ' + res.status);
+    var j = await res.json();
+    var text = (j && j.content && j.content[0] && j.content[0].text) || '';
+    if (!text) throw new Error('empty response');
+    return { text: text, live: true };
+  } catch (e) {
+    if (timer) clearTimeout(timer);
+    return { text: mockFn(), live: false };
+  }
+}
+
+var MA_SYSTEM_PROMPT = "You are the Account Workspace agent inside TeamOS, an AI execution layer for B2B SaaS Customer Success Managers. The CSM using this tool is Carmen.\n\nYour purpose is to give Carmen a complete operating environment for any account she needs to work on outside her structured daily dashboard.\n\nNever volunteer information about accounts Carmen did not search for. Never speculate on missing data — write \"No data.\"\nKeep all outputs scannable using the defined format for the agent type requested.\nTone: direct, no filler. Carmen is working an account, not reading a report.";
+
+function _maSnapLine(snap) {
+  // Compact one-liner used in API user messages
+  return 'Health: ' + snap.health + ' · ' + snap.band + ' · Renewal ' + snap.renewal + ' · ' + snap.daysOut + ' · ' + snap.arr + ' · Seats ' + snap.seats + (snap.active ? ' (' + snap.active + ' active' + (snap.churned !== '—' && snap.churned !== '0' ? ', ' + snap.churned + ' churned' : '') + ')' : '') + ' · Last Gong ' + snap.gongDate + ' — ' + snap.gongSignal + ' · Open CTAs: ' + snap.ctas + ' · Last touch ' + snap.lastTouch + ' · ' + snap.channel;
+}
+
+// ── Snapshot for unknown book accounts (mock generator) ─────────────────────
+function _maGenerateBookSnapshot(name) {
+  // Deterministic stub so the same name produces the same placeholder snap
+  // across reloads. Phase 2 replaces this with a real API call.
+  var seed = 0; for (var i = 0; i < name.length; i++) seed = (seed * 31 + name.charCodeAt(i)) & 0xffff;
+  var healthVals = [62, 71, 55, 78, 49, 83, 67, 44, 88, 73];
+  var arrVals    = ['$28K','$54K','$41K','$67K','$22K','$92K','$33K','$48K','$76K','$19K'];
+  var seatsVals  = [42,    96,    71,    128,   38,    164,   58,    87,    142,   32];
+  var gongAgo    = [8, 14, 22, 11, 31, 6, 19, 25, 9, 17];
+  var months     = ['Jun','Jul','Aug','Sep','Oct'];
+  var idx = seed % 10;
+  var h = healthVals[idx];
+  var band = h >= 75 ? 'Healthy' : (h >= 55 ? 'At Risk' : 'Critical');
+  var bandCls = h >= 75 ? 'g' : (h >= 55 ? 'a' : 'r');
+  return {
+    health: String(h),
+    band: band,
+    bandCls: bandCls,
+    renewal: months[seed % 5] + ' ' + (5 + (seed % 25)),
+    daysOut: (40 + (seed % 90)) + 'd',
+    arr: arrVals[idx],
+    seats: String(seatsVals[idx]),
+    active: String(seatsVals[idx] - (seed % 4)),
+    churned: String(seed % 4),
+    gongDate: gongAgo[idx] + 'd ago',
+    gongSignal: 'No notable signals in last call',
+    ctas: String(seed % 3),
+    ctaTop: (seed % 3) ? 'Quarterly check-in due' : '—',
+    lastTouch: gongAgo[idx] + 'd ago',
+    channel: 'Gong',
+    sum: name + " is a steady portfolio account with no urgent signals. Use this workspace to run a targeted check-in or pull a brief before your next touchpoint.",
+    isDemo: true
+  };
+}
+
+function _maGetSnapshot(name) {
+  if (MA_KNOWN[name]) return MA_KNOWN[name];
+  if (MA_BOOK_CACHE[name]) return MA_BOOK_CACHE[name];
+  var s = _maGenerateBookSnapshot(name);
+  MA_BOOK_CACHE[name] = s;
+  return s;
+}
+
+// ── Recent sessions persistence ─────────────────────────────────────────────
+function _maReadSessions() {
+  try { return JSON.parse(localStorage.getItem(MA_SESSIONS_KEY) || '[]'); }
+  catch (e) { return []; }
+}
+function _maPushSession(entry) {
+  var s = _maReadSessions();
+  s.unshift(entry);
+  s = s.slice(0, 5); // keep last 5
+  try { localStorage.setItem(MA_SESSIONS_KEY, JSON.stringify(s)); } catch (e) {}
+  _maRenderSessions();
+}
+function _maRenderSessions() {
+  var host = document.getElementById('ma-recent');
+  if (!host) return;
+  var s = _maReadSessions();
+  if (!s.length) { host.innerHTML = '<div class="ma-recent-empty">No sessions yet. Search an account to start.</div>'; return; }
+  host.innerHTML = s.map(function(e, idx){
+    var ago = _maFormatAgo(e.ts);
+    return '<button class="ma-recent-item" type="button" onclick="_maRestoreSession(' + idx + ')">'
+      + '<div class="ma-recent-item-top"><span>' + _maEscape(e.account) + ' &middot; ' + _maEscape(e.type) + '</span><span class="ma-recent-item-ago">' + ago + '</span></div>'
+      + '<div class="ma-recent-item-prev">' + _maEscape(e.preview) + '</div>'
+      + '</button>';
+  }).join('');
+}
+function _maFormatAgo(iso) {
+  if (!iso) return '';
+  try {
+    var sec = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (sec < 60) return 'just now';
+    if (sec < 3600) return Math.floor(sec/60) + 'm ago';
+    if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+    return Math.floor(sec/86400) + 'd ago';
+  } catch (e) { return ''; }
+}
+
+function _maRestoreSession(idx) {
+  var s = _maReadSessions();
+  var e = s[idx];
+  if (!e) return;
+  // Re-open the account, then re-render the saved agent output.
+  _maOpenAccount(e.account, /*skipSession=*/true);
+  if (e.type === 'Account Snapshot') return; // snapshot is already showing
+  // Render saved agent output directly without re-firing the API.
+  _maRenderAgent(e.account, e.type, e.body, !!e.live, /*skipSession=*/true);
+}
+
+// ── Search ──────────────────────────────────────────────────────────────────
+function _maSearch(q) {
+  var query = String(q || '').trim().toLowerCase();
+  var res = document.getElementById('ma-results');
+  if (!res) return;
+  if (!query) { res.classList.remove('on'); res.innerHTML = ''; return; }
+  var matches = MA_BOOK.filter(function(n){ return n.toLowerCase().indexOf(query) !== -1; });
+  if (!matches.length) {
+    res.classList.add('on');
+    res.innerHTML = '<div class="ma-results-empty">No accounts matching &ldquo;' + _maEscape(q) + '&rdquo;</div>';
+    return;
+  }
+  res.classList.add('on');
+  res.innerHTML = matches.map(function(n){
+    var known = MA_KNOWN[n] ? '<span class="ma-results-meta">' + MA_KNOWN[n].band + '</span>' : '<span class="ma-results-meta">Book</span>';
+    return '<button class="ma-results-item" type="button" onclick="_maOpenAccount(\'' + _maEscape(n).replace(/&#39;/g,"\\'") + '\')">' + _maEscape(n) + known + '</button>';
+  }).join('');
+}
+
+// ── Open account / render snapshot ──────────────────────────────────────────
+function _maOpenAccount(name, skipSession) {
+  if (!name) return;
+  var snap = _maGetSnapshot(name);
+  _maCurrent = { name: name, snap: snap, view: 'snap' };
+  _maRenderSnapshot(name, snap);
+  document.getElementById('ma-q').value = '';
+  document.getElementById('ma-results').classList.remove('on');
+  if (!skipSession) {
+    _maPushSession({ account: name, type: 'Account Snapshot', ts: new Date().toISOString(), preview: snap.sum.slice(0, 100), body: null });
+  }
+}
+
+function _maRenderSnapshot(name, snap) {
+  var main = document.getElementById('ma-main');
+  if (!main) return;
+  var demoBanner = snap.isDemo ? '<div class="ma-snap-demo"><i class="ti ti-info-circle"></i> Demo data &middot; Gainsight sync pending</div>' : '';
+  main.innerHTML = ''
+    + '<div class="ma-snap">'
+      + '<div class="ma-snap-hd">'
+        + '<span class="ma-snap-nm">' + _maEscape(name) + '</span>'
+        + '<span class="ma-snap-health">Health ' + snap.health + '</span>'
+        + '<span class="ma-snap-tag ' + snap.bandCls + '">' + snap.band + '</span>'
+      + '</div>'
+      + demoBanner
+      + '<div class="ma-snap-kv">'
+        + '<div class="ma-snap-kv-l">Renewal</div><div class="ma-snap-kv-v">' + snap.renewal + ' &middot; ' + snap.daysOut + ' &middot; ' + snap.arr + '</div>'
+        + '<div class="ma-snap-kv-l">Licenses</div><div class="ma-snap-kv-v">' + snap.seats + ' seats &middot; ' + snap.active + ' active' + (snap.churned !== '—' && snap.churned !== '0' ? ' &middot; ' + snap.churned + ' churned' : '') + '</div>'
+        + '<div class="ma-snap-kv-l">Last Gong</div><div class="ma-snap-kv-v">' + snap.gongDate + ' &middot; ' + snap.gongSignal + '</div>'
+        + '<div class="ma-snap-kv-l">Open CTAs</div><div class="ma-snap-kv-v">' + snap.ctas + (snap.ctaTop && snap.ctaTop !== '—' ? ' &middot; ' + snap.ctaTop : '') + '</div>'
+        + '<div class="ma-snap-kv-l">Last touch</div><div class="ma-snap-kv-v">' + snap.lastTouch + ' &middot; ' + snap.channel + '</div>'
+      + '</div>'
+      + '<div class="ma-snap-sum">' + _maEscape(snap.sum) + '</div>'
+      + '<div class="ma-launch">'
+        + '<button class="ma-launch-btn" type="button" onclick="_maRunAgent(\'risk\')"><i class="ti ti-shield-check"></i> Risk Analysis</button>'
+        + '<button class="ma-launch-btn" type="button" onclick="_maRunAgent(\'renewal\')"><i class="ti ti-calendar-stats"></i> Renewal Forecast</button>'
+        + '<button class="ma-launch-btn" type="button" onclick="_maRunAgent(\'discovery\')"><i class="ti ti-message-question"></i> Discovery Questions</button>'
+        + '<button class="ma-launch-btn" type="button" onclick="_maRunAgent(\'brief\')"><i class="ti ti-file-text"></i> Account Brief</button>'
+      + '</div>'
+      + '<div class="ma-tools">'
+        + '<button class="ma-tool-btn" type="button" onclick="_maToggleNote()"><i class="ti ti-notes"></i> Log Note</button>'
+        + '<button class="ma-tool-btn" type="button" onclick="_maToggleTask()"><i class="ti ti-circle-check"></i> Create Task / CTA</button>'
+      + '</div>'
+      + _maNoteFormHTML(name)
+      + _maTaskFormHTML(name)
+      + '<form class="ma-ask" onsubmit="return _maFreeQuery(event)">'
+        + '<i class="ti ti-sparkles"></i>'
+        + '<input id="ma-ask-fld" type="text" autocomplete="off" placeholder="Ask anything about this account&hellip;" aria-label="Ask about this account" />'
+        + '<button class="ma-ask-send" type="submit">Ask <i class="ti ti-arrow-right"></i></button>'
+      + '</form>'
+      + '<div id="ma-ask-out"></div>'
+    + '</div>';
+}
+
+// ── Agent runner ────────────────────────────────────────────────────────────
+function _maRunAgent(type) {
+  if (!_maCurrent) return;
+  var name = _maCurrent.name;
+  var snap = _maCurrent.snap;
+  var main = document.getElementById('ma-main');
+  var agentLabels = { risk:'Risk Analysis', renewal:'Renewal Forecast', discovery:'Discovery Questions', brief:'Account Brief' };
+  var agentIcons  = { risk:'ti-shield-check', renewal:'ti-calendar-stats', discovery:'ti-message-question', brief:'ti-file-text' };
+  main.innerHTML = ''
+    + '<div class="ma-agent">'
+      + '<button class="ma-agent-back" type="button" onclick="_maBackToSnap()"><i class="ti ti-chevron-left"></i> Back to Snapshot</button>'
+      + '<div class="ma-agent-hd"><i class="ti ' + agentIcons[type] + '"></i> ' + agentLabels[type] + ' &middot; ' + _maEscape(name) + '</div>'
+      + '<div class="ma-agent-sub">Powered by Dust + Anthropic &middot; ' + _maEscape(_maSnapLine(snap)) + '</div>'
+      + '<div class="ma-agent-load"><i class="ti ti-loader-2"></i> Dust is pulling ' + _maEscape(name) + ' data&hellip;</div>'
+    + '</div>';
+
+  var userMsg = _maBuildUserMessage(type, name, snap);
+  var mockFn  = function(){ return _maMockAgent(type, name, snap); };
+
+  _maCallAnthropic(MA_SYSTEM_PROMPT, userMsg, mockFn).then(function(r){
+    _maRenderAgent(name, agentLabels[type], r.text, r.live);
+    _maPushSession({ account: name, type: agentLabels[type], ts: new Date().toISOString(), preview: r.text.slice(0, 120).replace(/\s+/g,' '), body: r.text, live: r.live });
+  });
+}
+
+function _maRenderAgent(name, label, body, live, skipSession) {
+  if (!_maCurrent) _maCurrent = { name: name, snap: _maGetSnapshot(name), view:'agent' };
+  _maCurrent.view = 'agent';
+  var main = document.getElementById('ma-main');
+  var iconMap = { 'Risk Analysis':'ti-shield-check', 'Renewal Forecast':'ti-calendar-stats', 'Discovery Questions':'ti-message-question', 'Account Brief':'ti-file-text' };
+  var snap = _maCurrent.snap;
+  var sourceLine = live
+    ? '<i class="ti ti-bolt"></i> Live response · Dust + Anthropic · Updated ' + (new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}))
+    : '<i class="ti ti-info-circle"></i> Phase 1 prototype response · Live Anthropic API connects via /api/anthropic Vercel proxy in Phase 2';
+  main.innerHTML = ''
+    + '<div class="ma-agent">'
+      + '<button class="ma-agent-back" type="button" onclick="_maBackToSnap()"><i class="ti ti-chevron-left"></i> Back to Snapshot</button>'
+      + '<div class="ma-agent-hd"><i class="ti ' + (iconMap[label] || 'ti-sparkles') + '"></i> ' + _maEscape(label) + ' &middot; ' + _maEscape(name) + '</div>'
+      + '<div class="ma-agent-sub">' + _maEscape(_maSnapLine(snap)) + '</div>'
+      + '<div class="ma-agent-body">' + _maEscape(body) + '</div>'
+      + '<div class="ma-agent-acts">'
+        + '<button class="ma-tool-btn" type="button" onclick="_maPushAgentToGainsight(\'' + _maEscape(label).replace(/&#39;/g,"\\'") + '\')"><i class="ti ti-external-link"></i> Push to Gainsight</button>'
+        + '<button class="ma-tool-btn sec" type="button" onclick="_maBackToSnap()"><i class="ti ti-arrow-left"></i> Back to Snapshot</button>'
+      + '</div>'
+      + '<div class="ma-agent-source ' + (live ? 'live' : '') + '">' + sourceLine + '</div>'
+    + '</div>';
+}
+
+function _maPushAgentToGainsight(label) {
+  if (!_maCurrent) return;
+  toast(label + ' pushed to Gainsight &middot; ' + _maCurrent.name + ' &middot; Logged ✓');
+}
+
+function _maBackToSnap() {
+  if (!_maCurrent) return;
+  _maCurrent.view = 'snap';
+  _maRenderSnapshot(_maCurrent.name, _maCurrent.snap);
+}
+
+// ── Per-agent user message builders ─────────────────────────────────────────
+function _maBuildUserMessage(type, name, snap) {
+  var line = _maSnapLine(snap);
+  if (type === 'risk') {
+    return 'Run a Risk Analysis for ' + name + '. Account data: ' + line + '. Use this exact output format:\n'
+      + 'Churn Probability: [%] · [level]\n'
+      + 'Driving Signals:\n· [Signal 1 — source and data point]\n· [Signal 2 — source and data point]\n· [Signal 3 — source and data point]\n'
+      + 'Recommended Save Play: [one specific action with rationale, max 2 sentences]';
+  }
+  if (type === 'renewal') {
+    return 'Run a Renewal Forecast for ' + name + '. Account data: ' + line + '. Use this exact output format:\n'
+      + 'Renewal: [Date] · [Days out]\nARR: [Current] · [Forecasted at renewal]\n'
+      + 'Forecast Status: [On Track / At Risk / Likely Churn / Expansion Likely]\n'
+      + 'Risk Factors:\n· [Factor 1 with data source]\n· [Factor 2 with data source]\n'
+      + 'Expansion Signals (if any):\n· [Signal with source]\n'
+      + 'Recommended Action: [one specific next step, max 2 sentences]';
+  }
+  if (type === 'discovery') {
+    return 'Generate Discovery Questions for ' + name + '. Account data: ' + line + '. Generate 5 questions Carmen has NOT already asked based on call history. Use this format:\n'
+      + 'Context: [1 sentence on gap or opportunity]\nQuestions:\n1. [Question] · [Why this matters now]\n2. [Question] · [Why this matters now]\n3. [Question] · [Why this matters now]\n4. [Question] · [Why this matters now]\n5. [Question] · [Why this matters now]\nEvery question must be specific to this account — no generic discovery questions.';
+  }
+  if (type === 'brief') {
+    return 'Generate an Account Brief for ' + name + '. Account data: ' + line + '. Use this exact format (prose only, no bullets):\n'
+      + 'Account Brief · ' + name + ' · ' + (new Date().toLocaleDateString()) + '\n'
+      + 'Who They Are: [2 sentences]\nWhere They Stand: [2 sentences]\nRelationship: [2 sentences]\nRisk or Opportunity: [1 sentence]\nRecommended Posture: [1 sentence]';
+  }
+  return 'Help Carmen with ' + name + '. Account data: ' + line;
+}
+
+// ── Mock fallback (spec-formatted) ──────────────────────────────────────────
+function _maMockAgent(type, name, snap) {
+  var d = new Date().toLocaleDateString();
+  if (type === 'risk') {
+    var prob, lvl;
+    if (snap.bandCls === 'r') { prob = '88%'; lvl = 'Critical'; }
+    else if (snap.bandCls === 'a') { prob = '64%'; lvl = 'High'; }
+    else if (snap.bandCls === 'gy') { prob = '52%'; lvl = 'Elevated'; }
+    else { prob = '14%'; lvl = 'Low'; }
+    return ''
+      + 'Churn Probability: ' + prob + ' · ' + lvl + '\n'
+      + 'Driving Signals:\n'
+      + '· Health ' + snap.health + ' (' + snap.band + ') — Gainsight, current as of last sync\n'
+      + '· Last Gong ' + snap.gongDate + ' — ' + snap.gongSignal + '\n'
+      + '· ' + snap.ctas + ' open CTA' + (snap.ctas === '1' ? '' : 's') + (snap.ctaTop && snap.ctaTop !== '—' ? ' (' + snap.ctaTop + ')' : '') + ' — Gainsight Cockpit\n'
+      + 'Recommended Save Play: ' + (snap.bandCls === 'r'
+          ? 'Reach the new champion directly this week with a continuity-first intro — do not lead with renewal or price. The relationship is what changed, not the product fit.'
+          : (snap.bandCls === 'a'
+              ? 'Answer the open question (SLA / blocker) inline today, then propose a 15-minute call before next week. The longer the open question sits, the more it becomes the renewal frame.'
+              : (snap.bandCls === 'gy'
+                  ? 'Treat the most recent inbound signal as a support request, not a renewal conversation. Lead with technical help; commercial framing can follow once contact is re-established.'
+                  : 'No active risk — use this slot for a value-confirmation touch or an expansion conversation while signals are positive.')));
+  }
+  if (type === 'renewal') {
+    var status, action;
+    if (snap.bandCls === 'r') { status = 'Likely Churn'; action = 'Propose a 60-day extension at current terms today to buy time for relationship rebuild. The deadline is the conversation now — extend it before it forces a procurement decision.'; }
+    else if (snap.bandCls === 'a') { status = 'At Risk'; action = 'Close the open question (SLA / blocker) this week and confirm renewal terms in writing within 10 days. Without a clean close on the SLA, the renewal turns into a re-bid.'; }
+    else if (snap.bandCls === 'gy') { status = 'At Risk'; action = 'Re-engage the champion now with one specific technical hook from the most recent positive signal. Confirm contact intact before any renewal framing.'; }
+    else { status = 'Expansion Likely'; action = 'Convert the most recent expansion signal into a scoped pilot or commitment before the renewal window narrows the conversation to price.'; }
+    return ''
+      + 'Renewal: ' + snap.renewal + ' · ' + snap.daysOut + '\n'
+      + 'ARR: ' + snap.arr + ' · forecast flat unless action below\n'
+      + 'Forecast Status: ' + status + '\n'
+      + 'Risk Factors:\n'
+      + '· Health ' + snap.health + ' (' + snap.band + ') — Gainsight\n'
+      + '· Last touch ' + snap.lastTouch + ' via ' + snap.channel + ' — call/email log\n'
+      + 'Expansion Signals (if any):\n'
+      + '· ' + (snap.bandCls === 'g' ? snap.gongSignal + ' — Gong' : 'No data')
+      + '\n'
+      + 'Recommended Action: ' + action;
+  }
+  if (type === 'discovery') {
+    return ''
+      + 'Context: Based on the snapshot, the highest-leverage discovery gap is the one Carmen hasn\'t closed in the last call. These five focus on uncovering the real blocker, not gathering general context.\n'
+      + 'Questions:\n'
+      + '1. "What changed for you between our last conversation and today?" · Surfaces internal shifts (champion, priorities, budget) that the data lags on.\n'
+      + '2. "If you had to point to one thing 1Password is or isn\'t doing for your team right now, what would it be?" · Forces a single specific answer rather than a polite generic.\n'
+      + '3. "Who else on your team is touching this decision when renewal comes up?" · Maps the actual decision unit, not the Salesforce contact list.\n'
+      + '4. "What\'s the strongest case anyone internally has made for switching or staying?" · Surfaces the real objection without putting Carmen on defense.\n'
+      + '5. "If we got the next 30 days exactly right, what would have happened by mid-month?" · Anchors the conversation to outcomes the customer can verify, not vendor promises.';
+  }
+  if (type === 'brief') {
+    return ''
+      + 'Account Brief · ' + name + ' · ' + d + '\n\n'
+      + 'Who They Are: ' + name + ' is a ' + snap.seats + '-seat ' + snap.band.toLowerCase() + ' account in the current book. ' + (MA_KNOWN[name] ? 'Known champion engagement, multi-quarter relationship.' : 'Phase 1 prototype — full account context syncs from Gainsight in Phase 2.') + '\n\n'
+      + 'Where They Stand: Health ' + snap.health + ' (' + snap.band + ') with renewal in ' + snap.daysOut + ' at ' + snap.arr + '. ' + (snap.ctas !== '0' && snap.ctas !== '—' ? snap.ctas + ' open CTA' + (snap.ctas === '1' ? '' : 's') + ' on the board' + (snap.ctaTop !== '—' ? ' — top item: ' + snap.ctaTop + '.' : '.') : 'No open CTAs.') + '\n\n'
+      + 'Relationship: Last touch ' + snap.lastTouch + ' via ' + snap.channel + '. ' + (snap.gongSignal !== 'No data' ? 'Most recent signal: ' + snap.gongSignal + '.' : 'No recent call signal.') + '\n\n'
+      + 'Risk or Opportunity: ' + (snap.bandCls === 'r' ? 'Critical save situation — renewal at risk without near-term champion re-engagement.' : (snap.bandCls === 'a' ? 'At-risk renewal — close the open question before it becomes the renewal frame.' : (snap.bandCls === 'gy' ? 'Re-engagement opportunity — recent inbound signal worth same-day response.' : 'Expansion opportunity — convert recent positive signal into a scoped commitment.'))) + '\n\n'
+      + 'Recommended Posture: ' + (snap.bandCls === 'r' || snap.bandCls === 'a' ? 'Defensive and direct — answer the open question, propose extension if needed, hold pricing.' : (snap.bandCls === 'gy' ? 'Patient and technical — lead with help, not commercial language.' : 'Forward-leaning — convert signals into commitments while the door is open.'));
+  }
+  return 'No data.';
+}
+
+// ── Free-text query ────────────────────────────────────────────────────────
+function _maFreeQuery(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var fld = document.getElementById('ma-ask-fld');
+  if (!fld || !_maCurrent) return false;
+  var q = (fld.value || '').trim();
+  if (!q) return false;
+  var out = document.getElementById('ma-ask-out');
+  out.innerHTML = '<div class="ma-ask-out"><div class="ma-ask-out-q"><i class="ti ti-quote"></i> ' + _maEscape(q) + '</div><div class="ma-agent-load"><i class="ti ti-loader-2"></i> Dust is thinking&hellip;</div></div>';
+  fld.value = '';
+  var name = _maCurrent.name;
+  var snap = _maCurrent.snap;
+  var userMsg = 'Context — ' + name + ' snapshot: ' + _maSnapLine(snap) + '. Question: ' + q;
+  var mockFn = function(){ return _maMockFreeQuery(q, name, snap); };
+  _maCallAnthropic(MA_SYSTEM_PROMPT, userMsg, mockFn).then(function(r){
+    out.innerHTML = '<div class="ma-ask-out"><div class="ma-ask-out-q"><i class="ti ti-quote"></i> ' + _maEscape(q) + '</div><div class="ma-ask-out-a">' + _maEscape(r.text) + '</div><div class="ma-agent-source ' + (r.live ? 'live' : '') + '">' + (r.live ? '<i class="ti ti-bolt"></i> Live response · Dust + Anthropic' : '<i class="ti ti-info-circle"></i> Phase 1 prototype response · Live API in Phase 2') + '</div></div>';
+  });
+  return false;
+}
+
+function _maMockFreeQuery(q, name, snap) {
+  return "Based on what I know about " + name + " (health " + snap.health + " · " + snap.band + " · " + snap.daysOut + " to renewal), here's my read on \"" + q + "\":\n\n"
+    + "The most actionable angle right now is the same one the snapshot summary flags — " + snap.sum.split(/\.\s+/)[0] + ".\n\n"
+    + "If you want me to go deeper, try one of the four Quick Launch agents above for a structured output. For a free-text deep dive, give me a specific situation (e.g. \"They pushed back on price — what do I say?\") and I'll respond with concrete language.";
+}
+
+// ── Notes panel ─────────────────────────────────────────────────────────────
+function _maNoteFormHTML(name) {
+  return ''
+    + '<div class="ma-form" id="ma-note-form">'
+      + '<div class="ma-form-hd"><span>Log Note · ' + _maEscape(name) + '</span><button class="ma-tool-btn" type="button" onclick="_maToggleNote()" style="padding:4px 8px;font-size:10px">Cancel</button></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Note type</label><select id="ma-note-type"><option>Account Update</option><option>Call Summary</option><option>Stakeholder Change</option><option>Risk Flag</option><option>General</option></select></div>'
+      + '<textarea id="ma-note-text" placeholder="Note content&hellip; (will sync verbatim to Gainsight AI Notes)" aria-label="Note text"></textarea>'
+      + '<div class="ma-form-acts"><button class="ma-tool-btn prim" type="button" onclick="_maPreviewNote()" style="background:var(--tx);color:#fff;border-color:var(--tx)">Preview Sync</button></div>'
+      + '<div id="ma-note-preview"></div>'
+    + '</div>';
+}
+
+function _maToggleNote() {
+  var f = document.getElementById('ma-note-form'); if (!f) return;
+  f.classList.toggle('on');
+  document.getElementById('ma-task-form').classList.remove('on');
+}
+
+function _maPreviewNote() {
+  if (!_maCurrent) return;
+  var typeEl = document.getElementById('ma-note-type');
+  var txtEl = document.getElementById('ma-note-text');
+  var prev = document.getElementById('ma-note-preview');
+  var type = typeEl ? typeEl.value : 'Account Update';
+  var text = txtEl ? (txtEl.value || '').trim() : '';
+  if (!text) { prev.innerHTML = '<div class="ma-snap-demo"><i class="ti ti-alert-triangle"></i> Note text is empty</div>'; return; }
+  var ts = new Date().toLocaleString();
+  prev.innerHTML = ''
+    + '<div class="ma-preview">'
+      + '<div class="ma-preview-l">Syncing to Gainsight AI Notes</div>'
+      + '<div class="ma-preview-meta"><strong>Account:</strong> ' + _maEscape(_maCurrent.name) + ' &middot; <strong>Type:</strong> ' + _maEscape(type) + ' &middot; ' + _maEscape(ts) + '</div>'
+      + '<div class="ma-preview-body">' + _maEscape(text) + '</div>'
+      + '<div class="ma-preview-acts">'
+        + '<button class="ma-tool-btn" type="button" onclick="document.getElementById(\'ma-note-preview\').innerHTML=\'\'"><i class="ti ti-edit"></i> Edit</button>'
+        + '<button class="ma-tool-btn prim" type="button" onclick="_maConfirmNote()" style="background:var(--tx);color:#fff;border-color:var(--tx)"><i class="ti ti-circle-check"></i> Confirm</button>'
+      + '</div>'
+    + '</div>';
+}
+
+function _maConfirmNote() {
+  if (!_maCurrent) return;
+  var ts = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  toast('Synced &middot; ' + _maCurrent.name + ' &middot; Gainsight AI Notes &middot; ' + ts + ' ✓');
+  // Clear and close form
+  document.getElementById('ma-note-text').value = '';
+  document.getElementById('ma-note-preview').innerHTML = '';
+  document.getElementById('ma-note-form').classList.remove('on');
+}
+
+// ── Task panel ──────────────────────────────────────────────────────────────
+function _maTaskFormHTML(name) {
+  var today = new Date(); var iso = today.toISOString().slice(0,10);
+  return ''
+    + '<div class="ma-form" id="ma-task-form">'
+      + '<div class="ma-form-hd"><span>Create Task / CTA · ' + _maEscape(name) + '</span><button class="ma-tool-btn" type="button" onclick="_maToggleTask()" style="padding:4px 8px;font-size:10px">Cancel</button></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Task name</label><input id="ma-task-name" type="text" placeholder="e.g. Follow up on SLA question"></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Due date</label><input id="ma-task-due" type="date" value="' + iso + '"></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Priority</label><select id="ma-task-pri"><option>High</option><option selected>Medium</option><option>Low</option></select></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Type</label><select id="ma-task-type"><option>CTA</option><option>Email</option><option>Call</option><option>Internal Task</option></select></div>'
+      + '<div class="ma-form-acts"><button class="ma-tool-btn prim" type="button" onclick="_maPreviewTask()" style="background:var(--tx);color:#fff;border-color:var(--tx)">Preview</button></div>'
+      + '<div id="ma-task-preview"></div>'
+    + '</div>';
+}
+
+function _maToggleTask() {
+  var f = document.getElementById('ma-task-form'); if (!f) return;
+  f.classList.toggle('on');
+  document.getElementById('ma-note-form').classList.remove('on');
+}
+
+function _maPreviewTask() {
+  if (!_maCurrent) return;
+  var n = (document.getElementById('ma-task-name').value || '').trim();
+  var d = document.getElementById('ma-task-due').value;
+  var p = document.getElementById('ma-task-pri').value;
+  var t = document.getElementById('ma-task-type').value;
+  var prev = document.getElementById('ma-task-preview');
+  if (!n) { prev.innerHTML = '<div class="ma-snap-demo"><i class="ti ti-alert-triangle"></i> Task name is empty</div>'; return; }
+  prev.innerHTML = ''
+    + '<div class="ma-preview">'
+      + '<div class="ma-preview-l">Creating in Gainsight · ' + _maEscape(_maCurrent.name) + '</div>'
+      + '<div class="ma-preview-meta"><strong>Task:</strong> ' + _maEscape(n) + '</div>'
+      + '<div class="ma-preview-meta"><strong>Due:</strong> ' + _maEscape(d) + ' &middot; <strong>Priority:</strong> ' + _maEscape(p) + ' &middot; <strong>Type:</strong> ' + _maEscape(t) + '</div>'
+      + '<div class="ma-preview-meta"><strong>Assigned to:</strong> Carmen</div>'
+      + '<div class="ma-preview-acts">'
+        + '<button class="ma-tool-btn" type="button" onclick="document.getElementById(\'ma-task-preview\').innerHTML=\'\'"><i class="ti ti-edit"></i> Edit</button>'
+        + '<button class="ma-tool-btn prim" type="button" onclick="_maConfirmTask()" style="background:var(--tx);color:#fff;border-color:var(--tx)"><i class="ti ti-circle-check"></i> Confirm</button>'
+      + '</div>'
+    + '</div>';
+}
+
+function _maConfirmTask() {
+  if (!_maCurrent) return;
+  var ts = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  toast('Created &middot; ' + _maCurrent.name + ' &middot; Gainsight &middot; ' + ts + ' ✓');
+  document.getElementById('ma-task-name').value = '';
+  document.getElementById('ma-task-preview').innerHTML = '';
+  document.getElementById('ma-task-form').classList.remove('on');
+}
+
+// ── Default state (no account selected) ─────────────────────────────────────
+function _maRenderDefault() {
+  var main = document.getElementById('ma-main');
+  if (!main) return;
+  var sessions = _maReadSessions();
+  var html;
+  if (sessions.length) {
+    html = '<div class="ma-snap">'
+      + '<div class="ma-snap-hd"><span class="ma-snap-nm">Workspace</span><span class="ma-snap-tag g">Ready</span></div>'
+      + '<div style="font-size:11px;color:var(--tx2);line-height:1.6;margin-bottom:14px">Pick up where you left off or search for any account in your book.</div>'
+      + '<div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Recent workspace sessions</div>';
+    sessions.forEach(function(s, i){
+      html += '<button class="ma-recent-item" type="button" onclick="_maRestoreSession(' + i + ')" style="margin-bottom:6px;width:100%">'
+        + '<div class="ma-recent-item-top"><span>' + _maEscape(s.account) + ' &middot; ' + _maEscape(s.type) + '</span><span class="ma-recent-item-ago">' + _maFormatAgo(s.ts) + '</span></div>'
+        + '<div class="ma-recent-item-prev">' + _maEscape(s.preview) + '</div>'
+      + '</button>';
+    });
+    html += '<div style="font-size:11px;color:var(--tx3);font-style:italic;margin-top:10px">Or search any account on the left &rarr;</div></div>';
+  } else {
+    html = '<div class="ma-empty">'
+      + '<i class="ti ti-search"></i>'
+      + '<strong>Account Workspace</strong>'
+      + 'Search any account in your book on the left to load its snapshot. Pull-only — no unsolicited alerts. Use the four Quick Launch agents for Risk Analysis, Renewal Forecast, Discovery Questions, or an Account Brief, then sync notes and tasks to Gainsight when ready.'
+    + '</div>';
+  }
+  main.innerHTML = html;
+}
+
+// Close search results on outside click
+document.addEventListener('click', function(e){
+  if (!e.target.closest('.ma-search') && !e.target.closest('.ma-results')) {
+    var r = document.getElementById('ma-results');
+    if (r) r.classList.remove('on');
+  }
+});
+
+// Init on boot
+_maRenderDefault();
+_maRenderSessions();
+
 var ctaDone = 0;
 function togglePop(id, e) {
   e.stopPropagation();
@@ -3982,6 +4683,566 @@ function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority a
 function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &middot; 3 accounts flagged ✓'); }
 function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
 function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// My Accounts workspace (v3.0.0)
+// Pull-only AI account workspace. Live API calls route through /api/anthropic
+// (a Vercel server-side proxy in Phase 2) so the key never touches the
+// browser per SPEC §7.2. When the proxy isn't reachable (e.g. running the
+// static prototype locally), we fall back to deterministic mock responses
+// formatted to the exact agent spec — the UI is fully usable without an API.
+// ═══════════════════════════════════════════════════════════════════════════
+var MA_API_ENDPOINT = '/api/anthropic';
+var MA_API_TIMEOUT  = 10000;
+var MA_MODEL        = 'claude-sonnet-4-20250514';
+
+var MA_SESSIONS_KEY = 'teamos_ma_sessions';
+
+// Known accounts — data injected into every prompt (no AI generation)
+var MA_KNOWN = {
+  'Acme Corp':              { health:'82',  band:'Healthy',   bandCls:'g',  renewal:'Aug 12', daysOut:'89d',  arr:'$48K', seats:'142', active:'140', churned:'0',  gongDate:'May 10', gongSignal:'David Kim flagged enterprise tier and SSO interest', ctas:'0', ctaTop:'—', lastTouch:'May 10', channel:'Gong', sum:"Healthy expansion candidate. David Kim is signaling enterprise tier interest and the SSO rollout is the immediate lever — confirm pilot commitment in today's QBR before the renewal window narrows the conversation to price." },
+  'Brightex Inc':           { health:'48',  band:'At Risk',   bandCls:'a',  renewal:'Jun 15', daysOut:'31d',  arr:'$36K', seats:'87',  active:'82',  churned:'5',  gongDate:'May 10', gongSignal:'competitor mentioned, SLA question raised',         ctas:'2', ctaTop:'Reply to Sarah Chen re: renewal (1d overdue)', lastTouch:'May 10', channel:'Gong', sum:"At-risk renewal with an unanswered SLA question from Sarah Chen and a competitor flagged in the last two Gong calls. Today's job is to answer the SLA question directly — not route it to support — before the competitor narrative hardens." },
+  'NovaVault':              { health:'23',  band:'Critical',  bandCls:'r',  renewal:'Jun 1',  daysOut:'17d',  arr:'$31K', seats:'64',  active:'56',  churned:'8',  gongDate:'Apr 28', gongSignal:'James Wu departure confirmed, Torres intro',         ctas:'4', ctaTop:'Update NovaVault renewal forecast (2d overdue)', lastTouch:'Apr 28', channel:'Gong', sum:"Critical emergency. Champion James Wu has departed, Michael Torres is the new contact with zero relationship to 1Password, and the contract sits unopened with 17 days to renewal. Every hour without contact widens the gap." },
+  'Meridian Health Systems':{ health:'—',   band:'Dark',      bandCls:'gy', renewal:'Jun 30', daysOut:'45d',  arr:'$22K', seats:'—',   active:'—',   churned:'—',  gongDate:'73d ago',gongSignal:'No data',                                            ctas:'1', ctaTop:'Log re-engagement attempt (today)',          lastTouch:'73d ago', channel:'Gong',     sum:"Longest-dark account in the book at 73 days silent. Jennifer Ramos sent an inbound check-in yesterday — the highest-value re-engagement signal possible. Lead with technical help on the SSO rollout, not commercial language." },
+  'Creston Software':       { health:'—',   band:'Dark',      bandCls:'gy', renewal:'Jul 15', daysOut:'60d',  arr:'$18K', seats:'—',   active:'—',   churned:'—',  gongDate:'67d ago',gongSignal:'No data',                                            ctas:'1', ctaTop:'Update health score rationale (today)',     lastTouch:'67d ago', channel:'Gong',     sum:"Neglect-dark, not risk-dark. Champion Marcus Webb (VP Engineering) likely intact, just dormant. Lead with one specific product update relevant to a VP Eng — not a generic check-in." },
+  'Apex Dynamics':          { health:'—',   band:'Dark',      bandCls:'gy', renewal:'Aug 1',  daysOut:'77d',  arr:'$15K', seats:'—',   active:'—',   churned:'—',  gongDate:'61d ago',gongSignal:'Champion change: James Wu → Ryan Patel',              ctas:'0', ctaTop:'—',                                          lastTouch:'61d ago', channel:'Gong',     sum:"Champion change is the only signal. James Wu departed, Ryan Patel is the new IT Director with no prior 1Password relationship. Do not cold-email Patel — request a warm intro through the AE first." }
+};
+
+// Full book — 6 known + 10 additional book accounts
+var MA_BOOK = [
+  'Acme Corp', 'Brightex Inc', 'NovaVault',
+  'Meridian Health Systems', 'Creston Software', 'Apex Dynamics',
+  'Klaxton Labs', 'Pinnacle Systems', 'Redwood Analytics',
+  'Hartwell Technologies', 'Cascade Partners', 'Summit Digital',
+  'Ironbridge Corp', 'Vantage Solutions', 'Palo Data', 'Crestmont Group'
+];
+
+// Session-only cache for book accounts whose snapshot the API generated.
+var MA_BOOK_CACHE = {};
+var _maCurrent = null; // { name, snap, view: 'snap' | 'agent' | 'note' | 'task' }
+
+function _maEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── API plumbing ────────────────────────────────────────────────────────────
+// Tries the configured proxy endpoint; on any failure falls back to a
+// deterministic mock so the UI is always usable. Returns
+// { text, live } — `live: true` when the response came from the real API,
+// `live: false` when the mock served.
+async function _maCallAnthropic(systemPrompt, userMessage, mockFn) {
+  var controller = (typeof AbortController === 'function') ? new AbortController() : null;
+  var timer = controller ? setTimeout(function(){ controller.abort(); }, MA_API_TIMEOUT) : null;
+  try {
+    var res = await fetch(MA_API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MA_MODEL,
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }]
+      }),
+      signal: controller ? controller.signal : undefined
+    });
+    if (timer) clearTimeout(timer);
+    if (!res.ok) throw new Error('proxy ' + res.status);
+    var j = await res.json();
+    var text = (j && j.content && j.content[0] && j.content[0].text) || '';
+    if (!text) throw new Error('empty response');
+    return { text: text, live: true };
+  } catch (e) {
+    if (timer) clearTimeout(timer);
+    return { text: mockFn(), live: false };
+  }
+}
+
+var MA_SYSTEM_PROMPT = "You are the Account Workspace agent inside TeamOS, an AI execution layer for B2B SaaS Customer Success Managers. The CSM using this tool is Carmen.\n\nYour purpose is to give Carmen a complete operating environment for any account she needs to work on outside her structured daily dashboard.\n\nNever volunteer information about accounts Carmen did not search for. Never speculate on missing data — write \"No data.\"\nKeep all outputs scannable using the defined format for the agent type requested.\nTone: direct, no filler. Carmen is working an account, not reading a report.";
+
+function _maSnapLine(snap) {
+  // Compact one-liner used in API user messages
+  return 'Health: ' + snap.health + ' · ' + snap.band + ' · Renewal ' + snap.renewal + ' · ' + snap.daysOut + ' · ' + snap.arr + ' · Seats ' + snap.seats + (snap.active ? ' (' + snap.active + ' active' + (snap.churned !== '—' && snap.churned !== '0' ? ', ' + snap.churned + ' churned' : '') + ')' : '') + ' · Last Gong ' + snap.gongDate + ' — ' + snap.gongSignal + ' · Open CTAs: ' + snap.ctas + ' · Last touch ' + snap.lastTouch + ' · ' + snap.channel;
+}
+
+// ── Snapshot for unknown book accounts (mock generator) ─────────────────────
+function _maGenerateBookSnapshot(name) {
+  // Deterministic stub so the same name produces the same placeholder snap
+  // across reloads. Phase 2 replaces this with a real API call.
+  var seed = 0; for (var i = 0; i < name.length; i++) seed = (seed * 31 + name.charCodeAt(i)) & 0xffff;
+  var healthVals = [62, 71, 55, 78, 49, 83, 67, 44, 88, 73];
+  var arrVals    = ['$28K','$54K','$41K','$67K','$22K','$92K','$33K','$48K','$76K','$19K'];
+  var seatsVals  = [42,    96,    71,    128,   38,    164,   58,    87,    142,   32];
+  var gongAgo    = [8, 14, 22, 11, 31, 6, 19, 25, 9, 17];
+  var months     = ['Jun','Jul','Aug','Sep','Oct'];
+  var idx = seed % 10;
+  var h = healthVals[idx];
+  var band = h >= 75 ? 'Healthy' : (h >= 55 ? 'At Risk' : 'Critical');
+  var bandCls = h >= 75 ? 'g' : (h >= 55 ? 'a' : 'r');
+  return {
+    health: String(h),
+    band: band,
+    bandCls: bandCls,
+    renewal: months[seed % 5] + ' ' + (5 + (seed % 25)),
+    daysOut: (40 + (seed % 90)) + 'd',
+    arr: arrVals[idx],
+    seats: String(seatsVals[idx]),
+    active: String(seatsVals[idx] - (seed % 4)),
+    churned: String(seed % 4),
+    gongDate: gongAgo[idx] + 'd ago',
+    gongSignal: 'No notable signals in last call',
+    ctas: String(seed % 3),
+    ctaTop: (seed % 3) ? 'Quarterly check-in due' : '—',
+    lastTouch: gongAgo[idx] + 'd ago',
+    channel: 'Gong',
+    sum: name + " is a steady portfolio account with no urgent signals. Use this workspace to run a targeted check-in or pull a brief before your next touchpoint.",
+    isDemo: true
+  };
+}
+
+function _maGetSnapshot(name) {
+  if (MA_KNOWN[name]) return MA_KNOWN[name];
+  if (MA_BOOK_CACHE[name]) return MA_BOOK_CACHE[name];
+  var s = _maGenerateBookSnapshot(name);
+  MA_BOOK_CACHE[name] = s;
+  return s;
+}
+
+// ── Recent sessions persistence ─────────────────────────────────────────────
+function _maReadSessions() {
+  try { return JSON.parse(localStorage.getItem(MA_SESSIONS_KEY) || '[]'); }
+  catch (e) { return []; }
+}
+function _maPushSession(entry) {
+  var s = _maReadSessions();
+  s.unshift(entry);
+  s = s.slice(0, 5); // keep last 5
+  try { localStorage.setItem(MA_SESSIONS_KEY, JSON.stringify(s)); } catch (e) {}
+  _maRenderSessions();
+}
+function _maRenderSessions() {
+  var host = document.getElementById('ma-recent');
+  if (!host) return;
+  var s = _maReadSessions();
+  if (!s.length) { host.innerHTML = '<div class="ma-recent-empty">No sessions yet. Search an account to start.</div>'; return; }
+  host.innerHTML = s.map(function(e, idx){
+    var ago = _maFormatAgo(e.ts);
+    return '<button class="ma-recent-item" type="button" onclick="_maRestoreSession(' + idx + ')">'
+      + '<div class="ma-recent-item-top"><span>' + _maEscape(e.account) + ' &middot; ' + _maEscape(e.type) + '</span><span class="ma-recent-item-ago">' + ago + '</span></div>'
+      + '<div class="ma-recent-item-prev">' + _maEscape(e.preview) + '</div>'
+      + '</button>';
+  }).join('');
+}
+function _maFormatAgo(iso) {
+  if (!iso) return '';
+  try {
+    var sec = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (sec < 60) return 'just now';
+    if (sec < 3600) return Math.floor(sec/60) + 'm ago';
+    if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+    return Math.floor(sec/86400) + 'd ago';
+  } catch (e) { return ''; }
+}
+
+function _maRestoreSession(idx) {
+  var s = _maReadSessions();
+  var e = s[idx];
+  if (!e) return;
+  // Re-open the account, then re-render the saved agent output.
+  _maOpenAccount(e.account, /*skipSession=*/true);
+  if (e.type === 'Account Snapshot') return; // snapshot is already showing
+  // Render saved agent output directly without re-firing the API.
+  _maRenderAgent(e.account, e.type, e.body, !!e.live, /*skipSession=*/true);
+}
+
+// ── Search ──────────────────────────────────────────────────────────────────
+function _maSearch(q) {
+  var query = String(q || '').trim().toLowerCase();
+  var res = document.getElementById('ma-results');
+  if (!res) return;
+  if (!query) { res.classList.remove('on'); res.innerHTML = ''; return; }
+  var matches = MA_BOOK.filter(function(n){ return n.toLowerCase().indexOf(query) !== -1; });
+  if (!matches.length) {
+    res.classList.add('on');
+    res.innerHTML = '<div class="ma-results-empty">No accounts matching &ldquo;' + _maEscape(q) + '&rdquo;</div>';
+    return;
+  }
+  res.classList.add('on');
+  res.innerHTML = matches.map(function(n){
+    var known = MA_KNOWN[n] ? '<span class="ma-results-meta">' + MA_KNOWN[n].band + '</span>' : '<span class="ma-results-meta">Book</span>';
+    return '<button class="ma-results-item" type="button" onclick="_maOpenAccount(\'' + _maEscape(n).replace(/&#39;/g,"\\'") + '\')">' + _maEscape(n) + known + '</button>';
+  }).join('');
+}
+
+// ── Open account / render snapshot ──────────────────────────────────────────
+function _maOpenAccount(name, skipSession) {
+  if (!name) return;
+  var snap = _maGetSnapshot(name);
+  _maCurrent = { name: name, snap: snap, view: 'snap' };
+  _maRenderSnapshot(name, snap);
+  document.getElementById('ma-q').value = '';
+  document.getElementById('ma-results').classList.remove('on');
+  if (!skipSession) {
+    _maPushSession({ account: name, type: 'Account Snapshot', ts: new Date().toISOString(), preview: snap.sum.slice(0, 100), body: null });
+  }
+}
+
+function _maRenderSnapshot(name, snap) {
+  var main = document.getElementById('ma-main');
+  if (!main) return;
+  var demoBanner = snap.isDemo ? '<div class="ma-snap-demo"><i class="ti ti-info-circle"></i> Demo data &middot; Gainsight sync pending</div>' : '';
+  main.innerHTML = ''
+    + '<div class="ma-snap">'
+      + '<div class="ma-snap-hd">'
+        + '<span class="ma-snap-nm">' + _maEscape(name) + '</span>'
+        + '<span class="ma-snap-health">Health ' + snap.health + '</span>'
+        + '<span class="ma-snap-tag ' + snap.bandCls + '">' + snap.band + '</span>'
+      + '</div>'
+      + demoBanner
+      + '<div class="ma-snap-kv">'
+        + '<div class="ma-snap-kv-l">Renewal</div><div class="ma-snap-kv-v">' + snap.renewal + ' &middot; ' + snap.daysOut + ' &middot; ' + snap.arr + '</div>'
+        + '<div class="ma-snap-kv-l">Licenses</div><div class="ma-snap-kv-v">' + snap.seats + ' seats &middot; ' + snap.active + ' active' + (snap.churned !== '—' && snap.churned !== '0' ? ' &middot; ' + snap.churned + ' churned' : '') + '</div>'
+        + '<div class="ma-snap-kv-l">Last Gong</div><div class="ma-snap-kv-v">' + snap.gongDate + ' &middot; ' + snap.gongSignal + '</div>'
+        + '<div class="ma-snap-kv-l">Open CTAs</div><div class="ma-snap-kv-v">' + snap.ctas + (snap.ctaTop && snap.ctaTop !== '—' ? ' &middot; ' + snap.ctaTop : '') + '</div>'
+        + '<div class="ma-snap-kv-l">Last touch</div><div class="ma-snap-kv-v">' + snap.lastTouch + ' &middot; ' + snap.channel + '</div>'
+      + '</div>'
+      + '<div class="ma-snap-sum">' + _maEscape(snap.sum) + '</div>'
+      + '<div class="ma-launch">'
+        + '<button class="ma-launch-btn" type="button" onclick="_maRunAgent(\'risk\')"><i class="ti ti-shield-check"></i> Risk Analysis</button>'
+        + '<button class="ma-launch-btn" type="button" onclick="_maRunAgent(\'renewal\')"><i class="ti ti-calendar-stats"></i> Renewal Forecast</button>'
+        + '<button class="ma-launch-btn" type="button" onclick="_maRunAgent(\'discovery\')"><i class="ti ti-message-question"></i> Discovery Questions</button>'
+        + '<button class="ma-launch-btn" type="button" onclick="_maRunAgent(\'brief\')"><i class="ti ti-file-text"></i> Account Brief</button>'
+      + '</div>'
+      + '<div class="ma-tools">'
+        + '<button class="ma-tool-btn" type="button" onclick="_maToggleNote()"><i class="ti ti-notes"></i> Log Note</button>'
+        + '<button class="ma-tool-btn" type="button" onclick="_maToggleTask()"><i class="ti ti-circle-check"></i> Create Task / CTA</button>'
+      + '</div>'
+      + _maNoteFormHTML(name)
+      + _maTaskFormHTML(name)
+      + '<form class="ma-ask" onsubmit="return _maFreeQuery(event)">'
+        + '<i class="ti ti-sparkles"></i>'
+        + '<input id="ma-ask-fld" type="text" autocomplete="off" placeholder="Ask anything about this account&hellip;" aria-label="Ask about this account" />'
+        + '<button class="ma-ask-send" type="submit">Ask <i class="ti ti-arrow-right"></i></button>'
+      + '</form>'
+      + '<div id="ma-ask-out"></div>'
+    + '</div>';
+}
+
+// ── Agent runner ────────────────────────────────────────────────────────────
+function _maRunAgent(type) {
+  if (!_maCurrent) return;
+  var name = _maCurrent.name;
+  var snap = _maCurrent.snap;
+  var main = document.getElementById('ma-main');
+  var agentLabels = { risk:'Risk Analysis', renewal:'Renewal Forecast', discovery:'Discovery Questions', brief:'Account Brief' };
+  var agentIcons  = { risk:'ti-shield-check', renewal:'ti-calendar-stats', discovery:'ti-message-question', brief:'ti-file-text' };
+  main.innerHTML = ''
+    + '<div class="ma-agent">'
+      + '<button class="ma-agent-back" type="button" onclick="_maBackToSnap()"><i class="ti ti-chevron-left"></i> Back to Snapshot</button>'
+      + '<div class="ma-agent-hd"><i class="ti ' + agentIcons[type] + '"></i> ' + agentLabels[type] + ' &middot; ' + _maEscape(name) + '</div>'
+      + '<div class="ma-agent-sub">Powered by Dust + Anthropic &middot; ' + _maEscape(_maSnapLine(snap)) + '</div>'
+      + '<div class="ma-agent-load"><i class="ti ti-loader-2"></i> Dust is pulling ' + _maEscape(name) + ' data&hellip;</div>'
+    + '</div>';
+
+  var userMsg = _maBuildUserMessage(type, name, snap);
+  var mockFn  = function(){ return _maMockAgent(type, name, snap); };
+
+  _maCallAnthropic(MA_SYSTEM_PROMPT, userMsg, mockFn).then(function(r){
+    _maRenderAgent(name, agentLabels[type], r.text, r.live);
+    _maPushSession({ account: name, type: agentLabels[type], ts: new Date().toISOString(), preview: r.text.slice(0, 120).replace(/\s+/g,' '), body: r.text, live: r.live });
+  });
+}
+
+function _maRenderAgent(name, label, body, live, skipSession) {
+  if (!_maCurrent) _maCurrent = { name: name, snap: _maGetSnapshot(name), view:'agent' };
+  _maCurrent.view = 'agent';
+  var main = document.getElementById('ma-main');
+  var iconMap = { 'Risk Analysis':'ti-shield-check', 'Renewal Forecast':'ti-calendar-stats', 'Discovery Questions':'ti-message-question', 'Account Brief':'ti-file-text' };
+  var snap = _maCurrent.snap;
+  var sourceLine = live
+    ? '<i class="ti ti-bolt"></i> Live response · Dust + Anthropic · Updated ' + (new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}))
+    : '<i class="ti ti-info-circle"></i> Phase 1 prototype response · Live Anthropic API connects via /api/anthropic Vercel proxy in Phase 2';
+  main.innerHTML = ''
+    + '<div class="ma-agent">'
+      + '<button class="ma-agent-back" type="button" onclick="_maBackToSnap()"><i class="ti ti-chevron-left"></i> Back to Snapshot</button>'
+      + '<div class="ma-agent-hd"><i class="ti ' + (iconMap[label] || 'ti-sparkles') + '"></i> ' + _maEscape(label) + ' &middot; ' + _maEscape(name) + '</div>'
+      + '<div class="ma-agent-sub">' + _maEscape(_maSnapLine(snap)) + '</div>'
+      + '<div class="ma-agent-body">' + _maEscape(body) + '</div>'
+      + '<div class="ma-agent-acts">'
+        + '<button class="ma-tool-btn" type="button" onclick="_maPushAgentToGainsight(\'' + _maEscape(label).replace(/&#39;/g,"\\'") + '\')"><i class="ti ti-external-link"></i> Push to Gainsight</button>'
+        + '<button class="ma-tool-btn sec" type="button" onclick="_maBackToSnap()"><i class="ti ti-arrow-left"></i> Back to Snapshot</button>'
+      + '</div>'
+      + '<div class="ma-agent-source ' + (live ? 'live' : '') + '">' + sourceLine + '</div>'
+    + '</div>';
+}
+
+function _maPushAgentToGainsight(label) {
+  if (!_maCurrent) return;
+  toast(label + ' pushed to Gainsight &middot; ' + _maCurrent.name + ' &middot; Logged ✓');
+}
+
+function _maBackToSnap() {
+  if (!_maCurrent) return;
+  _maCurrent.view = 'snap';
+  _maRenderSnapshot(_maCurrent.name, _maCurrent.snap);
+}
+
+// ── Per-agent user message builders ─────────────────────────────────────────
+function _maBuildUserMessage(type, name, snap) {
+  var line = _maSnapLine(snap);
+  if (type === 'risk') {
+    return 'Run a Risk Analysis for ' + name + '. Account data: ' + line + '. Use this exact output format:\n'
+      + 'Churn Probability: [%] · [level]\n'
+      + 'Driving Signals:\n· [Signal 1 — source and data point]\n· [Signal 2 — source and data point]\n· [Signal 3 — source and data point]\n'
+      + 'Recommended Save Play: [one specific action with rationale, max 2 sentences]';
+  }
+  if (type === 'renewal') {
+    return 'Run a Renewal Forecast for ' + name + '. Account data: ' + line + '. Use this exact output format:\n'
+      + 'Renewal: [Date] · [Days out]\nARR: [Current] · [Forecasted at renewal]\n'
+      + 'Forecast Status: [On Track / At Risk / Likely Churn / Expansion Likely]\n'
+      + 'Risk Factors:\n· [Factor 1 with data source]\n· [Factor 2 with data source]\n'
+      + 'Expansion Signals (if any):\n· [Signal with source]\n'
+      + 'Recommended Action: [one specific next step, max 2 sentences]';
+  }
+  if (type === 'discovery') {
+    return 'Generate Discovery Questions for ' + name + '. Account data: ' + line + '. Generate 5 questions Carmen has NOT already asked based on call history. Use this format:\n'
+      + 'Context: [1 sentence on gap or opportunity]\nQuestions:\n1. [Question] · [Why this matters now]\n2. [Question] · [Why this matters now]\n3. [Question] · [Why this matters now]\n4. [Question] · [Why this matters now]\n5. [Question] · [Why this matters now]\nEvery question must be specific to this account — no generic discovery questions.';
+  }
+  if (type === 'brief') {
+    return 'Generate an Account Brief for ' + name + '. Account data: ' + line + '. Use this exact format (prose only, no bullets):\n'
+      + 'Account Brief · ' + name + ' · ' + (new Date().toLocaleDateString()) + '\n'
+      + 'Who They Are: [2 sentences]\nWhere They Stand: [2 sentences]\nRelationship: [2 sentences]\nRisk or Opportunity: [1 sentence]\nRecommended Posture: [1 sentence]';
+  }
+  return 'Help Carmen with ' + name + '. Account data: ' + line;
+}
+
+// ── Mock fallback (spec-formatted) ──────────────────────────────────────────
+function _maMockAgent(type, name, snap) {
+  var d = new Date().toLocaleDateString();
+  if (type === 'risk') {
+    var prob, lvl;
+    if (snap.bandCls === 'r') { prob = '88%'; lvl = 'Critical'; }
+    else if (snap.bandCls === 'a') { prob = '64%'; lvl = 'High'; }
+    else if (snap.bandCls === 'gy') { prob = '52%'; lvl = 'Elevated'; }
+    else { prob = '14%'; lvl = 'Low'; }
+    return ''
+      + 'Churn Probability: ' + prob + ' · ' + lvl + '\n'
+      + 'Driving Signals:\n'
+      + '· Health ' + snap.health + ' (' + snap.band + ') — Gainsight, current as of last sync\n'
+      + '· Last Gong ' + snap.gongDate + ' — ' + snap.gongSignal + '\n'
+      + '· ' + snap.ctas + ' open CTA' + (snap.ctas === '1' ? '' : 's') + (snap.ctaTop && snap.ctaTop !== '—' ? ' (' + snap.ctaTop + ')' : '') + ' — Gainsight Cockpit\n'
+      + 'Recommended Save Play: ' + (snap.bandCls === 'r'
+          ? 'Reach the new champion directly this week with a continuity-first intro — do not lead with renewal or price. The relationship is what changed, not the product fit.'
+          : (snap.bandCls === 'a'
+              ? 'Answer the open question (SLA / blocker) inline today, then propose a 15-minute call before next week. The longer the open question sits, the more it becomes the renewal frame.'
+              : (snap.bandCls === 'gy'
+                  ? 'Treat the most recent inbound signal as a support request, not a renewal conversation. Lead with technical help; commercial framing can follow once contact is re-established.'
+                  : 'No active risk — use this slot for a value-confirmation touch or an expansion conversation while signals are positive.')));
+  }
+  if (type === 'renewal') {
+    var status, action;
+    if (snap.bandCls === 'r') { status = 'Likely Churn'; action = 'Propose a 60-day extension at current terms today to buy time for relationship rebuild. The deadline is the conversation now — extend it before it forces a procurement decision.'; }
+    else if (snap.bandCls === 'a') { status = 'At Risk'; action = 'Close the open question (SLA / blocker) this week and confirm renewal terms in writing within 10 days. Without a clean close on the SLA, the renewal turns into a re-bid.'; }
+    else if (snap.bandCls === 'gy') { status = 'At Risk'; action = 'Re-engage the champion now with one specific technical hook from the most recent positive signal. Confirm contact intact before any renewal framing.'; }
+    else { status = 'Expansion Likely'; action = 'Convert the most recent expansion signal into a scoped pilot or commitment before the renewal window narrows the conversation to price.'; }
+    return ''
+      + 'Renewal: ' + snap.renewal + ' · ' + snap.daysOut + '\n'
+      + 'ARR: ' + snap.arr + ' · forecast flat unless action below\n'
+      + 'Forecast Status: ' + status + '\n'
+      + 'Risk Factors:\n'
+      + '· Health ' + snap.health + ' (' + snap.band + ') — Gainsight\n'
+      + '· Last touch ' + snap.lastTouch + ' via ' + snap.channel + ' — call/email log\n'
+      + 'Expansion Signals (if any):\n'
+      + '· ' + (snap.bandCls === 'g' ? snap.gongSignal + ' — Gong' : 'No data')
+      + '\n'
+      + 'Recommended Action: ' + action;
+  }
+  if (type === 'discovery') {
+    return ''
+      + 'Context: Based on the snapshot, the highest-leverage discovery gap is the one Carmen hasn\'t closed in the last call. These five focus on uncovering the real blocker, not gathering general context.\n'
+      + 'Questions:\n'
+      + '1. "What changed for you between our last conversation and today?" · Surfaces internal shifts (champion, priorities, budget) that the data lags on.\n'
+      + '2. "If you had to point to one thing 1Password is or isn\'t doing for your team right now, what would it be?" · Forces a single specific answer rather than a polite generic.\n'
+      + '3. "Who else on your team is touching this decision when renewal comes up?" · Maps the actual decision unit, not the Salesforce contact list.\n'
+      + '4. "What\'s the strongest case anyone internally has made for switching or staying?" · Surfaces the real objection without putting Carmen on defense.\n'
+      + '5. "If we got the next 30 days exactly right, what would have happened by mid-month?" · Anchors the conversation to outcomes the customer can verify, not vendor promises.';
+  }
+  if (type === 'brief') {
+    return ''
+      + 'Account Brief · ' + name + ' · ' + d + '\n\n'
+      + 'Who They Are: ' + name + ' is a ' + snap.seats + '-seat ' + snap.band.toLowerCase() + ' account in the current book. ' + (MA_KNOWN[name] ? 'Known champion engagement, multi-quarter relationship.' : 'Phase 1 prototype — full account context syncs from Gainsight in Phase 2.') + '\n\n'
+      + 'Where They Stand: Health ' + snap.health + ' (' + snap.band + ') with renewal in ' + snap.daysOut + ' at ' + snap.arr + '. ' + (snap.ctas !== '0' && snap.ctas !== '—' ? snap.ctas + ' open CTA' + (snap.ctas === '1' ? '' : 's') + ' on the board' + (snap.ctaTop !== '—' ? ' — top item: ' + snap.ctaTop + '.' : '.') : 'No open CTAs.') + '\n\n'
+      + 'Relationship: Last touch ' + snap.lastTouch + ' via ' + snap.channel + '. ' + (snap.gongSignal !== 'No data' ? 'Most recent signal: ' + snap.gongSignal + '.' : 'No recent call signal.') + '\n\n'
+      + 'Risk or Opportunity: ' + (snap.bandCls === 'r' ? 'Critical save situation — renewal at risk without near-term champion re-engagement.' : (snap.bandCls === 'a' ? 'At-risk renewal — close the open question before it becomes the renewal frame.' : (snap.bandCls === 'gy' ? 'Re-engagement opportunity — recent inbound signal worth same-day response.' : 'Expansion opportunity — convert recent positive signal into a scoped commitment.'))) + '\n\n'
+      + 'Recommended Posture: ' + (snap.bandCls === 'r' || snap.bandCls === 'a' ? 'Defensive and direct — answer the open question, propose extension if needed, hold pricing.' : (snap.bandCls === 'gy' ? 'Patient and technical — lead with help, not commercial language.' : 'Forward-leaning — convert signals into commitments while the door is open.'));
+  }
+  return 'No data.';
+}
+
+// ── Free-text query ────────────────────────────────────────────────────────
+function _maFreeQuery(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var fld = document.getElementById('ma-ask-fld');
+  if (!fld || !_maCurrent) return false;
+  var q = (fld.value || '').trim();
+  if (!q) return false;
+  var out = document.getElementById('ma-ask-out');
+  out.innerHTML = '<div class="ma-ask-out"><div class="ma-ask-out-q"><i class="ti ti-quote"></i> ' + _maEscape(q) + '</div><div class="ma-agent-load"><i class="ti ti-loader-2"></i> Dust is thinking&hellip;</div></div>';
+  fld.value = '';
+  var name = _maCurrent.name;
+  var snap = _maCurrent.snap;
+  var userMsg = 'Context — ' + name + ' snapshot: ' + _maSnapLine(snap) + '. Question: ' + q;
+  var mockFn = function(){ return _maMockFreeQuery(q, name, snap); };
+  _maCallAnthropic(MA_SYSTEM_PROMPT, userMsg, mockFn).then(function(r){
+    out.innerHTML = '<div class="ma-ask-out"><div class="ma-ask-out-q"><i class="ti ti-quote"></i> ' + _maEscape(q) + '</div><div class="ma-ask-out-a">' + _maEscape(r.text) + '</div><div class="ma-agent-source ' + (r.live ? 'live' : '') + '">' + (r.live ? '<i class="ti ti-bolt"></i> Live response · Dust + Anthropic' : '<i class="ti ti-info-circle"></i> Phase 1 prototype response · Live API in Phase 2') + '</div></div>';
+  });
+  return false;
+}
+
+function _maMockFreeQuery(q, name, snap) {
+  return "Based on what I know about " + name + " (health " + snap.health + " · " + snap.band + " · " + snap.daysOut + " to renewal), here's my read on \"" + q + "\":\n\n"
+    + "The most actionable angle right now is the same one the snapshot summary flags — " + snap.sum.split(/\.\s+/)[0] + ".\n\n"
+    + "If you want me to go deeper, try one of the four Quick Launch agents above for a structured output. For a free-text deep dive, give me a specific situation (e.g. \"They pushed back on price — what do I say?\") and I'll respond with concrete language.";
+}
+
+// ── Notes panel ─────────────────────────────────────────────────────────────
+function _maNoteFormHTML(name) {
+  return ''
+    + '<div class="ma-form" id="ma-note-form">'
+      + '<div class="ma-form-hd"><span>Log Note · ' + _maEscape(name) + '</span><button class="ma-tool-btn" type="button" onclick="_maToggleNote()" style="padding:4px 8px;font-size:10px">Cancel</button></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Note type</label><select id="ma-note-type"><option>Account Update</option><option>Call Summary</option><option>Stakeholder Change</option><option>Risk Flag</option><option>General</option></select></div>'
+      + '<textarea id="ma-note-text" placeholder="Note content&hellip; (will sync verbatim to Gainsight AI Notes)" aria-label="Note text"></textarea>'
+      + '<div class="ma-form-acts"><button class="ma-tool-btn prim" type="button" onclick="_maPreviewNote()" style="background:var(--tx);color:#fff;border-color:var(--tx)">Preview Sync</button></div>'
+      + '<div id="ma-note-preview"></div>'
+    + '</div>';
+}
+
+function _maToggleNote() {
+  var f = document.getElementById('ma-note-form'); if (!f) return;
+  f.classList.toggle('on');
+  document.getElementById('ma-task-form').classList.remove('on');
+}
+
+function _maPreviewNote() {
+  if (!_maCurrent) return;
+  var typeEl = document.getElementById('ma-note-type');
+  var txtEl = document.getElementById('ma-note-text');
+  var prev = document.getElementById('ma-note-preview');
+  var type = typeEl ? typeEl.value : 'Account Update';
+  var text = txtEl ? (txtEl.value || '').trim() : '';
+  if (!text) { prev.innerHTML = '<div class="ma-snap-demo"><i class="ti ti-alert-triangle"></i> Note text is empty</div>'; return; }
+  var ts = new Date().toLocaleString();
+  prev.innerHTML = ''
+    + '<div class="ma-preview">'
+      + '<div class="ma-preview-l">Syncing to Gainsight AI Notes</div>'
+      + '<div class="ma-preview-meta"><strong>Account:</strong> ' + _maEscape(_maCurrent.name) + ' &middot; <strong>Type:</strong> ' + _maEscape(type) + ' &middot; ' + _maEscape(ts) + '</div>'
+      + '<div class="ma-preview-body">' + _maEscape(text) + '</div>'
+      + '<div class="ma-preview-acts">'
+        + '<button class="ma-tool-btn" type="button" onclick="document.getElementById(\'ma-note-preview\').innerHTML=\'\'"><i class="ti ti-edit"></i> Edit</button>'
+        + '<button class="ma-tool-btn prim" type="button" onclick="_maConfirmNote()" style="background:var(--tx);color:#fff;border-color:var(--tx)"><i class="ti ti-circle-check"></i> Confirm</button>'
+      + '</div>'
+    + '</div>';
+}
+
+function _maConfirmNote() {
+  if (!_maCurrent) return;
+  var ts = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  toast('Synced &middot; ' + _maCurrent.name + ' &middot; Gainsight AI Notes &middot; ' + ts + ' ✓');
+  // Clear and close form
+  document.getElementById('ma-note-text').value = '';
+  document.getElementById('ma-note-preview').innerHTML = '';
+  document.getElementById('ma-note-form').classList.remove('on');
+}
+
+// ── Task panel ──────────────────────────────────────────────────────────────
+function _maTaskFormHTML(name) {
+  var today = new Date(); var iso = today.toISOString().slice(0,10);
+  return ''
+    + '<div class="ma-form" id="ma-task-form">'
+      + '<div class="ma-form-hd"><span>Create Task / CTA · ' + _maEscape(name) + '</span><button class="ma-tool-btn" type="button" onclick="_maToggleTask()" style="padding:4px 8px;font-size:10px">Cancel</button></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Task name</label><input id="ma-task-name" type="text" placeholder="e.g. Follow up on SLA question"></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Due date</label><input id="ma-task-due" type="date" value="' + iso + '"></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Priority</label><select id="ma-task-pri"><option>High</option><option selected>Medium</option><option>Low</option></select></div>'
+      + '<div class="ma-form-row"><label class="ma-form-l">Type</label><select id="ma-task-type"><option>CTA</option><option>Email</option><option>Call</option><option>Internal Task</option></select></div>'
+      + '<div class="ma-form-acts"><button class="ma-tool-btn prim" type="button" onclick="_maPreviewTask()" style="background:var(--tx);color:#fff;border-color:var(--tx)">Preview</button></div>'
+      + '<div id="ma-task-preview"></div>'
+    + '</div>';
+}
+
+function _maToggleTask() {
+  var f = document.getElementById('ma-task-form'); if (!f) return;
+  f.classList.toggle('on');
+  document.getElementById('ma-note-form').classList.remove('on');
+}
+
+function _maPreviewTask() {
+  if (!_maCurrent) return;
+  var n = (document.getElementById('ma-task-name').value || '').trim();
+  var d = document.getElementById('ma-task-due').value;
+  var p = document.getElementById('ma-task-pri').value;
+  var t = document.getElementById('ma-task-type').value;
+  var prev = document.getElementById('ma-task-preview');
+  if (!n) { prev.innerHTML = '<div class="ma-snap-demo"><i class="ti ti-alert-triangle"></i> Task name is empty</div>'; return; }
+  prev.innerHTML = ''
+    + '<div class="ma-preview">'
+      + '<div class="ma-preview-l">Creating in Gainsight · ' + _maEscape(_maCurrent.name) + '</div>'
+      + '<div class="ma-preview-meta"><strong>Task:</strong> ' + _maEscape(n) + '</div>'
+      + '<div class="ma-preview-meta"><strong>Due:</strong> ' + _maEscape(d) + ' &middot; <strong>Priority:</strong> ' + _maEscape(p) + ' &middot; <strong>Type:</strong> ' + _maEscape(t) + '</div>'
+      + '<div class="ma-preview-meta"><strong>Assigned to:</strong> Carmen</div>'
+      + '<div class="ma-preview-acts">'
+        + '<button class="ma-tool-btn" type="button" onclick="document.getElementById(\'ma-task-preview\').innerHTML=\'\'"><i class="ti ti-edit"></i> Edit</button>'
+        + '<button class="ma-tool-btn prim" type="button" onclick="_maConfirmTask()" style="background:var(--tx);color:#fff;border-color:var(--tx)"><i class="ti ti-circle-check"></i> Confirm</button>'
+      + '</div>'
+    + '</div>';
+}
+
+function _maConfirmTask() {
+  if (!_maCurrent) return;
+  var ts = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  toast('Created &middot; ' + _maCurrent.name + ' &middot; Gainsight &middot; ' + ts + ' ✓');
+  document.getElementById('ma-task-name').value = '';
+  document.getElementById('ma-task-preview').innerHTML = '';
+  document.getElementById('ma-task-form').classList.remove('on');
+}
+
+// ── Default state (no account selected) ─────────────────────────────────────
+function _maRenderDefault() {
+  var main = document.getElementById('ma-main');
+  if (!main) return;
+  var sessions = _maReadSessions();
+  var html;
+  if (sessions.length) {
+    html = '<div class="ma-snap">'
+      + '<div class="ma-snap-hd"><span class="ma-snap-nm">Workspace</span><span class="ma-snap-tag g">Ready</span></div>'
+      + '<div style="font-size:11px;color:var(--tx2);line-height:1.6;margin-bottom:14px">Pick up where you left off or search for any account in your book.</div>'
+      + '<div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Recent workspace sessions</div>';
+    sessions.forEach(function(s, i){
+      html += '<button class="ma-recent-item" type="button" onclick="_maRestoreSession(' + i + ')" style="margin-bottom:6px;width:100%">'
+        + '<div class="ma-recent-item-top"><span>' + _maEscape(s.account) + ' &middot; ' + _maEscape(s.type) + '</span><span class="ma-recent-item-ago">' + _maFormatAgo(s.ts) + '</span></div>'
+        + '<div class="ma-recent-item-prev">' + _maEscape(s.preview) + '</div>'
+      + '</button>';
+    });
+    html += '<div style="font-size:11px;color:var(--tx3);font-style:italic;margin-top:10px">Or search any account on the left &rarr;</div></div>';
+  } else {
+    html = '<div class="ma-empty">'
+      + '<i class="ti ti-search"></i>'
+      + '<strong>Account Workspace</strong>'
+      + 'Search any account in your book on the left to load its snapshot. Pull-only — no unsolicited alerts. Use the four Quick Launch agents for Risk Analysis, Renewal Forecast, Discovery Questions, or an Account Brief, then sync notes and tasks to Gainsight when ready.'
+    + '</div>';
+  }
+  main.innerHTML = html;
+}
+
+// Close search results on outside click
+document.addEventListener('click', function(e){
+  if (!e.target.closest('.ma-search') && !e.target.closest('.ma-results')) {
+    var r = document.getElementById('ma-results');
+    if (r) r.classList.remove('on');
+  }
+});
+
+// Init on boot
+_maRenderDefault();
+_maRenderSessions();
 
 var ctaDone = 0;
 function togglePop(id, e) {
