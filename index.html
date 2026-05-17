@@ -19,7 +19,18 @@
 }
 html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5}
 
-.nav{height:44px;background:#0D0D0C;display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:50}
+.nav{height:44px;background:#0D0D0C;display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:50;gap:0}
+/* v3.2.0 — 9 tabs fit comfortably at 1440+; below that, the tab strip
+   scrolls horizontally rather than wrapping. n-right stays anchored on
+   screen so notifications + avatar are always reachable. */
+.nav-tabs-scroll{display:flex;align-items:center;flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;height:44px}
+.nav-tabs-scroll::-webkit-scrollbar{display:none}
+@media (max-width: 1280px){
+  .n-tab{padding:0 10px;font-size:11px}
+}
+@media (max-width: 960px){
+  .n-tab{padding:0 8px;font-size:10px}
+}
 .n-brand{color:#fff;font-size:14px;font-weight:700;padding-right:16px;border-right:1px solid rgba(255,255,255,.1);margin-right:14px;display:flex;align-items:center;gap:7px;letter-spacing:-.03em;flex-shrink:0}
 .n-dot{width:9px;height:9px;background:var(--tl);border-radius:2px}
 .n-tab{font-size:12px;color:rgba(255,255,255,.4);padding:0 14px;height:44px;display:flex;align-items:center;cursor:pointer;border-bottom:2px solid transparent;font-weight:500;transition:.1s;white-space:nowrap}
@@ -282,6 +293,18 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .en-btn i{font-size:12px}
 .en-foot{font-size:10px;color:var(--tx3);font-style:italic;text-align:center;padding:12px;background:var(--surf);border:1px dashed var(--bd2);border-radius:var(--rlg);display:flex;align-items:center;justify-content:center;gap:7px;line-height:1.5}
 .en-foot i{font-size:13px;color:var(--bl);flex-shrink:0}
+
+/* v3.2.0 — Coming Soon tab template (shared by 7 placeholder tabs) */
+.cs-pg{max-width:720px;margin:0 auto;padding:48px 28px 80px}
+.cs-ic{font-size:48px;line-height:1;margin-bottom:14px}
+.cs-h{font-size:32px;font-weight:700;color:var(--tx);letter-spacing:-.025em;margin:0 0 10px;line-height:1.15}
+.cs-vision{font-size:14px;color:var(--tx2);font-weight:500;line-height:1.5;margin-bottom:8px}
+.cs-divider{height:1px;background:var(--bd);margin:28px 0}
+.cs-sec-t{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px}
+.cs-body{font-size:13px;color:var(--tx);line-height:1.65;margin:0 0 22px}
+.cs-conn{font-size:12px;color:var(--tx2);font-weight:600;padding:11px 14px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);letter-spacing:.01em}
+.cs-badge{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;background:var(--surf);border:1px solid var(--bd2);border-radius:6px;font-size:11px;font-weight:600;color:var(--tx3);font-style:italic}
+.cs-badge i{font-size:13px;color:var(--bl)}
 
 /* Assistant Quick Chat (v3.0.2) — replaces the "no agent loaded yet" empty state */
 .qc-hd{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
@@ -1340,9 +1363,17 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
 <nav class="nav">
   <div class="n-brand"><div class="n-dot"></div>TeamOS</div>
-  <div class="n-tab on" onclick="goTab('dash',this)">CSM Dashboard</div>
-  <div class="n-tab" onclick="goTab('recipe',this)">Recipe for Success</div>
-  <div class="n-tab" onclick="goTab('myacct',this)">My Accounts</div>
+  <div class="nav-tabs-scroll">
+    <div class="n-tab on" onclick="goTab('dash',this)">CSM Dashboard</div>
+    <div class="n-tab" onclick="goTab('recipe',this)">Recipe for Success</div>
+    <div class="n-tab" onclick="goTab('myacct',this)">My Accounts</div>
+    <div class="n-tab" onclick="goTab('risk',this)">Risk &amp; Signals</div>
+    <div class="n-tab" onclick="goTab('forecast',this)">Forecasting</div>
+    <div class="n-tab" onclick="goTab('success',this)">Success Plans</div>
+    <div class="n-tab" onclick="goTab('team',this)">Team View</div>
+    <div class="n-tab" onclick="goTab('campaigns',this)">Campaigns</div>
+    <div class="n-tab" onclick="goTab('analytics',this)">Analytics</div>
+  </div>
   <div class="n-right">
     <div class="n-notif">
 
@@ -2469,26 +2500,111 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
   <div class="sc-pg" id="recipe-root"></div>
 </div>
 
-<!-- My Accounts tab (v3.0.0) — live AI-powered account workspace -->
+<!-- My Accounts tab — converted to Coming Soon placeholder in v3.2.0. The
+     live workspace built in v3.0.0 is preserved in the JS module (_ma*
+     functions) and re-activates when the markup below is restored. -->
 <div class="tc" id="tab-myacct">
-  <div class="ma-grid">
+  <div class="cs-pg">
+    <div class="cs-ic">🗂</div>
+    <h1 class="cs-h">My Accounts</h1>
+    <div class="cs-vision">Every account in your book, fully loaded, one click away.</div>
+    <div class="cs-divider"></div>
+    <div class="cs-sec-t">What this tab does</div>
+    <p class="cs-body">My Accounts is your full portfolio workspace. Search any account by name and load everything in one place: full Gmail thread history, Gong call recordings with direct links, Salesforce opportunity record, Gainsight account page, Ironclad contract status, and all stakeholder contacts with role and engagement history. No tab-switching between tools to understand one account. AI-generated account brief, success plan status, champion health, and expansion signals are surfaced alongside the raw data so you can form your own conclusions from complete information. You can log notes that sync to Gainsight, create tasks and CTAs, and launch any agent directly from the account record.</p>
+    <div class="cs-sec-t">What it connects to</div>
+    <div class="cs-conn">Gmail &middot; Gong &middot; Salesforce &middot; Gainsight &middot; Ironclad &middot; Google Drive &middot; Slack</div>
+    <div class="cs-divider"></div>
+    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  </div>
+</div>
 
-    <!-- LEFT COLUMN: search + recent sessions -->
-    <div class="ma-side">
-      <div class="ma-search">
-        <i class="ti ti-search"></i>
-        <input id="ma-q" type="text" autocomplete="off" placeholder="Search any account&hellip;" aria-label="Search any account" oninput="_maSearch(this.value)" onfocus="_maSearch(this.value)" />
-      </div>
-      <div class="ma-results" id="ma-results"></div>
-      <div class="ma-recent-hd">Recent sessions</div>
-      <div class="ma-recent" id="ma-recent"></div>
-    </div>
+<div class="tc" id="tab-risk">
+  <div class="cs-pg">
+    <div class="cs-ic">🛡</div>
+    <h1 class="cs-h">Risk &amp; Signals</h1>
+    <div class="cs-vision">Every risk signal across your book, ranked and ready to act on.</div>
+    <div class="cs-divider"></div>
+    <div class="cs-sec-t">What this tab does</div>
+    <p class="cs-body">Risk &amp; Signals is the portfolio-level risk command center. Every account in your book is plotted on a risk matrix (health score vs. days to renewal) so you can see concentration and exposure at a glance. The full Live Signals feed shows every Gong flag, health drop, champion change, Gong silence, and engagement gap across all accounts &mdash; not just the 5 visible on the dashboard. Save play tracker shows which accounts have active save plays in progress and where each stands. Champion change tracker logs every stakeholder departure and introduction with re-engagement status and which Ghost-Buster touches have been sent. The Dark Zone lives here permanently as a managed re-engagement pipeline, not a passive list.</p>
+    <div class="cs-sec-t">What it connects to</div>
+    <div class="cs-conn">Gainsight &middot; Gong &middot; Salesforce &middot; Ironclad</div>
+    <div class="cs-divider"></div>
+    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  </div>
+</div>
 
-    <!-- RIGHT COLUMN: workspace content -->
-    <div class="ma-main" id="ma-main">
-      <!-- Default state rendered by _maRenderDefault() at boot -->
-    </div>
+<div class="tc" id="tab-forecast">
+  <div class="cs-pg">
+    <div class="cs-ic">📈</div>
+    <h1 class="cs-h">Forecasting</h1>
+    <div class="cs-vision">Your renewal pipeline, risk-weighted and intelligently summarized.</div>
+    <div class="cs-divider"></div>
+    <div class="cs-sec-t">What this tab does</div>
+    <p class="cs-body">Forecasting gives you a live view of your renewal pipeline sorted by risk-weighted ARR. A 90-day timeline buckets every renewal into 0&ndash;30, 31&ndash;60, and 61&ndash;90 day windows so you always know where urgency is concentrated. Dust generates a rolling forecast summary identifying which accounts are on track, which are at risk, and exactly which actions would change the outcome &mdash; sourced from Gainsight health, Gong sentiment, and Salesforce opportunity stage simultaneously. License trend data shows seat growth or contraction per account so expansion signals and early churn indicators surface before they appear in health scores. The $67K ARR at risk figure visible in the pulse strip today routes here for full pipeline context.</p>
+    <div class="cs-sec-t">What it connects to</div>
+    <div class="cs-conn">Salesforce &middot; Gainsight &middot; Gong &middot; Ironclad</div>
+    <div class="cs-divider"></div>
+    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  </div>
+</div>
 
+<div class="tc" id="tab-success">
+  <div class="cs-pg">
+    <div class="cs-ic">📋</div>
+    <h1 class="cs-h">Success Plans</h1>
+    <div class="cs-vision">Every account&rsquo;s success plan tracked and current across your entire book.</div>
+    <div class="cs-divider"></div>
+    <div class="cs-sec-t">What this tab does</div>
+    <p class="cs-body">Success Plans is a portfolio view of where every account stands against their success milestones. At a glance you can see which accounts have current active plans, which plans are overdue for a refresh, and which accounts have no plan at all &mdash; a gap that directly impacts your Recipe for Success score. Clicking any account loads the live plan from Gainsight with milestone status, outstanding action items, and the next scheduled check-in date. Milestones can be updated and pushed back to Gainsight without leaving TeamOS. Dust flags plans that are misaligned with current health or renewal proximity and surfaces the specific update that would close the gap fastest. Admin-broadcast tasks related to success plan compliance land here automatically when CS leadership pushes a team-wide priority.</p>
+    <div class="cs-sec-t">What it connects to</div>
+    <div class="cs-conn">Gainsight &middot; Google Drive &middot; Gmail</div>
+    <div class="cs-divider"></div>
+    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  </div>
+</div>
+
+<div class="tc" id="tab-team">
+  <div class="cs-pg">
+    <div class="cs-ic">👥</div>
+    <h1 class="cs-h">Team View</h1>
+    <div class="cs-vision">AE, BDR, CSM, and Onboarding all working the same account &mdash; without a single Slack thread.</div>
+    <div class="cs-divider"></div>
+    <div class="cs-sec-t">What this tab does</div>
+    <p class="cs-body">Team View is the shared account collaboration layer. When a renewal is at risk or an expansion is in play, everyone who touches the account &mdash; Account Executive, Business Development Rep, Customer Success Manager, and Onboarding Specialist &mdash; sees the same account snapshot, the same signals, and the same next steps in one shared surface. Collaborative notes are attributed by role and timestamp. Task assignment works across roles: the CSM assigns the AE a warm intro, the AE requests the CSM join a call, OB flags a technical blocker for CS to resolve. The same admin task broadcast feature that CS leadership uses to push priorities to CSMs extends here &mdash; CS Ops can push account-specific tasks to the AE and BDR simultaneously. No more coordination overhead. One account, one view, every stakeholder aligned.</p>
+    <div class="cs-sec-t">What it connects to</div>
+    <div class="cs-conn">Gainsight &middot; Salesforce &middot; Slack &middot; Gmail &middot; Gong &middot; Google Drive</div>
+    <div class="cs-divider"></div>
+    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  </div>
+</div>
+
+<div class="tc" id="tab-campaigns">
+  <div class="cs-pg">
+    <div class="cs-ic">📣</div>
+    <h1 class="cs-h">Campaigns</h1>
+    <div class="cs-vision">Templated outreach, automated sequences, and campaign tracking &mdash; built for CSMs, not marketers.</div>
+    <div class="cs-divider"></div>
+    <div class="cs-sec-t">What this tab does</div>
+    <p class="cs-body">Campaigns is the built-in outreach engine that replaces Outreach, Salesloft, and HubSpot for CS-specific communication. Build and manage email templates for re-engagement, EBR invitations, renewal conversations, and product updates. Run multi-touch sequences &mdash; the same 3-touch re-engagement logic built into Ghost-Buster today, extended to any account segment in your book. Dust personalizes each message from Gong call history and Gainsight account context so nothing reads as automated. Build audiences from Gainsight segments: all accounts within 60 days of renewal with no EBR scheduled, all dark accounts over 45 days, all accounts with a champion change in the last 30 days. Track open rates, click rates, and reply rates via Resend webhooks so you know exactly what messaging drives engagement. Send newsletters with unsubscribe management and CAN-SPAM compliance. Each CSM sends from their own Gmail OAuth so every email is personal, not a mass blast from a shared inbox.</p>
+    <div class="cs-sec-t">What it connects to</div>
+    <div class="cs-conn">Gmail &middot; Gainsight &middot; Gong &middot; Salesforce &middot; Resend</div>
+    <div class="cs-divider"></div>
+    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  </div>
+</div>
+
+<div class="tc" id="tab-analytics">
+  <div class="cs-pg">
+    <div class="cs-ic">📊</div>
+    <h1 class="cs-h">Analytics</h1>
+    <div class="cs-vision">How your book is trending &mdash; not just where it stands today.</div>
+    <div class="cs-divider"></div>
+    <div class="cs-sec-t">What this tab does</div>
+    <p class="cs-body">Analytics shows the trends that matter over time, not just the current snapshot. Health score movement across your full book &mdash; which accounts are improving, which are declining, and at what rate. EBR coverage rate against your quarterly target with the specific accounts pulling the number down. Gong engagement frequency by account, correlated with renewal outcomes so you can see which cadences actually drive retention in your book specifically. Email response rates by account segment and outreach type. Recipe for Success score trend week-over-week so you can see whether your actions are moving the number. CSM activity patterns that reveal where you&rsquo;re spending time versus where the risk actually is. CS leadership sees a team rollup. Each CSM sees their own book. The same admin guidance layer that injects priority rules into Prepare My Day will eventually surface as coaching insights here &mdash; flagging patterns in your data before your team lead flags them in a 1:1.</p>
+    <div class="cs-sec-t">What it connects to</div>
+    <div class="cs-conn">Gainsight &middot; Gong &middot; Salesforce &middot; Gmail</div>
+    <div class="cs-divider"></div>
+    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
   </div>
 </div>
 

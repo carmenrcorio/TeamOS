@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.1.1
+**Version:** 3.2.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,53 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.2.0] — 2026-05-17
+
+Nav expanded to 9 tabs. My Accounts converted to a Coming Soon placeholder. Six new Coming Soon tabs added.
+
+### Changed — My Accounts tab is now Coming Soon
+- `#tab-myacct` HTML content replaced with the shared Coming Soon template. The v3.0.0 live workspace (search bar, recent sessions, account snapshot, 4 Quick Launch agents, notes / tasks / free-text query) is now Phase 2 vision content rather than functional UI.
+- All v3.0.0 JS (`MA_BOOK`, `MA_KNOWN`, `MA_BOOK_CACHE`, `_maOpenAccount`, `_maRenderSnapshot`, `_maRunAgent`, `_maFreeQuery`, `_maToggleNote`, `_maToggleTask`, `_maCallAnthropic`, `_maMockAgent`, etc.) is **preserved in place**. Restoring the live workspace = restore the markup; the JS code already null-checks every DOM lookup and silently no-ops when the elements aren't present (verified in v3.0.0 init: `var main = document.getElementById('ma-main'); if (!main) return;`).
+
+### Added — Six new Coming Soon tabs
+All seven Coming Soon tabs (My Accounts + the six new) use a single shared `.cs-pg` template:
+1. **Tab 3 — My Accounts** 🗂 — Every account in your book, fully loaded, one click away. Connects to Gmail · Gong · Salesforce · Gainsight · Ironclad · Google Drive · Slack.
+2. **Tab 4 — Risk & Signals** 🛡 — Every risk signal across your book, ranked and ready to act on. Connects to Gainsight · Gong · Salesforce · Ironclad.
+3. **Tab 5 — Forecasting** 📈 — Your renewal pipeline, risk-weighted and intelligently summarized. Connects to Salesforce · Gainsight · Gong · Ironclad.
+4. **Tab 6 — Success Plans** 📋 — Every account's success plan tracked and current across your entire book. Connects to Gainsight · Google Drive · Gmail.
+5. **Tab 7 — Team View** 👥 — AE, BDR, CSM, and Onboarding all working the same account — without a single Slack thread. Connects to Gainsight · Salesforce · Slack · Gmail · Gong · Google Drive.
+6. **Tab 8 — Campaigns** 📣 — Templated outreach, automated sequences, and campaign tracking — built for CSMs, not marketers. Connects to Gmail · Gainsight · Gong · Salesforce · Resend.
+7. **Tab 9 — Analytics** 📊 — How your book is trending — not just where it stands today. Connects to Gainsight · Gong · Salesforce · Gmail.
+
+Per spec: **no** "Notify me" button. **No** ETA or timing language. Just the icon, heading, vision, two info sections, and a `🔌 Phase 2 feature · API connections required` badge.
+
+### Added — Shared Coming Soon template (`.cs-*` namespace)
+- `.cs-pg` (720px max-width, centered, generous padding) — page container.
+- `.cs-ic` (48px emoji), `.cs-h` (32px heading), `.cs-vision` (14px tag-line), `.cs-divider` (1px), `.cs-sec-t` (10px uppercase section label), `.cs-body` (13px paragraph), `.cs-conn` (12px pill listing data sources), `.cs-badge` (Phase 2 footer pill).
+- All bound to existing color tokens. No new color values.
+
+### Changed — Nav handles 9 tabs with horizontal scroll
+- 9 tabs wrapped in a new `.nav-tabs-scroll` container: `flex: 1; min-width: 0; overflow-x: auto` so the tab strip scrolls horizontally rather than wrapping or hiding tabs.
+- Scrollbar hidden via `scrollbar-width: none` + `-webkit-scrollbar { display: none }` for a clean dark nav appearance.
+- `.n-right` (notifications + avatar) stays anchored on the right at all viewports.
+- Media-query tab compression: `<1280 px` reduces padding 14 → 10 and font 12 → 11; `<960 px` reduces to 8 / 10. Verified at 1024 px: `scrollWidth (898) > clientWidth (678)` with `overflow-x: auto` active.
+
+### Verified end-to-end in a headless render
+- Nav shows 9 tabs in the spec order: CSM Dashboard / Recipe for Success / My Accounts / Risk & Signals / Forecasting / Success Plans / Team View / Campaigns / Analytics ✓
+- All 7 Coming Soon tabs activate via `goTab()` and render the full template (icon + heading + vision + body + connections + Phase 2 badge) ✓
+- `#tab-myacct` shows the Coming Soon page (`.cs-pg` present, `.ma-grid` absent) ✓
+- `#tab-dash` still functional: brief-strip and `.main` present ✓
+- `#tab-recipe` still functional: `#recipe-root` and `.rcp-dust` panel present ✓
+- Narrow viewport (1024 px): horizontal scroll active on `.nav-tabs-scroll` ✓
+
+### Not touched
+- CSM Dashboard tab and every widget inside (Priority Stack, Next Up, Ask Dust, Mission Briefing, Agent Hub, Urgent Inbox, Today's Tasks with admin rows, Dark Zone, Calendar, Live Signals).
+- Recipe for Success tab (scorecard + v2.13.0 Dust recommendation panel).
+- All drawers (Assistant + Live Call), Ghost-Buster wizard, TeamOS Live, Task Briefs, Quick Chat, Drive Docs, Training popover, pulse strip indicators, notification rail, Service Worker, offline-resilience layer.
+- The v3.0.0 My Accounts JS module — preserved verbatim, ready to re-activate when the live markup is restored.
 
 ---
 
