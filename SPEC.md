@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.2.3
+**Version:** 3.2.6
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,114 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.2.6] — 2026-05-17
+
+Dust Agents search bar is now an agent directory finder, not a chat/query input. Typing keywords filters a 9-agent library and surfaces matching agents as result cards with description, skill sources, and a Launch / Request action. The six existing recommended chips and the Agents dropdown stay exactly as they are — they just dim when a search is active.
+
+### Added — Agent directory search
+- Placeholder rewritten to `Search agents by keyword or task…`. The input no longer submits to a chat handler; it filters live on every keystroke.
+- Clear `×` button appears in the input as soon as anything is typed and restores the default state.
+
+### Added — 9-agent searchable library
+- 5 active: Prepare My Day · Draft Follow-Ups · Find Open Loops · Review At-Risk Renewals · Coach Me.
+- 4 available: Competitive Intel · EBR Prep · Renewal Forecaster · Champion Tracker.
+- Each agent declares name, keywords, description, and skills; the search matches on all four fields with token-AND semantics ("renewal forecast" must hit both tokens).
+
+### Added — Result cards
+- Layout: agent-icon disc + name + status badge (`ACTIVE` teal / `AVAILABLE` muted grey) on the first row; one-line description; teal `Skills` pill row; action button right-aligned.
+- Active agents: `Launch →` button routes through the existing `dustQuick(name)` so the Mission Briefing panel behavior is identical to clicking the matching chip.
+- Available agents: `Request →` button routes through the existing `requestAgent(name)` so it toasts `Agent requested · Your admin will activate [Agent Name] ✓`.
+- Results are ordered: active first, available below; original library order preserved within each tier.
+- Empty state: `No agents found for "[query]" · Try different keywords`.
+
+### Default vs search state
+- Default (<2 chars typed): results hidden, chips fully visible, `RECOMMENDED AGENTS` header above the chip grid.
+- Search (≥2 chars): results render directly below the input; chips + recommended header dim (≈45% opacity, pointer-events:none) and the chip grid remains in place below so the CSM never loses orientation. Clearing the input restores chips to full strength.
+
+### What was not touched
+- The six chip buttons and their behavior. The Agents dropdown and its content. All agent output routing to Mission Briefing. The dead `askDust(e)` legacy function was left in place — nothing calls it anymore, but removing it was out of scope.
+
+### Implementation notes
+- New JS module (`DUST_AGENTS`, `_dustMatch`, `_dustRenderResultCard`, `_dustSearch`, `_dustClearSearch`, `_dustLaunchAgent`, `_dustRequestAgent`) lives next to `dustQuick` so the search funnel reuses the same chip-routing primitive.
+- Spec label note: the user requested this entry as `[3.2.5]`; shipped as `[3.2.6]` to preserve monotonic versioning above the existing 3.2.5 entry.
+
+---
+
+## [3.2.5] — 2026-05-17
+
+Agent Hub — Quick Launch Matrix replaced with account-scoped agent buttons. The fixed NovaVault / Acme Corp / Brightex columns broke the account-contextual model the rest of the hub already uses; this change funnels all four agents through the active Agent Hub account selected in the search above.
+
+### Fixed — Quick Launch Matrix removed
+- The 4-row × 3-column matrix with hard-coded account columns is gone. The HTML grid, the column headers (`.ah-col-hd`), the row label cells (`.ah-row-l`), and all twelve `Run` buttons are deleted.
+- Obsolete CSS (`.ah-matrix`, `.ah-col-hd*`, `.ah-row-l`, `.ah-run`) removed.
+
+### Added — Agents · [active account] 2×2 grid
+- Replaces the matrix in the same Agent Hub slot: Prep Me · Risk Analyst (top row), Save Strategy · Next Steps (bottom row).
+- Section header reads `AGENTS · [CURRENT ACCOUNT NAME]` and re-renders whenever the Agent Hub account is switched via the search input.
+- Buttons match the rest of the dashboard agent button language: outlined, icon + label, full-width within their grid cell, teal on hover. No more plain `Run` text boxes.
+- Each button calls `_ahFireAgent(kind)` which resolves `openAgentDrawer(kind, _ahNoteAcct)` against the currently-active hub account key (`acme | brightex | nova | meridian | creston | apex`).
+
+### Section order
+1. Account Search · 2. Account Snapshot · 3. Quick Links · 4. Quick Note · 5. Agents · [account] · 6. Recent Outputs · Session Log · 7. Recent Docs · [account].
+
+### Account switch behavior
+All account-scoped surfaces refresh together when the CSM selects a different account from the search: current-account pill, snapshot grid, summary sentence, Quick Links toast text, Last Gong dark-account warning, Quick Note placeholder, Agents section header, the 4 agent buttons' target account, and Recent Docs. Recent Outputs · Session Log stays untouched — it tracks session history regardless of account.
+
+### Implementation notes
+- The `_ahFireAgent` helper reads `_ahNoteAcct` (the single source of truth for the Agent Hub's active account) so the four buttons are always in sync with the rest of the hub without any per-button bookkeeping.
+- `_updateAgentHubAccount` extended to refresh `#ah-agents-acct` alongside the existing pill / snapshot / quick links / note / Recent Docs updates.
+- Spec label note: the user requested this entry as `[3.2.4]`; shipped as `[3.2.5]` to preserve monotonic versioning above the existing 3.2.4 entry.
+
+---
+
+## [3.2.4] — 2026-05-17
+
+Recipe for Success tab overhaul based on a detailed UX review. No new features — every change tightens what already exists. Scorecard weights, thresholds, scoring logic, metric values, calculations, weekly delta badges, and every other tab are untouched.
+
+### Fixed — Banner stripped to a single sync line
+- The green "Auto-populated from Gainsight · 100% hands-off · automated tax return" advisory block is gone.
+- Replaced with one subdued line at the top of the tab: `Last synced: Today · 9:00 AM · Gainsight API`. No card, no border, no paragraph.
+- The duplicate "Last synced" footer block in the weighted-score panel has been removed so the timestamp lives in exactly one place.
+
+### Added — Account Portfolio context header
+- Compact read-only row above the metric cards: `Total Accounts: 24 | $10–25K ARR: 14 | $25K+ ARR: 10 | Renewal Opps Q2: 18`. Inline data points separated by thin dividers, Gainsight-sourced badge on the label.
+- No scoring weight, no interaction — just the book size so the percentages below are legible.
+
+### Added — Inline status indicators on every metric
+- Every row in the four metric cards now ends with a status pill: `✓ ON TRACK` (green) / `⚠ AT RISK` (amber) / `✗ BELOW` (red).
+- Universal logic: meets target → green; within 10% of failing → amber; failing → red. Hard rules per spec: CTAs overdue is always red when count > 0; renewals with blank status is always red when count > 0.
+- Per-row status: Active success plans → At Risk · Objectives won → On Track · CTAs overdue → Below · Renewal opps with upsell → On Track · Closed won expansions → On Track · Renewals in downsell → At Risk · Blank renewal status → Below · Renewal status changes → On Track · EBRs $25K+ → Below · EBRs $10–25K → Below · Advocacy milestones → On Track.
+- Legend shown once above the metric cards.
+
+### Fixed — Score bars: shared scale, threshold ticks, rating labels
+- All five category bars and the final bar share the same 0–100% scale.
+- Vertical tick marks at 55 / 75 / 85 / 95 with tiny labels below each, on every bar.
+- Each category percentage is followed by its rating band: `Outstanding` (≥95), `Exceeding` (≥85), `Meeting` (≥75), `Inconsistent` (≥55), `Below Expectations` (<55). Current scores → Success Plans 71.4% · Inconsistent, Growth 80% · Meeting, Renewal Forecast 66.7% · Inconsistent, EBRs 62.5% · Inconsistent, Advocacy 80% · Meeting, Final 74.5% · Inconsistent.
+- Category row dot now matches the rating band (green ≥85 · amber ≥75 · orange ≥55 · red <55) instead of using the brand color.
+
+### Fixed — Quarter Projection reformatted as 3 structured lines
+- "Dust Analysis" removed from the label — just `QUARTER PROJECTION`.
+- Three icon-led lines replace the paragraph: 📈 Projected finish: 81% · Exceeding · ⚡ Highest-leverage action: Close 2 more EBRs before Jun 30 · ⚠ Biggest risk: Renewal Forecast Actions trending down · 3 blank statuses must be updated by Jun 15.
+- Same indigo card styling (light indigo bg, 3px left border).
+
+### Fixed — Dust Action Plan condensed
+- Paragraph bodies replaced with one specific sentence per column.
+- Buttons are now action-specific, not generic navigation: `Dust: Draft EBR Outreach for 5 Priority Accounts →`, `Open 3 Blank Statuses in Salesforce →`, `Open Overdue CTAs in Gainsight →`.
+- Three-column structure preserved.
+
+### Fixed — Notes section overhaul
+- "Clear all notes" button, confirmation modal, and associated JS removed entirely. Notes are permanent records.
+- New `Notes (N)` pill in the Recipe tab header — scrolls smoothly to the notes anchor; the count refreshes whenever a note is saved.
+- Context-aware textarea placeholder driven by red metrics. EBRs are red in the demo data so the placeholder reads "Your EBR coverage is your biggest gap this week. What’s your plan to close it?" — when both EBR and CTAs are red, EBR wins (larger weight). The placeholder is only a suggestion; the textarea accepts anything.
+- Quarter selector dropdown — `Q2 2026 (current) · Q1 2026 · Q4 2025 · Q3 2025`. Older quarters show "No notes saved for Qx 20xx." since the prototype has no localStorage data from prior quarters.
+- The history list is collapsed behind a `View note history` toggle by default, keeping the top of the notes section compact — input + categories + Save Note.
+
+### Implementation notes
+- Two parallel buildRecipe / Notes module copies in the file (from the v3.0.0 replace_all incident) were updated in lockstep via `replace_all: true`. Both modules verified diff-clean.
+- Spec label note: the user requested this entry as `[3.2.3]`; shipped as `[3.2.4]` to preserve monotonic versioning above the existing 3.2.3 entry.
 
 ---
 

@@ -299,8 +299,6 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .rcp-notes-save:hover{background:#2a2a28}
 .rcp-notes-hist-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;gap:10px}
 .rcp-notes-hist-t{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
-.rcp-notes-clear{font-size:10px;color:var(--tx3);cursor:pointer;background:none;border:none;text-decoration:underline;text-underline-offset:2px;font-family:inherit;padding:0}
-.rcp-notes-clear:hover{color:var(--rd)}
 .rcp-notes-list{display:flex;flex-direction:column;gap:9px}
 .rcp-notes-empty{font-size:11px;color:var(--tx3);font-style:italic;padding:14px 0;text-align:center}
 .rcp-notes-row{padding:11px 13px;background:var(--surf2);border-left:3px solid var(--tl);border-radius:var(--r)}
@@ -309,13 +307,70 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .rcp-notes-ts{font-size:9px;color:var(--tx3);font-weight:600;letter-spacing:.02em}
 .rcp-notes-txt{font-size:11px;color:var(--tx);line-height:1.6;white-space:pre-wrap}
 
-/* Confirmation overlay for Clear All */
-.rcp-notes-confirm{display:none;background:var(--rd-bg);border:1px solid var(--rd);border-radius:var(--r);padding:11px 13px;margin-bottom:12px;font-size:11px;color:var(--rd-dk);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.rcp-notes-confirm.on{display:flex}
-.rcp-notes-confirm-acts{margin-left:auto;display:flex;gap:6px}
-.rcp-notes-confirm-btn{font-size:10px;font-weight:700;padding:5px 10px;border-radius:5px;cursor:pointer;font-family:inherit;border:1px solid var(--rd)}
-.rcp-notes-confirm-btn.yes{background:var(--rd);color:#fff;border-color:var(--rd)}
-.rcp-notes-confirm-btn.no{background:var(--surf);color:var(--rd-dk)}
+/* v3.2.3 — Recipe overhaul: tab header, portfolio bar, status pills,
+   tick marks + rating labels on score bars, projection lines, notes
+   tools (jump pill, quarter selector, history toggle). */
+.sc-tophdr{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.sc-sync{font-size:11px;color:var(--tx3);display:inline-flex;align-items:center;gap:5px;font-weight:500;letter-spacing:.01em}
+.sc-sync i{font-size:13px}
+.sc-notes-jump{font-size:11px;font-weight:700;padding:6px 11px;border-radius:6px;background:var(--surf);color:var(--tx2);border:1px solid var(--bd2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all .1s;text-decoration:none}
+.sc-notes-jump:hover{background:var(--tl-bg);color:var(--tl-dk);border-color:var(--tl)}
+.sc-notes-jump i{font-size:13px;color:var(--tl)}
+
+.sc-port{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.sc-port-l{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.sc-port-src{font-size:9px;font-weight:700;background:var(--tl-bg);color:var(--tl-dk);padding:2px 6px;border-radius:3px;letter-spacing:.04em;text-transform:uppercase}
+.sc-port-d{display:flex;align-items:center;gap:0;flex-wrap:wrap;flex:1;min-width:0}
+.sc-port-i{display:inline-flex;align-items:baseline;gap:6px;font-size:11px;position:relative;padding:0 14px;white-space:nowrap}
+.sc-port-i:first-child{padding-left:0}
+.sc-port-i:not(:first-child):before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:11px;background:var(--bd2)}
+.sc-port-k{color:var(--tx3);font-weight:600}
+.sc-port-v{color:var(--tx);font-weight:700;font-size:12px}
+
+.sc-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:-2px 0 12px 2px;font-size:10px;color:var(--tx3);letter-spacing:.01em}
+.sc-legend-l{font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:9px}
+.sc-legend-i{display:inline-flex;align-items:center;gap:5px}
+.sc-legend-d{width:8px;height:8px;border-radius:50%;display:inline-block}
+.sc-legend-d.g{background:var(--tl)}
+.sc-legend-d.a{background:var(--am)}
+.sc-legend-d.r{background:var(--rd)}
+
+.sc-row .sc-mv-col{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.sc-stat{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.sc-stat.g{background:var(--tl-bg);color:var(--tl-dk)}
+.sc-stat.a{background:var(--am-bg);color:var(--am-dk)}
+.sc-stat.r{background:var(--rd-bg);color:var(--rd-dk)}
+.sc-stat i{font-size:10px}
+
+/* Score row bar — wider so ticks are legible. */
+.sc-bw-wrap{position:relative;width:160px;padding-bottom:11px;flex-shrink:0}
+.sc-bw{position:relative;width:100%;height:5px;background:var(--bg);border-radius:3px;overflow:visible}
+.sc-bw .sc-bf{height:100%;border-radius:3px}
+.sc-tick{position:absolute;top:-2px;bottom:-2px;width:1px;background:var(--tx3);opacity:.45;pointer-events:none}
+.sc-tick-lbl{position:absolute;top:7px;font-size:8px;color:var(--tx3);transform:translateX(-50%);font-weight:600;letter-spacing:.02em;white-space:nowrap}
+
+.sc-sd.g{background:var(--tl)}
+.sc-sd.a{background:var(--am)}
+.sc-sd.o{background:#EA580C}
+.sc-sd.r{background:var(--rd)}
+.sc-rating{font-size:11px;font-weight:600;color:var(--tx3);margin-left:4px;letter-spacing:0}
+.sc-pct{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:0;min-width:0}
+
+/* Quarter Projection — 3 structured lines */
+.rcp-proj-lines{display:flex;flex-direction:column;gap:8px;margin-top:2px}
+.rcp-proj-line{font-size:12px;color:var(--tx);line-height:1.5;display:flex;gap:9px;align-items:flex-start}
+.rcp-proj-line-ic{font-size:14px;flex-shrink:0;width:18px;text-align:center;line-height:1.4}
+.rcp-proj-line strong{color:var(--tx);font-weight:700}
+
+/* Notes tools row (quarter selector + history toggle). */
+.rcp-notes-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.rcp-quarter-sel{font-size:11px;font-weight:600;padding:5px 26px 5px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238A8A86' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 7px center}
+.rcp-history-toggle{font-size:11px;color:var(--tx2);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;padding:6px 0;display:inline-flex;align-items:center;gap:4px}
+.rcp-history-toggle:hover{color:var(--tl-dk)}
+.rcp-history-toggle .chev{transition:transform .15s;font-size:13px}
+.rcp-history-toggle.on .chev{transform:rotate(180deg)}
+.rcp-history-body{display:none;margin-top:8px}
+.rcp-history-body.on{display:block}
 
 /* Enablement tab (v2.14.0) — Seismic placeholder */
 .en-pg{padding:20px 28px}
@@ -516,8 +571,7 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .sc-sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .sc-sn{font-size:12px;color:var(--tx);flex:1}
 .sc-sw{font-size:10px;color:var(--tx3);min-width:28px;text-align:right}
-.sc-bw{width:90px;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
-.sc-bf{height:100%;border-radius:3px}
+/* .sc-bw / .sc-bf are defined above in the v3.2.3 overhaul block. */
 .sc-pct{font-size:12px;font-weight:700;min-width:36px;text-align:right}
 
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -707,6 +761,37 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .bf-dust-input input::placeholder{color:var(--tx3)}
 .bf-dust-send{background:var(--tl);color:#fff;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;font-weight:600}
 .bf-dust-send:hover{background:var(--tl-md)}
+.bf-dust-clear{background:none;border:none;color:var(--tx3);cursor:pointer;padding:2px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.bf-dust-clear:hover{color:var(--tx);background:var(--bg)}
+.bf-dust-clear i{font-size:14px}
+
+/* v3.2.5 — Agent search results + Recommended Agents section header */
+.bf-rec-hd{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;margin-top:2px}
+.bf-rec-hd.dim{opacity:.5}
+.bf-qa.dim{opacity:.45;pointer-events:none;filter:saturate(.6)}
+.bf-results{display:none;flex-direction:column;gap:7px;margin-bottom:10px;max-height:340px;overflow-y:auto}
+.bf-results.on{display:flex}
+.bf-result-card{background:var(--surf);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;transition:border-color .1s}
+.bf-result-card:hover{border-color:var(--bd2)}
+.bf-result-r1{display:flex;align-items:center;gap:8px}
+.bf-result-ic{width:22px;height:22px;border-radius:50%;background:rgba(24,165,117,.10);color:var(--tl);display:inline-flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.bf-result-card.avail .bf-result-ic{background:var(--bg);color:var(--tx3)}
+.bf-result-nm{font-size:13px;font-weight:600;color:var(--tx);letter-spacing:-.01em;flex:1;min-width:0}
+.bf-result-st{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:4px}
+.bf-result-st.active{background:var(--tl-bg);color:var(--tl-dk)}
+.bf-result-st.avail{background:var(--bg);color:var(--tx2);border:1px solid var(--bd2)}
+.bf-result-d{font-size:12px;color:var(--tx2);line-height:1.5;margin-left:30px}
+.bf-result-sk{font-size:10px;color:var(--tx3);margin-left:30px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;line-height:1.5}
+.bf-result-sk-l{font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-size:9px;color:var(--tx3)}
+.bf-result-sk-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--tl-bg);color:var(--tl-dk);letter-spacing:.01em}
+.bf-result-act{display:flex;justify-content:flex-end;margin-top:3px}
+.bf-result-btn{font-size:11px;font-weight:700;padding:5px 11px;border-radius:5px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;border:1px solid}
+.bf-result-btn.launch{background:var(--surf);color:var(--tl-dk);border-color:var(--tl)}
+.bf-result-btn.launch:hover{background:var(--tl-bg)}
+.bf-result-btn.request{background:var(--surf);color:var(--tx2);border-color:var(--bd2)}
+.bf-result-btn.request:hover{background:var(--bg);color:var(--tx);border-color:var(--tx3)}
+.bf-result-empty{font-size:12px;color:var(--tx3);font-style:italic;padding:14px 4px;text-align:center;background:var(--surf2);border:1px dashed var(--bd2);border-radius:6px}
+
 .bf-qa{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex:1;align-content:stretch}
 /* v2.11.1 — Chip restyle. Vertical stack with icon-in-teal-circle + bolder label.
    Card size + grid template unchanged so v2.2.0 equal-height behavior still holds. */
@@ -879,16 +964,14 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .ah-clear{background:none;border:none;font-size:10px;color:var(--tx3);cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:2px}
 .ah-clear:hover{color:var(--tx2)}
 
-/* Quick Launch Matrix */
-.ah-matrix{display:grid;grid-template-columns:auto repeat(3,1fr);gap:5px 8px;align-items:center}
-.ah-col-hd{font-size:10px;font-weight:700;text-align:center;padding:4px 0;letter-spacing:-.01em}
-.ah-col-hd.nova{color:var(--rd-dk)}
-.ah-col-hd.acme{color:var(--tl-dk)}
-.ah-col-hd.bx{color:var(--am-dk)}
-.ah-row-l{font-size:11px;font-weight:600;color:var(--tx2);text-transform:none;display:flex;align-items:center;gap:5px;padding-right:8px;white-space:nowrap}
-.ah-row-l i{font-size:12px}
-.ah-run{font-size:10px;font-weight:700;padding:5px 0;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .1s;text-align:center}
-.ah-run:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk);opacity:.9}
+/* v3.2.4 — Agents · [active account]. 2×2 grid replaces the Quick Launch
+   Matrix. Buttons mirror the .mb-btn dashboard agent styling: outlined,
+   icon + label, teal on hover. */
+.ah-agents-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ah-agent-btn{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;padding:9px 11px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;transition:all .12s;text-align:left;width:100%;letter-spacing:-.01em}
+.ah-agent-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.ah-agent-btn i{font-size:14px;flex-shrink:0}
+.ah-agent-btn .ah-agent-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 
 /* Recent Outputs Log */
 .ah-recent-row{display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:3px;padding:9px 0;border-bottom:1px solid var(--bd);align-items:center}
@@ -1909,13 +1992,20 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
       <div class="bf-hd"><div class="bf-ic tl"><i class="ti ti-sparkles"></i></div><div class="bf-t">Dust Agents</div></div>
       <div class="bf-sub">Access your Dust agents here</div>
 
-      <form class="bf-dust-input" onsubmit="askDust(event)">
+      <!-- v3.2.5 — Search bar is now an agent finder. Live filter against the
+           9-agent library below; results render in #bf-results and the
+           Recommended chips section dims when a search is active. -->
+      <div class="bf-dust-input" onclick="document.getElementById('dust-q').focus()">
         <i class="ti ti-search"></i>
-        <input id="dust-q" type="text" autocomplete="off" placeholder="Ask any agent a question&hellip;" aria-label="Ask Dust" />
-        <button class="bf-dust-send" type="submit" aria-label="Send to Dust"><i class="ti ti-arrow-right"></i></button>
-      </form>
+        <input id="dust-q" type="text" autocomplete="off" placeholder="Search agents by keyword or task&hellip;" aria-label="Search Dust agents" oninput="_dustSearch(this.value)" />
+        <button id="dust-q-clear" class="bf-dust-clear" type="button" aria-label="Clear search" onclick="_dustClearSearch()" style="display:none"><i class="ti ti-x"></i></button>
+      </div>
 
-      <div class="bf-qa">
+      <div class="bf-results" id="bf-results"></div>
+
+      <div class="bf-rec-hd" id="bf-rec-hd">Recommended agents</div>
+
+      <div class="bf-qa" id="bf-qa">
         <button class="bf-qa-btn" onclick="dustQuick('Prepare My Day')" type="button"><i class="ti ti-sun"></i>Prepare My Day</button>
         <button class="bf-qa-btn" onclick="dustQuick('Draft Follow-Ups')" type="button"><i class="ti ti-mail-fast"></i>Draft Follow-Ups</button>
         <button class="bf-qa-btn" onclick="dustQuick('Find Open Loops')" type="button"><i class="ti ti-circle-dashed"></i>Find Open Loops</button>
@@ -2481,33 +2571,15 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
           <div class="ah-note-confirm" id="ah-note-confirm"></div>
         </div>
 
+        <!-- v3.2.4 — Agents · [active account]. 2×2 grid that fires for whichever
+             account the Agent Hub is currently scoped to. -->
         <div class="ah-sec">
-          <div class="ah-sec-t">Quick Launch Matrix</div>
-          <div class="ah-matrix">
-            <div></div>
-            <div class="ah-col-hd nova">NovaVault</div>
-            <div class="ah-col-hd acme">Acme Corp</div>
-            <div class="ah-col-hd bx">Brightex</div>
-
-            <div class="ah-row-l"><i class="ti ti-bolt" style="color:var(--tl)"></i> Prep Me</div>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('prep','nova')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('prep','acme')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('prep','brightex')">Run</button>
-
-            <div class="ah-row-l"><i class="ti ti-shield-check" style="color:var(--am)"></i> Risk Analyst</div>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('risk','nova')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('risk','acme')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('risk','brightex')">Run</button>
-
-            <div class="ah-row-l"><i class="ti ti-lifebuoy" style="color:var(--rd)"></i> Save Strategy</div>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('save','nova')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('save','acme')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('save','brightex')">Run</button>
-
-            <div class="ah-row-l"><i class="ti ti-checks" style="color:var(--tl)"></i> Next Steps</div>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('next','nova')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('next','acme')">Run</button>
-            <button class="ah-run" type="button" onclick="openAgentDrawer('next','brightex')">Run</button>
+          <div class="ah-sec-t">Agents &middot; <span id="ah-agents-acct">ACME CORP</span></div>
+          <div class="ah-agents-grid">
+            <button class="ah-agent-btn" type="button" onclick="_ahFireAgent('prep')"><i class="ti ti-bolt" style="color:var(--tl)"></i><span class="ah-agent-l">Prep Me</span></button>
+            <button class="ah-agent-btn" type="button" onclick="_ahFireAgent('risk')"><i class="ti ti-shield-check" style="color:var(--am)"></i><span class="ah-agent-l">Risk Analyst</span></button>
+            <button class="ah-agent-btn" type="button" onclick="_ahFireAgent('save')"><i class="ti ti-lifebuoy" style="color:var(--rd)"></i><span class="ah-agent-l">Save Strategy</span></button>
+            <button class="ah-agent-btn" type="button" onclick="_ahFireAgent('next')"><i class="ti ti-checks" style="color:var(--tl)"></i><span class="ah-agent-l">Next Steps</span></button>
           </div>
         </div>
 
@@ -3599,6 +3671,139 @@ function dustQuick(label) {
   _markActiveChip(label);
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// v3.2.5 — Dust Agents search bar = agent directory finder
+// ═══════════════════════════════════════════════════════════════════════════
+var DUST_AGENTS = [
+  { name:'Prepare My Day',          icon:'sun',              status:'active',
+    keywords:['day','morning','brief','plan','prepare','overview','calls','schedule'],
+    desc:"Builds your AI-prioritized daily brief across all accounts. Surfaces what needs attention, who you're meeting, and what to say.",
+    skills:['Gainsight health','Gong signals','Salesforce renewals','Calendar'] },
+  { name:'Draft Follow-Ups',        icon:'mail-fast',        status:'active',
+    keywords:['email','follow-up','followup','draft','write','outreach','message','send'],
+    desc:'Drafts account-specific follow-up emails using Gong call history and account context.',
+    skills:['Gong transcripts','Gmail','Account history'] },
+  { name:'Find Open Loops',         icon:'circle-dashed',    status:'active',
+    keywords:['open','loop','overdue','cta','missing','gap','incomplete','stuck'],
+    desc:'Surfaces every open CTA, unanswered email, and missed commitment across your book.',
+    skills:['Gainsight CTAs','Gmail threads','Salesforce tasks'] },
+  { name:'Review At-Risk Renewals', icon:'alert-triangle',   status:'active',
+    keywords:['risk','renewal','churn','at-risk','health','save','critical','expire'],
+    desc:'Risk-ranks your renewal pipeline with churn probability, driving signals, and recommended save plays.',
+    skills:['Gainsight health','Gong sentiment','Salesforce ARR','Ironclad contracts'] },
+  { name:'Coach Me',                icon:'bolt',             status:'active',
+    keywords:['coach','prep','tips','advice','call','improve','strategy','guidance'],
+    desc:'Analyzes your last 3 Gong calls with the account and gives one targeted coaching tip for your next interaction.',
+    skills:['Gong call history',"Carmen's talk patterns",'Account signals'] },
+  { name:'Competitive Intel',       icon:'swords',           status:'available',
+    keywords:['competitor','competition','battle','okta','lastpass','alternative'],
+    desc:'Pulls competitor mentions from Gong, surfaces battle card talking points, and flags accounts with active competitive threats.',
+    skills:['Gong competitor flags','Battle cards','Account signals'] },
+  { name:'EBR Prep',                icon:'presentation',     status:'available',
+    keywords:['ebr','qbr','business','review','executive','presentation','deck'],
+    desc:'Generates a complete Executive Business Review package: account health summary, ROI evidence, expansion opportunities, and next quarter goals.',
+    skills:['Gainsight','Gong','Salesforce','Google Drive'] },
+  { name:'Renewal Forecaster',      icon:'trending-up',      status:'available',
+    keywords:['forecast','renewal','pipeline','arr','predict','close','quarter'],
+    desc:'Projects your end-of-quarter renewal attainment and identifies the 3 accounts most likely to change the outcome.',
+    skills:['Salesforce renewals','Gainsight health','Ironclad contracts'] },
+  { name:'Champion Tracker',        icon:'user-check',       status:'available',
+    keywords:['champion','stakeholder','contact','change','departure','new','intro'],
+    desc:'Monitors champion health across your book, flags departures and new contacts, and generates re-introduction outreach for accounts with new stakeholders.',
+    skills:['Gainsight contacts','Gong speaker detection','LinkedIn'] }
+];
+
+function _dustEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _dustMatch(agent, q) {
+  var hay = (agent.name + ' ' + agent.keywords.join(' ') + ' ' + agent.desc + ' ' + agent.skills.join(' ')).toLowerCase();
+  // All whitespace-separated tokens of length ≥1 must appear somewhere in the haystack.
+  var toks = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!toks.length) return false;
+  for (var i = 0; i < toks.length; i++) {
+    if (hay.indexOf(toks[i]) === -1) return false;
+  }
+  return true;
+}
+
+function _dustRenderResultCard(a) {
+  var stCls = a.status === 'active' ? 'active' : 'avail';
+  var stTxt = a.status === 'active' ? 'Active' : 'Available';
+  var btnCls, btnTxt, onClick;
+  if (a.status === 'active') {
+    btnCls  = 'launch';
+    btnTxt  = 'Launch &rarr;';
+    onClick = "_dustLaunchAgent('" + a.name.replace(/'/g,"\\'") + "')";
+  } else {
+    btnCls  = 'request';
+    btnTxt  = 'Request &rarr;';
+    onClick = "_dustRequestAgent('" + a.name.replace(/'/g,"\\'") + "')";
+  }
+  var skills = a.skills.map(function(s){ return '<span class="bf-result-sk-pill">' + _dustEscape(s) + '</span>'; }).join('');
+  return ''
+    + '<div class="bf-result-card ' + stCls + '">'
+    +   '<div class="bf-result-r1">'
+    +     '<span class="bf-result-ic"><i class="ti ti-' + a.icon + '"></i></span>'
+    +     '<span class="bf-result-nm">' + _dustEscape(a.name) + '</span>'
+    +     '<span class="bf-result-st ' + stCls + '">' + stTxt + '</span>'
+    +   '</div>'
+    +   '<div class="bf-result-d">' + _dustEscape(a.desc) + '</div>'
+    +   '<div class="bf-result-sk"><span class="bf-result-sk-l">Skills</span>' + skills + '</div>'
+    +   '<div class="bf-result-act"><button class="bf-result-btn ' + btnCls + '" type="button" onclick="' + onClick + '">' + btnTxt + '</button></div>'
+    + '</div>';
+}
+
+function _dustSearch(q) {
+  var query = String(q || '').trim();
+  var results = document.getElementById('bf-results');
+  var recHd   = document.getElementById('bf-rec-hd');
+  var chips   = document.getElementById('bf-qa');
+  var clearBtn= document.getElementById('dust-q-clear');
+  if (!results || !recHd || !chips) return;
+  if (query.length < 2) {
+    // Default state — chips visible, results hidden.
+    results.classList.remove('on');
+    results.innerHTML = '';
+    recHd.classList.remove('dim');
+    chips.classList.remove('dim');
+    if (clearBtn) clearBtn.style.display = query.length ? 'flex' : 'none';
+    return;
+  }
+  if (clearBtn) clearBtn.style.display = 'flex';
+  // Filter, then sort: active first, available below; preserve original order within.
+  var hits = DUST_AGENTS.filter(function(a){ return _dustMatch(a, query); });
+  hits.sort(function(a, b){
+    if (a.status === b.status) return 0;
+    return a.status === 'active' ? -1 : 1;
+  });
+  if (!hits.length) {
+    results.innerHTML = '<div class="bf-result-empty">No agents found for &ldquo;' + _dustEscape(query) + '&rdquo; &middot; Try different keywords</div>';
+  } else {
+    results.innerHTML = hits.map(_dustRenderResultCard).join('');
+  }
+  results.classList.add('on');
+  recHd.classList.add('dim');
+  chips.classList.add('dim');
+}
+
+function _dustClearSearch() {
+  var input = document.getElementById('dust-q');
+  if (input) input.value = '';
+  _dustSearch('');
+  if (input) input.focus();
+}
+
+function _dustLaunchAgent(name) {
+  // Active agents launch via the existing chip routing → Mission Briefing.
+  if (typeof dustQuick === 'function') dustQuick(name);
+}
+
+function _dustRequestAgent(name) {
+  if (typeof requestAgent === 'function') requestAgent(name);
+}
+
 // Mark the bf-qa-btn whose label matches `name` as active; clear the others.
 // Match is bidirectional substring so "Review At-Risk" (chip text) matches
 // "Review At-Risk Renewals" (DUST_RESP key).
@@ -3795,8 +4000,9 @@ setTimeout(function() {
 }, 90000);
 
 function buildRecipe() {
-  // v3.2.1 — score values updated to match the new spec demo data + weekly
-  // deltas. d = points delta this week (positive / negative / 0 = no change).
+  // v3.2.3 — Recipe overhaul. Score data unchanged. Metric rows extend the
+  // row tuple with a status code: 'g' (on track) / 'a' (at risk) / 'r' (below).
+  // Hard rules: CTAs overdue and blank statuses are always red when > 0.
   var scores = [
     {l:'Success plans & objectives',w:'50%',p:71.4,c:'#18A575',d:2.1},
     {l:'Book of business growth',w:'20%',p:80,  c:'#2563EB',d:0},
@@ -3805,39 +4011,134 @@ function buildRecipe() {
     {l:'Customer advocacy',w:'10%',p:80,  c:'#8A8A86',d:5.0}
   ];
   var metrics = [
-    {sec:'Success plans & objectives',rows:[['Active success plans','Target: 100% of $25K+ accounts','16/18',''],['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7',''],['CTAs overdue','Resolve immediately &mdash; hard stop','2','w']]},
-    {sec:'Book of business growth',rows:[['Renewal opps with upsell','Target: &gt;50% of renewal opps','6/11',''],['Closed won expansions','Target: &ge;5% of accounts','3',''],['Renewals in downsell','Negative &middot; target &lt;20%','2/11','w']]},
-    {sec:'Renewal forecast actions',rows:[['Renewals with blank status','Negative &middot; target &le;5%','3','d'],['Renewal status changes','Negative &middot; target &lt;10%','1/11','']]},
-    {sec:'Business reviews & advocacy',rows:[['EBRs &middot; $25K+ accounts','Target: 50% of $25K+ accounts','11/18',''],['EBRs &middot; $10K&ndash;$25K','Target: 10% of $10K&ndash;$25K','3/24',''],['Advocacy milestones','Quarterly: &ge;2.5% of accounts','2','']]}
+    {sec:'Success plans & objectives',rows:[
+      ['Active success plans','Target: 100% of $25K+ accounts','16/18','','a'],
+      ['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7','','g'],
+      ['CTAs overdue','Resolve immediately &mdash; hard stop','2','w','r']
+    ]},
+    {sec:'Book of business growth',rows:[
+      ['Renewal opps with upsell','Target: &gt;50% of renewal opps','6/11','','g'],
+      ['Closed won expansions','Target: &ge;5% of accounts','3','','g'],
+      ['Renewals in downsell','Negative &middot; target &lt;20%','2/11','w','a']
+    ]},
+    {sec:'Renewal forecast actions',rows:[
+      ['Renewals with blank status','Negative &middot; target &le;5%','3','d','r'],
+      ['Renewal status changes','Negative &middot; target &lt;10%','1/11','','g']
+    ]},
+    {sec:'Business reviews & advocacy',rows:[
+      ['EBRs &middot; $25K+ accounts','Target: 50% of $25K+ accounts','11/18','','r'],
+      ['EBRs &middot; $10K&ndash;$25K','Target: 10% of $10K&ndash;$25K','3/24','','r'],
+      ['Advocacy milestones','Quarterly: &ge;2.5% of accounts','2','','g']
+    ]}
   ];
-  var h = '<div class="sc-ban"><i class="ti ti-check-circle" style="font-size:20px;color:var(--tl);flex-shrink:0;margin-top:1px"></i><div><div class="sc-bt">Auto-populated from Gainsight &middot; zero manual input</div><div class="sc-bs">All metrics pulled via Gainsight REST API. Refreshes daily at 9 AM. Leadership sees live scores without a single form submission. This is the automated tax return &mdash; accurate, hated, 100% hands-off.</div></div></div>';
+  var STAT_DEF = {
+    g: {cls:'g', ic:'check',           t:'On Track'},
+    a: {cls:'a', ic:'alert-triangle',  t:'At Risk'},
+    r: {cls:'r', ic:'x',               t:'Below'}
+  };
+  function statHTML(s) {
+    if (!s) return '';
+    var d = STAT_DEF[s]; if (!d) return '';
+    return '<span class="sc-stat ' + d.cls + '"><i class="ti ti-' + d.ic + '"></i> ' + d.t + '</span>';
+  }
+  function ratingBand(p) {
+    if (p >= 95) return {lbl:'Outstanding',        dot:'g'};
+    if (p >= 85) return {lbl:'Exceeding',          dot:'g'};
+    if (p >= 75) return {lbl:'Meeting',            dot:'a'};
+    if (p >= 55) return {lbl:'Inconsistent',       dot:'o'};
+    return                {lbl:'Below Expectations',dot:'r'};
+  }
+
+  var noteCount = (typeof _rcpNotesCurrentCount === 'function') ? _rcpNotesCurrentCount() : 0;
+
+  // Top header: subdued sync timestamp + Notes jump pill. Replaces the
+  // green advisory banner and the duplicate "Last synced" footer block.
+  var h = '<div class="sc-tophdr">'
+        +   '<div class="sc-sync"><i class="ti ti-refresh"></i> Last synced: Today &middot; 9:00 AM &middot; Gainsight API</div>'
+        +   '<button class="sc-notes-jump" type="button" onclick="_rcpScrollToNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
+        + '</div>';
+
+  // Account Portfolio context bar.
+  h += '<div class="sc-port">'
+     +   '<div class="sc-port-l">Account Portfolio <span class="sc-port-src">Gainsight</span></div>'
+     +   '<div class="sc-port-d">'
+     +     '<span class="sc-port-i"><span class="sc-port-k">Total Accounts</span> <span class="sc-port-v">24</span></span>'
+     +     '<span class="sc-port-i"><span class="sc-port-k">$10&ndash;25K ARR</span> <span class="sc-port-v">14</span></span>'
+     +     '<span class="sc-port-i"><span class="sc-port-k">$25K+ ARR</span> <span class="sc-port-v">10</span></span>'
+     +     '<span class="sc-port-i"><span class="sc-port-k">Renewal Opps Q2</span> <span class="sc-port-v">18</span></span>'
+     +   '</div>'
+     + '</div>';
+
+  // Status legend (shown once, above the metric cards).
+  h += '<div class="sc-legend">'
+     +   '<span class="sc-legend-l">Status</span>'
+     +   '<span class="sc-legend-i"><span class="sc-legend-d g"></span>On Track &mdash; meets / exceeds target</span>'
+     +   '<span class="sc-legend-i"><span class="sc-legend-d a"></span>At Risk &mdash; within 10% of failing</span>'
+     +   '<span class="sc-legend-i"><span class="sc-legend-d r"></span>Below &mdash; failing threshold</span>'
+     + '</div>';
+
   h += '<div class="sc-grid">';
   metrics.forEach(function(m){
     h += '<div class="sc-card"><div class="sc-ct">' + m.sec + '</div>';
     m.rows.forEach(function(r){
-      h += '<div class="sc-row"><div><div class="sc-ml">' + r[0] + '</div><div class="sc-mt">' + r[1] + '</div></div><div style="text-align:right"><div class="sc-mv' + (r[3] ? ' ' + r[3] : '') + '">' + r[2] + '</div><div class="sc-src"><i class="ti ti-check" style="font-size:9px"></i> Gainsight</div></div></div>';
+      h += '<div class="sc-row">'
+         +   '<div><div class="sc-ml">' + r[0] + '</div><div class="sc-mt">' + r[1] + '</div></div>'
+         +   '<div class="sc-mv-col">'
+         +     '<div class="sc-mv' + (r[3] ? ' ' + r[3] : '') + '">' + r[2] + '</div>'
+         +     statHTML(r[4])
+         +     '<div class="sc-src"><i class="ti ti-check" style="font-size:9px"></i> Gainsight</div>'
+         +   '</div>'
+         + '</div>';
     });
     h += '</div>';
   });
-  h += '</div><div class="sc-fin"><div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Live weighted score</div><div style="margin-bottom:16px">';
+  h += '</div>';
+
+  // Live weighted score block.
+  h += '<div class="sc-fin">'
+     +   '<div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Live weighted score</div>'
+     +   '<div style="margin-bottom:16px">';
   scores.forEach(function(s){
-    // v3.2.1 — append weekly delta badge after the score percentage
+    var rb = ratingBand(s.p);
     var deltaCls = s.d > 0 ? 'up' : (s.d < 0 ? 'down' : 'flat');
     var deltaArrow = s.d > 0 ? '&uarr;' : (s.d < 0 ? '&darr;' : '&rarr;');
     var deltaTxt = s.d === 0 ? 'No change' : ((s.d > 0 ? '+' : '') + (s.d % 1 === 0 ? s.d.toFixed(1) : s.d) + ' pts this week');
     var deltaHtml = '<span class="sc-delta ' + deltaCls + '">' + deltaArrow + ' ' + deltaTxt + '</span>';
-    h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%' + deltaHtml + '</div></div>';
+    var ticks    = [55,75,85,95].map(function(t){ return '<span class="sc-tick" style="left:' + t + '%"></span>'; }).join('');
+    var tickLbls = [55,75,85,95].map(function(t){ return '<span class="sc-tick-lbl" style="left:' + t + '%">' + t + '</span>'; }).join('');
+    h += '<div class="sc-sr">'
+       +   '<div class="sc-sd ' + rb.dot + '"></div>'
+       +   '<div class="sc-sn">' + s.l + '</div>'
+       +   '<div class="sc-sw">' + s.w + '</div>'
+       +   '<div class="sc-bw-wrap">'
+       +     '<div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div>' + ticks + '</div>'
+       +     tickLbls
+       +   '</div>'
+       +   '<div class="sc-pct" style="color:' + s.c + '">' + s.p + '%<span class="sc-rating">&middot; ' + rb.lbl + '</span>' + deltaHtml + '</div>'
+       + '</div>';
   });
-  // v3.2.1 — final score row gains a +1.8 pts weekly delta inline with the score.
-  h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div class="sc-fin-row"><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><span class="sc-fin-delta up">&uarr; +1.8 pts this week</span></div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div>'
-    // v3.2.1 — Quarter Projection card (Dust analysis framing)
-    + '<div class="rcp-proj">'
-      + '<div class="rcp-proj-l"><i class="ti ti-target-arrow"></i> Quarter Projection &middot; Dust Analysis</div>'
-      + '<div class="rcp-proj-b">At your current pace you&rsquo;ll finish Q2 at <strong>81% (Exceeding)</strong>. Closing <strong>2 more EBRs this quarter</strong> would push you to <strong>87%</strong> and solidify Exceeding. Your biggest risk: <strong>Renewal Forecast Actions</strong> is trending down &mdash; 3 blank statuses need updating before Jun 15.</div>'
-    + '</div>'
+  // Final weighted score — 74.5% is Inconsistent per the v3.2.3 rating bands.
+  h += '</div>'
+     + '<div>'
+     +   '<div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div>'
+     +   '<div class="sc-fin-row">'
+     +     '<div style="font-size:40px;font-weight:700;color:#EA580C;letter-spacing:-.04em">74.5%</div>'
+     +     '<span class="sc-fin-delta up">&uarr; +1.8 pts this week</span>'
+     +   '</div>'
+     +   '<div style="font-size:13px;color:var(--tx3);margin-top:3px;font-weight:600">&middot; Inconsistent</div>'
+     + '</div>'
+     // Quarter Projection — 3 structured lines (no paragraph, no "Dust Analysis" subtitle).
+     + '<div class="rcp-proj">'
+     +   '<div class="rcp-proj-l"><i class="ti ti-target-arrow"></i> Quarter Projection</div>'
+     +   '<div class="rcp-proj-lines">'
+     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">📈</span><span><strong>Projected finish:</strong> 81% &middot; Exceeding</span></div>'
+     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">⚡</span><span><strong>Highest-leverage action:</strong> Close 2 more EBRs before Jun 30</span></div>'
+     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">⚠</span><span><strong>Biggest risk:</strong> Renewal Forecast Actions trending down &middot; 3 blank statuses must be updated by Jun 15</span></div>'
+     +   '</div>'
+     + '</div>'
   + '</div>';
 
-  // v2.13.0 — Dust Recommendation Panel
+  // Dust Action Plan — one sentence + action button per column.
   h += ''
     + '<div class="rcp-dust">'
       + '<div class="rcp-dust-hd">'
@@ -3848,35 +4149,34 @@ function buildRecipe() {
       + '</div>'
       + '<div class="rcp-cards">'
         + '<div class="rcp-card gap">'
-          + '<div class="rcp-card-l">Biggest gap</div>'
+          + '<div class="rcp-card-l">Biggest gap &mdash; EBR Coverage: 3/24 accounts</div>'
           + '<div class="rcp-card-t">EBR Coverage: 3 / 24 accounts (12.5%)</div>'
-          + '<div class="rcp-card-b">You are tracking to miss your EBR target by a significant margin. At current pace, only 3 of your 24 accounts will have an EBR this quarter. The 5 accounts with renewals in the next 60 days should be prioritized immediately.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpDraftEBR()"><i class="ti ti-mail"></i> Draft EBR Outreach for 5 Accounts</button>'
+          + '<div class="rcp-card-b">21 accounts haven&rsquo;t had an EBR. Start with the 5 renewing in the next 60 days.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpDraftEBR()"><i class="ti ti-mail"></i> Dust: Draft EBR Outreach for 5 Priority Accounts &rarr;</button>'
         + '</div>'
         + '<div class="rcp-card win">'
-          + '<div class="rcp-card-l">Quick win</div>'
-          + '<div class="rcp-card-t">Blank Renewal Statuses: 3 accounts</div>'
-          + '<div class="rcp-card-b">3 renewals have no forecast status in Salesforce, which is dragging your Renewal Forecast Actions score. Each takes 30 seconds to update.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpRenewalStatus()"><i class="ti ti-external-link"></i> Open Renewal Status Update</button>'
+          + '<div class="rcp-card-l">Quick win &mdash; Blank Renewal Statuses: 3</div>'
+          + '<div class="rcp-card-t">Blank Renewal Statuses: 3</div>'
+          + '<div class="rcp-card-b">Each takes 30 seconds to update in Salesforce. All 3 are under-forecasted.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpRenewalStatus()"><i class="ti ti-external-link"></i> Open 3 Blank Statuses in Salesforce &rarr;</button>'
         + '</div>'
         + '<div class="rcp-card prot">'
-          + '<div class="rcp-card-l">Protect</div>'
-          + '<div class="rcp-card-t">Overdue CTAs: 2 accounts</div>'
-          + '<div class="rcp-card-b">2 Gainsight CTAs are overdue, reducing your Success Plans &amp; Objectives score. NovaVault and Brightex both have CTAs past due date.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpOverdueCTAs()"><i class="ti ti-list-check"></i> Open Overdue CTAs in Gainsight</button>'
+          + '<div class="rcp-card-l">Protect &mdash; Overdue CTAs: 2</div>'
+          + '<div class="rcp-card-t">Overdue CTAs: 2</div>'
+          + '<div class="rcp-card-b">NovaVault and Brightex both have overdue CTAs. Update before EOD.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpOverdueCTAs()"><i class="ti ti-list-check"></i> Open Overdue CTAs in Gainsight &rarr;</button>'
         + '</div>'
       + '</div>'
       + '<div class="rcp-dust-ft">Dust analysis &middot; Gainsight + Salesforce &middot; Updated today 9:00 AM &middot; Refreshes daily</div>'
     + '</div>';
 
-  // v3.2.1 — Notes & Reflection panel appended below the Dust recommendation
-  // panel. Populated from localStorage on render.
+  // Notes & Reflection panel — populated from localStorage on render.
   if (typeof _rcpNotesHTML === 'function') h += _rcpNotesHTML();
 
   document.getElementById('recipe-root').innerHTML = h;
 
-  // After innerHTML write, populate the dynamic notes list.
   if (typeof _rcpNotesRenderList === 'function') _rcpNotesRenderList();
+  if (typeof _rcpNotesUpdateCount === 'function') _rcpNotesUpdateCount();
 }
 
 function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority accounts &middot; Opens in Mission Briefing ✓'); }
@@ -3913,6 +4213,20 @@ function _rcpWriteNotes(arr) {
   try { localStorage.setItem(RCP_NOTES_KEY, JSON.stringify(arr)); } catch (e) {}
 }
 
+// v3.2.3 — context-aware placeholder driven by red metrics. EBRs and overdue
+// CTAs are both red in the demo data; per spec, EBRs win (larger weight).
+function _rcpNotesPlaceholder() {
+  var ebrRed = true;
+  var ctaOverdueCount = 2;
+  if (ebrRed) return 'Your EBR coverage is your biggest gap this week. What’s your plan to close it?';
+  if (ctaOverdueCount > 0) return ctaOverdueCount + ' CTAs are overdue. What’s blocking you from closing them?';
+  return 'What’s driving your score this week?';
+}
+
+// v3.2.3 — currently-selected viewing quarter for the history list.
+var _rcpViewQuarter = 'Q2 2026';
+var RCP_QUARTERS = ['Q2 2026','Q1 2026','Q4 2025','Q3 2025'];
+
 function _rcpNotesHTML() {
   var cats = ['Success Plans','Growth','Renewals','EBRs','Advocacy','General']; // categories for NEW notes (no "All" here)
   var filterCats = RCP_NOTES_CATS; // includes "All" for the filter
@@ -3924,28 +4238,61 @@ function _rcpNotesHTML() {
     var on = (c === _rcpNotesFilterCat) ? ' on' : '';
     return '<button class="rcp-notes-cat' + on + '" type="button" onclick="_rcpNotesSetFilter(\'' + c + '\')">' + c + '</button>';
   }).join('');
+  var quarterOpts = RCP_QUARTERS.map(function(q){
+    var sel = (q === _rcpViewQuarter) ? ' selected' : '';
+    var lbl = (q === RCP_NOTES_QUARTER) ? (q + ' (current)') : q;
+    return '<option value="' + q + '"' + sel + '>' + lbl + '</option>';
+  }).join('');
   return ''
-    + '<div class="rcp-notes">'
+    + '<div class="rcp-notes" id="rcp-notes-anchor">'
       + '<div class="rcp-notes-hd"><i class="ti ti-notes"></i> Notes &amp; Reflection <span class="rcp-notes-hd-q">' + RCP_NOTES_QUARTER + '</span></div>'
       + '<div class="rcp-notes-input">'
-        + '<textarea id="rcp-notes-ta" class="rcp-notes-ta" placeholder="What&rsquo;s driving your score this week? What&rsquo;s in the way? What will you do differently?"></textarea>'
+        + '<textarea id="rcp-notes-ta" class="rcp-notes-ta" placeholder="' + _rcpNotesPlaceholder() + '"></textarea>'
         + '<div class="rcp-notes-cats" id="rcp-notes-cats">' + catBtns + '</div>'
         + '<button class="rcp-notes-save" type="button" onclick="_rcpNotesSave()"><i class="ti ti-circle-check"></i> Save Note</button>'
       + '</div>'
-      + '<div class="rcp-notes-hist-hd">'
-        + '<div class="rcp-notes-hist-t">Saved notes &middot; ' + RCP_NOTES_QUARTER + '</div>'
-        + '<button class="rcp-notes-clear" type="button" onclick="_rcpNotesAskClear()">Clear all notes</button>'
+      + '<button class="rcp-history-toggle" id="rcp-history-toggle" type="button" onclick="_rcpToggleHistory()" aria-expanded="false">View note history <i class="ti ti-chevron-down chev"></i></button>'
+      + '<div class="rcp-history-body" id="rcp-history-body">'
+        + '<div class="rcp-notes-tools">'
+          + '<div class="rcp-notes-hist-t">Saved notes</div>'
+          + '<select class="rcp-quarter-sel" id="rcp-quarter-sel" onchange="_rcpQuarterChange(this.value)" aria-label="Select quarter">' + quarterOpts + '</select>'
+        + '</div>'
+        + '<div class="rcp-notes-cats" style="margin-bottom:10px">' + filterBtns + '</div>'
+        + '<div class="rcp-notes-list" id="rcp-notes-list"></div>'
       + '</div>'
-      + '<div class="rcp-notes-confirm" id="rcp-notes-confirm">'
-        + '<span>Clear all ' + RCP_NOTES_QUARTER + ' notes? This cannot be undone.</span>'
-        + '<span class="rcp-notes-confirm-acts">'
-          + '<button class="rcp-notes-confirm-btn no" type="button" onclick="_rcpNotesConfirmHide()">Cancel</button>'
-          + '<button class="rcp-notes-confirm-btn yes" type="button" onclick="_rcpNotesClearAll()">Yes, clear</button>'
-        + '</span>'
-      + '</div>'
-      + '<div class="rcp-notes-cats" style="margin-bottom:10px">' + filterBtns + '</div>'
-      + '<div class="rcp-notes-list" id="rcp-notes-list"></div>'
     + '</div>';
+}
+
+function _rcpScrollToNotes() {
+  var el = document.getElementById('rcp-notes-anchor');
+  if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function _rcpToggleHistory() {
+  var btn  = document.getElementById('rcp-history-toggle');
+  var body = document.getElementById('rcp-history-body');
+  if (!btn || !body) return;
+  var on = !body.classList.contains('on');
+  body.classList.toggle('on', on);
+  btn.classList.toggle('on', on);
+  btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+}
+
+function _rcpQuarterChange(q) {
+  _rcpViewQuarter = q;
+  _rcpNotesRenderList();
+}
+
+function _rcpNotesCurrentCount() {
+  try {
+    var notes = _rcpReadNotes();
+    return notes.filter(function(n){ return n.quarter === RCP_NOTES_QUARTER; }).length;
+  } catch (e) { return 0; }
+}
+
+function _rcpNotesUpdateCount() {
+  var el = document.getElementById('rcp-notes-count');
+  if (el) el.textContent = String(_rcpNotesCurrentCount());
 }
 
 function _rcpNotesSetCat(cat) {
@@ -3986,22 +4333,8 @@ function _rcpNotesSave() {
   _rcpWriteNotes(notes);
   ta.value = '';
   _rcpNotesRenderList();
+  _rcpNotesUpdateCount();
   toast('Note saved &middot; ' + RCP_NOTES_QUARTER + ' ✓');
-}
-
-function _rcpNotesAskClear() {
-  var c = document.getElementById('rcp-notes-confirm');
-  if (c) c.classList.add('on');
-}
-function _rcpNotesConfirmHide() {
-  var c = document.getElementById('rcp-notes-confirm');
-  if (c) c.classList.remove('on');
-}
-function _rcpNotesClearAll() {
-  _rcpWriteNotes([]);
-  _rcpNotesConfirmHide();
-  _rcpNotesRenderList();
-  toast('All ' + RCP_NOTES_QUARTER + ' notes cleared ✓');
 }
 
 function _rcpNotesEscape(s) {
@@ -4012,11 +4345,22 @@ function _rcpNotesRenderList() {
   var list = document.getElementById('rcp-notes-list');
   if (!list) return;
   var notes = _rcpReadNotes();
+  // Filter to the viewing quarter first. Older quarters have no demo data,
+  // so a non-current selection just shows the empty-state message.
+  notes = notes.filter(function(n){ return n.quarter === _rcpViewQuarter; });
   if (_rcpNotesFilterCat !== 'All') {
     notes = notes.filter(function(n){ return n.category === _rcpNotesFilterCat; });
   }
   if (!notes.length) {
-    list.innerHTML = '<div class="rcp-notes-empty">' + (_rcpNotesFilterCat === 'All' ? 'No notes yet this quarter. Add your first reflection.' : 'No notes in &ldquo;' + _rcpNotesEscape(_rcpNotesFilterCat) + '&rdquo; for this quarter.') + '</div>';
+    var msg;
+    if (_rcpViewQuarter !== RCP_NOTES_QUARTER) {
+      msg = 'No notes saved for ' + _rcpNotesEscape(_rcpViewQuarter) + '.';
+    } else if (_rcpNotesFilterCat === 'All') {
+      msg = 'No notes yet this quarter. Add your first reflection.';
+    } else {
+      msg = 'No notes in &ldquo;' + _rcpNotesEscape(_rcpNotesFilterCat) + '&rdquo; for this quarter.';
+    }
+    list.innerHTML = '<div class="rcp-notes-empty">' + msg + '</div>';
     return;
   }
   list.innerHTML = notes.map(function(n){
@@ -5587,8 +5931,9 @@ function openAgentDrawer(type, acct) {
 }
 
 function buildRecipe() {
-  // v3.2.1 — score values updated to match the new spec demo data + weekly
-  // deltas. d = points delta this week (positive / negative / 0 = no change).
+  // v3.2.3 — Recipe overhaul. Score data unchanged. Metric rows extend the
+  // row tuple with a status code: 'g' (on track) / 'a' (at risk) / 'r' (below).
+  // Hard rules: CTAs overdue and blank statuses are always red when > 0.
   var scores = [
     {l:'Success plans & objectives',w:'50%',p:71.4,c:'#18A575',d:2.1},
     {l:'Book of business growth',w:'20%',p:80,  c:'#2563EB',d:0},
@@ -5597,39 +5942,134 @@ function buildRecipe() {
     {l:'Customer advocacy',w:'10%',p:80,  c:'#8A8A86',d:5.0}
   ];
   var metrics = [
-    {sec:'Success plans & objectives',rows:[['Active success plans','Target: 100% of $25K+ accounts','16/18',''],['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7',''],['CTAs overdue','Resolve immediately &mdash; hard stop','2','w']]},
-    {sec:'Book of business growth',rows:[['Renewal opps with upsell','Target: &gt;50% of renewal opps','6/11',''],['Closed won expansions','Target: &ge;5% of accounts','3',''],['Renewals in downsell','Negative &middot; target &lt;20%','2/11','w']]},
-    {sec:'Renewal forecast actions',rows:[['Renewals with blank status','Negative &middot; target &le;5%','3','d'],['Renewal status changes','Negative &middot; target &lt;10%','1/11','']]},
-    {sec:'Business reviews & advocacy',rows:[['EBRs &middot; $25K+ accounts','Target: 50% of $25K+ accounts','11/18',''],['EBRs &middot; $10K&ndash;$25K','Target: 10% of $10K&ndash;$25K','3/24',''],['Advocacy milestones','Quarterly: &ge;2.5% of accounts','2','']]}
+    {sec:'Success plans & objectives',rows:[
+      ['Active success plans','Target: 100% of $25K+ accounts','16/18','','a'],
+      ['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7','','g'],
+      ['CTAs overdue','Resolve immediately &mdash; hard stop','2','w','r']
+    ]},
+    {sec:'Book of business growth',rows:[
+      ['Renewal opps with upsell','Target: &gt;50% of renewal opps','6/11','','g'],
+      ['Closed won expansions','Target: &ge;5% of accounts','3','','g'],
+      ['Renewals in downsell','Negative &middot; target &lt;20%','2/11','w','a']
+    ]},
+    {sec:'Renewal forecast actions',rows:[
+      ['Renewals with blank status','Negative &middot; target &le;5%','3','d','r'],
+      ['Renewal status changes','Negative &middot; target &lt;10%','1/11','','g']
+    ]},
+    {sec:'Business reviews & advocacy',rows:[
+      ['EBRs &middot; $25K+ accounts','Target: 50% of $25K+ accounts','11/18','','r'],
+      ['EBRs &middot; $10K&ndash;$25K','Target: 10% of $10K&ndash;$25K','3/24','','r'],
+      ['Advocacy milestones','Quarterly: &ge;2.5% of accounts','2','','g']
+    ]}
   ];
-  var h = '<div class="sc-ban"><i class="ti ti-check-circle" style="font-size:20px;color:var(--tl);flex-shrink:0;margin-top:1px"></i><div><div class="sc-bt">Auto-populated from Gainsight &middot; zero manual input</div><div class="sc-bs">All metrics pulled via Gainsight REST API. Refreshes daily at 9 AM. Leadership sees live scores without a single form submission. This is the automated tax return &mdash; accurate, hated, 100% hands-off.</div></div></div>';
+  var STAT_DEF = {
+    g: {cls:'g', ic:'check',           t:'On Track'},
+    a: {cls:'a', ic:'alert-triangle',  t:'At Risk'},
+    r: {cls:'r', ic:'x',               t:'Below'}
+  };
+  function statHTML(s) {
+    if (!s) return '';
+    var d = STAT_DEF[s]; if (!d) return '';
+    return '<span class="sc-stat ' + d.cls + '"><i class="ti ti-' + d.ic + '"></i> ' + d.t + '</span>';
+  }
+  function ratingBand(p) {
+    if (p >= 95) return {lbl:'Outstanding',        dot:'g'};
+    if (p >= 85) return {lbl:'Exceeding',          dot:'g'};
+    if (p >= 75) return {lbl:'Meeting',            dot:'a'};
+    if (p >= 55) return {lbl:'Inconsistent',       dot:'o'};
+    return                {lbl:'Below Expectations',dot:'r'};
+  }
+
+  var noteCount = (typeof _rcpNotesCurrentCount === 'function') ? _rcpNotesCurrentCount() : 0;
+
+  // Top header: subdued sync timestamp + Notes jump pill. Replaces the
+  // green advisory banner and the duplicate "Last synced" footer block.
+  var h = '<div class="sc-tophdr">'
+        +   '<div class="sc-sync"><i class="ti ti-refresh"></i> Last synced: Today &middot; 9:00 AM &middot; Gainsight API</div>'
+        +   '<button class="sc-notes-jump" type="button" onclick="_rcpScrollToNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
+        + '</div>';
+
+  // Account Portfolio context bar.
+  h += '<div class="sc-port">'
+     +   '<div class="sc-port-l">Account Portfolio <span class="sc-port-src">Gainsight</span></div>'
+     +   '<div class="sc-port-d">'
+     +     '<span class="sc-port-i"><span class="sc-port-k">Total Accounts</span> <span class="sc-port-v">24</span></span>'
+     +     '<span class="sc-port-i"><span class="sc-port-k">$10&ndash;25K ARR</span> <span class="sc-port-v">14</span></span>'
+     +     '<span class="sc-port-i"><span class="sc-port-k">$25K+ ARR</span> <span class="sc-port-v">10</span></span>'
+     +     '<span class="sc-port-i"><span class="sc-port-k">Renewal Opps Q2</span> <span class="sc-port-v">18</span></span>'
+     +   '</div>'
+     + '</div>';
+
+  // Status legend (shown once, above the metric cards).
+  h += '<div class="sc-legend">'
+     +   '<span class="sc-legend-l">Status</span>'
+     +   '<span class="sc-legend-i"><span class="sc-legend-d g"></span>On Track &mdash; meets / exceeds target</span>'
+     +   '<span class="sc-legend-i"><span class="sc-legend-d a"></span>At Risk &mdash; within 10% of failing</span>'
+     +   '<span class="sc-legend-i"><span class="sc-legend-d r"></span>Below &mdash; failing threshold</span>'
+     + '</div>';
+
   h += '<div class="sc-grid">';
   metrics.forEach(function(m){
     h += '<div class="sc-card"><div class="sc-ct">' + m.sec + '</div>';
     m.rows.forEach(function(r){
-      h += '<div class="sc-row"><div><div class="sc-ml">' + r[0] + '</div><div class="sc-mt">' + r[1] + '</div></div><div style="text-align:right"><div class="sc-mv' + (r[3] ? ' ' + r[3] : '') + '">' + r[2] + '</div><div class="sc-src"><i class="ti ti-check" style="font-size:9px"></i> Gainsight</div></div></div>';
+      h += '<div class="sc-row">'
+         +   '<div><div class="sc-ml">' + r[0] + '</div><div class="sc-mt">' + r[1] + '</div></div>'
+         +   '<div class="sc-mv-col">'
+         +     '<div class="sc-mv' + (r[3] ? ' ' + r[3] : '') + '">' + r[2] + '</div>'
+         +     statHTML(r[4])
+         +     '<div class="sc-src"><i class="ti ti-check" style="font-size:9px"></i> Gainsight</div>'
+         +   '</div>'
+         + '</div>';
     });
     h += '</div>';
   });
-  h += '</div><div class="sc-fin"><div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Live weighted score</div><div style="margin-bottom:16px">';
+  h += '</div>';
+
+  // Live weighted score block.
+  h += '<div class="sc-fin">'
+     +   '<div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Live weighted score</div>'
+     +   '<div style="margin-bottom:16px">';
   scores.forEach(function(s){
-    // v3.2.1 — append weekly delta badge after the score percentage
+    var rb = ratingBand(s.p);
     var deltaCls = s.d > 0 ? 'up' : (s.d < 0 ? 'down' : 'flat');
     var deltaArrow = s.d > 0 ? '&uarr;' : (s.d < 0 ? '&darr;' : '&rarr;');
     var deltaTxt = s.d === 0 ? 'No change' : ((s.d > 0 ? '+' : '') + (s.d % 1 === 0 ? s.d.toFixed(1) : s.d) + ' pts this week');
     var deltaHtml = '<span class="sc-delta ' + deltaCls + '">' + deltaArrow + ' ' + deltaTxt + '</span>';
-    h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%' + deltaHtml + '</div></div>';
+    var ticks    = [55,75,85,95].map(function(t){ return '<span class="sc-tick" style="left:' + t + '%"></span>'; }).join('');
+    var tickLbls = [55,75,85,95].map(function(t){ return '<span class="sc-tick-lbl" style="left:' + t + '%">' + t + '</span>'; }).join('');
+    h += '<div class="sc-sr">'
+       +   '<div class="sc-sd ' + rb.dot + '"></div>'
+       +   '<div class="sc-sn">' + s.l + '</div>'
+       +   '<div class="sc-sw">' + s.w + '</div>'
+       +   '<div class="sc-bw-wrap">'
+       +     '<div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div>' + ticks + '</div>'
+       +     tickLbls
+       +   '</div>'
+       +   '<div class="sc-pct" style="color:' + s.c + '">' + s.p + '%<span class="sc-rating">&middot; ' + rb.lbl + '</span>' + deltaHtml + '</div>'
+       + '</div>';
   });
-  // v3.2.1 — final score row gains a +1.8 pts weekly delta inline with the score.
-  h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div class="sc-fin-row"><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><span class="sc-fin-delta up">&uarr; +1.8 pts this week</span></div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div>'
-    // v3.2.1 — Quarter Projection card (Dust analysis framing)
-    + '<div class="rcp-proj">'
-      + '<div class="rcp-proj-l"><i class="ti ti-target-arrow"></i> Quarter Projection &middot; Dust Analysis</div>'
-      + '<div class="rcp-proj-b">At your current pace you&rsquo;ll finish Q2 at <strong>81% (Exceeding)</strong>. Closing <strong>2 more EBRs this quarter</strong> would push you to <strong>87%</strong> and solidify Exceeding. Your biggest risk: <strong>Renewal Forecast Actions</strong> is trending down &mdash; 3 blank statuses need updating before Jun 15.</div>'
-    + '</div>'
+  // Final weighted score — 74.5% is Inconsistent per the v3.2.3 rating bands.
+  h += '</div>'
+     + '<div>'
+     +   '<div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div>'
+     +   '<div class="sc-fin-row">'
+     +     '<div style="font-size:40px;font-weight:700;color:#EA580C;letter-spacing:-.04em">74.5%</div>'
+     +     '<span class="sc-fin-delta up">&uarr; +1.8 pts this week</span>'
+     +   '</div>'
+     +   '<div style="font-size:13px;color:var(--tx3);margin-top:3px;font-weight:600">&middot; Inconsistent</div>'
+     + '</div>'
+     // Quarter Projection — 3 structured lines (no paragraph, no "Dust Analysis" subtitle).
+     + '<div class="rcp-proj">'
+     +   '<div class="rcp-proj-l"><i class="ti ti-target-arrow"></i> Quarter Projection</div>'
+     +   '<div class="rcp-proj-lines">'
+     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">📈</span><span><strong>Projected finish:</strong> 81% &middot; Exceeding</span></div>'
+     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">⚡</span><span><strong>Highest-leverage action:</strong> Close 2 more EBRs before Jun 30</span></div>'
+     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">⚠</span><span><strong>Biggest risk:</strong> Renewal Forecast Actions trending down &middot; 3 blank statuses must be updated by Jun 15</span></div>'
+     +   '</div>'
+     + '</div>'
   + '</div>';
 
-  // v2.13.0 — Dust Recommendation Panel
+  // Dust Action Plan — one sentence + action button per column.
   h += ''
     + '<div class="rcp-dust">'
       + '<div class="rcp-dust-hd">'
@@ -5640,35 +6080,34 @@ function buildRecipe() {
       + '</div>'
       + '<div class="rcp-cards">'
         + '<div class="rcp-card gap">'
-          + '<div class="rcp-card-l">Biggest gap</div>'
+          + '<div class="rcp-card-l">Biggest gap &mdash; EBR Coverage: 3/24 accounts</div>'
           + '<div class="rcp-card-t">EBR Coverage: 3 / 24 accounts (12.5%)</div>'
-          + '<div class="rcp-card-b">You are tracking to miss your EBR target by a significant margin. At current pace, only 3 of your 24 accounts will have an EBR this quarter. The 5 accounts with renewals in the next 60 days should be prioritized immediately.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpDraftEBR()"><i class="ti ti-mail"></i> Draft EBR Outreach for 5 Accounts</button>'
+          + '<div class="rcp-card-b">21 accounts haven&rsquo;t had an EBR. Start with the 5 renewing in the next 60 days.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpDraftEBR()"><i class="ti ti-mail"></i> Dust: Draft EBR Outreach for 5 Priority Accounts &rarr;</button>'
         + '</div>'
         + '<div class="rcp-card win">'
-          + '<div class="rcp-card-l">Quick win</div>'
-          + '<div class="rcp-card-t">Blank Renewal Statuses: 3 accounts</div>'
-          + '<div class="rcp-card-b">3 renewals have no forecast status in Salesforce, which is dragging your Renewal Forecast Actions score. Each takes 30 seconds to update.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpRenewalStatus()"><i class="ti ti-external-link"></i> Open Renewal Status Update</button>'
+          + '<div class="rcp-card-l">Quick win &mdash; Blank Renewal Statuses: 3</div>'
+          + '<div class="rcp-card-t">Blank Renewal Statuses: 3</div>'
+          + '<div class="rcp-card-b">Each takes 30 seconds to update in Salesforce. All 3 are under-forecasted.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpRenewalStatus()"><i class="ti ti-external-link"></i> Open 3 Blank Statuses in Salesforce &rarr;</button>'
         + '</div>'
         + '<div class="rcp-card prot">'
-          + '<div class="rcp-card-l">Protect</div>'
-          + '<div class="rcp-card-t">Overdue CTAs: 2 accounts</div>'
-          + '<div class="rcp-card-b">2 Gainsight CTAs are overdue, reducing your Success Plans &amp; Objectives score. NovaVault and Brightex both have CTAs past due date.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpOverdueCTAs()"><i class="ti ti-list-check"></i> Open Overdue CTAs in Gainsight</button>'
+          + '<div class="rcp-card-l">Protect &mdash; Overdue CTAs: 2</div>'
+          + '<div class="rcp-card-t">Overdue CTAs: 2</div>'
+          + '<div class="rcp-card-b">NovaVault and Brightex both have overdue CTAs. Update before EOD.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpOverdueCTAs()"><i class="ti ti-list-check"></i> Open Overdue CTAs in Gainsight &rarr;</button>'
         + '</div>'
       + '</div>'
       + '<div class="rcp-dust-ft">Dust analysis &middot; Gainsight + Salesforce &middot; Updated today 9:00 AM &middot; Refreshes daily</div>'
     + '</div>';
 
-  // v3.2.1 — Notes & Reflection panel appended below the Dust recommendation
-  // panel. Populated from localStorage on render.
+  // Notes & Reflection panel — populated from localStorage on render.
   if (typeof _rcpNotesHTML === 'function') h += _rcpNotesHTML();
 
   document.getElementById('recipe-root').innerHTML = h;
 
-  // After innerHTML write, populate the dynamic notes list.
   if (typeof _rcpNotesRenderList === 'function') _rcpNotesRenderList();
+  if (typeof _rcpNotesUpdateCount === 'function') _rcpNotesUpdateCount();
 }
 
 function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority accounts &middot; Opens in Mission Briefing ✓'); }
@@ -5705,6 +6144,20 @@ function _rcpWriteNotes(arr) {
   try { localStorage.setItem(RCP_NOTES_KEY, JSON.stringify(arr)); } catch (e) {}
 }
 
+// v3.2.3 — context-aware placeholder driven by red metrics. EBRs and overdue
+// CTAs are both red in the demo data; per spec, EBRs win (larger weight).
+function _rcpNotesPlaceholder() {
+  var ebrRed = true;
+  var ctaOverdueCount = 2;
+  if (ebrRed) return 'Your EBR coverage is your biggest gap this week. What’s your plan to close it?';
+  if (ctaOverdueCount > 0) return ctaOverdueCount + ' CTAs are overdue. What’s blocking you from closing them?';
+  return 'What’s driving your score this week?';
+}
+
+// v3.2.3 — currently-selected viewing quarter for the history list.
+var _rcpViewQuarter = 'Q2 2026';
+var RCP_QUARTERS = ['Q2 2026','Q1 2026','Q4 2025','Q3 2025'];
+
 function _rcpNotesHTML() {
   var cats = ['Success Plans','Growth','Renewals','EBRs','Advocacy','General']; // categories for NEW notes (no "All" here)
   var filterCats = RCP_NOTES_CATS; // includes "All" for the filter
@@ -5716,28 +6169,61 @@ function _rcpNotesHTML() {
     var on = (c === _rcpNotesFilterCat) ? ' on' : '';
     return '<button class="rcp-notes-cat' + on + '" type="button" onclick="_rcpNotesSetFilter(\'' + c + '\')">' + c + '</button>';
   }).join('');
+  var quarterOpts = RCP_QUARTERS.map(function(q){
+    var sel = (q === _rcpViewQuarter) ? ' selected' : '';
+    var lbl = (q === RCP_NOTES_QUARTER) ? (q + ' (current)') : q;
+    return '<option value="' + q + '"' + sel + '>' + lbl + '</option>';
+  }).join('');
   return ''
-    + '<div class="rcp-notes">'
+    + '<div class="rcp-notes" id="rcp-notes-anchor">'
       + '<div class="rcp-notes-hd"><i class="ti ti-notes"></i> Notes &amp; Reflection <span class="rcp-notes-hd-q">' + RCP_NOTES_QUARTER + '</span></div>'
       + '<div class="rcp-notes-input">'
-        + '<textarea id="rcp-notes-ta" class="rcp-notes-ta" placeholder="What&rsquo;s driving your score this week? What&rsquo;s in the way? What will you do differently?"></textarea>'
+        + '<textarea id="rcp-notes-ta" class="rcp-notes-ta" placeholder="' + _rcpNotesPlaceholder() + '"></textarea>'
         + '<div class="rcp-notes-cats" id="rcp-notes-cats">' + catBtns + '</div>'
         + '<button class="rcp-notes-save" type="button" onclick="_rcpNotesSave()"><i class="ti ti-circle-check"></i> Save Note</button>'
       + '</div>'
-      + '<div class="rcp-notes-hist-hd">'
-        + '<div class="rcp-notes-hist-t">Saved notes &middot; ' + RCP_NOTES_QUARTER + '</div>'
-        + '<button class="rcp-notes-clear" type="button" onclick="_rcpNotesAskClear()">Clear all notes</button>'
+      + '<button class="rcp-history-toggle" id="rcp-history-toggle" type="button" onclick="_rcpToggleHistory()" aria-expanded="false">View note history <i class="ti ti-chevron-down chev"></i></button>'
+      + '<div class="rcp-history-body" id="rcp-history-body">'
+        + '<div class="rcp-notes-tools">'
+          + '<div class="rcp-notes-hist-t">Saved notes</div>'
+          + '<select class="rcp-quarter-sel" id="rcp-quarter-sel" onchange="_rcpQuarterChange(this.value)" aria-label="Select quarter">' + quarterOpts + '</select>'
+        + '</div>'
+        + '<div class="rcp-notes-cats" style="margin-bottom:10px">' + filterBtns + '</div>'
+        + '<div class="rcp-notes-list" id="rcp-notes-list"></div>'
       + '</div>'
-      + '<div class="rcp-notes-confirm" id="rcp-notes-confirm">'
-        + '<span>Clear all ' + RCP_NOTES_QUARTER + ' notes? This cannot be undone.</span>'
-        + '<span class="rcp-notes-confirm-acts">'
-          + '<button class="rcp-notes-confirm-btn no" type="button" onclick="_rcpNotesConfirmHide()">Cancel</button>'
-          + '<button class="rcp-notes-confirm-btn yes" type="button" onclick="_rcpNotesClearAll()">Yes, clear</button>'
-        + '</span>'
-      + '</div>'
-      + '<div class="rcp-notes-cats" style="margin-bottom:10px">' + filterBtns + '</div>'
-      + '<div class="rcp-notes-list" id="rcp-notes-list"></div>'
     + '</div>';
+}
+
+function _rcpScrollToNotes() {
+  var el = document.getElementById('rcp-notes-anchor');
+  if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function _rcpToggleHistory() {
+  var btn  = document.getElementById('rcp-history-toggle');
+  var body = document.getElementById('rcp-history-body');
+  if (!btn || !body) return;
+  var on = !body.classList.contains('on');
+  body.classList.toggle('on', on);
+  btn.classList.toggle('on', on);
+  btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+}
+
+function _rcpQuarterChange(q) {
+  _rcpViewQuarter = q;
+  _rcpNotesRenderList();
+}
+
+function _rcpNotesCurrentCount() {
+  try {
+    var notes = _rcpReadNotes();
+    return notes.filter(function(n){ return n.quarter === RCP_NOTES_QUARTER; }).length;
+  } catch (e) { return 0; }
+}
+
+function _rcpNotesUpdateCount() {
+  var el = document.getElementById('rcp-notes-count');
+  if (el) el.textContent = String(_rcpNotesCurrentCount());
 }
 
 function _rcpNotesSetCat(cat) {
@@ -5778,22 +6264,8 @@ function _rcpNotesSave() {
   _rcpWriteNotes(notes);
   ta.value = '';
   _rcpNotesRenderList();
+  _rcpNotesUpdateCount();
   toast('Note saved &middot; ' + RCP_NOTES_QUARTER + ' ✓');
-}
-
-function _rcpNotesAskClear() {
-  var c = document.getElementById('rcp-notes-confirm');
-  if (c) c.classList.add('on');
-}
-function _rcpNotesConfirmHide() {
-  var c = document.getElementById('rcp-notes-confirm');
-  if (c) c.classList.remove('on');
-}
-function _rcpNotesClearAll() {
-  _rcpWriteNotes([]);
-  _rcpNotesConfirmHide();
-  _rcpNotesRenderList();
-  toast('All ' + RCP_NOTES_QUARTER + ' notes cleared ✓');
 }
 
 function _rcpNotesEscape(s) {
@@ -5804,11 +6276,22 @@ function _rcpNotesRenderList() {
   var list = document.getElementById('rcp-notes-list');
   if (!list) return;
   var notes = _rcpReadNotes();
+  // Filter to the viewing quarter first. Older quarters have no demo data,
+  // so a non-current selection just shows the empty-state message.
+  notes = notes.filter(function(n){ return n.quarter === _rcpViewQuarter; });
   if (_rcpNotesFilterCat !== 'All') {
     notes = notes.filter(function(n){ return n.category === _rcpNotesFilterCat; });
   }
   if (!notes.length) {
-    list.innerHTML = '<div class="rcp-notes-empty">' + (_rcpNotesFilterCat === 'All' ? 'No notes yet this quarter. Add your first reflection.' : 'No notes in &ldquo;' + _rcpNotesEscape(_rcpNotesFilterCat) + '&rdquo; for this quarter.') + '</div>';
+    var msg;
+    if (_rcpViewQuarter !== RCP_NOTES_QUARTER) {
+      msg = 'No notes saved for ' + _rcpNotesEscape(_rcpViewQuarter) + '.';
+    } else if (_rcpNotesFilterCat === 'All') {
+      msg = 'No notes yet this quarter. Add your first reflection.';
+    } else {
+      msg = 'No notes in &ldquo;' + _rcpNotesEscape(_rcpNotesFilterCat) + '&rdquo; for this quarter.';
+    }
+    list.innerHTML = '<div class="rcp-notes-empty">' + msg + '</div>';
     return;
   }
   list.innerHTML = notes.map(function(n){
@@ -7394,6 +7877,12 @@ document.addEventListener('click', function(e){
   }
 });
 
+// v3.2.4 — fire one of the 4 hub agents for the currently-scoped account.
+function _ahFireAgent(kind) {
+  var key = _ahNoteAcct || 'acme';
+  if (typeof openAgentDrawer === 'function') openAgentDrawer(kind, key);
+}
+
 function _updateAgentHubAccount(viewId) {
   var hdr = document.getElementById('ah-doc-acct');
   var box = document.getElementById('ah-docs');
@@ -7412,6 +7901,11 @@ function _updateAgentHubAccount(viewId) {
   _ahRenderSnapshot(key);
   _ahRenderQuickLinks(key);
   _ahRenderNotePlaceholder(key);
+
+  // v3.2.4 — refresh the "Agents · [account]" section header so the CSM
+  // always sees which account the 4 hub agents will fire for.
+  var agentsAcct = document.getElementById('ah-agents-acct');
+  if (agentsAcct) agentsAcct.textContent = ((AH_SNAP[key] && AH_SNAP[key].lbl) || ACCT_LBL[key] || '').toUpperCase();
 
   // Existing v2.5.0 behavior — Recent Docs section
   hdr.textContent = (ACCT_LBL[key] || '').toUpperCase();
