@@ -282,6 +282,41 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .en-foot{font-size:10px;color:var(--tx3);font-style:italic;text-align:center;padding:12px;background:var(--surf);border:1px dashed var(--bd2);border-radius:var(--rlg);display:flex;align-items:center;justify-content:center;gap:7px;line-height:1.5}
 .en-foot i{font-size:13px;color:var(--bl);flex-shrink:0}
 
+/* Assistant Quick Chat (v3.0.2) — replaces the "no agent loaded yet" empty state */
+.qc-hd{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.qc-hd i{font-size:14px;color:var(--tl)}
+.qc-hd-src{color:var(--tx3);font-weight:600;letter-spacing:.04em}
+.qc-chips{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px}
+.qc-chip{font-size:11px;font-weight:600;padding:9px 10px;border-radius:7px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all .1s;text-align:left;line-height:1.25}
+.qc-chip:hover{background:rgba(24,165,117,.06);border-color:var(--tl);color:var(--tl-dk)}
+.qc-chip i{font-size:13px;color:var(--tl);flex-shrink:0}
+.qc-chat{display:flex;flex-direction:column;gap:9px;min-height:120px}
+.qc-examples{padding:10px 0;display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--tx3);font-style:italic;line-height:1.5}
+.qc-examples-row{padding:5px 0}
+.qc-msg{max-width:88%;padding:9px 12px;border-radius:11px;font-size:12px;line-height:1.55;display:flex;gap:7px;align-items:flex-start;word-wrap:break-word;white-space:pre-wrap}
+.qc-msg-bot{align-self:flex-start;background:var(--surf2);color:var(--tx);border-bottom-left-radius:3px}
+.qc-msg-bot i.qc-bot-ic{color:var(--tl);font-size:13px;flex-shrink:0;margin-top:1px}
+.qc-msg-user{align-self:flex-end;background:var(--tl);color:#fff;border-bottom-right-radius:3px}
+.qc-msg-load{align-self:flex-start;background:var(--surf2);color:var(--tx2);padding:9px 14px;border-radius:11px;border-bottom-left-radius:3px;font-size:14px;letter-spacing:3px;font-weight:700;animation:qc-pulse 1.4s infinite}
+@keyframes qc-pulse{0%,100%{opacity:.45}50%{opacity:1}}
+.qc-msg-err{align-self:flex-start;background:var(--am-bg);color:var(--am-dk);border-left:3px solid var(--am);padding:9px 12px;border-radius:8px;font-size:11px;line-height:1.5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.qc-msg-err a{color:var(--am-dk);font-weight:700;text-decoration:underline;cursor:pointer;font-family:inherit}
+.qc-acts{align-self:flex-start;display:flex;gap:5px;margin-top:-3px;margin-left:24px;flex-wrap:wrap}
+.qc-act{font-size:10px;font-weight:600;padding:4px 8px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx3);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s}
+.qc-act:hover{background:var(--surf2);border-color:var(--tx2);color:var(--tx)}
+.qc-act i{font-size:11px}
+.qc-limit{align-self:center;padding:8px 12px;font-size:11px;color:var(--tx3);font-style:italic;display:flex;align-items:center;gap:6px}
+.qc-limit a{color:var(--tl);font-weight:700;cursor:pointer;text-decoration:none}
+.qc-limit a:hover{text-decoration:underline}
+
+.qc-input{display:flex;align-items:center;gap:7px;width:100%}
+.qc-input input{flex:1;border:1px solid var(--bd2);border-radius:7px;padding:9px 11px;font-family:inherit;font-size:12px;color:var(--tx);background:var(--surf2);outline:none;transition:border-color .1s;min-width:0}
+.qc-input input:focus{border-color:var(--tl);background:var(--surf)}
+.qc-input input::placeholder{color:var(--tx3)}
+.qc-input-send{background:var(--tl);color:#fff;border:none;border-radius:7px;padding:9px 13px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;flex-shrink:0}
+.qc-input-send:hover{background:var(--tl-md)}
+.qc-input-send i{font-size:13px}
+
 /* My Accounts tab (v3.0.0) — live AI account workspace */
 .ma-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;padding:20px 28px;align-items:start}
 .ma-side{display:flex;flex-direction:column;gap:14px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px;position:sticky;top:88px}
@@ -3512,6 +3547,266 @@ function _maSnapLine(snap) {
   return 'Health: ' + snap.health + ' · ' + snap.band + ' · Renewal ' + snap.renewal + ' · ' + snap.daysOut + ' · ' + snap.arr + ' · Seats ' + snap.seats + (snap.active ? ' (' + snap.active + ' active' + (snap.churned !== '—' && snap.churned !== '0' ? ', ' + snap.churned + ' churned' : '') + ')' : '') + ' · Last Gong ' + snap.gongDate + ' — ' + snap.gongSignal + ' · Open CTAs: ' + snap.ctas + ' · Last touch ' + snap.lastTouch + ' · ' + snap.channel;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// Assistant Quick Chat (v3.0.2) — replaces the empty drawer state with a
+// live AI chat. Same /api/anthropic proxy pattern as My Accounts, with a
+// session-scope conversation history and a mock fallback.
+// ═══════════════════════════════════════════════════════════════════════════
+var QC_SYSTEM = "You are a Customer Success assistant for a CSM at 1Password named Carmen. You have deep knowledge of 1Password's product, pricing, and security features. You also understand B2B SaaS customer success workflows. Your job is to give Carmen fast, accurate answers she can act on immediately — especially content she can copy directly into customer emails.\n\nCurrent context: Carmen is managing accounts including Acme Corp (healthy, QBR today, SSO interest), Brightex Inc (at risk, SLA question open, renews in 31 days), and NovaVault (critical, champion departed, 17 days to renewal).\n\nKeep responses concise and professional. When drafting customer-facing content, write in a warm but direct tone appropriate for enterprise B2B. Never reveal internal account health scores or churn probabilities in customer-facing drafts.";
+
+var QC_MAX_EXCHANGES = 10; // exchanges = user/assistant pairs
+var _qcHistory = []; // [{ role:'user'|'assistant', content:'...' }, ...]
+var _qcContacts = { acme:'David Kim', brightex:'Sarah Chen', nova:'Michael Torres' };
+
+var QC_CHIPS = [
+  { ic:'ti-lock',     lbl:'1Password Features',  fill:'Explain [feature] and how it benefits enterprise IT teams: ' },
+  { ic:'ti-file-text',lbl:'SLA & Pricing',       fill:'What is included in the 1Password [Business/Enterprise] SLA for: ' },
+  { ic:'ti-mail',     lbl:'Draft for Customer',  fill:'Draft a short, professional response to a customer asking about: ' },
+  { ic:'ti-search',   lbl:'Account Context',     fill:'Based on what you know about my current account, help me with: ' }
+];
+
+var QC_EXAMPLES = [
+  "Try: What's the uptime SLA for 1Password Business?",
+  "Try: Draft a reply explaining how 1Password handles SSO with Okta",
+  "Try: What features distinguish Business from Enterprise tier?"
+];
+
+function _qcEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _qcActiveContact() {
+  var acct = (_drawerCtx && _drawerCtx.acct) || window._activeAccount;
+  return _qcContacts[acct] || '[Contact name]';
+}
+
+// Reuses the v3.0.0 /api/anthropic proxy. Sends the full conversation history
+// so the chat has memory. Falls back to a mock reply if the proxy isn't
+// reachable — UI stays usable without a live API.
+async function _qcCallAnthropic(history, mockFn) {
+  var controller = (typeof AbortController === 'function') ? new AbortController() : null;
+  var timer = controller ? setTimeout(function(){ controller.abort(); }, MA_API_TIMEOUT) : null;
+  try {
+    var res = await fetch(MA_API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MA_MODEL,
+        max_tokens: 1000,
+        system: QC_SYSTEM,
+        messages: history
+      }),
+      signal: controller ? controller.signal : undefined
+    });
+    if (timer) clearTimeout(timer);
+    if (!res.ok) throw new Error('proxy ' + res.status);
+    var j = await res.json();
+    var text = (j && j.content && j.content[0] && j.content[0].text) || '';
+    if (!text) throw new Error('empty');
+    return { text: text, live: true };
+  } catch (e) {
+    if (timer) clearTimeout(timer);
+    return { text: mockFn(), live: false };
+  }
+}
+
+function _qcRender() {
+  var scroll = document.getElementById('drawer-scroll');
+  var ft = document.getElementById('drawer-ft');
+  var t = document.getElementById('drawer-title');
+  var s = document.getElementById('drawer-sub');
+  if (t) t.textContent = 'Assistant';
+  if (s) s.textContent = 'Quick chat with Dust AI';
+  if (!scroll || !ft) return;
+
+  var chipsHtml = QC_CHIPS.map(function(c, i){
+    return '<button class="qc-chip" type="button" onclick="_qcChipFill(' + i + ')"><i class="ti ' + c.ic + '"></i>' + c.lbl + '</button>';
+  }).join('');
+
+  scroll.innerHTML = ''
+    + '<div class="qc-hd"><i class="ti ti-bolt"></i> Quick Chat <span class="qc-hd-src">&middot; Powered by Dust AI</span></div>'
+    + '<div class="qc-chips">' + chipsHtml + '</div>'
+    + '<div class="qc-chat" id="qc-chat"></div>';
+
+  ft.innerHTML = ''
+    + '<form class="qc-input" onsubmit="return _qcSend(event)">'
+      + '<input id="qc-input-fld" type="text" autocomplete="off" placeholder="Ask anything about 1Password or your accounts&hellip;" aria-label="Quick chat message" />'
+      + '<button class="qc-input-send" type="submit">Send <i class="ti ti-arrow-right"></i></button>'
+    + '</form>';
+
+  _qcRenderMessages();
+  setTimeout(function(){
+    var f = document.getElementById('qc-input-fld');
+    if (f) f.focus();
+  }, 80);
+}
+
+function _qcRenderMessages() {
+  var chat = document.getElementById('qc-chat');
+  if (!chat) return;
+  if (!_qcHistory.length) {
+    chat.innerHTML = '<div class="qc-examples">'
+      + QC_EXAMPLES.map(function(e){ return '<div class="qc-examples-row">' + _qcEscape(e) + '</div>'; }).join('')
+      + '</div>';
+    return;
+  }
+  var html = '';
+  _qcHistory.forEach(function(m, idx) {
+    if (m.role === 'user') {
+      html += '<div class="qc-msg qc-msg-user">' + _qcEscape(m.content) + '</div>';
+    } else if (m.role === 'assistant') {
+      html += '<div class="qc-msg qc-msg-bot"><i class="ti ti-robot qc-bot-ic"></i><div class="qc-msg-txt" data-qc-idx="' + idx + '">' + _qcEscape(m.content) + '</div></div>';
+      html += '<div class="qc-acts">'
+        + '<button class="qc-act" type="button" onclick="_qcCopy(' + idx + ')"><i class="ti ti-copy"></i> Copy</button>'
+        + '<button class="qc-act" type="button" onclick="_qcCopyEmail(' + idx + ')"><i class="ti ti-mail"></i> Copy for Email</button>'
+        + '</div>';
+    } else if (m.role === 'error') {
+      html += '<div class="qc-msg-err"><i class="ti ti-alert-triangle"></i> Dust is unavailable &middot; Check connection and retry <a onclick="_qcRetry()">[Retry]</a></div>';
+    }
+  });
+  // Hit the per-session exchange cap → offer a fresh start.
+  var exchanges = _qcHistory.filter(function(m){ return m.role === 'user'; }).length;
+  if (exchanges >= QC_MAX_EXCHANGES) {
+    html += '<div class="qc-limit">Session limit reached &middot; <a onclick="_qcClear()">Start a new chat to continue &rarr;</a></div>';
+  }
+  chat.innerHTML = html;
+  chat.scrollTop = chat.scrollHeight;
+  // Also scroll the drawer-scroll container so latest is visible.
+  var sc = document.getElementById('drawer-scroll');
+  if (sc) sc.scrollTop = sc.scrollHeight;
+}
+
+function _qcChipFill(idx) {
+  var c = QC_CHIPS[idx];
+  if (!c) return;
+  var f = document.getElementById('qc-input-fld');
+  if (f) { f.value = c.fill; f.focus(); }
+}
+
+function _qcAppendLoading() {
+  var chat = document.getElementById('qc-chat');
+  if (!chat) return;
+  // Remove any prior loading bubble first
+  var prior = chat.querySelector('.qc-msg-load');
+  if (prior) prior.remove();
+  var n = document.createElement('div');
+  n.className = 'qc-msg qc-msg-load';
+  n.innerHTML = '🤖&nbsp;···';
+  chat.appendChild(n);
+  chat.scrollTop = chat.scrollHeight;
+  var sc = document.getElementById('drawer-scroll');
+  if (sc) sc.scrollTop = sc.scrollHeight;
+}
+
+function _qcRemoveLoading() {
+  var chat = document.getElementById('qc-chat');
+  if (!chat) return;
+  var n = chat.querySelector('.qc-msg-load');
+  if (n) n.remove();
+}
+
+function _qcSend(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var f = document.getElementById('qc-input-fld');
+  if (!f) return false;
+  var msg = (f.value || '').trim();
+  if (!msg) return false;
+  var exchanges = _qcHistory.filter(function(m){ return m.role === 'user'; }).length;
+  if (exchanges >= QC_MAX_EXCHANGES) return false;
+  _qcHistory.push({ role:'user', content: msg });
+  f.value = '';
+  _qcRenderMessages();
+  _qcAppendLoading();
+
+  // Strip any prior error bubbles from the history before sending — Anthropic
+  // only accepts user/assistant roles.
+  var clean = _qcHistory.filter(function(m){ return m.role === 'user' || m.role === 'assistant'; });
+  _qcCallAnthropic(clean, function(){ return _qcMockReply(msg); }).then(function(r){
+    _qcRemoveLoading();
+    _qcHistory.push({ role:'assistant', content: r.text, live: r.live });
+    _qcRenderMessages();
+  }).catch(function(){
+    _qcRemoveLoading();
+    _qcHistory.push({ role:'error', content:'' });
+    _qcRenderMessages();
+  });
+  return false;
+}
+
+function _qcRetry() {
+  while (_qcHistory.length && _qcHistory[_qcHistory.length-1].role === 'error') _qcHistory.pop();
+  if (!_qcHistory.length) { _qcRenderMessages(); return; }
+  var last = _qcHistory[_qcHistory.length-1];
+  if (last.role !== 'user') { _qcRenderMessages(); return; }
+  _qcRenderMessages();
+  _qcAppendLoading();
+  var clean = _qcHistory.filter(function(m){ return m.role === 'user' || m.role === 'assistant'; });
+  _qcCallAnthropic(clean, function(){ return _qcMockReply(last.content); }).then(function(r){
+    _qcRemoveLoading();
+    _qcHistory.push({ role:'assistant', content: r.text, live: r.live });
+    _qcRenderMessages();
+  });
+}
+
+function _qcClear() {
+  _qcHistory = [];
+  _qcRenderMessages();
+}
+
+function _qcCopy(idx) {
+  var m = _qcHistory[idx];
+  if (!m || m.role !== 'assistant') return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(m.content).catch(function(){});
+  }
+  toast('Copied ✓');
+}
+
+function _qcCopyEmail(idx) {
+  var m = _qcHistory[idx];
+  if (!m || m.role !== 'assistant') return;
+  var contact = _qcActiveContact();
+  var wrapped = 'Hi ' + contact + ',\n\n' + m.content + '\n\nPlease let me know if you have any questions — happy to jump on a call.\n\nBest,\nCarmen';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(wrapped).catch(function(){});
+  }
+  toast('Copied as email draft ✓');
+}
+
+// Deterministic mock used when the /api/anthropic proxy isn't reachable.
+function _qcMockReply(userMsg) {
+  var q = userMsg.toLowerCase();
+  if (q.indexOf('sla') !== -1 || q.indexOf('uptime') !== -1 || q.indexOf('pricing') !== -1) {
+    return "Here's the relevant SLA / pricing detail Carmen can hand to a customer:\n\n"
+      + "• 1Password Business and Enterprise both carry a 99.99% uptime SLA on a rolling 12-month measurement window.\n"
+      + "• Service credits apply at the contracted tier (5% / 10% / 25% of monthly fees) based on the severity of any breach.\n"
+      + "• Enterprise-only adds named technical contact access and a 4-hour response time for P1 incidents.\n\n"
+      + "If the customer is comparing tiers for a renewal conversation, the response-time guarantee is usually the difference that matters most for IT-led buying committees.";
+  }
+  if (q.indexOf('sso') !== -1 || q.indexOf('okta') !== -1 || q.indexOf('integration') !== -1) {
+    return "1Password's SSO integration with Okta works through SCIM 2.0 for user provisioning plus SAML 2.0 for authentication. The setup takes a customer roughly 30 minutes once they have admin access on both sides.\n\n"
+      + "What it gives them: automated user provisioning + deprovisioning (so headcount changes flow through automatically), centralized access policies, and audit logs that consolidate to their SIEM.\n\n"
+      + "If the customer is asking specifically about Okta, the most common blocker is the SCIM scope on their Okta tenant — IT teams sometimes need to request elevated permissions before they can complete the bridge. Worth flagging early.";
+  }
+  if (q.indexOf('draft') !== -1 || q.indexOf('reply') !== -1 || q.indexOf('email') !== -1 || q.indexOf('respond') !== -1) {
+    return "Here's a draft Carmen can adapt:\n\n"
+      + "Thanks for raising this — happy to walk through it directly.\n\n"
+      + "1Password's approach here is built around the assumption that your team needs minimum-overhead security: the platform handles the heavy lifting (provisioning, audit, policy enforcement) so your IT team can focus on the things only they can do.\n\n"
+      + "Want me to send over the specific configuration steps, or would a 15-minute screen-share be faster? Either works.\n\n"
+      + "Best,\nCarmen";
+  }
+  if (q.indexOf('business') !== -1 && q.indexOf('enterprise') !== -1) {
+    return "Business and Enterprise share the same core security and password-management capability. The differences are operational:\n\n"
+      + "• Enterprise adds advanced reporting (custom audit windows, exports to SIEM), a named technical contact, and quarterly business reviews with a dedicated CSM.\n"
+      + "• Enterprise SCIM and SSO support extends to more identity providers (Azure AD, Okta, OneLogin, Ping) with deeper attribute mapping.\n"
+      + "• 4-hour P1 response time vs Business's standard support window.\n\n"
+      + "Most teams cross over to Enterprise when they hit ~250+ seats or when their security team starts asking for formal incident-response SLAs.";
+  }
+  return "Quick take based on what I know: there are a few ways Carmen could approach this, and the right one depends on whether she's pulling this together for an internal note or a customer-facing reply.\n\n"
+    + "If it's for a customer email, lead with the outcome they care about — security posture, simplicity, time saved — and tie the specific feature back to that outcome. If it's internal, you can be more direct about the technical detail.\n\n"
+    + "Want me to draft both versions, or pick a direction? (This is a Phase 1 prototype response — live Anthropic API connects via /api/anthropic in Phase 2.)";
+}
+
 // ── Snapshot for unknown book accounts (mock generator) ─────────────────────
 function _maGenerateBookSnapshot(name) {
   // Deterministic stub so the same name produces the same placeholder snap
@@ -4863,6 +5158,266 @@ function _maSnapLine(snap) {
   return 'Health: ' + snap.health + ' · ' + snap.band + ' · Renewal ' + snap.renewal + ' · ' + snap.daysOut + ' · ' + snap.arr + ' · Seats ' + snap.seats + (snap.active ? ' (' + snap.active + ' active' + (snap.churned !== '—' && snap.churned !== '0' ? ', ' + snap.churned + ' churned' : '') + ')' : '') + ' · Last Gong ' + snap.gongDate + ' — ' + snap.gongSignal + ' · Open CTAs: ' + snap.ctas + ' · Last touch ' + snap.lastTouch + ' · ' + snap.channel;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// Assistant Quick Chat (v3.0.2) — replaces the empty drawer state with a
+// live AI chat. Same /api/anthropic proxy pattern as My Accounts, with a
+// session-scope conversation history and a mock fallback.
+// ═══════════════════════════════════════════════════════════════════════════
+var QC_SYSTEM = "You are a Customer Success assistant for a CSM at 1Password named Carmen. You have deep knowledge of 1Password's product, pricing, and security features. You also understand B2B SaaS customer success workflows. Your job is to give Carmen fast, accurate answers she can act on immediately — especially content she can copy directly into customer emails.\n\nCurrent context: Carmen is managing accounts including Acme Corp (healthy, QBR today, SSO interest), Brightex Inc (at risk, SLA question open, renews in 31 days), and NovaVault (critical, champion departed, 17 days to renewal).\n\nKeep responses concise and professional. When drafting customer-facing content, write in a warm but direct tone appropriate for enterprise B2B. Never reveal internal account health scores or churn probabilities in customer-facing drafts.";
+
+var QC_MAX_EXCHANGES = 10; // exchanges = user/assistant pairs
+var _qcHistory = []; // [{ role:'user'|'assistant', content:'...' }, ...]
+var _qcContacts = { acme:'David Kim', brightex:'Sarah Chen', nova:'Michael Torres' };
+
+var QC_CHIPS = [
+  { ic:'ti-lock',     lbl:'1Password Features',  fill:'Explain [feature] and how it benefits enterprise IT teams: ' },
+  { ic:'ti-file-text',lbl:'SLA & Pricing',       fill:'What is included in the 1Password [Business/Enterprise] SLA for: ' },
+  { ic:'ti-mail',     lbl:'Draft for Customer',  fill:'Draft a short, professional response to a customer asking about: ' },
+  { ic:'ti-search',   lbl:'Account Context',     fill:'Based on what you know about my current account, help me with: ' }
+];
+
+var QC_EXAMPLES = [
+  "Try: What's the uptime SLA for 1Password Business?",
+  "Try: Draft a reply explaining how 1Password handles SSO with Okta",
+  "Try: What features distinguish Business from Enterprise tier?"
+];
+
+function _qcEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _qcActiveContact() {
+  var acct = (_drawerCtx && _drawerCtx.acct) || window._activeAccount;
+  return _qcContacts[acct] || '[Contact name]';
+}
+
+// Reuses the v3.0.0 /api/anthropic proxy. Sends the full conversation history
+// so the chat has memory. Falls back to a mock reply if the proxy isn't
+// reachable — UI stays usable without a live API.
+async function _qcCallAnthropic(history, mockFn) {
+  var controller = (typeof AbortController === 'function') ? new AbortController() : null;
+  var timer = controller ? setTimeout(function(){ controller.abort(); }, MA_API_TIMEOUT) : null;
+  try {
+    var res = await fetch(MA_API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MA_MODEL,
+        max_tokens: 1000,
+        system: QC_SYSTEM,
+        messages: history
+      }),
+      signal: controller ? controller.signal : undefined
+    });
+    if (timer) clearTimeout(timer);
+    if (!res.ok) throw new Error('proxy ' + res.status);
+    var j = await res.json();
+    var text = (j && j.content && j.content[0] && j.content[0].text) || '';
+    if (!text) throw new Error('empty');
+    return { text: text, live: true };
+  } catch (e) {
+    if (timer) clearTimeout(timer);
+    return { text: mockFn(), live: false };
+  }
+}
+
+function _qcRender() {
+  var scroll = document.getElementById('drawer-scroll');
+  var ft = document.getElementById('drawer-ft');
+  var t = document.getElementById('drawer-title');
+  var s = document.getElementById('drawer-sub');
+  if (t) t.textContent = 'Assistant';
+  if (s) s.textContent = 'Quick chat with Dust AI';
+  if (!scroll || !ft) return;
+
+  var chipsHtml = QC_CHIPS.map(function(c, i){
+    return '<button class="qc-chip" type="button" onclick="_qcChipFill(' + i + ')"><i class="ti ' + c.ic + '"></i>' + c.lbl + '</button>';
+  }).join('');
+
+  scroll.innerHTML = ''
+    + '<div class="qc-hd"><i class="ti ti-bolt"></i> Quick Chat <span class="qc-hd-src">&middot; Powered by Dust AI</span></div>'
+    + '<div class="qc-chips">' + chipsHtml + '</div>'
+    + '<div class="qc-chat" id="qc-chat"></div>';
+
+  ft.innerHTML = ''
+    + '<form class="qc-input" onsubmit="return _qcSend(event)">'
+      + '<input id="qc-input-fld" type="text" autocomplete="off" placeholder="Ask anything about 1Password or your accounts&hellip;" aria-label="Quick chat message" />'
+      + '<button class="qc-input-send" type="submit">Send <i class="ti ti-arrow-right"></i></button>'
+    + '</form>';
+
+  _qcRenderMessages();
+  setTimeout(function(){
+    var f = document.getElementById('qc-input-fld');
+    if (f) f.focus();
+  }, 80);
+}
+
+function _qcRenderMessages() {
+  var chat = document.getElementById('qc-chat');
+  if (!chat) return;
+  if (!_qcHistory.length) {
+    chat.innerHTML = '<div class="qc-examples">'
+      + QC_EXAMPLES.map(function(e){ return '<div class="qc-examples-row">' + _qcEscape(e) + '</div>'; }).join('')
+      + '</div>';
+    return;
+  }
+  var html = '';
+  _qcHistory.forEach(function(m, idx) {
+    if (m.role === 'user') {
+      html += '<div class="qc-msg qc-msg-user">' + _qcEscape(m.content) + '</div>';
+    } else if (m.role === 'assistant') {
+      html += '<div class="qc-msg qc-msg-bot"><i class="ti ti-robot qc-bot-ic"></i><div class="qc-msg-txt" data-qc-idx="' + idx + '">' + _qcEscape(m.content) + '</div></div>';
+      html += '<div class="qc-acts">'
+        + '<button class="qc-act" type="button" onclick="_qcCopy(' + idx + ')"><i class="ti ti-copy"></i> Copy</button>'
+        + '<button class="qc-act" type="button" onclick="_qcCopyEmail(' + idx + ')"><i class="ti ti-mail"></i> Copy for Email</button>'
+        + '</div>';
+    } else if (m.role === 'error') {
+      html += '<div class="qc-msg-err"><i class="ti ti-alert-triangle"></i> Dust is unavailable &middot; Check connection and retry <a onclick="_qcRetry()">[Retry]</a></div>';
+    }
+  });
+  // Hit the per-session exchange cap → offer a fresh start.
+  var exchanges = _qcHistory.filter(function(m){ return m.role === 'user'; }).length;
+  if (exchanges >= QC_MAX_EXCHANGES) {
+    html += '<div class="qc-limit">Session limit reached &middot; <a onclick="_qcClear()">Start a new chat to continue &rarr;</a></div>';
+  }
+  chat.innerHTML = html;
+  chat.scrollTop = chat.scrollHeight;
+  // Also scroll the drawer-scroll container so latest is visible.
+  var sc = document.getElementById('drawer-scroll');
+  if (sc) sc.scrollTop = sc.scrollHeight;
+}
+
+function _qcChipFill(idx) {
+  var c = QC_CHIPS[idx];
+  if (!c) return;
+  var f = document.getElementById('qc-input-fld');
+  if (f) { f.value = c.fill; f.focus(); }
+}
+
+function _qcAppendLoading() {
+  var chat = document.getElementById('qc-chat');
+  if (!chat) return;
+  // Remove any prior loading bubble first
+  var prior = chat.querySelector('.qc-msg-load');
+  if (prior) prior.remove();
+  var n = document.createElement('div');
+  n.className = 'qc-msg qc-msg-load';
+  n.innerHTML = '🤖&nbsp;···';
+  chat.appendChild(n);
+  chat.scrollTop = chat.scrollHeight;
+  var sc = document.getElementById('drawer-scroll');
+  if (sc) sc.scrollTop = sc.scrollHeight;
+}
+
+function _qcRemoveLoading() {
+  var chat = document.getElementById('qc-chat');
+  if (!chat) return;
+  var n = chat.querySelector('.qc-msg-load');
+  if (n) n.remove();
+}
+
+function _qcSend(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var f = document.getElementById('qc-input-fld');
+  if (!f) return false;
+  var msg = (f.value || '').trim();
+  if (!msg) return false;
+  var exchanges = _qcHistory.filter(function(m){ return m.role === 'user'; }).length;
+  if (exchanges >= QC_MAX_EXCHANGES) return false;
+  _qcHistory.push({ role:'user', content: msg });
+  f.value = '';
+  _qcRenderMessages();
+  _qcAppendLoading();
+
+  // Strip any prior error bubbles from the history before sending — Anthropic
+  // only accepts user/assistant roles.
+  var clean = _qcHistory.filter(function(m){ return m.role === 'user' || m.role === 'assistant'; });
+  _qcCallAnthropic(clean, function(){ return _qcMockReply(msg); }).then(function(r){
+    _qcRemoveLoading();
+    _qcHistory.push({ role:'assistant', content: r.text, live: r.live });
+    _qcRenderMessages();
+  }).catch(function(){
+    _qcRemoveLoading();
+    _qcHistory.push({ role:'error', content:'' });
+    _qcRenderMessages();
+  });
+  return false;
+}
+
+function _qcRetry() {
+  while (_qcHistory.length && _qcHistory[_qcHistory.length-1].role === 'error') _qcHistory.pop();
+  if (!_qcHistory.length) { _qcRenderMessages(); return; }
+  var last = _qcHistory[_qcHistory.length-1];
+  if (last.role !== 'user') { _qcRenderMessages(); return; }
+  _qcRenderMessages();
+  _qcAppendLoading();
+  var clean = _qcHistory.filter(function(m){ return m.role === 'user' || m.role === 'assistant'; });
+  _qcCallAnthropic(clean, function(){ return _qcMockReply(last.content); }).then(function(r){
+    _qcRemoveLoading();
+    _qcHistory.push({ role:'assistant', content: r.text, live: r.live });
+    _qcRenderMessages();
+  });
+}
+
+function _qcClear() {
+  _qcHistory = [];
+  _qcRenderMessages();
+}
+
+function _qcCopy(idx) {
+  var m = _qcHistory[idx];
+  if (!m || m.role !== 'assistant') return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(m.content).catch(function(){});
+  }
+  toast('Copied ✓');
+}
+
+function _qcCopyEmail(idx) {
+  var m = _qcHistory[idx];
+  if (!m || m.role !== 'assistant') return;
+  var contact = _qcActiveContact();
+  var wrapped = 'Hi ' + contact + ',\n\n' + m.content + '\n\nPlease let me know if you have any questions — happy to jump on a call.\n\nBest,\nCarmen';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(wrapped).catch(function(){});
+  }
+  toast('Copied as email draft ✓');
+}
+
+// Deterministic mock used when the /api/anthropic proxy isn't reachable.
+function _qcMockReply(userMsg) {
+  var q = userMsg.toLowerCase();
+  if (q.indexOf('sla') !== -1 || q.indexOf('uptime') !== -1 || q.indexOf('pricing') !== -1) {
+    return "Here's the relevant SLA / pricing detail Carmen can hand to a customer:\n\n"
+      + "• 1Password Business and Enterprise both carry a 99.99% uptime SLA on a rolling 12-month measurement window.\n"
+      + "• Service credits apply at the contracted tier (5% / 10% / 25% of monthly fees) based on the severity of any breach.\n"
+      + "• Enterprise-only adds named technical contact access and a 4-hour response time for P1 incidents.\n\n"
+      + "If the customer is comparing tiers for a renewal conversation, the response-time guarantee is usually the difference that matters most for IT-led buying committees.";
+  }
+  if (q.indexOf('sso') !== -1 || q.indexOf('okta') !== -1 || q.indexOf('integration') !== -1) {
+    return "1Password's SSO integration with Okta works through SCIM 2.0 for user provisioning plus SAML 2.0 for authentication. The setup takes a customer roughly 30 minutes once they have admin access on both sides.\n\n"
+      + "What it gives them: automated user provisioning + deprovisioning (so headcount changes flow through automatically), centralized access policies, and audit logs that consolidate to their SIEM.\n\n"
+      + "If the customer is asking specifically about Okta, the most common blocker is the SCIM scope on their Okta tenant — IT teams sometimes need to request elevated permissions before they can complete the bridge. Worth flagging early.";
+  }
+  if (q.indexOf('draft') !== -1 || q.indexOf('reply') !== -1 || q.indexOf('email') !== -1 || q.indexOf('respond') !== -1) {
+    return "Here's a draft Carmen can adapt:\n\n"
+      + "Thanks for raising this — happy to walk through it directly.\n\n"
+      + "1Password's approach here is built around the assumption that your team needs minimum-overhead security: the platform handles the heavy lifting (provisioning, audit, policy enforcement) so your IT team can focus on the things only they can do.\n\n"
+      + "Want me to send over the specific configuration steps, or would a 15-minute screen-share be faster? Either works.\n\n"
+      + "Best,\nCarmen";
+  }
+  if (q.indexOf('business') !== -1 && q.indexOf('enterprise') !== -1) {
+    return "Business and Enterprise share the same core security and password-management capability. The differences are operational:\n\n"
+      + "• Enterprise adds advanced reporting (custom audit windows, exports to SIEM), a named technical contact, and quarterly business reviews with a dedicated CSM.\n"
+      + "• Enterprise SCIM and SSO support extends to more identity providers (Azure AD, Okta, OneLogin, Ping) with deeper attribute mapping.\n"
+      + "• 4-hour P1 response time vs Business's standard support window.\n\n"
+      + "Most teams cross over to Enterprise when they hit ~250+ seats or when their security team starts asking for formal incident-response SLAs.";
+  }
+  return "Quick take based on what I know: there are a few ways Carmen could approach this, and the right one depends on whether she's pulling this together for an internal note or a customer-facing reply.\n\n"
+    + "If it's for a customer email, lead with the outcome they care about — security posture, simplicity, time saved — and tie the specific feature back to that outcome. If it's internal, you can be more direct about the technical detail.\n\n"
+    + "Want me to draft both versions, or pick a direction? (This is a Phase 1 prototype response — live Anthropic API connects via /api/anthropic in Phase 2.)";
+}
+
 // ── Snapshot for unknown book accounts (mock generator) ─────────────────────
 function _maGenerateBookSnapshot(name) {
   // Deterministic stub so the same name produces the same placeholder snap
@@ -5762,16 +6317,22 @@ function setDrawerMode(mode, opts) {
         openAgentDrawer(_drawerCtx.lastAgent.type, _drawerCtx.lastAgent.acct);
         return;
       }
-      // Drawer never had agent content this session — show a default prompt
-      // rather than a blank body. Header gets a friendly placeholder too.
-      var t = document.getElementById('drawer-title');
-      var s = document.getElementById('drawer-sub');
-      var scroll = document.getElementById('drawer-scroll');
-      var ft = document.getElementById('drawer-ft');
-      if (t) t.textContent = 'Assistant';
-      if (s) s.textContent = 'No agent loaded yet';
-      if (scroll) scroll.innerHTML = '<div style="padding:32px 18px;text-align:center;color:var(--tx3);font-size:12px;line-height:1.6"><i class="ti ti-sparkles" style="font-size:28px;color:var(--tl);display:block;margin-bottom:12px"></i>Select an agent above or use Quick Launch to load a brief for any account.</div>';
-      if (ft) ft.innerHTML = '';
+      // v3.0.2 — Drawer never had agent content this session → render the
+      // Quick Chat interface instead of the old static "no agent loaded"
+      // placeholder. Quick Chat keeps its own conversation history across
+      // Live/Assistant toggles within the session.
+      if (typeof _qcRender === 'function') {
+        _qcRender();
+      } else {
+        var t = document.getElementById('drawer-title');
+        var s = document.getElementById('drawer-sub');
+        var scroll = document.getElementById('drawer-scroll');
+        var ft = document.getElementById('drawer-ft');
+        if (t) t.textContent = 'Assistant';
+        if (s) s.textContent = 'No agent loaded yet';
+        if (scroll) scroll.innerHTML = '<div style="padding:32px 18px;text-align:center;color:var(--tx3);font-size:12px;line-height:1.6"><i class="ti ti-sparkles" style="font-size:28px;color:var(--tl);display:block;margin-bottom:12px"></i>Select an agent above or use Quick Launch to load a brief for any account.</div>';
+        if (ft) ft.innerHTML = '';
+      }
     }
     _tlCancelSignal();
     return;

@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.0.1
+**Version:** 3.0.2
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,67 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.0.2] — 2026-05-17
+
+Assistant drawer empty state replaced with a live Quick Chat. The user labeled the changelog `[2.11.2]`; shipped as `[3.0.2]` to keep version numbers monotonic. Content matches the user's brief verbatim.
+
+### Replaced — Assistant drawer empty state
+- Old static placeholder ("No agent loaded yet · Select an agent above...") is gone.
+- `setDrawerMode('assistant')` empty-state branch now calls `_qcRender()` which writes the live Quick Chat into `#drawer-scroll` (chat body) and `#drawer-ft` (fixed input bar). The legacy placeholder is kept as a fallback if `_qcRender` isn't defined — defensive, no-op in practice.
+
+### Added — Quick Chat interface
+- **Header:** `⚡ Quick Chat · Powered by Dust AI`.
+- **4 starter chips** (2×2 grid): 🔒 1Password Features · 📋 SLA & Pricing · ✍️ Draft for Customer · 🔍 Account Context. Each pre-fills the input with the spec's starter prompt and focuses the field.
+- **Chat area** with default state showing 3 muted-italic example prompts (`Try: What's the uptime SLA for 1Password Business?` etc.). Examples disappear after the first message.
+- **Input bar** in `#drawer-ft` (fixed at the bottom of the drawer, never scrolls): placeholder `Ask anything about 1Password or your accounts…` + Send button. Enter submits.
+
+### Added — Live API integration with mock fallback
+- `_qcCallAnthropic(history, mockFn)` POSTs to the v3.0.0 proxy endpoint `MA_API_ENDPOINT` (`/api/anthropic`) with full conversation history (so the chat has memory). `AbortController` 10s timeout. Falls back to `_qcMockReply` on any failure — UI stays usable without a live API.
+- System prompt set verbatim per spec — 1Password Customer Success assistant with current-account context for Acme/Brightex/NovaVault baked in. Customer-facing drafts never expose health scores or churn probabilities.
+- Conversation history persists in module-scope `_qcHistory` array, survives Live ↔ Assistant toggles within the session. Cleared on page refresh.
+- Session cap: 10 user exchanges. After the cap, the UI shows "Session limit reached · Start a new chat to continue →" with a `_qcClear()` link.
+
+### Added — Message UI
+- **Carmen's messages:** right-aligned, teal background bubble, white text (`.qc-msg-user`).
+- **AI responses:** left-aligned, light-gray background bubble with a 🤖 icon (`.qc-msg-bot`).
+- **Below every AI response,** two action buttons:
+  - `📋 Copy` → writes the bot's raw response to clipboard via `navigator.clipboard.writeText`, toasts `Copied ✓`.
+  - `✉️ Copy for Email` → wraps the response with `Hi [Contact name],\n\n[response]\n\nPlease let me know if you have any questions — happy to jump on a call.\n\nBest,\nCarmen`, then copies. Toast: `Copied as email draft ✓`.
+- **Account-aware contact name:** uses `_drawerCtx.acct || window._activeAccount` to look up the primary contact (David Kim / Sarah Chen / Michael Torres for Acme / Brightex / Nova). Falls back to `[Contact name]` placeholder when no account is active.
+
+### Added — Loading + error states
+- Typing indicator (`🤖 ···`) appears in the chat as a pulsing bubble while the API call is pending. Removed when the response arrives.
+- API failure or timeout → error bubble: `Dust is unavailable · Check connection and retry [Retry]`. The `[Retry]` link drops the error from history and re-fires the last user message.
+- Errors are filtered out of the history sent to the Anthropic API (Anthropic accepts only `user`/`assistant` roles).
+
+### State interaction with agents
+- When the user clicks any agent button (Prep Me / Risk Analyst / etc.), `openAgentDrawer` populates `drawer-scroll` and `drawer-ft` with agent content — Quick Chat is replaced. Existing behavior, untouched.
+- When the user toggles Live → Assistant **with no agent loaded**, Quick Chat re-renders and the conversation history from earlier in the session is still visible.
+- When the user toggles Live → Assistant **with a prior agent**, the agent re-renders (existing v2.8.2 behavior). To return to Quick Chat after an agent has run, clear `_drawerCtx.lastAgent` (Phase 2 hook point).
+
+### Verified end-to-end in a headless render
+- Fresh drawer in Assistant mode renders Quick Chat header + 4 chips + 3 example rows + input ✓.
+- Chip 1 fill: input populated with `What is included in the 1Password [Business/Enterprise] SLA for: ` ✓.
+- Send SLA query → mock returns 4-line SLA + comparison response, history grows to 2, both action buttons render ✓.
+- Send second query about SSO → history grows to 4 (2 user + 2 assistant), session memory intact ✓.
+- `[Copy]` toast: `Copied ✓` ✓.
+- `[Copy for Email]` toast: `Copied as email draft ✓` ✓. Email wrapper uses the active-account contact when one is loaded.
+- Toggle Live → Assistant: history (4 entries) persists, all 4 messages render ✓.
+
+### Not touched
+- Existing agent drawer content and routing.
+- The Assistant ↔ Live Call mode toggle (v2.8.2).
+- All Mission Briefing views, other widgets, Service Worker.
+- The TeamOS Live chat in the Live Call drawer mode — separate surface with its own system prompt and purpose. Quick Chat and TeamOS Live coexist as two distinct chat interfaces inside the same drawer.
+
+### Engineering
+- New `.qc-*` CSS namespace (~30 rules) bound to existing tokens.
+- API plumbing reuses `MA_API_ENDPOINT` and `MA_API_TIMEOUT` constants from v3.0.0 so a single Vercel proxy endpoint serves both surfaces.
+- All clipboard writes wrapped in capability checks (`navigator.clipboard && navigator.clipboard.writeText`) — graceful no-op when unavailable, toast still fires for UX feedback.
+- All user-typed input HTML-escaped via `_qcEscape` before rendering.
 
 ---
 
