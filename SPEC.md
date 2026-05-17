@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.4.0
+**Version:** 3.4.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,30 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.4.1] — 2026-05-17
+
+Completes the v3.4.0 enterprise security work by moving the two directives that browsers ignore in `<meta>` tags to real HTTP response headers via `vercel.json`. No app behavior changes — security posture only.
+
+### Added — `vercel.json` at repo root
+- `X-Frame-Options: DENY` (only enforceable as a header).
+- `X-Content-Type-Options: nosniff` (header backup for the existing meta).
+- `Content-Security-Policy: frame-ancestors 'none'` (only enforceable as a header; defends against clickjacking).
+- `Referrer-Policy: strict-origin` (header backup for the existing meta).
+- Applied to `/(.*)` so every response Vercel serves on `team-os-tawny.vercel.app` carries these headers.
+
+### Cleaned up — Browser-ignored meta directives
+- Removed the `<meta http-equiv="X-Frame-Options" content="DENY">` tag from `<head>` — browsers explicitly ignore this when delivered via meta and surface a console warning. The HTTP header is now canonical.
+- Removed the `frame-ancestors 'none';` clause from the CSP meta tag for the same reason. The rest of the CSP (default-src, script-src, style-src, font-src, img-src, connect-src) stays in the meta tag because those directives DO work via meta.
+- Console warnings from the browser go silent as a side effect.
+
+### Defense-in-depth
+- The CSP meta tag and the CSP HTTP header are layered: the meta carries the directives that work in meta; the header carries the ones that don't. Browsers enforce the intersection, so both layers strengthen the policy together.
+
+### Spec label note
+- Shipped as `[3.4.1]` (patch bump under the 3.4.x security/polish line) — the user didn't specify a version label this time.
 
 ---
 
