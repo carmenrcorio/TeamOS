@@ -1,8 +1,8 @@
 # TeamOS — Product Specification
-**Version:** 3.2.1
+**Version:** 3.2.2
 **Owner:** Carmen Corio
 **Status:** Active Development
-**Last Updated:** May 16, 2026
+**Last Updated:** May 17, 2026
 
 ---
 
@@ -624,6 +624,38 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.2.2] — 2026-05-17
+
+Agent Hub & Workspace widget expansion. Four new sections added above the existing Quick Launch Matrix / Recent Outputs / Recent Docs trio. All four sections share a single active account state so switching the account from anywhere refreshes the entire hub together. Mission Briefing context is unchanged.
+
+### Added — Account Search
+- Current account pill (`#ah-cur-pill`) shows the hub's active account at a glance, teal-tinted to match the brand accent.
+- Search input filters six known accounts (Acme Corp, Brightex, Nova Industries, Meridian Group, Creston Health, Apex Logistics) as you type, with health-band badges on each result.
+- Selecting a result calls `_updateAgentHubAccount(key)` — the same function the Mission Briefing dropdown uses — so the snapshot, quick links, note placeholder, current-account pill, and Recent Docs all refresh in lockstep.
+- Outside-click closes the results dropdown.
+
+### Added — Account Snapshot
+- Six-cell grid per account: Health, ARR, Renewal date, Champion, Open CTAs, Last Gong.
+- Each metric has a color band (green / amber / red / grey / warn) keyed to its semantic state — e.g. champion-lost cells render red, dark Gong activity (60+ days) renders warn-coloured.
+- One-sentence summary card below the grid (teal left border) gives the at-a-glance read of the account's posture.
+
+### Added — Quick Links
+- Four icon buttons: Gainsight, Salesforce, Last Gong, Drive. Each opens an account-aware toast naming the active account.
+- Last Gong button shows a red ⚠️ warning badge and red outline for dark accounts (60+ days since last call) — Brightex (94 days) and Creston (172 days) trigger the warning in the seed data.
+
+### Added — Quick Note
+- Textarea placeholder updates to the active account ("Add a note about Brightex…" etc).
+- Save to Gainsight opens an inline confirmation card — the save is never pushed without an explicit second click, matching SPEC §7.2 confirmation discipline.
+- Copy button writes the note text to the clipboard via the standard `navigator.clipboard` path.
+
+### Implementation notes
+- New CSS namespace `.ah-cur*`, `.ah-search*`, `.ah-snap*`, `.ah-ql*`, `.ah-note*` added after the existing `.ah-doc-btn` rules. No existing Agent Hub rules touched.
+- New `AH_SNAP` data table seeds the six accounts. All renderers (`_ahRenderSnapshot`, `_ahRenderQuickLinks`, `_ahRenderNotePlaceholder`) read from it.
+- `_updateAgentHubAccount(viewId)` extended to also call the three new renderers and update `#ah-cur-pill`. The function remains the single funnel for every account switch in the hub.
+- Spec label note: the user requested this entry as `[3.2.1]`; shipped as `[3.2.2]` to preserve monotonic versioning above the existing 3.2.1 entry.
 
 ---
 
