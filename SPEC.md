@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.0.0
+**Version:** 4.1.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,72 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.1.0] — 2026-05-17
+
+Risk & Signals tab replaces the Coming Soon placeholder. Portfolio-level risk command centre across 5 sections: Risk Matrix, All Signals, Save Plays, Champion Tracker, Dark Zone. Dashboard widgets (the 5-row Live Signals preview, Mission Briefing, Ghost-Buster, drawers, pulse strip, Service Worker) all untouched — this tab is the full-depth surface beneath the dashboard summary.
+
+### Tab structure
+- New `rs-subnav` at the top of `#tab-risk` with five tabs: ⚡ Risk Matrix · 📡 All Signals · 🎯 Save Plays · 👤 Champions · 👻 Dark Zone. `role="tablist"` + per-button `aria-selected`. Default: Risk Matrix.
+
+### Risk Matrix
+- Visual grid plotting all 6 accounts on Health (Y, 0–100) × Days to Renewal (X, 0–120+).
+- Four quadrants with CSS-gradient background tinted by zone:
+  - Top-right (Healthy + 60+ days) → ✓ Stable (green)
+  - Top-left (Healthy + <60 days) → ⚠ Watch (amber)
+  - Bottom-right (At-Risk + 60+ days) → 👁 Monitor (amber)
+  - Bottom-left (At-Risk + <60 days) → ⚡ Act Now (red)
+- Each account renders as a circle: position = (daysOut, health); diameter scales with ARR (26–54 px); colour matches risk band (red/amber/green/grey). Initials inside the circle, name label above it.
+- Clicking a circle selects it (3 px outline) and loads a right-side snapshot panel with Health · ARR · Renewal · Champion · Open CTAs · Last Gong, plus three actions: `Open in Mission Briefing` (routes to dash + opens panel), `Run Risk Analyst` (drawer), `Open Save Play` (drawer).
+- Portfolio summary strip below the matrix: Total at risk · Dark zone · Healthy · Total ARR ($170K across 6 accounts).
+- Aria-label on every dot carries the full account context for screen readers.
+
+### All Signals
+- Full 11-signal feed (vs. the 5-row preview on the dashboard). Each row: severity badge · account name (clickable → Mission Briefing) · description · context line · action button.
+- Severity filter chips: All / 🔴 Critical / 🟡 High / 👁 Watch / ✅ Opportunity. Active chip takes the severity colour.
+- Sort dropdown: Newest / Severity / ARR at risk. Severity sort uses `crit < high < watch < opp`; ARR sort reads from `RS_ACCOUNTS`.
+- Action buttons route to the right handler per signal: `Run Risk Analyst` → drawer, `Open Save Strategy / Save Play` → drawer, `Ghost-Buster` → `openGhostBusterFromPopover`, `Draft Reply` → existing `draftReply`, `Champion Change Protocol` → switch to Champions section, `Open Prep Me` → drawer.
+
+### Save Plays
+- 2 pre-loaded active plays (NovaVault EMERGENCY · Brightex AT RISK) with full step progress, signal context, and action row.
+- Each card: header (account · status badge · started date · day count · ARR · renewal); 5-step play list with `✅ done` / `⏳ in-prog` / `○ pending` icons + per-step meta line; "Signals driving this play" bullets; action row with `Update play status` (advances the next in-progress step), `Add note`, `Push to Gainsight`, `Escalate to TL`.
+- `+ Start New Save Play` button toasts the simulated Gainsight create. Updating step status mutates in-memory state and re-renders, then toasts the confirmation.
+
+### Champion Tracker
+- 2 change cards (NovaVault CRITICAL · Apex Dynamics HIGH) — Previous champion / New contact / Re-engagement status / Recommendation.
+- Per-card action rows route to the right helper: NovaVault → View Ghost-Buster / Notify AE / Update status; Apex → Start Re-engagement / Notify AE / Update status.
+- "Stable champions" collapsed row list (Acme · Brightex · Meridian with 73d-dark warning glyph) with `Update champion` per row.
+
+### Dark Zone
+- 3 dark accounts (Meridian 73d · Creston 67d · Apex 61d) with full re-engagement state and account-specific recommendations.
+- Meridian rendered with a teal left border + green inbound-signal callout (`📬 Jennifer Ramos emailed yesterday — RESPOND TODAY`).
+- Apex rendered with the AE-warm-intro-first action priority (`Notify AE first` is the primary button; `Ghost-Buster after intro` secondary).
+- Re-engagement status `<select>` on every card with the 6 spec states (Not started / AE intro requested / Touch 1 sent / Touch 2 sent / Responded / Closed lost). Change fires a toast confirming the Gainsight sync.
+
+### Verification (headless, end-to-end)
+- Sub-nav: 5 buttons; matrix active by default; section visibility toggles on click ✓
+- Risk Matrix: 6 dots plotted; 4 portfolio cells; 4 quadrant labels render in correct corners; empty snapshot panel until selection ✓
+- Click NovaVault dot → snapshot loads with name + red Critical band + 12 k/v cells (6 fields × 2 cols) + 3 actions ✓
+- All Signals: 11 rows render; severities in spec order; Critical filter narrows to 3 ✓
+- Save Plays: 2 cards, 5 steps each, 8 action buttons total ✓
+- Champion Tracker: 2 change cards + 3 stable rows + 2 recommendations ✓
+- Dark Zone: 3 cards, 1 inbound-flagged (Meridian), 3 status selects ✓
+- Action wiring: `rsRunRisk('nova')` → `openAgentDrawer('risk', 'nova')`; `rsOpenSave('brightex')` → `openAgentDrawer('save', 'brightex')` ✓
+- Zero JS errors across the full flow.
+
+### What was NOT done this turn
+- Authoring new save plays from inside the UI — `+ Start New Save Play` toasts the simulated Gainsight create rather than opening a builder.
+- Per-step granular status dropdown — `Update play status` advances the next in-progress step in a single click; a step-level dropdown picker would be a follow-on.
+- Champion update modal — `Update champion` / `Update status` buttons fire confirmation toasts rather than opening a full form editor.
+- Drag-to-reorder play steps and live status push to Gainsight — Phase 2.
+
+### Implementation notes
+- One CSS block (`rs-*` namespace, ~155 lines) appended to the end of the main `<style>`. Quadrant zones use a single CSS linear-gradient (bottom-left red → top-right green).
+- One JS module (~340 lines) appended after the v4.0.0 Campaign Manager block — data tables, render functions for each section, action helpers that wire to the existing `openAgentDrawer` / `openGhostBusterFromPopover` / `openPanel` / `draftReply` functions.
+- Coming Soon placeholder for `#tab-risk` fully replaced; the six other Coming Soon tabs (Forecasting, Success Plans, Team View, My Accounts, Analytics) untouched.
+- Spec label note: shipped as `[4.1.0]` per spec — minor-version bump fits a new feature surface that builds on the existing v4.0.0 line.
 
 ---
 
