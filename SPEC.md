@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 3.0.2
+**Version:** 3.0.3
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,58 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [3.0.3] — 2026-05-17
+
+Training moves from a top-nav tab to an 8th pulse-strip indicator. The user labeled the changelog `[2.11.3]`; shipped as `[3.0.3]` to keep version numbers monotonic. Bullets match the spec verbatim.
+
+### Added — Training pulse-strip indicator
+- 8th `ps-wrap` directly after Drive Docs: `<button id="pb-train">🎓 [2] Training</button>`. Badge color uses the existing amber `.ps-n.a` variant (action-needed signal, same as overdue CTAs).
+- Click opens `#pop-train` via the standard `togglePop('train', event)` so it inherits the v2.10.1 single-dropdown invariant (`closeAllDropdowns` closes pulse, notif rail, and Ask Dust Agents before opening). Verified: opening Drive Docs after Training closes Training ✓.
+
+### Added — Training dropdown content
+- **Header:** `🎓 Training · Seismic LMS` + close button.
+- **Sub-line:** `Assigned trainings · Synced from Seismic · Updated 8:47 AM`.
+- **3 training rows**, each with:
+  - Status badge (🟡 In Progress amber / ⬜ Not Started gray / ✅ Complete teal) — reuses the v2.14.0 `.en-stat` color tokens via new `.tr-stat.{in-prog,not-started,complete}` classes.
+  - Training name (bold).
+  - Slim 6px progress bar — teal blue (#0EA5E9) for in-progress, green (#22C55E) for complete, gray (#E5E7EB) for not started.
+  - Meta line: percent · module count · due date.
+  - Action button: Continue / Start / Review.
+- **Footer:** `2 of 3 trainings incomplete` (left) + `View all in Seismic ↗` (right, teal link).
+- **Phase 2 note:** `🔌 Seismic API · Phase 2 · Trainings will sync automatically when connected`.
+
+### Added — `trOpen(kind)` action handler
+- Single helper, four kinds: `continue` / `start` / `review` / `all`. Each fires the spec toast verbatim:
+  - `Opening Seismic · Enterprise Renewal Conversations · Module 3 of 4 ✓`
+  - `Opening Seismic · Champion Change Playbook · Module 1 of 3 ✓`
+  - `Opening Seismic · Gainsight Power User Certification · Review mode ✓`
+  - `Opening Seismic learning portal ✓`
+
+### Removed — Enablement tab from the top nav
+- Per the spec ("If an Enablement tab was added in a previous commit, remove it. Training lives in the pulse strip, not as a tab."):
+  - Deleted the `<div class="n-tab" onclick="goTab('enable',this)">Enablement</div>` nav entry.
+  - Deleted the entire `<div class="tc" id="tab-enable">…</div>` content block.
+- Left the orphaned `enOpenSeismic` function and the `.en-*` CSS namespace in place — dead code but harmless, and removing them risks breakage if any other surface picks them up later. Phase 2 cleanup pass can prune them.
+
+### Verified end-to-end in a headless render
+- Pulse strip now has 8 indicators in the correct order: 3 calls / 2 at risk / $67K ARR / 3 overdue CTAs / 3 dark accounts / 8 tasks / Drive Docs / **2 Training**.
+- Nav tabs: CSM Dashboard, Recipe for Success, My Accounts (Enablement absent). `#tab-enable` element removed from DOM.
+- Training dropdown opens with correct header, sub-line, 3 rows (statuses 🟡/⬜/✅, progress widths 62%/0%/100%, buttons Continue/Start/Review), footer text, and Phase 2 note.
+- All 4 button toasts match spec verbatim.
+- Single-dropdown invariant holds: opening Drive Docs while Training is open closes Training (`cftOn:true, trainOn:false`).
+
+### Not touched
+- All 7 existing pulse-strip indicators (calls / at-risk / ARR / overdue CTAs / dark / tasks / Drive Docs) and their popovers — unchanged.
+- All 3 remaining tabs (CSM Dashboard / Recipe for Success / My Accounts) and their content.
+- `togglePop` / `closeAllDropdowns` / `closePops` / outside-click listener — unchanged.
+- Every other widget, drawer, Mission Briefing view, Ghost-Buster, TeamOS Live, Agent Hub, Task Brief, Service Worker, offline-resilience layer.
+
+### Engineering
+- One new HTML block (40 lines), one new CSS namespace `.tr-*` (~30 rules bound to existing tokens), one new JS function (`trOpen`). Pure additive except for the Enablement tab removal.
+- Phase 2 Seismic API integration hook: the entire `#pop-train` block could be re-rendered from a Seismic API response with the same DOM shape. No JS plumbing changes needed.
 
 ---
 

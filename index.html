@@ -1028,6 +1028,45 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 .cft-btn.prim:hover{background:#2a2a28}
 .cft-btn i{font-size:11px}
 .cft-empty{font-size:11px;color:var(--tx3);padding:14px;font-style:italic;text-align:center}
+
+/* Training popover (v3.0.3) — 8th pulse-strip indicator */
+.tr-pop{width:380px;max-width:min(380px,90vw);display:none;flex-direction:column;overflow:hidden;right:0;left:auto}
+.tr-pop.on{display:flex}
+.tr-hd{padding:12px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--surf2);flex-shrink:0}
+.tr-hd-t{font-size:11px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:6px;letter-spacing:.02em}
+.tr-hd-t i{font-size:14px}
+.tr-hd-src{color:var(--tx3);font-weight:600}
+.tr-close{font-size:18px;color:var(--tx3);cursor:pointer;background:none;border:none;line-height:1;padding:0;font-family:inherit}
+.tr-close:hover{color:var(--tx)}
+.tr-sub{padding:8px 14px;font-size:10px;color:var(--tx3);font-style:italic;border-bottom:1px solid var(--bd);background:var(--surf)}
+.tr-list{padding:4px 0;display:flex;flex-direction:column}
+.tr-row{padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;flex-direction:column;gap:7px}
+.tr-row:last-child{border-bottom:none}
+.tr-row-top{display:flex;align-items:center;gap:8px}
+.tr-stat{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;line-height:1;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.tr-stat.in-prog{background:var(--am-bg);color:var(--am-dk);border:1px solid var(--am)}
+.tr-stat.not-started{background:var(--surf2);color:var(--tx2);border:1px solid var(--bd2)}
+.tr-stat.complete{background:var(--tl-bg);color:var(--tl-dk);border:1px solid var(--tl)}
+.tr-nm{font-size:12px;font-weight:700;color:var(--tx);line-height:1.4;letter-spacing:-.01em}
+.tr-bar{height:6px;width:100%;background:#E5E7EB;border-radius:3px;overflow:hidden}
+.tr-bar-fill{height:100%;border-radius:3px;transition:width .3s ease}
+.tr-bar-fill.in-prog{background:#0EA5E9}
+.tr-bar-fill.complete{background:#22C55E}
+.tr-bar-fill.not-started{background:#E5E7EB}
+.tr-row-bot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:2px}
+.tr-meta{font-size:10px;color:var(--tx3);font-weight:600}
+.tr-btn{font-size:10px;font-weight:700;padding:6px 10px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;transition:all .1s;white-space:nowrap}
+.tr-btn:hover{background:var(--surf2);border-color:var(--tx2)}
+.tr-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.tr-btn.prim:hover{background:#2a2a28}
+.tr-btn i{font-size:11px}
+.tr-foot{padding:10px 14px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surf2)}
+.tr-foot-l{font-size:11px;color:var(--tx2);font-weight:600}
+.tr-foot-link{font-size:11px;font-weight:700;color:var(--tl);background:none;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.tr-foot-link:hover{text-decoration:underline}
+.tr-foot-link i{font-size:12px}
+.tr-phase2{padding:9px 14px;font-size:10px;color:var(--tx3);font-style:italic;text-align:center;background:var(--surf);display:flex;align-items:center;justify-content:center;gap:6px;border-top:1px dashed var(--bd)}
+.tr-phase2 i{font-size:12px;color:var(--bl)}
 .tl-signal-acts{display:flex;gap:6px;flex-wrap:wrap}
 .tl-signal-btn{background:var(--tx);color:#fff;border:none;border-radius:5px;padding:6px 11px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
 .tl-signal-btn:hover{background:#2a2a28}
@@ -1274,7 +1313,6 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
   <div class="n-brand"><div class="n-dot"></div>TeamOS</div>
   <div class="n-tab on" onclick="goTab('dash',this)">CSM Dashboard</div>
   <div class="n-tab" onclick="goTab('recipe',this)">Recipe for Success</div>
-  <div class="n-tab" onclick="goTab('enable',this)">Enablement</div>
   <div class="n-tab" onclick="goTab('myacct',this)">My Accounts</div>
   <div class="n-right">
     <div class="n-notif">
@@ -1558,6 +1596,51 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
         </div>
         <div class="cft-results-label" id="cft-results-label">Recent &middot; Acme Corp</div>
         <div class="cft-list" id="cft-list"></div>
+      </div>
+    </div>
+
+    <div class="ps-wrap">
+      <button class="ps-btn" id="pb-train" onclick="togglePop('train',event)" type="button"><i class="ti ti-school"></i><span class="ps-n a" id="pn-train">2</span>&nbsp;Training</button>
+      <div class="pop pop-right tr-pop" id="pop-train">
+        <div class="tr-hd">
+          <div class="tr-hd-t"><i class="ti ti-school" style="color:var(--bl)"></i> Training <span class="tr-hd-src">&middot; Seismic LMS</span></div>
+          <button class="tr-close" type="button" onclick="closePops()" aria-label="Close Training">&times;</button>
+        </div>
+        <div class="tr-sub">Assigned trainings &middot; Synced from Seismic &middot; Updated 8:47 AM</div>
+        <div class="tr-list" id="tr-list">
+          <div class="tr-row">
+            <div class="tr-row-top"><span class="tr-stat in-prog">🟡 In Progress</span></div>
+            <div class="tr-nm">Enterprise Renewal Conversations &mdash; Advanced Negotiation Techniques</div>
+            <div class="tr-bar"><div class="tr-bar-fill in-prog" style="width:62%"></div></div>
+            <div class="tr-row-bot">
+              <span class="tr-meta">62% complete &middot; 4 modules &middot; Due Jun 1</span>
+              <button class="tr-btn prim" type="button" onclick="trOpen('continue')">Continue <i class="ti ti-arrow-right"></i></button>
+            </div>
+          </div>
+          <div class="tr-row">
+            <div class="tr-row-top"><span class="tr-stat not-started">⬜ Not Started</span></div>
+            <div class="tr-nm">Champion Change Playbook &mdash; Navigating Contact Transitions</div>
+            <div class="tr-bar"><div class="tr-bar-fill not-started" style="width:0%"></div></div>
+            <div class="tr-row-bot">
+              <span class="tr-meta">0% complete &middot; 3 modules &middot; Due Jun 15</span>
+              <button class="tr-btn prim" type="button" onclick="trOpen('start')">Start <i class="ti ti-arrow-right"></i></button>
+            </div>
+          </div>
+          <div class="tr-row">
+            <div class="tr-row-top"><span class="tr-stat complete">✅ Complete</span></div>
+            <div class="tr-nm">Gainsight Power User Certification</div>
+            <div class="tr-bar"><div class="tr-bar-fill complete" style="width:100%"></div></div>
+            <div class="tr-row-bot">
+              <span class="tr-meta">100% &middot; 5 modules &middot; Completed May 2</span>
+              <button class="tr-btn" type="button" onclick="trOpen('review')">Review <i class="ti ti-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="tr-foot">
+          <span class="tr-foot-l" id="tr-foot-l">2 of 3 trainings incomplete</span>
+          <button class="tr-foot-link" type="button" onclick="trOpen('all')">View all in Seismic <i class="ti ti-external-link"></i></button>
+        </div>
+        <div class="tr-phase2"><i class="ti ti-plug-connected"></i> Seismic API &middot; Phase 2 &middot; Trainings will sync automatically when connected</div>
       </div>
     </div>
 
@@ -2335,47 +2418,6 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
 <div class="tc" id="tab-recipe">
   <div class="sc-pg" id="recipe-root"></div>
-</div>
-
-<!-- Enablement tab (v2.14.0) — Seismic placeholder -->
-<div class="tc" id="tab-enable">
-  <div class="en-pg">
-    <div class="en-hd">
-      <div class="en-hd-t"><i class="ti ti-school" style="color:var(--bl)"></i> Enablement <span class="en-hd-src">&middot; Powered by Seismic</span></div>
-      <div class="en-hd-s">Trainings assigned to you by CS Ops. Progress syncs automatically when the Seismic integration is connected.</div>
-    </div>
-    <div class="en-sec-t">Assigned trainings</div>
-    <div class="en-list">
-      <div class="en-row">
-        <span class="en-stat in-prog"><i class="ti ti-loader-2"></i> In progress</span>
-        <div class="en-mid">
-          <div class="en-nm">Enterprise Renewal Conversations &mdash; Advanced Negotiation Techniques</div>
-          <div class="en-meta">Due: Jun 1 &middot; 4 modules &middot; <strong>62% complete</strong></div>
-          <div class="en-bar"><div class="en-bar-fill" style="width:62%"></div></div>
-        </div>
-        <button class="en-btn prim" type="button" onclick="enOpenSeismic('Enterprise Renewal Conversations')">Continue <i class="ti ti-arrow-right"></i></button>
-      </div>
-      <div class="en-row">
-        <span class="en-stat not-started"><i class="ti ti-square"></i> Not started</span>
-        <div class="en-mid">
-          <div class="en-nm">Champion Change Playbook &mdash; Navigating Contact Transitions</div>
-          <div class="en-meta">Due: Jun 15 &middot; 3 modules &middot; 0% complete</div>
-          <div class="en-bar"><div class="en-bar-fill" style="width:0%"></div></div>
-        </div>
-        <button class="en-btn prim" type="button" onclick="enOpenSeismic('Champion Change Playbook')">Start <i class="ti ti-arrow-right"></i></button>
-      </div>
-      <div class="en-row">
-        <span class="en-stat complete"><i class="ti ti-check"></i> Complete</span>
-        <div class="en-mid">
-          <div class="en-nm">Gainsight Power User Certification</div>
-          <div class="en-meta">Completed: May 2 &middot; 5 modules</div>
-          <div class="en-bar"><div class="en-bar-fill" style="width:100%;background:var(--tl)"></div></div>
-        </div>
-        <button class="en-btn" type="button" onclick="enOpenSeismic('Gainsight Power User Certification')">Review <i class="ti ti-arrow-right"></i></button>
-      </div>
-    </div>
-    <div class="en-foot"><i class="ti ti-plug-connected"></i> Seismic API &middot; Phase 2 integration &middot; Assigned trainings will sync automatically when connected &middot; Contact your CS Ops admin to enable</div>
-  </div>
 </div>
 
 <!-- My Accounts tab (v3.0.0) — live AI-powered account workspace -->
@@ -3466,6 +3508,18 @@ function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority a
 function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &middot; 3 accounts flagged ✓'); }
 function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
 function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
+
+// v3.0.3 — Training pulse-strip popover action handler. `kind` ∈
+// { 'continue', 'start', 'review', 'all' } maps to the per-row spec toasts.
+function trOpen(kind) {
+  var msg = {
+    'continue': 'Opening Seismic &middot; Enterprise Renewal Conversations &middot; Module 3 of 4 ✓',
+    'start':    'Opening Seismic &middot; Champion Change Playbook &middot; Module 1 of 3 ✓',
+    'review':   'Opening Seismic &middot; Gainsight Power User Certification &middot; Review mode ✓',
+    'all':      'Opening Seismic learning portal ✓'
+  }[kind] || 'Opening Seismic ✓';
+  toast(msg);
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // My Accounts workspace (v3.0.0)
@@ -5077,6 +5131,18 @@ function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority a
 function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &middot; 3 accounts flagged ✓'); }
 function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
 function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
+
+// v3.0.3 — Training pulse-strip popover action handler. `kind` ∈
+// { 'continue', 'start', 'review', 'all' } maps to the per-row spec toasts.
+function trOpen(kind) {
+  var msg = {
+    'continue': 'Opening Seismic &middot; Enterprise Renewal Conversations &middot; Module 3 of 4 ✓',
+    'start':    'Opening Seismic &middot; Champion Change Playbook &middot; Module 1 of 3 ✓',
+    'review':   'Opening Seismic &middot; Gainsight Power User Certification &middot; Review mode ✓',
+    'all':      'Opening Seismic learning portal ✓'
+  }[kind] || 'Opening Seismic ✓';
+  toast(msg);
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // My Accounts workspace (v3.0.0)
