@@ -227,6 +227,60 @@ html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI
 .sc-mv.w{color:var(--am)}.sc-mv.d{color:var(--rd)}
 .sc-src{font-size:9px;background:var(--tl-bg);color:var(--tl-dk);padding:1px 5px;border-radius:3px;font-weight:700;display:flex;align-items:center;gap:3px;margin-top:3px;justify-content:flex-end}
 .sc-fin{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:20px}
+
+/* Recipe — Dust recommendation panel (v2.13.0) */
+.rcp-dust{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:18px 20px;margin-top:20px;border-top:3px solid var(--tl)}
+.rcp-dust-hd{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
+.rcp-dust-t{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.01em;display:flex;align-items:center;gap:7px}
+.rcp-dust-t i{color:var(--tl);font-size:16px}
+.rcp-dust-s{font-size:11px;color:var(--tx2);line-height:1.5;max-width:560px}
+.rcp-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:1100px){.rcp-cards{grid-template-columns:1fr}}
+.rcp-card{background:var(--surf2);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:8px;border-left:4px solid var(--bd2)}
+.rcp-card.gap{border-left-color:var(--rd)}
+.rcp-card.win{border-left-color:var(--am)}
+.rcp-card.prot{border-left-color:var(--tl)}
+.rcp-card-l{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)}
+.rcp-card.gap .rcp-card-l{color:var(--rd-dk)}
+.rcp-card.win .rcp-card-l{color:var(--am-dk)}
+.rcp-card.prot .rcp-card-l{color:var(--tl-dk)}
+.rcp-card-t{font-size:13px;font-weight:700;color:var(--tx);letter-spacing:-.01em}
+.rcp-card-b{font-size:11px;color:var(--tx2);line-height:1.55;flex:1}
+.rcp-card-btn{align-self:flex-start;font-size:11px;font-weight:700;padding:7px 11px;border-radius:6px;background:var(--tx);color:#fff;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;margin-top:2px}
+.rcp-card-btn:hover{background:#2a2a28}
+.rcp-card-btn i{font-size:12px}
+.rcp-dust-ft{font-size:10px;color:var(--tx3);font-style:italic;text-align:center;margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd)}
+
+/* Enablement tab (v2.14.0) — Seismic placeholder */
+.en-pg{padding:20px 28px}
+.en-hd{margin-bottom:20px}
+.en-hd-t{font-size:18px;font-weight:700;color:var(--tx);letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.en-hd-t i{font-size:20px}
+.en-hd-src{color:var(--tx3);font-weight:600;font-size:13px;letter-spacing:0}
+.en-hd-s{font-size:12px;color:var(--tx2);margin-top:6px;line-height:1.5;max-width:640px}
+.en-sec-t{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.en-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.en-row{display:grid;grid-template-columns:140px 1fr auto;align-items:center;gap:16px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px 16px}
+.en-stat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:5px;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;justify-self:start}
+.en-stat i{font-size:12px}
+.en-stat.in-prog{background:var(--am-bg);color:var(--am-dk);border:1px solid var(--am)}
+.en-stat.in-prog i{color:var(--am)}
+.en-stat.not-started{background:var(--surf2);color:var(--tx2);border:1px solid var(--bd2)}
+.en-stat.not-started i{color:var(--tx3)}
+.en-stat.complete{background:var(--tl-bg);color:var(--tl-dk);border:1px solid var(--tl)}
+.en-stat.complete i{color:var(--tl)}
+.en-mid{min-width:0}
+.en-nm{font-size:13px;font-weight:700;color:var(--tx);letter-spacing:-.01em;margin-bottom:3px;line-height:1.35}
+.en-meta{font-size:11px;color:var(--tx3);margin-bottom:6px}
+.en-bar{height:5px;background:var(--surf2);border-radius:3px;overflow:hidden;width:100%;max-width:520px}
+.en-bar-fill{height:100%;background:var(--am);transition:width .3s ease}
+.en-btn{font-size:11px;font-weight:700;padding:8px 13px;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;transition:all .1s;white-space:nowrap}
+.en-btn:hover{background:var(--surf2);border-color:var(--tx2)}
+.en-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.en-btn.prim:hover{background:#2a2a28}
+.en-btn i{font-size:12px}
+.en-foot{font-size:10px;color:var(--tx3);font-style:italic;text-align:center;padding:12px;background:var(--surf);border:1px dashed var(--bd2);border-radius:var(--rlg);display:flex;align-items:center;justify-content:center;gap:7px;line-height:1.5}
+.en-foot i{font-size:13px;color:var(--bl);flex-shrink:0}
 .sc-sr{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd)}
 .sc-sr:last-child{border-bottom:none}
 .sc-sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -1049,6 +1103,7 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
   <div class="n-brand"><div class="n-dot"></div>TeamOS</div>
   <div class="n-tab on" onclick="goTab('dash',this)">CSM Dashboard</div>
   <div class="n-tab" onclick="goTab('recipe',this)">Recipe for Success</div>
+  <div class="n-tab" onclick="goTab('enable',this)">Enablement</div>
   <div class="n-right">
     <div class="n-notif">
 
@@ -1145,10 +1200,9 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
   <button class="ob-retry" type="button" onclick="retryReconnect()"><i class="ti ti-refresh"></i> Retry</button>
 </div>
 
-<div class="tc on" id="tab-dash">
-
-  <!-- Portfolio Pulse Strip — SPEC §5.2 -->
-  <div class="pulse-strip">
+<!-- Portfolio Pulse Strip — SPEC §5.2. Hoisted out of #tab-dash in v2.14.0
+     so it remains visible across every tab (Dashboard / Recipe / Enablement). -->
+<div class="pulse-strip">
     <div class="ps-wrap">
       <button class="ps-btn" id="pb-calls" onclick="togglePop('calls',event)" type="button"><i class="ti ti-calendar-event"></i><span class="ps-n">3</span>&nbsp;calls today</button>
       <div class="pop" id="pop-calls">
@@ -1337,7 +1391,9 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
     <span class="cached-badge"><i class="ti ti-database-off"></i> Cached</span>
     <div class="queue-badge" id="queue-badge" title="Actions queued while offline — will sync when connection restores"><i class="ti ti-cloud-upload"></i> <span id="queue-badge-count">0</span> queued</div>
-  </div>
+</div>
+
+<div class="tc on" id="tab-dash">
 
   <!-- Daily Command Brief — SPEC §5.1 -->
   <div class="brief-strip">
@@ -2107,6 +2163,47 @@ body.offline .n-pill{filter:grayscale(.3);opacity:.85}
 
 <div class="tc" id="tab-recipe">
   <div class="sc-pg" id="recipe-root"></div>
+</div>
+
+<!-- Enablement tab (v2.14.0) — Seismic placeholder -->
+<div class="tc" id="tab-enable">
+  <div class="en-pg">
+    <div class="en-hd">
+      <div class="en-hd-t"><i class="ti ti-school" style="color:var(--bl)"></i> Enablement <span class="en-hd-src">&middot; Powered by Seismic</span></div>
+      <div class="en-hd-s">Trainings assigned to you by CS Ops. Progress syncs automatically when the Seismic integration is connected.</div>
+    </div>
+    <div class="en-sec-t">Assigned trainings</div>
+    <div class="en-list">
+      <div class="en-row">
+        <span class="en-stat in-prog"><i class="ti ti-loader-2"></i> In progress</span>
+        <div class="en-mid">
+          <div class="en-nm">Enterprise Renewal Conversations &mdash; Advanced Negotiation Techniques</div>
+          <div class="en-meta">Due: Jun 1 &middot; 4 modules &middot; <strong>62% complete</strong></div>
+          <div class="en-bar"><div class="en-bar-fill" style="width:62%"></div></div>
+        </div>
+        <button class="en-btn prim" type="button" onclick="enOpenSeismic('Enterprise Renewal Conversations')">Continue <i class="ti ti-arrow-right"></i></button>
+      </div>
+      <div class="en-row">
+        <span class="en-stat not-started"><i class="ti ti-square"></i> Not started</span>
+        <div class="en-mid">
+          <div class="en-nm">Champion Change Playbook &mdash; Navigating Contact Transitions</div>
+          <div class="en-meta">Due: Jun 15 &middot; 3 modules &middot; 0% complete</div>
+          <div class="en-bar"><div class="en-bar-fill" style="width:0%"></div></div>
+        </div>
+        <button class="en-btn prim" type="button" onclick="enOpenSeismic('Champion Change Playbook')">Start <i class="ti ti-arrow-right"></i></button>
+      </div>
+      <div class="en-row">
+        <span class="en-stat complete"><i class="ti ti-check"></i> Complete</span>
+        <div class="en-mid">
+          <div class="en-nm">Gainsight Power User Certification</div>
+          <div class="en-meta">Completed: May 2 &middot; 5 modules</div>
+          <div class="en-bar"><div class="en-bar-fill" style="width:100%;background:var(--tl)"></div></div>
+        </div>
+        <button class="en-btn" type="button" onclick="enOpenSeismic('Gainsight Power User Certification')">Review <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+    <div class="en-foot"><i class="ti ti-plug-connected"></i> Seismic API &middot; Phase 2 integration &middot; Assigned trainings will sync automatically when connected &middot; Contact your CS Ops admin to enable</div>
+  </div>
 </div>
 
 <script>
@@ -3054,8 +3151,46 @@ function buildRecipe() {
     h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%</div></div>';
   });
   h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div></div>';
+
+  // v2.13.0 — Dust Recommendation Panel
+  h += ''
+    + '<div class="rcp-dust">'
+      + '<div class="rcp-dust-hd">'
+        + '<div>'
+          + '<div class="rcp-dust-t"><i class="ti ti-robot"></i> Dust &middot; Your Q2 Action Plan</div>'
+          + '<div class="rcp-dust-s" style="margin-top:5px">Based on your current <strong style="color:var(--tl)">74.5% weighted score</strong>, here&rsquo;s what moves the needle most.</div>'
+        + '</div>'
+      + '</div>'
+      + '<div class="rcp-cards">'
+        + '<div class="rcp-card gap">'
+          + '<div class="rcp-card-l">Biggest gap</div>'
+          + '<div class="rcp-card-t">EBR Coverage: 3 / 24 accounts (12.5%)</div>'
+          + '<div class="rcp-card-b">You are tracking to miss your EBR target by a significant margin. At current pace, only 3 of your 24 accounts will have an EBR this quarter. The 5 accounts with renewals in the next 60 days should be prioritized immediately.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpDraftEBR()"><i class="ti ti-mail"></i> Draft EBR Outreach for 5 Accounts</button>'
+        + '</div>'
+        + '<div class="rcp-card win">'
+          + '<div class="rcp-card-l">Quick win</div>'
+          + '<div class="rcp-card-t">Blank Renewal Statuses: 3 accounts</div>'
+          + '<div class="rcp-card-b">3 renewals have no forecast status in Salesforce, which is dragging your Renewal Forecast Actions score. Each takes 30 seconds to update.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpRenewalStatus()"><i class="ti ti-external-link"></i> Open Renewal Status Update</button>'
+        + '</div>'
+        + '<div class="rcp-card prot">'
+          + '<div class="rcp-card-l">Protect</div>'
+          + '<div class="rcp-card-t">Overdue CTAs: 2 accounts</div>'
+          + '<div class="rcp-card-b">2 Gainsight CTAs are overdue, reducing your Success Plans &amp; Objectives score. NovaVault and Brightex both have CTAs past due date.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpOverdueCTAs()"><i class="ti ti-list-check"></i> Open Overdue CTAs in Gainsight</button>'
+        + '</div>'
+      + '</div>'
+      + '<div class="rcp-dust-ft">Dust analysis &middot; Gainsight + Salesforce &middot; Updated today 9:00 AM &middot; Refreshes daily</div>'
+    + '</div>';
+
   document.getElementById('recipe-root').innerHTML = h;
 }
+
+function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority accounts &middot; Opens in Mission Briefing ✓'); }
+function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &middot; 3 accounts flagged ✓'); }
+function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
+function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
 
 var ctaDone = 0;
 function togglePop(id, e) {
@@ -3628,7 +3763,10 @@ var DRAWER = {
         ]},
         { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Extension Period","60 days (Jun 1 → Jul 31)"],["Terms","Current pricing locked"],["Commitment","Weekly touchpoints with Carmen"],["Decision Deadline","July 15, 2026"]] }
       ],
-      foot: [{ l: "Push to Gainsight", a: "3 CTAs created in Gainsight &middot; NovaVault &middot; Assigned to Carmen ✓" }]
+      foot: [
+        { l: "Push to Gainsight", a: "3 CTAs created in Gainsight &middot; NovaVault &middot; Assigned to Carmen ✓" },
+        { l: "📊 Generate Save Deck", a: "deck-sec" }
+      ]
     }
   },
   next: {
@@ -3757,6 +3895,10 @@ function openAgentDrawer(type, acct) {
     data.foot.forEach(function(f) {
       if (f.a === 'deck') {
         ftHtml += '<button class="dr-ft-btn prim" type="button" onclick="openDeckModal(\'' + acct + '\');closeDrawer()" style="font-size:12px;font-weight:700;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--tx);color:#fff;border:none;flex:1">&#9632; ' + f.l + '</button>';
+      } else if (f.a === 'deck-sec') {
+        // v2.12.0 — outlined variant for the NovaVault Save Deck footer button.
+        // Same height/padding/flex as the toast-style secondary button.
+        ftHtml += '<button class="dr-ft-btn sec" type="button" onclick="openDeckModal(\'' + acct + '\');closeDrawer()" style="font-size:12px;font-weight:600;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2);flex:1">' + f.l + '</button>';
       } else {
         var safe = (f.a || '').replace(/'/g, "\\'");
         ftHtml += '<button class="dr-ft-btn sec" type="button" onclick="toast(\'' + safe + '\');closeDrawer()" style="font-size:12px;font-weight:600;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2);flex:1">' + f.l + '</button>';
@@ -3800,8 +3942,46 @@ function buildRecipe() {
     h += '<div class="sc-sr"><div class="sc-sd" style="background:' + s.c + '"></div><div class="sc-sn">' + s.l + '</div><div class="sc-sw">' + s.w + '</div><div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div></div><div class="sc-pct" style="color:' + s.c + '">' + s.p + '%</div></div>';
   });
   h += '</div><div style="display:flex;align-items:flex-end;justify-content:space-between"><div><div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div><div style="font-size:40px;font-weight:700;color:var(--tl);letter-spacing:-.04em">74.5%</div><div style="font-size:13px;color:var(--tl);margin-top:3px">Meeting expectations</div></div><div style="text-align:right"><div style="font-size:11px;color:var(--tx3);margin-bottom:4px">Last synced</div><div style="font-size:13px;font-weight:600;color:var(--tx)">Today &middot; 9:00 AM</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">Gainsight API &middot; daily refresh</div></div></div></div>';
+
+  // v2.13.0 — Dust Recommendation Panel
+  h += ''
+    + '<div class="rcp-dust">'
+      + '<div class="rcp-dust-hd">'
+        + '<div>'
+          + '<div class="rcp-dust-t"><i class="ti ti-robot"></i> Dust &middot; Your Q2 Action Plan</div>'
+          + '<div class="rcp-dust-s" style="margin-top:5px">Based on your current <strong style="color:var(--tl)">74.5% weighted score</strong>, here&rsquo;s what moves the needle most.</div>'
+        + '</div>'
+      + '</div>'
+      + '<div class="rcp-cards">'
+        + '<div class="rcp-card gap">'
+          + '<div class="rcp-card-l">Biggest gap</div>'
+          + '<div class="rcp-card-t">EBR Coverage: 3 / 24 accounts (12.5%)</div>'
+          + '<div class="rcp-card-b">You are tracking to miss your EBR target by a significant margin. At current pace, only 3 of your 24 accounts will have an EBR this quarter. The 5 accounts with renewals in the next 60 days should be prioritized immediately.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpDraftEBR()"><i class="ti ti-mail"></i> Draft EBR Outreach for 5 Accounts</button>'
+        + '</div>'
+        + '<div class="rcp-card win">'
+          + '<div class="rcp-card-l">Quick win</div>'
+          + '<div class="rcp-card-t">Blank Renewal Statuses: 3 accounts</div>'
+          + '<div class="rcp-card-b">3 renewals have no forecast status in Salesforce, which is dragging your Renewal Forecast Actions score. Each takes 30 seconds to update.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpRenewalStatus()"><i class="ti ti-external-link"></i> Open Renewal Status Update</button>'
+        + '</div>'
+        + '<div class="rcp-card prot">'
+          + '<div class="rcp-card-l">Protect</div>'
+          + '<div class="rcp-card-t">Overdue CTAs: 2 accounts</div>'
+          + '<div class="rcp-card-b">2 Gainsight CTAs are overdue, reducing your Success Plans &amp; Objectives score. NovaVault and Brightex both have CTAs past due date.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpOverdueCTAs()"><i class="ti ti-list-check"></i> Open Overdue CTAs in Gainsight</button>'
+        + '</div>'
+      + '</div>'
+      + '<div class="rcp-dust-ft">Dust analysis &middot; Gainsight + Salesforce &middot; Updated today 9:00 AM &middot; Refreshes daily</div>'
+    + '</div>';
+
   document.getElementById('recipe-root').innerHTML = h;
 }
+
+function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority accounts &middot; Opens in Mission Briefing ✓'); }
+function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &middot; 3 accounts flagged ✓'); }
+function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
+function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
 
 var ctaDone = 0;
 function togglePop(id, e) {
@@ -4258,8 +4438,11 @@ function setDrawerMode(mode, opts) {
 
 var _deckTimer = null;
 function openDeckModal(acct) {
+  var titles = { acme:'Building your QBR deck', brightex:'Building your Risk Review deck', nova:'Building your NovaVault Save Deck' };
   var names = {acme:'QBR Builder agent · Powered by Dust API',brightex:'Risk Review Builder · Powered by Dust API',nova:'Save Deck Builder · Emergency retention build'};
+  var titleEl = document.getElementById('modal-t');
   var sub = document.getElementById('modal-sub');
+  if (titleEl) titleEl.textContent = titles[acct] || titles.acme;
   if (sub) sub.textContent = names[acct] || names.acme;
   document.getElementById('deck-modal').classList.add('on');
   startDeckProgress();
@@ -4841,7 +5024,7 @@ if ('serviceWorker' in navigator) {
 <div class="mov" id="deck-modal" onclick="if(event.target===this)closeDeckModal()">
   <div class="modal">
     <button class="modal-x" onclick="closeDeckModal()" aria-label="Close">&times;</button>
-    <div class="modal-t">Building your deck</div>
+    <div class="modal-t" id="modal-t">Building your deck</div>
     <div class="modal-s" id="modal-sub">QBR Builder agent &middot; Powered by Dust API</div>
     <div class="prog-bar-wrap"><div class="prog-bar" id="prog-bar"></div></div>
     <div class="prog-steps">

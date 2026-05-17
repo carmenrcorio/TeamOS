@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 2.11.0
+**Version:** 2.14.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 16, 2026
@@ -624,6 +624,75 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [2.14.0] — 2026-05-17
+
+Enablement tab added as a third top-nav tab after Recipe for Success. Placeholder for the Seismic integration arriving in Phase 2.
+
+### Added
+- `n-tab` entry "Enablement" wired to `goTab('enable', this)`.
+- `<div class="tc" id="tab-enable">` container with the spec content:
+  - Header `📚 Enablement · Powered by Seismic` + sub-line explaining the Phase 2 sync.
+  - "Assigned trainings" section heading + 3 training rows.
+  - Row 1: `🟡 In Progress` — Enterprise Renewal Conversations · Due Jun 1 · 4 modules · 62% complete · `[Continue →]`. Amber progress bar.
+  - Row 2: `⬜ Not started` — Champion Change Playbook · Due Jun 15 · 3 modules · 0% complete · `[Start →]`. Empty progress bar.
+  - Row 3: `✅ Complete` — Gainsight Power User Certification · Completed May 2 · 5 modules · `[Review →]`. Full teal progress bar.
+  - Phase 2 footer: `🔌 Seismic API · Phase 2 integration · Assigned trainings will sync automatically when connected · Contact your CS Ops admin to enable`.
+- Every action button (`Continue` / `Start` / `Review`) calls `enOpenSeismic(name)` which toasts `Opening Seismic · [Training Name] ✓`.
+- New `.en-*` CSS namespace bound to existing tokens. No new color values.
+
+### Changed — Pulse strip hoisted out of `#tab-dash` so it stays visible across every tab
+The pulse strip was a child of `#tab-dash`, so it disappeared whenever the CSM switched to Recipe or Enablement. v2.14.0 moves the `<div class="pulse-strip">` block out of `#tab-dash` and makes it a sibling of the three `.tc` tab containers. `position: sticky; top: 44px` continues to keep it pinned below the nav on every tab. Verified: pulse strip `top=44` on Dashboard, Recipe, and Enablement tabs.
+
+### Not touched
+- Existing `goTab` logic — unchanged.
+- All 7 pulse-strip indicators (calls / risk / arr / ctas / dark / tasks / Drive Docs) — unchanged.
+- Recipe for Success tab content — only the position changed (it now sits next to the moved pulse strip rather than inside the dashboard tab content).
+- Every other widget, drawer, agent output, Ghost-Buster view, TeamOS Live drawer, Task Brief, Service Worker, offline-resilience layer.
+
+---
+
+## [2.13.0] — 2026-05-17
+
+Dust recommendation panel added to the Recipe for Success tab. Pairs the auto-populated scorecard with three actionable next-step cards keyed to the weighted score.
+
+### Added
+- New `.rcp-dust` panel appended below the existing scorecard in `buildRecipe()`. Single column layout (collapses to 1-column at <1100px viewport).
+- Header: `🤖 Dust · Your Q2 Action Plan` + sub-line: *"Based on your current 74.5% weighted score, here's what moves the needle most."*
+- Three recommendation cards (`.rcp-card`) with color-coded left borders:
+  - **Biggest gap** (red) — EBR Coverage: 3/24 (12.5%). Action: `[Draft EBR Outreach for 5 Accounts]` → toast `Dust drafting EBR outreach for 5 priority accounts · Opens in Mission Briefing ✓`.
+  - **Quick win** (amber) — Blank Renewal Statuses: 3 accounts. Action: `[Open Renewal Status Update]` → toast `Opening Salesforce renewal status view · 3 accounts flagged ✓`.
+  - **Protect** (teal) — Overdue CTAs: 2 accounts (NovaVault + Brightex). Action: `[Open Overdue CTAs in Gainsight]` → toast `Opening Gainsight Cockpit · Filtered to overdue CTAs ✓`.
+- Panel footer: `Dust analysis · Gainsight + Salesforce · Updated today 9:00 AM · Refreshes daily`.
+- Three new helpers: `rcpDraftEBR`, `rcpRenewalStatus`, `rcpOverdueCTAs`.
+
+### Not touched
+- Existing scorecard (`buildRecipe` data, banner, metric cards, weighted score block, source labels). All preserved verbatim.
+
+---
+
+## [2.12.0] — 2026-05-17
+
+NovaVault Save Strategy drawer gains a secondary "Generate Save Deck" footer button alongside the existing Push to Gainsight CTA push.
+
+### Added
+- New action type in the agent drawer footer renderer: `f.a === 'deck-sec'`. Same height/padding/`flex:1` as the regular outlined Push-to-Gainsight button, but onclick fires `openDeckModal(acct)` instead of a toast.
+- `DRAWER.save.nova.foot` now has two entries: the original `Push to Gainsight` toast action and the new `📊 Generate Save Deck` deck-modal action. Acme and Brightex Save drawers are untouched.
+- `openDeckModal(acct)` upgraded:
+  - Added `id="modal-t"` to the modal title element.
+  - New per-account `titles` map switches the title between "Building your QBR deck" (acme) / "Building your Risk Review deck" (brightex) / "Building your NovaVault Save Deck" (nova).
+  - Existing per-account `names` map for the sub-line is unchanged.
+
+### Verified end-to-end in a headless render
+- NovaVault Save drawer footer renders 2 buttons: `Push to Gainsight` + `📊 Generate Save Deck`.
+- Clicking the Save Deck button opens the modal with title `Building your NovaVault Save Deck` and sub `Save Deck Builder · Emergency retention build`. All existing deck-modal progress animation and final state untouched.
+- Acme Save drawer footer renders only `Push to Gainsight` — no Save Deck button. Verified the renderer doesn't leak the deck button onto other accounts.
+
+### Not touched
+- Existing `deck` action (used by Mission Briefing default's `Generate QBR Deck` button) — same primary-style rendering as before.
+- All other Save Strategy drawer content (talking points, discovery, objection handlers, extension terms) — unchanged.
 
 ---
 
