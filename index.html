@@ -297,23 +297,20 @@ body.offline .main > div:nth-child(3){
    translation sentence + named-account gap details + dollar-denominated
    projection + updated Dust Action Plan.
    ═════════════════════════════════════════════════════════════════════════ */
-.rcp-bonus{background:var(--surf);border:1px solid var(--bd);border-left:4px solid var(--tl);border-radius:var(--rlg);padding:18px 22px;margin-bottom:18px}
-.rcp-bonus-hd{font-size:11px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.rcp-bonus-hd-r{font-size:10px;color:#6B7280;font-weight:600;text-transform:none;letter-spacing:0}
-.rcp-bonus-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-@media (max-width:780px){.rcp-bonus-grid{grid-template-columns:1fr}}
-.rcp-bonus-col{display:flex;flex-direction:column;gap:6px}
-.rcp-bonus-col-l{font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.08em}
-.rcp-bonus-col-v{font-size:24px;font-weight:800;color:#111827;letter-spacing:-.02em;line-height:1.15}
-.rcp-bonus-col-t{font-size:12px;color:#6B7280;font-weight:600}
-.rcp-bonus-col-gap{font-size:11px;font-weight:700;margin-top:3px}
-.rcp-bonus-col-gap.neg{color:#B91C1C}
-.rcp-bonus-col-gap.pos{color:#065F46}
-.rcp-bonus-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;padding-top:12px;border-top:1px dashed var(--bd)}
-.rcp-bonus-btn{font-family:inherit;font-size:11px;font-weight:700;padding:6px 11px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tl-dk);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .12s;min-height:30px}
-.rcp-bonus-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
-.rcp-bonus-btn:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
-.rcp-bonus-btn i{font-size:13px}
+.rcp-bonus{background:var(--surf);border-bottom:1px solid var(--bd);padding:0 24px;margin:0 0 16px;max-height:56px}
+.rcp-bonus-bar{display:flex;align-items:center;gap:14px;min-height:56px;flex-wrap:wrap}
+.rcp-bonus-grp{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.rcp-bonus-l{font-size:10px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.08em}
+.rcp-bonus-v{font-size:15px;font-weight:600;color:#111827}
+.rcp-bonus-g{font-size:12px;font-weight:500;color:#6B7280}
+.rcp-bonus-g.neg{color:#B91C1C}
+.rcp-bonus-g.pos{color:#065F46}
+.rcp-bonus-div{width:1px;align-self:stretch;background:var(--bd);margin:10px 4px}
+.rcp-bonus-acts{display:flex;align-items:center;gap:14px;margin-left:8px}
+.rcp-bonus-lnk{font-family:inherit;font-size:12px;font-weight:500;color:var(--tl-dk);background:none;border:none;padding:0;cursor:pointer;text-decoration:none}
+.rcp-bonus-lnk:hover{text-decoration:underline}
+.rcp-bonus-lnk:focus-visible{outline:2px solid var(--tl);outline-offset:2px;border-radius:2px}
+.rcp-bonus-sync{font-size:10px;color:#9CA3AF;margin-left:auto;white-space:nowrap}
 
 /* Bonus-translation sentence under the 74.5% score. */
 .rcp-bonus-trans{font-size:13px;color:#1F2937;line-height:1.55;background:var(--surf2);border-left:3px solid var(--tl);border-radius:5px;padding:10px 14px;margin-top:12px}
@@ -7667,27 +7664,30 @@ function buildRecipe() {
   var growGapK   = RCP_GROWTH_CLOSED_K - RCP_GROWTH_TARGET_K;
   var retGapCls  = retGapK >= 0 ? 'pos' : 'neg';
   var growGapCls = growGapK >= 0 ? 'pos' : 'neg';
-  var retGapTxt  = (retGapK >= 0 ? '+' : '−') + '$' + Math.abs(retGapK) + 'K gap · 6 weeks left';
-  var growGapTxt = (growGapK >= 0 ? '+' : '−') + '$' + Math.abs(growGapK) + 'K gap · 7 months left';
+  var retGapTxt  = (retGapK >= 0 ? '+' : '−') + '$' + Math.abs(retGapK) + 'K · 6 wks';
+  var growGapTxt = (growGapK >= 0 ? '+' : '−') + '$' + Math.abs(growGapK) + 'K · 7 mo';
+  var retPair    = rcpFormatK(retCommitK) + ' / ' + rcpFormatK(RCP_RETENTION_TARGET_K);
+  var growPair   = rcpFormatK(RCP_GROWTH_CLOSED_K) + ' / ' + rcpFormatK(RCP_GROWTH_TARGET_K);
   var h = '<div class="rcp-bonus" role="region" aria-label="Q2 Bonus Targets">'
-        +   '<div class="rcp-bonus-hd"><span>🎯 My bonus targets · Q2 2026</span><span class="rcp-bonus-hd-r">Synced from Forecasting · updates automatically</span></div>'
-        +   '<div class="rcp-bonus-grid">'
-        +     '<div class="rcp-bonus-col">'
-        +       '<div class="rcp-bonus-col-l">Retention</div>'
-        +       '<div class="rcp-bonus-col-v">' + rcpFormatK(retCommitK) + ' committed</div>'
-        +       '<div class="rcp-bonus-col-t">' + rcpFormatK(RCP_RETENTION_TARGET_K) + ' target</div>'
-        +       '<div class="rcp-bonus-col-gap ' + retGapCls + '">' + retGapTxt + '</div>'
+        +   '<div class="rcp-bonus-bar">'
+        +     '<div class="rcp-bonus-grp">'
+        +       '<span class="rcp-bonus-l" aria-hidden="true">🎯 Retention</span>'
+        +       '<span class="sr-only">Retention bonus:</span>'
+        +       '<span class="rcp-bonus-v">' + retPair + '</span>'
+        +       '<span class="rcp-bonus-g ' + retGapCls + '">' + retGapTxt + '</span>'
         +     '</div>'
-        +     '<div class="rcp-bonus-col">'
-        +       '<div class="rcp-bonus-col-l">Growth</div>'
-        +       '<div class="rcp-bonus-col-v">' + rcpFormatK(RCP_GROWTH_CLOSED_K) + ' closed</div>'
-        +       '<div class="rcp-bonus-col-t">' + rcpFormatK(RCP_GROWTH_TARGET_K) + ' target</div>'
-        +       '<div class="rcp-bonus-col-gap ' + growGapCls + '">' + growGapTxt + '</div>'
+        +     '<div class="rcp-bonus-div" aria-hidden="true"></div>'
+        +     '<div class="rcp-bonus-grp">'
+        +       '<span class="rcp-bonus-l" aria-hidden="true">📈 Growth</span>'
+        +       '<span class="sr-only">Growth bonus:</span>'
+        +       '<span class="rcp-bonus-v">' + growPair + '</span>'
+        +       '<span class="rcp-bonus-g ' + growGapCls + '">' + growGapTxt + '</span>'
         +     '</div>'
-        +   '</div>'
-        +   '<div class="rcp-bonus-acts">'
-        +     '<button class="rcp-bonus-btn" type="button" onclick="rcpJumpRetention()" aria-label="View Retention Forecast in Forecasting tab"><i class="ti ti-arrow-right"></i> View Retention Forecast →</button>'
-        +     '<button class="rcp-bonus-btn" type="button" onclick="rcpJumpGrowth()" aria-label="View Expansion Pipeline in Forecasting tab"><i class="ti ti-arrow-right"></i> View Expansion Pipeline →</button>'
+        +     '<div class="rcp-bonus-acts">'
+        +       '<button class="rcp-bonus-lnk" type="button" onclick="rcpJumpRetention()" aria-label="View Retention Forecast">View Forecast →</button>'
+        +       '<button class="rcp-bonus-lnk" type="button" onclick="rcpJumpGrowth()" aria-label="View Expansion Pipeline">View Pipeline →</button>'
+        +     '</div>'
+        +     '<span class="rcp-bonus-sync">Synced · auto-updates</span>'
         +   '</div>'
         + '</div>';
 
