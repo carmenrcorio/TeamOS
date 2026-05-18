@@ -281,7 +281,8 @@ test.describe('Campaign Manager actions', () => {
     await page.evaluate(() => cmAddContactSave());
     await page.waitForTimeout(100);
     await expect(page.locator('#cm-ac-em-err')).toHaveClass(/on/);
-    // With email → persists
+    // With email + first name (both required as of v4.11.0) → persists
+    await page.fill('#cm-ac-fn', 'QA');
     await page.fill('#cm-ac-em', 'qa-test@example.com');
     await page.evaluate(() => cmAddContactSave());
     await page.waitForTimeout(150);
@@ -1373,5 +1374,231 @@ test.describe('v4.10.0 Dashboard UX overhaul', () => {
 
   test('SPEC §9: pulse strip still has at least 7 ps-wrap items', async ({ page }) => {
     expect(await page.locator('.pulse-strip .ps-wrap').count()).toBeGreaterThanOrEqual(7);
+  });
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.11.0 — CAMPAIGN MANAGER ADD CONTACT INLINE + QUICK SEND
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.11.0 Campaign Manager features', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('campaigns', document.querySelector('[onclick*="goTab(\'campaigns\'"]')));
+    await page.waitForTimeout(150);
+  });
+
+  // ── FEATURE 1: shared Add Contact modal ─────────────────────────────────
+  test('FEATURE 1: shared Add Contact modal carries First name + Email as required', async ({ page }) => {
+    await page.evaluate(() => cmAddContactPrompt());
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-modal-ov')).toHaveClass(/on/);
+    expect(await page.locator('#cm-ac-fn').getAttribute('aria-required')).toBe('true');
+    expect(await page.locator('#cm-ac-em').getAttribute('aria-required')).toBe('true');
+    // Role=dialog on the modal.
+    expect(await page.locator('#cm-modal').getAttribute('role')).toBe('dialog');
+    expect(await page.locator('#cm-modal').getAttribute('aria-modal')).toBe('true');
+  });
+
+  test('FEATURE 1: First name required + inline error fires on blank submit', async ({ page }) => {
+    await page.evaluate(() => cmAddContactPrompt());
+    await page.waitForTimeout(150);
+    await page.fill('#cm-ac-em', 'a@b.com');
+    await page.evaluate(() => cmAddContactSave());
+    await page.waitForTimeout(100);
+    await expect(page.locator('#cm-ac-fn-err')).toHaveClass(/on/);
+    // No contact persisted while First name blank.
+    const exists = await page.evaluate(() => CM_CONTACTS.some(c => c.email === 'a@b.com'));
+    expect(exists).toBe(false);
+  });
+
+  test('FEATURE 1: save persists new contact to localStorage teamos_contacts', async ({ page }) => {
+    await page.evaluate(() => cmAddContactPrompt());
+    await page.waitForTimeout(150);
+    await page.fill('#cm-ac-fn', 'Eva');
+    await page.fill('#cm-ac-ln', 'Persisted');
+    await page.fill('#cm-ac-em', 'eva.persisted@qa.test');
+    await page.fill('#cm-ac-co', 'Persist Co');
+    await page.evaluate(() => cmAddContactSave());
+    await page.waitForTimeout(150);
+    const stored = await page.evaluate(() => {
+      try { return JSON.parse(localStorage.getItem('teamos_contacts') || '[]'); } catch (e) { return []; }
+    });
+    expect(stored.some(c => c.email === 'eva.persisted@qa.test')).toBe(true);
+    // Toast confirms.
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Eva Persisted added/);
+  });
+
+  test('FEATURE 1 · LOCATION 1: Step 2 audience picker carries Add contact link', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.step=2; cmWizRender(); });
+    await page.waitForTimeout(200);
+    await expect(page.locator('#cm-wiz-body .cm-add-cnt-link .cm-add-cnt-btn')).toBeVisible();
+    // Click it; modal opens with wizard origin context.
+    await page.click('#cm-wiz-body .cm-add-cnt-link .cm-add-cnt-btn');
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-modal-ov')).toHaveClass(/on/);
+    const ctxKind = await page.evaluate(() => CM_ADD_CONTACT_CTX && CM_ADD_CONTACT_CTX.kind);
+    expect(ctxKind).toBe('wizard');
+  });
+
+  test('FEATURE 1 · LOCATION 1: Add contact from wizard pre-checks new contact in Step 2', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.step=2; cmWizRender(); });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmAddContactPrompt({ kind:'wizard' }));
+    await page.waitForTimeout(120);
+    await page.fill('#cm-ac-fn', 'Wizard');
+    await page.fill('#cm-ac-em', 'wizard@qa.test');
+    await page.evaluate(() => cmAddContactSave());
+    await page.waitForTimeout(200);
+    const inSel = await page.evaluate(() => {
+      const c = CM_CONTACTS.find(x => x.email === 'wizard@qa.test');
+      return c ? CM_WIZ.contacts.indexOf(c.id) !== -1 : false;
+    });
+    expect(inSel).toBe(true);
+  });
+
+  test('FEATURE 1 · LOCATION 3: campaign detail drawer carries Add contact link', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(200);
+    await expect(page.locator('#cm-cv-drawer .cm-add-cnt-link .cm-add-cnt-btn')).toBeVisible();
+    const before = await page.evaluate(() => CM_CAMPAIGNS.find(x => x.id === 'cmp1').contactCount);
+    await page.evaluate(() => cmAddContactPrompt({ kind:'campaign', cmpId:'cmp1' }));
+    await page.waitForTimeout(120);
+    await page.fill('#cm-ac-fn', 'Campaign');
+    await page.fill('#cm-ac-em', 'cmp@qa.test');
+    await page.evaluate(() => cmAddContactSave());
+    await page.waitForTimeout(200);
+    const after = await page.evaluate(() => CM_CAMPAIGNS.find(x => x.id === 'cmp1').contactCount);
+    expect(after).toBe(before + 1);
+    const inIds = await page.evaluate(() => {
+      const c = CM_CONTACTS.find(x => x.email === 'cmp@qa.test');
+      return c ? CM_CAMPAIGNS.find(x => x.id === 'cmp1').contactIds.indexOf(c.id) !== -1 : false;
+    });
+    expect(inIds).toBe(true);
+  });
+
+  // ── FEATURE 2: Quick Send ───────────────────────────────────────────────
+  test('FEATURE 2: Quick Send button visible next to New Campaign', async ({ page }) => {
+    const btns = await page.locator('#cm-campaigns .cm-hd-acts button').count();
+    expect(btns).toBe(2);
+    const qsBtn = page.locator('#cm-campaigns .cm-hd-acts button[onclick="cmQuickSendOpen()"]');
+    await expect(qsBtn).toBeVisible();
+    const t = await qsBtn.textContent();
+    expect(t).toMatch(/Quick Send/);
+  });
+
+  test('FEATURE 2: Quick Send opens modal with role=dialog + aria-modal=true', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-modal-ov.on')).toBeVisible();
+    expect(await page.locator('#cm-modal').getAttribute('role')).toBe('dialog');
+    expect(await page.locator('#cm-modal').getAttribute('aria-modal')).toBe('true');
+    await expect(page.locator('#cm-modal.qs')).toBeVisible();
+    // Required fields exposed.
+    expect(await page.locator('#cm-qs-subj').getAttribute('aria-required')).toBe('true');
+    expect(await page.locator('#cm-qs-msg').getAttribute('aria-required')).toBe('true');
+    // Submit button starts at "Send to 0 people".
+    const ariaLbl = await page.locator('#cm-qs-submit').getAttribute('aria-label');
+    expect(ariaLbl).toBe('Send to 0 people');
+  });
+
+  test('FEATURE 2: submit button label updates live as contacts are added', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(120);
+    await page.evaluate(() => cmQsPick('c1'));
+    await page.waitForTimeout(80);
+    const l1 = await page.locator('#cm-qs-submit').getAttribute('aria-label');
+    expect(l1).toBe('Send to 1 person');
+    await page.evaluate(() => cmQsPick('c3'));
+    await page.evaluate(() => cmQsPick('c11'));
+    await page.waitForTimeout(80);
+    const l3 = await page.locator('#cm-qs-submit').getAttribute('aria-label');
+    expect(l3).toBe('Send to 3 people');
+    // 3 chips render.
+    expect(await page.locator('#cm-qs-to-bx .cm-qs-chip').count()).toBe(3);
+  });
+
+  test('FEATURE 2: validation — empty TO + empty subject + short message fires inline errors', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(120);
+    await page.evaluate(() => cmQuickSendSubmit());
+    await page.waitForTimeout(100);
+    await expect(page.locator('#cm-qs-to-err')).toHaveClass(/on/);
+    await expect(page.locator('#cm-qs-subj-err')).toHaveClass(/on/);
+    await expect(page.locator('#cm-qs-msg-err')).toHaveClass(/on/);
+  });
+
+  test('FEATURE 2: send persists to localStorage + toasts and closes modal', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(120);
+    await page.evaluate(() => { cmQsPick('c1'); cmQsPick('c3'); });
+    await page.fill('#cm-qs-subj', 'Renewal terms');
+    await page.fill('#cm-qs-msg', 'Quick note about your upcoming renewal. Let me know a good time.');
+    await page.evaluate(() => cmQuickSendSubmit());
+    await page.waitForTimeout(200);
+    await expect(page.locator('#cm-modal-ov.on')).toHaveCount(0);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Sent to 2 contacts · Logged in Gainsight/);
+    const stored = await page.evaluate(() => { try { return JSON.parse(localStorage.getItem('teamos_quick_sends') || '[]'); } catch (e) { return []; } });
+    expect(stored.length).toBeGreaterThanOrEqual(1);
+    expect(stored[0].subject).toBe('Renewal terms');
+    expect(stored[0].sent).toBe(2);
+  });
+
+  test('FEATURE 2: Analytics adds Quick Sends row after a send', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(120);
+    await page.evaluate(() => { cmQsPick('c1'); });
+    await page.fill('#cm-qs-subj', 'QA');
+    await page.fill('#cm-qs-msg', 'Quick note for QA verification.');
+    await page.evaluate(() => cmQuickSendSubmit());
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(200);
+    const qsRow = page.locator('#cm-analytics .cm-perf-table tr.qs-row');
+    await expect(qsRow).toBeVisible();
+    const txt = await qsRow.textContent();
+    expect(txt).toMatch(/Quick Sends/);
+    expect(txt).toMatch(/1:1 \/ Quick Send/);
+  });
+
+  test('FEATURE 2: keyboard — Enter in subject moves focus to message', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(120);
+    await page.focus('#cm-qs-subj');
+    await page.fill('#cm-qs-subj', 'Topic');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(80);
+    const focusedId = await page.evaluate(() => document.activeElement && document.activeElement.id);
+    expect(focusedId).toBe('cm-qs-msg');
+  });
+
+  test('FEATURE 2: Escape closes the Quick Send modal', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(150);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-modal-ov.on')).toHaveCount(0);
+  });
+
+  test('FEATURE 2: typeahead — typing filters CM_CONTACTS and Enter picks first', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(120);
+    await page.fill('#cm-qs-to-input', 'sarah');
+    await page.waitForTimeout(80);
+    const opts = await page.locator('#cm-qs-to-pop .cm-qs-to-opt').count();
+    expect(opts).toBeGreaterThanOrEqual(1);
+    await page.focus('#cm-qs-to-input');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(80);
+    const picked = await page.evaluate(() => CM_QS && CM_QS.to.length);
+    expect(picked).toBe(1);
+  });
+
+  test('FEATURE 1 · LOCATION 4: Quick Send TO field carries Add contact link', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-modal-body .cm-add-cnt-link .cm-add-cnt-btn')).toBeVisible();
   });
 });
