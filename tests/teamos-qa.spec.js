@@ -483,18 +483,26 @@ test.describe('Forecasting', () => {
     expect(meta).toMatch(/\d+:\d+/);
   });
 
-  test('Ghost-Buster Meridian opens view-meridian', async ({ page }) => {
+  test('Ghost-Buster Meridian opens the in-tab Ghost-Buster drawer', async ({ page }) => {
     await page.evaluate(() => fcAction('gb', 'meridian'));
     await page.waitForTimeout(400);
-    const activeView = await page.evaluate(() => document.querySelector('.rp-view.on')?.id);
-    expect(activeView).toBe('view-meridian');
+    // v4.13.0 — Ghost-Buster now opens as a fixed right-side drawer (so the
+    // CSM stays on the Forecasting tab) rather than navigating to the
+    // dashboard's view-{acct} panel.
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    const sub = await page.locator('#gb-drawer-sub').textContent();
+    expect(sub).toMatch(/Meridian/);
+    // Stayed on Forecasting tab.
+    await expect(page.locator('#tab-forecast')).toHaveClass(/on/);
   });
 
-  test('Ghost-Buster Creston opens view-creston', async ({ page }) => {
+  test('Ghost-Buster Creston opens the in-tab Ghost-Buster drawer', async ({ page }) => {
     await page.evaluate(() => fcAction('gb', 'creston'));
     await page.waitForTimeout(400);
-    const activeView = await page.evaluate(() => document.querySelector('.rp-view.on')?.id);
-    expect(activeView).toBe('view-creston');
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    const sub = await page.locator('#gb-drawer-sub').textContent();
+    expect(sub).toMatch(/Creston/);
+    await expect(page.locator('#tab-forecast')).toHaveClass(/on/);
   });
 
   test('Champion Protocol Apex passes own account key (not Brightex)', async ({ page }) => {
@@ -982,27 +990,25 @@ test.describe('v4.9.0 Risk & Signals fixes', () => {
     await page.waitForTimeout(150);
   });
 
-  test('FIX 1: rsOpenGB switches to dashboard tab + opens view-{acct}', async ({ page }) => {
+  test('FIX 1: rsOpenGB opens the in-tab drawer without leaving Risk & Signals', async ({ page }) => {
+    // v4.13.0 — Ghost-Buster now opens a fixed-position drawer overlay; the
+    // CSM stays on the Risk & Signals tab.
     await page.evaluate(() => rsOpenGB('meridian'));
     await page.waitForTimeout(200);
-    await expect(page.locator('#tab-dash')).toHaveClass(/on/);
-    const onView = await page.evaluate(() => {
-      const v = document.querySelector('#view-meridian');
-      return !!(v && v.classList.contains('on'));
-    });
-    expect(onView).toBe(true);
+    await expect(page.locator('#tab-risk')).toHaveClass(/on/);
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    const sub = await page.locator('#gb-drawer-sub').textContent();
+    expect(sub).toMatch(/Meridian/);
   });
 
-  test('FIX 1: openGhostBuster global alias routes through rsOpenGB', async ({ page }) => {
+  test('FIX 1: openGhostBuster global alias routes through the drawer', async ({ page }) => {
     const exists = await page.evaluate(() => typeof window.openGhostBuster === 'function');
     expect(exists).toBe(true);
     await page.evaluate(() => window.openGhostBuster('creston'));
     await page.waitForTimeout(200);
-    const onView = await page.evaluate(() => {
-      const v = document.querySelector('#view-creston');
-      return !!(v && v.classList.contains('on'));
-    });
-    expect(onView).toBe(true);
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    const sub = await page.locator('#gb-drawer-sub').textContent();
+    expect(sub).toMatch(/Creston/);
   });
 
   test('FIX 2: Brightex Draft Reply opens email compose modal', async ({ page }) => {
@@ -1065,7 +1071,9 @@ test.describe('v4.9.0 Risk & Signals fixes', () => {
     await page.evaluate(() => rsPlayEscalate('brightex'));
     await page.waitForTimeout(100);
     const t = await page.locator('#toast-el').textContent();
-    expect(t).toMatch(/Situation brief sent to Team Lead · Brightex · Dust summary attached/);
+    // v4.13.0 — wording updated from "Dust summary attached" to
+    // "Escalation summary attached" per the spec.
+    expect(t).toMatch(/Situation brief sent to Team Lead · Brightex · Escalation summary attached/);
   });
 
   test('FIX 5: clicking matrix dot does not tear down the detail panel buttons', async ({ page }) => {
@@ -1196,11 +1204,11 @@ test.describe('v4.9.0 Risk & Signals fixes', () => {
     expect(txt).toMatch(/Sharp decline/);
   });
 
-  test('FIX 10: NovaVault Step 2 expands into WHAT TO DO / SAY / OUTCOME', async ({ page }) => {
+  test('FIX 10: NovaVault Step 2 talk-track renders WHAT TO DO / SAY / OUTCOME', async ({ page }) => {
     await page.evaluate(() => rsShow('plays'));
     await page.waitForTimeout(150);
-    await page.evaluate(() => rsPlayStepToggle('nova', 2));
-    await page.waitForTimeout(100);
+    // v4.13.0 — Step 2 (in-progress) auto-expands on render, so the body is
+    // already visible without a toggle.
     const body = await page.locator('#rs-pl-nova-step-2-body').textContent();
     expect(body).toMatch(/What to do/);
     expect(body).toMatch(/What to say/);
@@ -1210,16 +1218,18 @@ test.describe('v4.9.0 Risk & Signals fixes', () => {
     expect(exp).toBe('true');
   });
 
-  test('FIX 10: aria-expanded flips on Brightex Step 3 toggle', async ({ page }) => {
+  test('FIX 10: aria-expanded toggles correctly on a non-auto-expanded step', async ({ page }) => {
     await page.evaluate(() => rsShow('plays'));
     await page.waitForTimeout(150);
-    const before = await page.locator('#rs-pl-brightex-step-3').getAttribute('aria-expanded');
+    // v4.13.0 — Brightex Step 3 is in-progress and auto-expands, so use
+    // Step 4 (a pending step with a body) to test the manual toggle path.
+    const before = await page.locator('#rs-pl-brightex-step-4').getAttribute('aria-expanded');
     expect(before).toBe('false');
-    await page.evaluate(() => rsPlayStepToggle('brightex', 3));
+    await page.evaluate(() => rsPlayStepToggle('brightex', 4));
     await page.waitForTimeout(100);
-    const after = await page.locator('#rs-pl-brightex-step-3').getAttribute('aria-expanded');
+    const after = await page.locator('#rs-pl-brightex-step-4').getAttribute('aria-expanded');
     expect(after).toBe('true');
-    await expect(page.locator('#rs-pl-brightex-step-3-body.on')).toBeVisible();
+    await expect(page.locator('#rs-pl-brightex-step-4-body.on')).toBeVisible();
   });
 
   test('regression: All Signals still lists 11 signals + 11 severity badges', async ({ page }) => {
@@ -1345,14 +1355,17 @@ test.describe('v4.10.0 Dashboard UX overhaul', () => {
     expect(await page.locator('#view-default .sa-row').count()).toBe(3);
   });
 
-  test('SPEC §7: Silent Accounts Ghost-Buster button routes to view-meridian', async ({ page }) => {
+  test('SPEC §7: Silent Accounts Ghost-Buster button opens the in-tab drawer', async ({ page }) => {
+    // v4.13.0 — Ghost-Buster from any caller (including Silent Accounts)
+    // routes through rsOpenGB which now opens the drawer overlay.
     await page.evaluate(() => {
       const btns = document.querySelectorAll('#view-default .sa-row .sa-btn');
       btns[0].click();
     });
     await page.waitForTimeout(250);
-    const isOn = await page.evaluate(() => document.getElementById('view-meridian')?.classList.contains('on'));
-    expect(isOn).toBe(true);
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    const sub = await page.locator('#gb-drawer-sub').textContent();
+    expect(sub).toMatch(/Meridian/);
   });
 
   test('SPEC §8: badge taxonomy — 5 filled classes applied across dashboard', async ({ page }) => {
@@ -1884,5 +1897,180 @@ test.describe('v4.12.0 Campaign Manager audit fixes', () => {
     await page.waitForTimeout(150);
     const labels = await page.locator('.cm-send-row input[type=checkbox]').first().getAttribute('aria-label');
     expect(labels).toMatch(/^Send to /);
+  });
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.13.0 — RISK & SIGNALS AUDIT FIXES
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.13.0 Risk & Signals audit fixes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('risk', document.querySelector('[onclick*="goTab(\'risk\'"]')));
+    await page.waitForTimeout(150);
+  });
+
+  // ── FIX 1: Ghost-Buster in-tab drawer ───────────────────────────────────
+  test('FIX 1: gb-drawer mounts at body level with role=dialog + aria-modal=true', async ({ page }) => {
+    expect(await page.locator('#gb-drawer').count()).toBe(1);
+    expect(await page.locator('#gb-drawer').getAttribute('role')).toBe('dialog');
+    expect(await page.locator('#gb-drawer').getAttribute('aria-modal')).toBe('true');
+  });
+
+  test('FIX 1: All Signals → Ghost-Buster opens drawer, stays on Risk & Signals', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(150);
+    // Signal 3 is the NovaVault Gong silence row with action="gb".
+    await page.evaluate(() => rsSigAction('gb', 'nova', 3));
+    await page.waitForTimeout(220);
+    await expect(page.locator('#tab-risk')).toHaveClass(/on/);
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    const sub = await page.locator('#gb-drawer-sub').textContent();
+    expect(sub).toMatch(/NovaVault/);
+  });
+
+  test('FIX 1: Champions → View Ghost-Buster (NovaVault) opens drawer in-tab', async ({ page }) => {
+    await page.evaluate(() => rsShow('champions'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsOpenGB('nova'));
+    await page.waitForTimeout(220);
+    await expect(page.locator('#tab-risk')).toHaveClass(/on/);
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    const sub = await page.locator('#gb-drawer-sub').textContent();
+    expect(sub).toMatch(/NovaVault/);
+  });
+
+  test('FIX 1: Dark Zone → Ghost-Buster opens drawer in-tab for each acct', async ({ page }) => {
+    await page.evaluate(() => rsShow('dark'));
+    await page.waitForTimeout(150);
+    for (const acct of ['meridian','creston','apex']) {
+      await page.evaluate(k => rsOpenGB(k), acct);
+      await page.waitForTimeout(200);
+      await expect(page.locator('#gb-drawer.on')).toBeVisible();
+      const sub = await page.locator('#gb-drawer-sub').textContent();
+      expect(sub.toLowerCase()).toContain(acct === 'meridian' ? 'meridian' : acct);
+      await page.evaluate(() => gbDrawerClose());
+      await page.waitForTimeout(150);
+    }
+  });
+
+  test('FIX 1: Escape closes the Ghost-Buster drawer', async ({ page }) => {
+    await page.evaluate(() => rsOpenGB('meridian'));
+    await page.waitForTimeout(180);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(150);
+    await expect(page.locator('#gb-drawer.on')).toHaveCount(0);
+  });
+
+  test('FIX 1: drawer body carries the Ghost-Buster content (Situation Read)', async ({ page }) => {
+    await page.evaluate(() => rsOpenGB('meridian'));
+    await page.waitForTimeout(200);
+    const body = await page.locator('#gb-drawer-body').textContent();
+    expect(body).toMatch(/Situation Read/);
+    expect(body).toMatch(/Meridian Health Systems/);
+  });
+
+  // ── FIX 2: Open Save Strategy in All Signals opens the agent drawer ─────
+  test('FIX 2: All Signals "Open Save Strategy" opens the Save Strategy drawer', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(150);
+    // Signal 1 is NovaVault champion-departed; action="save".
+    await page.evaluate(() => rsSigAction('save', 'nova', 1));
+    await page.waitForTimeout(220);
+    // The agent drawer (#drawer) opens with the Save Strategy data.
+    await expect(page.locator('#drawer.on')).toBeVisible();
+    const title = await page.locator('#drawer-title').textContent();
+    expect(title).toMatch(/Save|NovaVault/i);
+    // Still on Risk & Signals.
+    await expect(page.locator('#tab-risk')).toHaveClass(/on/);
+  });
+
+  // ── FIX 3: Escalate to TL wording ───────────────────────────────────────
+  test('FIX 3: Escalate to TL fires the new "Escalation summary attached" toast', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsPlayEscalate('nova'));
+    await page.waitForTimeout(120);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Situation brief sent to Team Lead/);
+    expect(t).toMatch(/NovaVault/);
+    expect(t).toMatch(/Escalation summary attached/);
+    expect(t).not.toMatch(/Dust summary attached/);
+  });
+
+  // ── FIX 4: Risk Matrix snapshot slide-over ──────────────────────────────
+  test('FIX 4: clicking a matrix dot opens a right-side snapshot slide-over', async ({ page }) => {
+    await page.evaluate(() => rsMxSelect('nova'));
+    await page.waitForTimeout(120);
+    await expect(page.locator('#rs-mx-snap.on')).toBeVisible();
+    expect(await page.locator('#rs-mx-snap').getAttribute('role')).toBe('region');
+    // Matrix chart remains rendered (full-width — no inline detail column).
+    expect(await page.locator('#rs-sec-matrix .rs-mx').count()).toBe(1);
+    // Snapshot detail body carries the account name.
+    const body = await page.locator('#rs-mx-detail .rs-mx-detail-nm').textContent();
+    expect(body).toMatch(/NovaVault/);
+  });
+
+  test('FIX 4: Escape closes the matrix snapshot slide-over', async ({ page }) => {
+    await page.evaluate(() => rsMxSelect('nova'));
+    await page.waitForTimeout(120);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(150);
+    await expect(page.locator('#rs-mx-snap.on')).toHaveCount(0);
+  });
+
+  // ── FIX 5: Generate Save Deck distinct toast ────────────────────────────
+  test('FIX 5: rsFireSaveDeckToast yields the Dust-deck wording (not Gainsight CTA)', async ({ page }) => {
+    await page.evaluate(() => rsFireSaveDeckToast('nova'));
+    await page.waitForTimeout(120);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Save deck generating/);
+    expect(t).toMatch(/NovaVault/);
+    expect(t).toMatch(/Dust is building your slides/);
+    expect(t).not.toMatch(/CTAs created in Gainsight/);
+  });
+
+  // ── FIX 6: portfolio bar above the matrix ───────────────────────────────
+  test('FIX 6: portfolio KPI bar renders ABOVE the matrix chart', async ({ page }) => {
+    const positions = await page.evaluate(() => {
+      const portfolio = document.querySelector('#rs-sec-matrix .rs-portfolio');
+      const matrix    = document.querySelector('#rs-sec-matrix .rs-mx-wrap');
+      if (!portfolio || !matrix) return null;
+      return {
+        portfolioTop: portfolio.getBoundingClientRect().top,
+        matrixTop:    matrix.getBoundingClientRect().top
+      };
+    });
+    expect(positions).not.toBeNull();
+    expect(positions.portfolioTop).toBeLessThan(positions.matrixTop);
+  });
+
+  // ── ENHANCEMENT: in-progress step auto-expands ──────────────────────────
+  test('ENHANCEMENT: in-progress Save Play step auto-expands talk track on load', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(180);
+    // NovaVault Step 2 is in-progress with a body — should be auto-expanded.
+    const novaExp = await page.locator('#rs-pl-nova-step-2').getAttribute('aria-expanded');
+    expect(novaExp).toBe('true');
+    await expect(page.locator('#rs-pl-nova-step-2-body.on')).toBeVisible();
+    // Brightex Step 3 is in-progress with a body — same.
+    const brightexExp = await page.locator('#rs-pl-brightex-step-3').getAttribute('aria-expanded');
+    expect(brightexExp).toBe('true');
+    await expect(page.locator('#rs-pl-brightex-step-3-body.on')).toBeVisible();
+    // Step 1 (done) should NOT be auto-expanded.
+    expect(await page.locator('#rs-pl-nova-step-1').count()).toBe(0); // step 1 has no body, no toggle
+  });
+
+  test('ENHANCEMENT: manual collapse of the auto-expanded step is honored on re-render', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(180);
+    // Collapse the auto-expanded NovaVault Step 2.
+    await page.evaluate(() => rsPlayStepToggle('nova', 2));
+    await page.waitForTimeout(100);
+    // Trigger a re-render (e.g. via rsRenderPlays directly).
+    await page.evaluate(() => rsRenderPlays());
+    await page.waitForTimeout(120);
+    // It should STAY collapsed — the auto-expand flag prevents re-opening.
+    const exp = await page.locator('#rs-pl-nova-step-2').getAttribute('aria-expanded');
+    expect(exp).toBe('false');
   });
 });
