@@ -292,6 +292,58 @@ body.offline .main > div:nth-child(3){
 .ge-edit{flex:1;padding:9px;background:transparent;color:var(--tx2);border:1px solid var(--bd2);border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit}
 .ge-edit:hover{background:var(--surf2)}
 
+/* ═════════════════════════════════════════════════════════════════════════
+   v4.21.0 — Recipe for Success overhaul. Bonus Targets header + bonus
+   translation sentence + named-account gap details + dollar-denominated
+   projection + updated Dust Action Plan.
+   ═════════════════════════════════════════════════════════════════════════ */
+.rcp-bonus{background:var(--surf);border:1px solid var(--bd);border-left:4px solid var(--tl);border-radius:var(--rlg);padding:18px 22px;margin-bottom:18px}
+.rcp-bonus-hd{font-size:11px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rcp-bonus-hd-r{font-size:10px;color:#6B7280;font-weight:600;text-transform:none;letter-spacing:0}
+.rcp-bonus-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media (max-width:780px){.rcp-bonus-grid{grid-template-columns:1fr}}
+.rcp-bonus-col{display:flex;flex-direction:column;gap:6px}
+.rcp-bonus-col-l{font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.08em}
+.rcp-bonus-col-v{font-size:24px;font-weight:800;color:#111827;letter-spacing:-.02em;line-height:1.15}
+.rcp-bonus-col-t{font-size:12px;color:#6B7280;font-weight:600}
+.rcp-bonus-col-gap{font-size:11px;font-weight:700;margin-top:3px}
+.rcp-bonus-col-gap.neg{color:#B91C1C}
+.rcp-bonus-col-gap.pos{color:#065F46}
+.rcp-bonus-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;padding-top:12px;border-top:1px dashed var(--bd)}
+.rcp-bonus-btn{font-family:inherit;font-size:11px;font-weight:700;padding:6px 11px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tl-dk);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .12s;min-height:30px}
+.rcp-bonus-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.rcp-bonus-btn:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.rcp-bonus-btn i{font-size:13px}
+
+/* Bonus-translation sentence under the 74.5% score. */
+.rcp-bonus-trans{font-size:13px;color:#1F2937;line-height:1.55;background:var(--surf2);border-left:3px solid var(--tl);border-radius:5px;padding:10px 14px;margin-top:12px}
+.rcp-bonus-trans strong{color:#111827;font-weight:800}
+.rcp-bonus-trans em{color:#B91C1C;font-style:normal;font-weight:700}
+
+/* Per-category gap detail block inside each .sc-card. */
+.rcp-gap-detail{margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd);display:flex;flex-direction:column;gap:9px}
+.rcp-gap-l{font-size:11px;font-weight:700;color:#B45309;line-height:1.5;display:flex;align-items:flex-start;gap:5px}
+.rcp-gap-l::before{content:'⚠';color:#D97706;font-weight:800;flex-shrink:0}
+.rcp-gap-l.pos{color:#065F46}
+.rcp-gap-l.pos::before{content:'✓';color:#059669}
+.rcp-gap-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#1F2937;line-height:1.45;background:var(--surf2);border:1px solid var(--bd);border-radius:5px;padding:7px 10px}
+.rcp-gap-row b{color:#111827;font-weight:700}
+.rcp-gap-row .rcp-gap-row-sub{font-size:10px;color:#6B7280;font-weight:600}
+.rcp-gap-acts{display:flex;gap:6px;flex-wrap:wrap}
+.rcp-gap-btn{font-family:inherit;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .12s;min-height:26px;white-space:nowrap}
+.rcp-gap-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.rcp-gap-btn i{font-size:11px}
+
+/* Quarter Projection upgrade. */
+.rcp-proj-bonus{display:flex;flex-direction:column;gap:11px}
+.rcp-proj-bonus-row{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#1F2937;line-height:1.55}
+.rcp-proj-bonus-row .ic{font-size:14px;flex-shrink:0;margin-top:1px}
+.rcp-proj-bonus-row b{color:#111827;font-weight:700}
+.rcp-proj-bonus-row .gap{color:#B91C1C;font-weight:700}
+.rcp-proj-warn{background:#FEF3C7;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:5px;padding:8px 12px;font-size:12px;color:#78350F;line-height:1.55;margin-top:4px}
+.rcp-proj-warn b{color:#92400E;font-weight:800}
+.rcp-proj-bonus-sub{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.07em;margin:10px 0 4px}
+
 .sc-pg{padding:20px 28px}
 .sc-ban{background:var(--tl-bg);border-radius:var(--r);padding:14px 18px;display:flex;align-items:flex-start;gap:10px;margin-bottom:20px}
 .sc-bt{font-weight:700;font-size:13px;color:var(--tl-dk);margin-bottom:4px}
@@ -5759,402 +5811,6 @@ setTimeout(function() {
   setTimeout(function(){ pill.classList.remove('pulse'); }, 350);
 }, 90000);
 
-function buildRecipe() {
-  // v3.2.3 — Recipe overhaul. Score data unchanged. Metric rows extend the
-  // row tuple with a status code: 'g' (on track) / 'a' (at risk) / 'r' (below).
-  // Hard rules: CTAs overdue and blank statuses are always red when > 0.
-  var scores = [
-    {l:'Success plans & objectives',w:'50%',p:71.4,c:'#18A575',d:2.1},
-    {l:'Book of business growth',w:'20%',p:80,  c:'#2563EB',d:0},
-    {l:'Renewal forecast actions',w:'10%',p:66.7,c:'#D97706',d:-3.3},
-    {l:'Business reviews (EBRs)',w:'10%',p:62.5,c:'#18A575',d:12.5},
-    {l:'Customer advocacy',w:'10%',p:80,  c:'#8A8A86',d:5.0}
-  ];
-  var metrics = [
-    {sec:'Success plans & objectives',rows:[
-      ['Active success plans','Target: 100% of $25K+ accounts','16/18','','a'],
-      ['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7','','g'],
-      ['CTAs overdue','Resolve immediately &mdash; hard stop','2','w','r']
-    ]},
-    {sec:'Book of business growth',rows:[
-      ['Renewal opps with upsell','Target: &gt;50% of renewal opps','6/11','','g'],
-      ['Closed won expansions','Target: &ge;5% of accounts','3','','g'],
-      ['Renewals in downsell','Negative &middot; target &lt;20%','2/11','w','a']
-    ]},
-    {sec:'Renewal forecast actions',rows:[
-      ['Renewals with blank status','Negative &middot; target &le;5%','3','d','r'],
-      ['Renewal status changes','Negative &middot; target &lt;10%','1/11','','g']
-    ]},
-    {sec:'Business reviews & advocacy',rows:[
-      ['EBRs &middot; $25K+ accounts','Target: 50% of $25K+ accounts','11/18','','r'],
-      ['EBRs &middot; $10K&ndash;$25K','Target: 10% of $10K&ndash;$25K','3/24','','r'],
-      ['Advocacy milestones','Quarterly: &ge;2.5% of accounts','2','','g']
-    ]}
-  ];
-  var STAT_DEF = {
-    g: {cls:'g', ic:'check',           t:'On Track'},
-    a: {cls:'a', ic:'alert-triangle',  t:'At Risk'},
-    r: {cls:'r', ic:'x',               t:'Below'}
-  };
-  function statHTML(s) {
-    if (!s) return '';
-    var d = STAT_DEF[s]; if (!d) return '';
-    return '<span class="sc-stat ' + d.cls + '"><i class="ti ti-' + d.ic + '"></i> ' + d.t + '</span>';
-  }
-  function ratingBand(p) {
-    if (p >= 95) return {lbl:'Outstanding',        dot:'g'};
-    if (p >= 85) return {lbl:'Exceeding',          dot:'g'};
-    if (p >= 75) return {lbl:'Meeting',            dot:'a'};
-    if (p >= 55) return {lbl:'Inconsistent',       dot:'o'};
-    return                {lbl:'Below Expectations',dot:'r'};
-  }
-
-  var noteCount = (typeof _rcpNotesCurrentCount === 'function') ? _rcpNotesCurrentCount() : 0;
-
-  // v3.3.1 — Lively hero header. Wobbling 🧪 icon + bold title + tagline.
-  var h = '<div class="rcp-hero">'
-        +   '<div class="rcp-hero-r">'
-        +     '<span class="rcp-hero-ic" aria-hidden="true">🧪</span>'
-        +     '<div class="rcp-hero-t">Recipe for Success</div>'
-        +   '</div>'
-        +   '<div class="rcp-hero-sub">Your quarter, cooked to perfection.</div>'
-        + '</div>';
-
-  // Top header: subdued sync timestamp + Notes jump pill. Replaces the
-  // green advisory banner and the duplicate "Last synced" footer block.
-  h += '<div class="sc-tophdr">'
-     +   '<div class="sc-sync"><i class="ti ti-refresh"></i> Last synced: Today &middot; 9:00 AM &middot; Gainsight API</div>'
-     +   '<button class="sc-notes-jump" type="button" onclick="rcpJumpNotes()" aria-label="Jump to notes section"><i class="ti ti-notes"></i> Notes (<span id="rcp-notes-count">' + noteCount + '</span>)</button>'
-     + '</div>';
-
-  // Account Portfolio context bar.
-  h += '<div class="sc-port">'
-     +   '<div class="sc-port-l">Account Portfolio <span class="sc-port-src">Gainsight</span></div>'
-     +   '<div class="sc-port-d">'
-     +     '<span class="sc-port-i"><span class="sc-port-k">Total Accounts</span> <span class="sc-port-v">24</span></span>'
-     +     '<span class="sc-port-i"><span class="sc-port-k">$10&ndash;25K ARR</span> <span class="sc-port-v">14</span></span>'
-     +     '<span class="sc-port-i"><span class="sc-port-k">$25K+ ARR</span> <span class="sc-port-v">10</span></span>'
-     +     '<span class="sc-port-i"><span class="sc-port-k">Renewal Opps Q2</span> <span class="sc-port-v">18</span></span>'
-     +   '</div>'
-     + '</div>';
-
-  // Status legend (shown once, above the metric cards).
-  h += '<div class="sc-legend">'
-     +   '<span class="sc-legend-l">Status</span>'
-     +   '<span class="sc-legend-i"><span class="sc-legend-d g"></span>On Track &mdash; meets / exceeds target</span>'
-     +   '<span class="sc-legend-i"><span class="sc-legend-d a"></span>At Risk &mdash; within 10% of failing</span>'
-     +   '<span class="sc-legend-i"><span class="sc-legend-d r"></span>Below &mdash; failing threshold</span>'
-     + '</div>';
-
-  h += '<div class="sc-grid">';
-  metrics.forEach(function(m){
-    h += '<div class="sc-card"><div class="sc-ct">' + m.sec + '</div>';
-    m.rows.forEach(function(r){
-      h += '<div class="sc-row">'
-         +   '<div><div class="sc-ml">' + r[0] + '</div><div class="sc-mt">' + r[1] + '</div></div>'
-         +   '<div class="sc-mv-col">'
-         +     '<div class="sc-mv' + (r[3] ? ' ' + r[3] : '') + '">' + r[2] + '</div>'
-         +     statHTML(r[4])
-         +     '<div class="sc-src"><i class="ti ti-check" style="font-size:9px"></i> Gainsight</div>'
-         +   '</div>'
-         + '</div>';
-    });
-    h += '</div>';
-  });
-  h += '</div>';
-
-  // Live weighted score block.
-  h += '<div class="sc-fin">'
-     +   '<div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Live weighted score</div>'
-     +   '<div style="margin-bottom:16px">';
-  scores.forEach(function(s){
-    var rb = ratingBand(s.p);
-    var deltaCls = s.d > 0 ? 'up' : (s.d < 0 ? 'down' : 'flat');
-    var deltaArrow = s.d > 0 ? '&uarr;' : (s.d < 0 ? '&darr;' : '&rarr;');
-    var deltaTxt = s.d === 0 ? 'No change' : ((s.d > 0 ? '+' : '') + (s.d % 1 === 0 ? s.d.toFixed(1) : s.d) + ' pts this week');
-    var deltaHtml = '<span class="sc-delta ' + deltaCls + '">' + deltaArrow + ' ' + deltaTxt + '</span>';
-    var ticks    = [55,75,85,95].map(function(t){ return '<span class="sc-tick" style="left:' + t + '%"></span>'; }).join('');
-    var tickLbls = [55,75,85,95].map(function(t){ return '<span class="sc-tick-lbl" style="left:' + t + '%">' + t + '</span>'; }).join('');
-    h += '<div class="sc-sr">'
-       +   '<div class="sc-sd ' + rb.dot + '"></div>'
-       +   '<div class="sc-sn">' + s.l + '</div>'
-       +   '<div class="sc-sw">' + s.w + '</div>'
-       +   '<div class="sc-bw-wrap">'
-       +     '<div class="sc-bw"><div class="sc-bf" style="width:' + s.p + '%;background:' + s.c + '"></div>' + ticks + '</div>'
-       +     tickLbls
-       +   '</div>'
-       +   '<div class="sc-pct" style="color:' + s.c + '">' + s.p + '%<span class="sc-rating">&middot; ' + rb.lbl + '</span>' + deltaHtml + '</div>'
-       + '</div>';
-  });
-  // Final weighted score — 74.5% is Inconsistent per the v3.2.3 rating bands.
-  h += '</div>'
-     + '<div>'
-     +   '<div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div>'
-     +   '<div class="sc-fin-row">'
-     +     '<div style="font-size:40px;font-weight:700;color:#EA580C;letter-spacing:-.04em">74.5%</div>'
-     +     '<span class="sc-fin-delta up">&uarr; +1.8 pts this week</span>'
-     +   '</div>'
-     +   '<div style="font-size:13px;color:var(--tx3);margin-top:3px;font-weight:600">&middot; Inconsistent</div>'
-     + '</div>'
-     // Quarter Projection — 3 structured lines (no paragraph, no "Dust Analysis" subtitle).
-     + '<div class="rcp-proj">'
-     +   '<div class="rcp-proj-l"><i class="ti ti-target-arrow"></i> Quarter Projection</div>'
-     +   '<div class="rcp-proj-lines">'
-     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">📈</span><span><strong>Projected finish:</strong> 81% &middot; Exceeding</span></div>'
-     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">⚡</span><span><strong>Highest-leverage action:</strong> Close 2 more EBRs before Jun 30</span></div>'
-     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">⚠</span><span><strong>Biggest risk:</strong> Renewal Forecast Actions trending down &middot; 3 blank statuses must be updated by Jun 15</span></div>'
-     +   '</div>'
-     + '</div>'
-  + '</div>';
-
-  // Dust Action Plan — one sentence + action button per column.
-  h += ''
-    + '<div class="rcp-dust">'
-      + '<div class="rcp-dust-hd">'
-        + '<div>'
-          + '<div class="rcp-dust-t"><i class="ti ti-robot"></i> Dust &middot; Your Q2 Action Plan</div>'
-          + '<div class="rcp-dust-s" style="margin-top:5px">Based on your current <strong style="color:var(--tl)">74.5% weighted score</strong>, here&rsquo;s what moves the needle most.</div>'
-        + '</div>'
-      + '</div>'
-      + '<div class="rcp-cards">'
-        + '<div class="rcp-card gap">'
-          + '<div class="rcp-card-l">Biggest gap &mdash; EBR Coverage: 3/24 accounts</div>'
-          + '<div class="rcp-card-t">EBR Coverage: 3 / 24 accounts (12.5%)</div>'
-          + '<div class="rcp-card-b">21 accounts haven&rsquo;t had an EBR. Start with the 5 renewing in the next 60 days.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpDraftEBR()"><i class="ti ti-mail"></i> Dust: Draft EBR Outreach for 5 Priority Accounts &rarr;</button>'
-        + '</div>'
-        + '<div class="rcp-card win">'
-          + '<div class="rcp-card-l">Quick win &mdash; Blank Renewal Statuses: 3</div>'
-          + '<div class="rcp-card-t">Blank Renewal Statuses: 3</div>'
-          + '<div class="rcp-card-b">Each takes 30 seconds to update in Salesforce. All 3 are under-forecasted.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpRenewalStatus()"><i class="ti ti-external-link"></i> Open 3 Blank Statuses in Salesforce &rarr;</button>'
-        + '</div>'
-        + '<div class="rcp-card prot">'
-          + '<div class="rcp-card-l">Protect &mdash; Overdue CTAs: 2</div>'
-          + '<div class="rcp-card-t">Overdue CTAs: 2</div>'
-          + '<div class="rcp-card-b">NovaVault and Brightex both have overdue CTAs. Update before EOD.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpOverdueCTAs()"><i class="ti ti-list-check"></i> Open Overdue CTAs in Gainsight &rarr;</button>'
-        + '</div>'
-      + '</div>'
-      + '<div class="rcp-dust-ft">Dust analysis &middot; Gainsight + Salesforce &middot; Updated today 9:00 AM &middot; Refreshes daily</div>'
-    + '</div>';
-
-  // Notes & Reflection panel — populated from localStorage on render.
-  if (typeof _rcpNotesHTML === 'function') h += _rcpNotesHTML();
-
-  document.getElementById('recipe-root').innerHTML = h;
-
-  if (typeof _rcpNotesRenderList === 'function') _rcpNotesRenderList();
-  if (typeof _rcpNotesUpdateCount === 'function') _rcpNotesUpdateCount();
-}
-
-function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority accounts &middot; Opens in Mission Briefing ✓'); }
-function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &middot; 3 accounts flagged ✓'); }
-function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
-function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Recipe for Success — Notes & Reflection (v3.2.1)
-// ═══════════════════════════════════════════════════════════════════════════
-var RCP_NOTES_KEY = 'teamos_recipe_notes';
-var RCP_NOTES_CATS = ['All','Success Plans','Growth','Renewals','EBRs','Advocacy','General'];
-var RCP_NOTES_QUARTER = 'Q2 2026';
-var _rcpNotesActiveCat = 'General';  // default category for new note
-var _rcpNotesFilterCat = 'All';      // active filter for history
-
-function _rcpReadNotes() {
-  try {
-    var raw = localStorage.getItem(RCP_NOTES_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  // First load — seed with the demo note per spec.
-  var seed = [{
-    text: "EBR coverage is my biggest gap this quarter. Acme QBR is today which will move the number, but I'm missing 18 of 24 target accounts. Need to get at least 3 more scheduled this week.",
-    timestamp: 'May 10 · 9:14 AM',
-    category: 'EBRs',
-    quarter: RCP_NOTES_QUARTER
-  }];
-  try { localStorage.setItem(RCP_NOTES_KEY, JSON.stringify(seed)); } catch (e) {}
-  return seed;
-}
-
-function _rcpWriteNotes(arr) {
-  try { localStorage.setItem(RCP_NOTES_KEY, JSON.stringify(arr)); } catch (e) {}
-}
-
-// v3.2.3 — context-aware placeholder driven by red metrics. EBRs and overdue
-// CTAs are both red in the demo data; per spec, EBRs win (larger weight).
-function _rcpNotesPlaceholder() {
-  var ebrRed = true;
-  var ctaOverdueCount = 2;
-  if (ebrRed) return 'Your EBR coverage is your biggest gap this week. What’s your plan to close it?';
-  if (ctaOverdueCount > 0) return ctaOverdueCount + ' CTAs are overdue. What’s blocking you from closing them?';
-  return 'What’s driving your score this week?';
-}
-
-// v3.2.3 — currently-selected viewing quarter for the history list.
-var _rcpViewQuarter = 'Q2 2026';
-var RCP_QUARTERS = ['Q2 2026','Q1 2026','Q4 2025','Q3 2025'];
-
-function _rcpNotesHTML() {
-  var cats = ['Success Plans','Growth','Renewals','EBRs','Advocacy','General']; // categories for NEW notes (no "All" here)
-  var filterCats = RCP_NOTES_CATS; // includes "All" for the filter
-  var catBtns = cats.map(function(c){
-    var on = (c === _rcpNotesActiveCat) ? ' on' : '';
-    return '<button class="rcp-notes-cat' + on + '" type="button" onclick="_rcpNotesSetCat(\'' + c + '\')">' + c + '</button>';
-  }).join('');
-  var filterBtns = filterCats.map(function(c){
-    var on = (c === _rcpNotesFilterCat) ? ' on' : '';
-    return '<button class="rcp-notes-cat' + on + '" type="button" onclick="_rcpNotesSetFilter(\'' + c + '\')">' + c + '</button>';
-  }).join('');
-  var quarterOpts = RCP_QUARTERS.map(function(q){
-    var sel = (q === _rcpViewQuarter) ? ' selected' : '';
-    var lbl = (q === RCP_NOTES_QUARTER) ? (q + ' (current)') : q;
-    return '<option value="' + q + '"' + sel + '>' + lbl + '</option>';
-  }).join('');
-  return ''
-    + '<div class="rcp-notes" id="rcp-notes-anchor">'
-      + '<div class="rcp-notes-hd"><i class="ti ti-notes"></i> Notes &amp; Reflection <span class="rcp-notes-hd-q">' + RCP_NOTES_QUARTER + '</span></div>'
-      + '<div class="rcp-notes-input">'
-        + '<textarea id="rcp-notes-ta" class="rcp-notes-ta" placeholder="' + _rcpNotesPlaceholder() + '"></textarea>'
-        + '<div class="rcp-notes-cats" id="rcp-notes-cats">' + catBtns + '</div>'
-        + '<button class="rcp-notes-save" type="button" onclick="rcpSaveNote()"><i class="ti ti-circle-check"></i> Save Note</button>'
-      + '</div>'
-      + '<button class="rcp-history-toggle" id="rcp-history-toggle" type="button" onclick="_rcpToggleHistory()" aria-expanded="false">View note history <i class="ti ti-chevron-down chev"></i></button>'
-      + '<div class="rcp-history-body" id="rcp-history-body">'
-        + '<div class="rcp-notes-tools">'
-          + '<div class="rcp-notes-hist-t">Saved notes</div>'
-          + '<select class="rcp-quarter-sel" id="rcp-quarter-sel" onchange="_rcpQuarterChange(this.value)" aria-label="Select quarter">' + quarterOpts + '</select>'
-        + '</div>'
-        + '<div class="rcp-notes-cats" style="margin-bottom:10px">' + filterBtns + '</div>'
-        + '<div class="rcp-notes-list rcp-notes-hist" id="rcp-notes-list"></div>'
-      + '</div>'
-    + '</div>';
-}
-
-function _rcpScrollToNotes() {
-  var el = document.getElementById('rcp-notes-anchor');
-  if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function _rcpToggleHistory() {
-  var btn  = document.getElementById('rcp-history-toggle');
-  var body = document.getElementById('rcp-history-body');
-  if (!btn || !body) return;
-  var on = !body.classList.contains('on');
-  body.classList.toggle('on', on);
-  btn.classList.toggle('on', on);
-  btn.setAttribute('aria-expanded', on ? 'true' : 'false');
-}
-
-function _rcpQuarterChange(q) {
-  _rcpViewQuarter = q;
-  _rcpNotesRenderList();
-}
-
-function _rcpNotesCurrentCount() {
-  try {
-    var notes = _rcpReadNotes();
-    return notes.filter(function(n){ return n.quarter === RCP_NOTES_QUARTER; }).length;
-  } catch (e) { return 0; }
-}
-
-function _rcpNotesUpdateCount() {
-  var el = document.getElementById('rcp-notes-count');
-  if (el) el.textContent = String(_rcpNotesCurrentCount());
-}
-
-function _rcpNotesSetCat(cat) {
-  _rcpNotesActiveCat = cat;
-  // Re-render the chip row in place
-  var row = document.querySelector('.rcp-notes-input .rcp-notes-cats');
-  if (!row) return;
-  Array.from(row.children).forEach(function(b){
-    b.classList.toggle('on', b.textContent.trim() === cat);
-  });
-}
-
-function _rcpNotesSetFilter(cat) {
-  _rcpNotesFilterCat = cat;
-  var row = document.querySelector('.rcp-notes-list').previousElementSibling;
-  if (row && row.classList.contains('rcp-notes-cats')) {
-    Array.from(row.children).forEach(function(b){
-      b.classList.toggle('on', b.textContent.trim() === cat);
-    });
-  }
-  _rcpNotesRenderList();
-}
-
-function _rcpNotesSave() {
-  var ta = document.getElementById('rcp-notes-ta');
-  if (!ta) return;
-  var text = (ta.value || '').trim();
-  if (!text) { toast('Note is empty &mdash; type a reflection first'); return; }
-  var now = new Date();
-  var hr = now.getHours();
-  var min = now.getMinutes();
-  var ampm = hr >= 12 ? 'PM' : 'AM';
-  var hr12 = hr % 12 || 12;
-  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
-  var ts = 'Today &middot; ' + hr12 + ':' + pad(min) + ' ' + ampm;
-  var notes = _rcpReadNotes();
-  notes.unshift({ text: text, timestamp: ts, category: _rcpNotesActiveCat, quarter: RCP_NOTES_QUARTER });
-  _rcpWriteNotes(notes);
-  ta.value = '';
-  _rcpNotesRenderList();
-  _rcpNotesUpdateCount();
-  toast('Note saved &middot; ' + RCP_NOTES_QUARTER + ' ✓');
-}
-// v4.3.0 — public aliases matching external test selectors.
-function rcpSaveNote()  { return _rcpNotesSave(); }
-function rcpJumpNotes() { return _rcpScrollToNotes(); }
-
-function _rcpNotesEscape(s) {
-  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function _rcpNotesRenderList() {
-  var list = document.getElementById('rcp-notes-list');
-  if (!list) return;
-  var notes = _rcpReadNotes();
-  // Filter to the viewing quarter first. Older quarters have no demo data,
-  // so a non-current selection just shows the empty-state message.
-  notes = notes.filter(function(n){ return n.quarter === _rcpViewQuarter; });
-  if (_rcpNotesFilterCat !== 'All') {
-    notes = notes.filter(function(n){ return n.category === _rcpNotesFilterCat; });
-  }
-  if (!notes.length) {
-    var msg;
-    if (_rcpViewQuarter !== RCP_NOTES_QUARTER) {
-      msg = 'No notes saved for ' + _rcpNotesEscape(_rcpViewQuarter) + '.';
-    } else if (_rcpNotesFilterCat === 'All') {
-      msg = 'No notes yet this quarter. Add your first reflection.';
-    } else {
-      msg = 'No notes in &ldquo;' + _rcpNotesEscape(_rcpNotesFilterCat) + '&rdquo; for this quarter.';
-    }
-    list.innerHTML = '<div class="rcp-notes-empty">' + msg + '</div>';
-    return;
-  }
-  list.innerHTML = notes.map(function(n){
-    return '<div class="rcp-notes-row">'
-      + '<div class="rcp-notes-row-top"><span class="rcp-notes-pill">' + _rcpNotesEscape(n.category) + '</span><span class="rcp-notes-ts">' + n.timestamp + '</span></div>'
-      + '<div class="rcp-notes-txt">' + _rcpNotesEscape(n.text) + '</div>'
-    + '</div>';
-  }).join('');
-}
-
-// v3.0.3 — Training pulse-strip popover action handler. `kind` ∈
-// { 'continue', 'start', 'review', 'all' } maps to the per-row spec toasts.
-function trOpen(kind) {
-  var msg = {
-    'continue': 'Opening Seismic &middot; Enterprise Renewal Conversations &middot; Module 3 of 4 ✓',
-    'start':    'Opening Seismic &middot; Champion Change Playbook &middot; Module 1 of 3 ✓',
-    'review':   'Opening Seismic &middot; Gainsight Power User Certification &middot; Review mode ✓',
-    'all':      'Opening Seismic learning portal ✓'
-  }[kind] || 'Opening Seismic ✓';
-  toast(msg);
-}
-
 // ═══════════════════════════════════════════════════════════════════════════
 // My Accounts workspace (v3.0.0)
 // Pull-only AI account workspace. Live API calls route through /api/anthropic
@@ -7009,7 +6665,10 @@ function markCtaDone(rowId, e) {
   if (remaining === 0) toast('All CTAs resolved ✓');
 }
 
-buildRecipe();
+// v4.21.0 — dedup: the previously-duplicated buildRecipe() call here ran
+// BEFORE RCP_NOTES_KEY (a var declaration further down the file) was
+// assigned, blowing up _rcpNotesCurrentCount on cold load. The second
+// buildRecipe() call at the end of the script handles initial render.
 
 // ── Tasks pulse-strip dropdown (v1.8.0) ─────────────────────────────────────
 // Source of truth for the tasks list. Brief-panel content is intentionally
@@ -7888,27 +7547,98 @@ function buildRecipe() {
     {l:'Business reviews (EBRs)',w:'10%',p:62.5,c:'#18A575',d:12.5},
     {l:'Customer advocacy',w:'10%',p:80,  c:'#8A8A86',d:5.0}
   ];
+  // v4.21.0 — Section 3: every gap names the specific accounts behind it.
+  // Success plan count auto-adjusts as the CSM resolves the gap via the
+  // Create Plan buttons (RCP_SUCCESS_PLANS_RESOLVED). Book of Business
+  // Growth rows now carry dollar amounts so the score connects to revenue.
+  var spResolved = ((RCP_SUCCESS_PLANS_RESOLVED.nova ? 1 : 0) + (RCP_SUCCESS_PLANS_RESOLVED.meridian ? 1 : 0));
+  var spCount    = 16 + spResolved;
+  var spStatus   = (spCount >= 18) ? 'g' : 'a';
+  var advocacyTotal = rcpAdvocacyAll().length;
   var metrics = [
     {sec:'Success plans & objectives',rows:[
-      ['Active success plans','Target: 100% of $25K+ accounts','16/18','','a'],
+      ['Active success plans','Target: 100% of $25K+ accounts', spCount + '/18','',spStatus],
       ['Objectives won &middot; $25K+','Target: 25% of in-progress objectives','7','','g'],
       ['CTAs overdue','Resolve immediately &mdash; hard stop','2','w','r']
     ]},
     {sec:'Book of business growth',rows:[
-      ['Renewal opps with upsell','Target: &gt;50% of renewal opps','6/11','','g'],
-      ['Closed won expansions','Target: &ge;5% of accounts','3','','g'],
-      ['Renewals in downsell','Negative &middot; target &lt;20%','2/11','w','a']
+      ['Renewal opps with upsell','$96K ARR in upsell-eligible accounts','6/11','','g'],
+      ['Closed won expansions','$32K · progress toward $650K target','3','','g'],
+      ['Renewals in downsell','$18K ARR · 2 of 11 flagged','2/11','w','a']
     ]},
     {sec:'Renewal forecast actions',rows:[
-      ['Renewals with blank status','Negative &middot; target &le;5%','3','d','r'],
-      ['Renewal status changes','Negative &middot; target &lt;10%','1/11','','g']
+      ['Renewals with blank status','−3.3 pts this week from blank statuses','3','d','r'],
+      ['Renewal status changes','Target: &lt;10% volatility','1/11','','g']
     ]},
     {sec:'Business reviews & advocacy',rows:[
       ['EBRs &middot; $25K+ accounts','Target: 50% of $25K+ accounts','11/18','','r'],
       ['EBRs &middot; $10K&ndash;$25K','Target: 10% of $10K&ndash;$25K','3/24','','r'],
-      ['Advocacy milestones','Quarterly: &ge;2.5% of accounts','2','','g']
+      ['Advocacy milestones','Quarterly: &ge;2.5% of accounts', String(advocacyTotal),'','g']
     ]}
   ];
+
+  // Per-card gap detail block. Rendered AFTER the rows inside each .sc-card.
+  function rcpGapDetail(sec) {
+    if (sec === 'Success plans & objectives') {
+      var missing = [];
+      if (!RCP_SUCCESS_PLANS_RESOLVED.nova)     missing.push({ key:'nova',     nm:'NovaVault Inc',           sub:'No plan · 17d to renewal' });
+      if (!RCP_SUCCESS_PLANS_RESOLVED.meridian) missing.push({ key:'meridian', nm:'Meridian Health Systems', sub:'No plan · 45d to renewal' });
+      if (!missing.length) {
+        return '<div class="rcp-gap-detail"><div class="rcp-gap-l pos">All $25K+ accounts have an active Success Plan.</div></div>';
+      }
+      var rows = missing.map(function(m){
+        return '<div class="rcp-gap-row"><div><b>' + m.nm + '</b> <span class="rcp-gap-row-sub">' + m.sub + '</span></div>'
+             + '<div class="rcp-gap-acts"><button class="rcp-gap-btn" type="button" onclick="rcpCreatePlan(\'' + m.key + '\')" aria-label="Create success plan for ' + m.nm + '"><i class="ti ti-plus"></i> Create Plan</button></div>'
+             + '</div>';
+      }).join('');
+      return '<div class="rcp-gap-detail"><div class="rcp-gap-l">' + missing.length + ' account' + (missing.length === 1 ? '' : 's') + ' without active plans:</div>' + rows + '</div>';
+    }
+    if (sec === 'Book of business growth') {
+      return '<div class="rcp-gap-detail">'
+           +   '<div class="rcp-gap-row"><div><b>Acme Corp</b> <span class="rcp-gap-row-sub">$12K–$18K potential · SSO enterprise tier · David Kim signal</span></div>'
+           +     '<div class="rcp-gap-acts"><button class="rcp-gap-btn" type="button" onclick="rcpExpansionAcme()" aria-label="Open Expansion Play for Acme Corp"><i class="ti ti-rocket"></i> Open Expansion Play</button></div>'
+           +   '</div>'
+           + '</div>';
+    }
+    if (sec === 'Renewal forecast actions') {
+      var darkRows = [
+        { nm:'Meridian Health',  sub:'Unknown' },
+        { nm:'Creston Software', sub:'Unknown' },
+        { nm:'Apex Dynamics',    sub:'Unknown' }
+      ];
+      var rows = darkRows.map(function(r){
+        return '<div class="rcp-gap-row"><div><b>' + r.nm + '</b> <span class="rcp-gap-row-sub">— ' + r.sub + '</span></div></div>';
+      }).join('');
+      return '<div class="rcp-gap-detail">'
+           +   '<div class="rcp-gap-l">3 accounts with blank forecast status (pulling score down −3.3 pts):</div>'
+           +   rows
+           +   '<div class="rcp-gap-acts"><button class="rcp-gap-btn" type="button" onclick="rcpJumpForecastBlanks()" aria-label="Update all 3 blank-status accounts"><i class="ti ti-arrow-right"></i> Update All 3 →</button></div>'
+           + '</div>';
+    }
+    if (sec === 'Business reviews & advocacy') {
+      var ebrRows = [
+        { nm:'NovaVault',    arr:'$31K', renew:'Jun 1 · 17d',  urgent:true },
+        { nm:'Brightex Inc', arr:'$36K', renew:'Jun 15 · 31d', urgent:false }
+      ];
+      var ebrHtml = ebrRows.map(function(r){
+        var tail = r.urgent ? ' <span style="color:#B91C1C;font-weight:800">← URGENT</span>' : '';
+        return '<div class="rcp-gap-row"><div><b>' + r.nm + '</b> <span class="rcp-gap-row-sub">' + r.arr + ' · ' + r.renew + tail + '</span></div></div>';
+      }).join('');
+      var ebrBlock = '<div class="rcp-gap-l">EBR priority accounts (renewing next 60 days, $25K+):</div>'
+                   + ebrHtml
+                   + '<div class="rcp-gap-acts"><button class="rcp-gap-btn" type="button" onclick="rcpEbrDraftBoth()"><i class="ti ti-mail"></i> Draft EBR Outreach for Both →</button></div>';
+      var adv = rcpAdvocacyAll();
+      var advHtml = adv.map(function(a){
+        return '<div class="rcp-gap-row"><div><b>' + cmEscape(a.label || a.acct) + '</b> <span class="rcp-gap-row-sub">— ' + cmEscape(a.status || '') + '</span></div></div>';
+      }).join('');
+      var advBlock = '<div class="rcp-gap-l pos">Advocacy milestones:</div>'
+                   + advHtml
+                   + '<div class="rcp-gap-acts"><button class="rcp-gap-btn" type="button" onclick="rcpOpenAddMilestone()"><i class="ti ti-plus"></i> Add milestone</button></div>';
+      return '<div class="rcp-gap-detail">' + ebrBlock + '</div>'
+           + '<div class="rcp-gap-detail">' + advBlock + '</div>';
+    }
+    return '';
+  }
   var STAT_DEF = {
     g: {cls:'g', ic:'check',           t:'On Track'},
     a: {cls:'a', ic:'alert-triangle',  t:'At Risk'},
@@ -7929,8 +7659,40 @@ function buildRecipe() {
 
   var noteCount = (typeof _rcpNotesCurrentCount === 'function') ? _rcpNotesCurrentCount() : 0;
 
+  // v4.21.0 — Section 1: MY BONUS TARGETS panel. Sits ABOVE the hero so it
+  // is the first thing the CSM sees. The two numbers that matter — $650K
+  // annual growth + $150K Q2 retention — drive everything below.
+  var retCommitK = rcpRetentionCommittedK();
+  var retGapK    = retCommitK - RCP_RETENTION_TARGET_K;
+  var growGapK   = RCP_GROWTH_CLOSED_K - RCP_GROWTH_TARGET_K;
+  var retGapCls  = retGapK >= 0 ? 'pos' : 'neg';
+  var growGapCls = growGapK >= 0 ? 'pos' : 'neg';
+  var retGapTxt  = (retGapK >= 0 ? '+' : '−') + '$' + Math.abs(retGapK) + 'K gap · 6 weeks left';
+  var growGapTxt = (growGapK >= 0 ? '+' : '−') + '$' + Math.abs(growGapK) + 'K gap · 7 months left';
+  var h = '<div class="rcp-bonus" role="region" aria-label="Q2 Bonus Targets">'
+        +   '<div class="rcp-bonus-hd"><span>🎯 My bonus targets · Q2 2026</span><span class="rcp-bonus-hd-r">Synced from Forecasting · updates automatically</span></div>'
+        +   '<div class="rcp-bonus-grid">'
+        +     '<div class="rcp-bonus-col">'
+        +       '<div class="rcp-bonus-col-l">Retention</div>'
+        +       '<div class="rcp-bonus-col-v">' + rcpFormatK(retCommitK) + ' committed</div>'
+        +       '<div class="rcp-bonus-col-t">' + rcpFormatK(RCP_RETENTION_TARGET_K) + ' target</div>'
+        +       '<div class="rcp-bonus-col-gap ' + retGapCls + '">' + retGapTxt + '</div>'
+        +     '</div>'
+        +     '<div class="rcp-bonus-col">'
+        +       '<div class="rcp-bonus-col-l">Growth</div>'
+        +       '<div class="rcp-bonus-col-v">' + rcpFormatK(RCP_GROWTH_CLOSED_K) + ' closed</div>'
+        +       '<div class="rcp-bonus-col-t">' + rcpFormatK(RCP_GROWTH_TARGET_K) + ' target</div>'
+        +       '<div class="rcp-bonus-col-gap ' + growGapCls + '">' + growGapTxt + '</div>'
+        +     '</div>'
+        +   '</div>'
+        +   '<div class="rcp-bonus-acts">'
+        +     '<button class="rcp-bonus-btn" type="button" onclick="rcpJumpRetention()" aria-label="View Retention Forecast in Forecasting tab"><i class="ti ti-arrow-right"></i> View Retention Forecast →</button>'
+        +     '<button class="rcp-bonus-btn" type="button" onclick="rcpJumpGrowth()" aria-label="View Expansion Pipeline in Forecasting tab"><i class="ti ti-arrow-right"></i> View Expansion Pipeline →</button>'
+        +   '</div>'
+        + '</div>';
+
   // v3.3.1 — Lively hero header. Wobbling 🧪 icon + bold title + tagline.
-  var h = '<div class="rcp-hero">'
+  h += '<div class="rcp-hero">'
         +   '<div class="rcp-hero-r">'
         +     '<span class="rcp-hero-ic" aria-hidden="true">🧪</span>'
         +     '<div class="rcp-hero-t">Recipe for Success</div>'
@@ -7977,6 +7739,8 @@ function buildRecipe() {
          +   '</div>'
          + '</div>';
     });
+    // v4.21.0 — named-account gap detail per card.
+    h += rcpGapDetail(m.sec);
     h += '</div>';
   });
   h += '</div>';
@@ -8005,6 +7769,9 @@ function buildRecipe() {
        + '</div>';
   });
   // Final weighted score — 74.5% is Inconsistent per the v3.2.3 rating bands.
+  // v4.21.0 — Section 2: bonus translation sentence connects the score to
+  // the paycheck without being misleadingly precise.
+  var bonusPct = Math.min(100, Math.round(74.5 * 1.05));
   h += '</div>'
      + '<div>'
      +   '<div style="font-size:12px;color:var(--tx3);margin-bottom:5px">Final weighted score</div>'
@@ -8013,15 +7780,29 @@ function buildRecipe() {
      +     '<span class="sc-fin-delta up">&uarr; +1.8 pts this week</span>'
      +   '</div>'
      +   '<div style="font-size:13px;color:var(--tx3);margin-top:3px;font-weight:600">&middot; Inconsistent</div>'
-     + '</div>'
-     // Quarter Projection — 3 structured lines (no paragraph, no "Dust Analysis" subtitle).
-     + '<div class="rcp-proj">'
-     +   '<div class="rcp-proj-l"><i class="ti ti-target-arrow"></i> Quarter Projection</div>'
-     +   '<div class="rcp-proj-lines">'
-     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">📈</span><span><strong>Projected finish:</strong> 81% &middot; Exceeding</span></div>'
-     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">⚡</span><span><strong>Highest-leverage action:</strong> Close 2 more EBRs before Jun 30</span></div>'
-     +     '<div class="rcp-proj-line"><span class="rcp-proj-line-ic">⚠</span><span><strong>Biggest risk:</strong> Renewal Forecast Actions trending down &middot; 3 blank statuses must be updated by Jun 15</span></div>'
+     +   '<div class="rcp-bonus-trans" role="note" aria-label="Bonus translation">'
+     +     '<strong>Your score suggests ~' + bonusPct + '% bonus attainment</strong> at current pace. '
+     +     '<em>Renewal Forecast</em> is the highest-risk category — 3 blank statuses are actively pulling it down.'
      +   '</div>'
+     + '</div>'
+     // v4.21.0 — Section 4: Quarter Projection upgraded to dollar-denominated
+     // retention + growth pacing. Includes the NovaVault churn scenario as a
+     // role=alert callout when the at-risk account is in play.
+     + '<div class="rcp-proj">'
+     +   '<div class="rcp-proj-l"><i class="ti ti-target-arrow"></i> Quarter Projection · Q2 2026</div>'
+     +   '<div style="font-size:13px;color:#1F2937;font-weight:600;margin-bottom:12px">Projecting to finish at: <b style="color:#065F46">81%</b> · Exceeding</div>'
+     +   '<div class="rcp-proj-bonus-sub">At current pace</div>'
+     +   '<div class="rcp-proj-bonus">'
+     +     '<div class="rcp-proj-bonus-row"><span class="ic">📈</span><span><b>Retention:</b> tracking to <b>$' + retCommitK + 'K</b> vs <b>$' + RCP_RETENTION_TARGET_K + 'K</b> target — <span class="gap">$' + Math.abs(retGapK) + 'K gap</span></span></div>'
+     +     '<div class="rcp-proj-warn" role="alert" aria-live="polite">⚠ <b>If NovaVault churns</b> (17d, health 23): drops to <b>$' + rcpRetentionWithoutNovaK() + 'K</b> · gap becomes <b>$' + Math.abs(rcpRetentionWithoutNovaK() - RCP_RETENTION_TARGET_K) + 'K</b></div>'
+     +     '<div class="rcp-proj-bonus-row"><span class="ic">🚀</span><span><b>Growth:</b> $' + RCP_GROWTH_CLOSED_K + 'K of $' + RCP_GROWTH_TARGET_K + 'K annual target — $' + (RCP_GROWTH_TARGET_K - RCP_GROWTH_CLOSED_K) + 'K remaining across 7 months. Next expansion play: <b>Acme Corp</b> ($12K–$18K · highest probability)</span></div>'
+     +   '</div>'
+     +   '<div class="rcp-proj-bonus-sub">Score to hit Exceeding (81%+)</div>'
+     +   '<div class="rcp-proj-bonus">'
+     +     '<div class="rcp-proj-bonus-row"><span class="ic">✓</span><span>Close <b>2 more EBRs</b> before Jun 30</span></div>'
+     +     '<div class="rcp-proj-bonus-row"><span class="ic">✓</span><span>Update <b>3 blank renewal statuses</b> (30 seconds each)</span></div>'
+     +   '</div>'
+     +   '<div class="rcp-proj-warn" role="note" style="margin-top:10px;background:#FEE2E2;border-color:#FCA5A5;border-left-color:#DC2626;color:#7F1D1D"><b>Risk:</b> If NovaVault churns, Renewal Forecast Actions drops to <b>55%</b> — below your current 66.7%.</div>'
      + '</div>'
   + '</div>';
 
@@ -8037,19 +7818,19 @@ function buildRecipe() {
       + '<div class="rcp-cards">'
         + '<div class="rcp-card gap">'
           + '<div class="rcp-card-l">Biggest gap &mdash; EBR Coverage: 3/24 accounts</div>'
-          + '<div class="rcp-card-t">EBR Coverage: 3 / 24 accounts (12.5%)</div>'
-          + '<div class="rcp-card-b">21 accounts haven&rsquo;t had an EBR. Start with the 5 renewing in the next 60 days.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpDraftEBR()"><i class="ti ti-mail"></i> Dust: Draft EBR Outreach for 5 Priority Accounts &rarr;</button>'
+          + '<div class="rcp-card-t">EBR Coverage: NovaVault + Brightex</div>'
+          + '<div class="rcp-card-b">NovaVault ($31K, Jun 1) and Brightex ($36K, Jun 15) are your 2 highest-urgency EBR accounts. Both renew within 31 days &mdash; no EBR has been completed for either.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpEbrDraftBoth()"><i class="ti ti-mail"></i> Dust: Draft EBR Outreach for NovaVault + Brightex &rarr;</button>'
         + '</div>'
         + '<div class="rcp-card win">'
           + '<div class="rcp-card-l">Quick win &mdash; Blank Renewal Statuses: 3</div>'
-          + '<div class="rcp-card-t">Blank Renewal Statuses: 3</div>'
-          + '<div class="rcp-card-b">Each takes 30 seconds to update in Salesforce. All 3 are under-forecasted.</div>'
-          + '<button class="rcp-card-btn" type="button" onclick="rcpRenewalStatus()"><i class="ti ti-external-link"></i> Open 3 Blank Statuses in Salesforce &rarr;</button>'
+          + '<div class="rcp-card-t">Meridian, Creston, Apex · Unknown</div>'
+          + '<div class="rcp-card-b">Meridian Health, Creston Software, and Apex Dynamics have Unknown status. Each costs you 1.1 pts/week.</div>'
+          + '<button class="rcp-card-btn" type="button" onclick="rcpJumpForecastBlanks()"><i class="ti ti-external-link"></i> Update all 3 now → Open in Forecasting &rarr;</button>'
         + '</div>'
         + '<div class="rcp-card prot">'
           + '<div class="rcp-card-l">Protect &mdash; Overdue CTAs: 2</div>'
-          + '<div class="rcp-card-t">Overdue CTAs: 2</div>'
+          + '<div class="rcp-card-t">NovaVault renewal forecast + Brightex SLA reply</div>'
           + '<div class="rcp-card-b">NovaVault and Brightex both have overdue CTAs. Update before EOD.</div>'
           + '<button class="rcp-card-btn" type="button" onclick="rcpOverdueCTAs()"><i class="ti ti-list-check"></i> Open Overdue CTAs in Gainsight &rarr;</button>'
         + '</div>'
@@ -8069,6 +7850,126 @@ function buildRecipe() {
 function rcpDraftEBR()      { toast('Dust drafting EBR outreach for 5 priority accounts &middot; Opens in Mission Briefing ✓'); }
 function rcpRenewalStatus() { toast('Opening Salesforce renewal status view &middot; 3 accounts flagged ✓'); }
 function rcpOverdueCTAs()   { toast('Opening Gainsight Cockpit &middot; Filtered to overdue CTAs ✓'); }
+
+// ═════════════════════════════════════════════════════════════════════════
+// v4.21.0 — Recipe for Success overhaul helpers (Section 1 bonus targets,
+// Section 3 named-account gaps, Section 4 quarter projection).
+// ═════════════════════════════════════════════════════════════════════════
+var RCP_RETENTION_TARGET_K = 150;   // Q2 2026 retention bonus target in $K
+var RCP_GROWTH_TARGET_K    = 650;   // Annual growth bonus target in $K
+var RCP_GROWTH_CLOSED_K    = 32;    // closed expansions to date this quarter ($K)
+var RCP_RETENTION_BASELINE_K = 127; // baseline committed (Acme + portfolio mix)
+
+// Computes the live "committed" retention number in $K. Starts from the
+// baseline ($127K demo) and adds the delta from any forecasted-override
+// changes in the Forecasting tab so the two surfaces stay in sync.
+function rcpRetentionCommittedK() {
+  var deltaK = 0;
+  try {
+    var overrides = (typeof fcReadOverrides === 'function') ? fcReadOverrides() : {};
+    if (typeof FC_PIPELINE !== 'undefined') {
+      Object.keys(overrides).forEach(function(k){
+        var rec = overrides[k];
+        var newAmt = (rec && typeof rec === 'object') ? rec.forecast_amount : (typeof rec === 'number' ? rec : 0);
+        var row = FC_PIPELINE.find(function(r){ return r.key === k; });
+        var oldAmt = row ? (row.arr * 1000) : 0;
+        deltaK += Math.round((newAmt - oldAmt) / 1000);
+      });
+    }
+  } catch (_) {}
+  return Math.max(0, RCP_RETENTION_BASELINE_K + deltaK);
+}
+function rcpRetentionWithoutNovaK() {
+  // NovaVault churn scenario: committed drops by NovaVault's $31K contract
+  // value. (Used by the Quarter Projection risk callout.)
+  return Math.max(0, rcpRetentionCommittedK() - 31);
+}
+function rcpFormatK(v) { return '$' + v + 'K'; }
+
+// Sub-tab navigators reused by the bonus header + dust action plan buttons.
+function rcpJumpRetention() {
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'forecast\'"]');
+    if (tab) goTab('forecast', tab);
+  }
+  setTimeout(function(){ if (typeof fcShow === 'function') fcShow('pipeline'); }, 80);
+  toast('Forecasting · Pipeline · review retention forecast ✓');
+}
+function rcpJumpGrowth() {
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'forecast\'"]');
+    if (tab) goTab('forecast', tab);
+  }
+  setTimeout(function(){ if (typeof fcShow === 'function') fcShow('pipeline'); }, 80);
+  toast('Forecasting · Pipeline · filter Expansion Likely ✓');
+}
+function rcpJumpForecastBlanks() {
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'forecast\'"]');
+    if (tab) goTab('forecast', tab);
+  }
+  setTimeout(function(){
+    if (typeof fcShow === 'function') fcShow('pipeline');
+    // Highlight all 3 dark rows in succession.
+    ['meridian','creston','apex'].forEach(function(k, i){
+      setTimeout(function(){ if (typeof fcJumpToPipelineRow === 'function') fcJumpToPipelineRow(k); }, i * 600);
+    });
+  }, 80);
+  toast('Forecasting · 3 blank-status accounts highlighted ✓');
+}
+
+// FIX 3 buttons — named-account actions in each category gap.
+var RCP_SUCCESS_PLANS_RESOLVED = {}; // { 'nova': true, 'meridian': true } in memory only
+function rcpCreatePlan(acct) {
+  RCP_SUCCESS_PLANS_RESOLVED[acct] = true;
+  var nm = { nova:'NovaVault', meridian:'Meridian Health Systems' }[acct] || acct;
+  toast('Success Plan created · ' + nm + ' · Gainsight ✓');
+  buildRecipe();  // re-render so the count + gap list update
+}
+function rcpExpansionAcme() {
+  if (typeof openAgentDrawer === 'function') openAgentDrawer('prep', 'acme');
+  else toast('Expansion Play · Acme Corp ✓');
+}
+function rcpEbrDraftBoth() { toast('Dust drafting EBR outreach · NovaVault + Brightex · Mission Briefing ✓'); }
+
+// Advocacy milestones — persisted to localStorage so the CSM can add her own.
+var RCP_ADVOCACY_KEY = 'teamos_recipe_advocacy';
+function rcpReadAdvocacy() {
+  try { var raw = localStorage.getItem(RCP_ADVOCACY_KEY); return raw ? (JSON.parse(raw) || []) : []; }
+  catch (_) { return []; }
+}
+function rcpWriteAdvocacy(arr) { try { localStorage.setItem(RCP_ADVOCACY_KEY, JSON.stringify(arr || [])); } catch (_) {} }
+function rcpAdvocacyAll() {
+  // Seed list + any user-added entries.
+  var seeded = [
+    { acct:'Acme Corp', label:'Acme Corp case study', status:'In progress' },
+    { acct:'Brightex Inc', label:'Brightex reference call', status:'Scheduled' }
+  ];
+  return seeded.concat(rcpReadAdvocacy());
+}
+function rcpOpenAddMilestone() {
+  if (typeof cmOpenModal !== 'function') { toast('Advocacy milestone editor coming in Phase 2'); return; }
+  var body = ''
+    + '<div class="cm-form-row"><label class="cm-form-label" for="rcp-adv-acct">Account</label><input class="cm-form-input" id="rcp-adv-acct" type="text" placeholder="e.g. Klaxton Labs"></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="rcp-adv-lbl">Milestone</label><input class="cm-form-input" id="rcp-adv-lbl" type="text" placeholder="e.g. Q2 case study draft"></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="rcp-adv-status">Status</label><select class="cm-form-select" id="rcp-adv-status"><option>In progress</option><option>Scheduled</option><option>Completed</option></select></div>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn prim" type="button" onclick="rcpSaveAdvocacy()"><i class="ti ti-check"></i> Save milestone</button>';
+  cmOpenModal('Add advocacy milestone', body, foot);
+}
+function rcpSaveAdvocacy() {
+  var acct = (document.getElementById('rcp-adv-acct').value || '').trim();
+  var lbl  = (document.getElementById('rcp-adv-lbl').value || '').trim();
+  var stat = document.getElementById('rcp-adv-status').value;
+  if (!acct || !lbl) { toast('Account + milestone required'); return; }
+  var list = rcpReadAdvocacy();
+  list.push({ acct:acct, label:lbl, status:stat });
+  rcpWriteAdvocacy(list);
+  if (typeof cmCloseModal === 'function') cmCloseModal();
+  toast('Advocacy milestone added · ' + acct + ' ✓');
+  buildRecipe();
+}
 function enOpenSeismic(name) { toast('Opening Seismic &middot; ' + name + ' ✓'); }
 
 // ═══════════════════════════════════════════════════════════════════════════
