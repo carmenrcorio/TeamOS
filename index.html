@@ -7246,6 +7246,16 @@ var DRAWER = {
           "ARR $48K · Renews Aug 12 · 89 days out · No urgency on renewal.",
           "Last call 5 days ago. Gong sentiment: Positive. No flags."
         ]},
+        // v4.17.0 — FIX 4: Call Success framing inserted between Account
+        // Snapshot and the rest of the prep flow. WIN / ACCEPTABLE / AVOID
+        // anchors the CSM to what a successful call looks like before she
+        // walks in.
+        { t: "Call Success · Acme Corp QBR", ic: "ti-target-arrow", cl: "var(--tl)", callSuccess: {
+          aria: 'Call success criteria for Acme Corp',
+          win:        'David Kim agrees to a 30-day SSO pilot with a named technical lead. Expansion conversation begins.',
+          acceptable: 'EBR completed, next meeting scheduled within 2 weeks for commercial discussion.',
+          avoid:      'Leaving without a next step and letting the expansion signal cool.'
+        }},
         { t: "Last Gong · 5 days ago", ic: "ti-microphone", cl: "var(--am)", items: [
           "David Kim mentioned enterprise tier by name — unprompted. Strong buying signal.",
           "SSO and advanced reporting came up as near-term needs for their growing team.",
@@ -7277,6 +7287,12 @@ var DRAWER = {
           "ARR $36K · Renews Jun 15 · 31 days · URGENT. 2 CTAs, 1 overdue.",
           "Gong flag 12d ago: competitor evaluation mentioned. Champion change risk."
         ]},
+        { t: "Call Success · Brightex Risk Review", ic: "ti-target-arrow", cl: "var(--am)", callSuccess: {
+          aria: 'Call success criteria for Brightex Inc',
+          win:        'Sarah Chen names the specific evaluation criteria + agrees to a side-by-side comparison doc on a defined timeline.',
+          acceptable: 'SLA question answered in real time + a 30-day extension request is approved internally.',
+          avoid:      'A second call ends with "still evaluating" and no commitment to a decision date.'
+        }},
         { t: "Last Gong · 12 days ago ⚠", ic: "ti-microphone", cl: "var(--rd)", items: [
           "Sarah Chen mentioned she's \"looking at alternatives\" — Gong AI confirmed competitor signal.",
           "Marcus Webb (previous champion) not on the call. Sarah is now primary contact.",
@@ -7308,6 +7324,12 @@ var DRAWER = {
           "ARR $31K · Renews June 1 · 17 DAYS. 4 CTAs, 2 overdue. No Gong call in 45 days.",
           "Previous champion James Wu left the company. Michael Torres = cold intro."
         ]},
+        { t: "Call Success · NovaVault Exec Check-in", ic: "ti-target-arrow", cl: "var(--rd)", callSuccess: {
+          aria: 'Call success criteria for NovaVault',
+          win:        'Michael Torres agrees to the extension and joins the kick-off call by June 8.',
+          acceptable: 'Torres confirms he is reviewing the contract and commits to a decision date.',
+          avoid:      'Another call with no commitment and the renewal date passes.'
+        }},
         { t: "Last Gong · 45 days ago 🔴", ic: "ti-microphone", cl: "var(--rd)", items: [
           "Last call was with James Wu — who has since left. Michael Torres has had zero onboarding from us.",
           "No handoff call was ever scheduled. Michael inherited the account with no context.",
@@ -7442,7 +7464,19 @@ var DRAWER = {
           { q: '"I\'m not sure we\'re getting value."', a: "Pull up the usage report in the call. Show active users, vaults accessed, security events this quarter. Make the value visible before you respond." },
           { q: '"We\'re re-evaluating our security stack."', a: "\"That makes sense given the transition. Would it help to do a formal evaluation together so you have a full picture?\"" }
         ]},
-        { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", ext: [["Extension Period","60 days (Jun 1 → Jul 31)"],["Terms","Current pricing locked"],["Commitment","Weekly touchpoints with Carmen"],["Decision Deadline","July 15, 2026"]] }
+        { t: "Extension Terms", ic: "ti-clock", cl: "var(--am)", extGroups: [
+          { tone:'offer', label:'What 1Password offers', rows:[
+            '60-day extension (Jun 1 → Jul 31)',
+            'Current pricing locked',
+            'Weekly touchpoints with Carmen',
+            'Decision deadline: July 15, 2026'
+          ]},
+          { tone:'need',  label:'What we need from NovaVault', aria:'What we need from NovaVault', rows:[
+            'Champion intro: Michael Torres joins a 30-min kickoff call by Jun 8',
+            'Exec sponsor: NovaVault names one executive sponsor for the extension period',
+            'Evaluation commitment: formal evaluation completed by Jul 1 (not just "thinking about it")'
+          ]}
+        ]}
       ],
       foot: [
         { l: "Push to Gainsight", a: "3 CTAs created in Gainsight &middot; NovaVault &middot; Assigned to Carmen ✓" },
@@ -7667,6 +7701,36 @@ function openAgentDrawer(type, acct) {
         var isLast = i === arr.length - 1;
         html += '<div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--am-dk);padding:8px 0;' + (isLast ? '' : 'border-bottom:1px solid rgba(217,119,6,.22)') + '"><span>' + row[0] + '</span><span style="font-weight:700;text-align:right;margin-left:12px">' + row[1] + '</span></div>';
       });
+      html += '</div>';
+    }
+    // v4.17.0 — FIX 3: give-get extGroups for Extension Terms. Two stacked
+    // blocks: amber "What 1Password offers" and indigo "What we need from
+    // …" (role=region + aria-label per spec).
+    if (sec.extGroups) {
+      sec.extGroups.forEach(function(g, gi) {
+        var isNeed  = (g.tone === 'need');
+        var bg      = isNeed ? '#EEF2FF' : 'var(--am-bg)';
+        var bdColor = isNeed ? '#C7D2FE' : 'var(--am)';
+        var fgColor = isNeed ? '#3730A3' : 'var(--am-dk)';
+        var bullet  = isNeed ? '#4F46E5' : 'var(--am)';
+        var spacing = gi > 0 ? 'margin-top:10px;' : '';
+        var attrs   = isNeed ? ' role="region" aria-label="' + (g.aria || 'What we need') + '"' : '';
+        html += '<div' + attrs + ' style="' + spacing + 'background:' + bg + ';border-radius:var(--rlg);padding:10px 14px;border:1px solid ' + bdColor + '">';
+        html += '<div style="font-size:9px;font-weight:800;color:' + fgColor + ';text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">' + g.label + '</div>';
+        g.rows.forEach(function(row){
+          html += '<div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:' + fgColor + ';padding:5px 0;line-height:1.5"><span style="color:' + bullet + ';font-weight:800;flex-shrink:0;margin-top:1px">·</span><span>' + row + '</span></div>';
+        });
+        html += '</div>';
+      });
+    }
+    // v4.17.0 — FIX 4: Call Success — WIN / ACCEPTABLE / AVOID framing.
+    // Three color-coded rows inside a single role=note region.
+    if (sec.callSuccess) {
+      var cs = sec.callSuccess;
+      html += '<div role="note" aria-label="' + (cs.aria || 'Call success criteria') + '" style="background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:10px 12px">';
+      html += '<div style="display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--bd)"><span class="cs-pill cs-win" style="font-size:9px;font-weight:800;color:#065F46;background:#D1FAE5;padding:3px 8px;border-radius:4px;letter-spacing:.06em;flex-shrink:0">WIN</span><span style="font-size:12px;color:#1F2937;line-height:1.5">' + cs.win + '</span></div>';
+      html += '<div style="display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--bd)"><span class="cs-pill cs-ok" style="font-size:9px;font-weight:800;color:#92400E;background:#FEF3C7;padding:3px 8px;border-radius:4px;letter-spacing:.06em;flex-shrink:0">ACCEPTABLE</span><span style="font-size:12px;color:#1F2937;line-height:1.5">' + cs.acceptable + '</span></div>';
+      html += '<div style="display:flex;align-items:flex-start;gap:9px;padding:7px 0"><span class="cs-pill cs-avoid" style="font-size:9px;font-weight:800;color:var(--rd-dk);background:var(--rd-bg);padding:3px 8px;border-radius:4px;letter-spacing:.06em;flex-shrink:0">AVOID</span><span style="font-size:12px;color:#1F2937;line-height:1.5">' + cs.avoid + '</span></div>';
       html += '</div>';
     }
     html += '</div>';
@@ -10176,6 +10240,36 @@ function restoreAgentOutput(type, acct) {
         var isLast = i === arr.length - 1;
         html += '<div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--am-dk);padding:8px 0;' + (isLast ? '' : 'border-bottom:1px solid rgba(217,119,6,.22)') + '"><span>' + row[0] + '</span><span style="font-weight:700;text-align:right;margin-left:12px">' + row[1] + '</span></div>';
       });
+      html += '</div>';
+    }
+    // v4.17.0 — FIX 3: give-get extGroups for Extension Terms. Two stacked
+    // blocks: amber "What 1Password offers" and indigo "What we need from
+    // …" (role=region + aria-label per spec).
+    if (sec.extGroups) {
+      sec.extGroups.forEach(function(g, gi) {
+        var isNeed  = (g.tone === 'need');
+        var bg      = isNeed ? '#EEF2FF' : 'var(--am-bg)';
+        var bdColor = isNeed ? '#C7D2FE' : 'var(--am)';
+        var fgColor = isNeed ? '#3730A3' : 'var(--am-dk)';
+        var bullet  = isNeed ? '#4F46E5' : 'var(--am)';
+        var spacing = gi > 0 ? 'margin-top:10px;' : '';
+        var attrs   = isNeed ? ' role="region" aria-label="' + (g.aria || 'What we need') + '"' : '';
+        html += '<div' + attrs + ' style="' + spacing + 'background:' + bg + ';border-radius:var(--rlg);padding:10px 14px;border:1px solid ' + bdColor + '">';
+        html += '<div style="font-size:9px;font-weight:800;color:' + fgColor + ';text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">' + g.label + '</div>';
+        g.rows.forEach(function(row){
+          html += '<div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:' + fgColor + ';padding:5px 0;line-height:1.5"><span style="color:' + bullet + ';font-weight:800;flex-shrink:0;margin-top:1px">·</span><span>' + row + '</span></div>';
+        });
+        html += '</div>';
+      });
+    }
+    // v4.17.0 — FIX 4: Call Success — WIN / ACCEPTABLE / AVOID framing.
+    // Three color-coded rows inside a single role=note region.
+    if (sec.callSuccess) {
+      var cs = sec.callSuccess;
+      html += '<div role="note" aria-label="' + (cs.aria || 'Call success criteria') + '" style="background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:10px 12px">';
+      html += '<div style="display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--bd)"><span class="cs-pill cs-win" style="font-size:9px;font-weight:800;color:#065F46;background:#D1FAE5;padding:3px 8px;border-radius:4px;letter-spacing:.06em;flex-shrink:0">WIN</span><span style="font-size:12px;color:#1F2937;line-height:1.5">' + cs.win + '</span></div>';
+      html += '<div style="display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--bd)"><span class="cs-pill cs-ok" style="font-size:9px;font-weight:800;color:#92400E;background:#FEF3C7;padding:3px 8px;border-radius:4px;letter-spacing:.06em;flex-shrink:0">ACCEPTABLE</span><span style="font-size:12px;color:#1F2937;line-height:1.5">' + cs.acceptable + '</span></div>';
+      html += '<div style="display:flex;align-items:flex-start;gap:9px;padding:7px 0"><span class="cs-pill cs-avoid" style="font-size:9px;font-weight:800;color:var(--rd-dk);background:var(--rd-bg);padding:3px 8px;border-radius:4px;letter-spacing:.06em;flex-shrink:0">AVOID</span><span style="font-size:12px;color:#1F2937;line-height:1.5">' + cs.avoid + '</span></div>';
       html += '</div>';
     }
     html += '</div>';
@@ -14083,6 +14177,9 @@ function fcSaveOverride(key, raw) {
     var displayed = amt != null ? ('$' + Math.round(amt / 1000) + 'K') : 'cleared';
     toast('Forecast updated · ' + fcEscape(r.nm) + ' · ' + displayed + ' · Logged ✓');
   }
+  // v4.17.0 — FIX 1: auto-regenerate the Dust narrative after the CSM stops
+  // editing. 2 s debounce.
+  if (typeof fcScheduleRegen === 'function') fcScheduleRegen();
 }
 function fcToggleStatus(key, ev) {
   if (ev && ev.stopPropagation) ev.stopPropagation();
@@ -14117,6 +14214,8 @@ function fcSetStatus(key, status) {
   // Clear the pending pulse after 2s.
   setTimeout(function(){ delete FC_STATUS_PENDING[key]; if (FC_ACTIVE === 'pipeline') fcRenderPipeline(); }, 2000);
   toast('Forecast updated · ' + fcEscape(r.nm) + ' · ' + fcEscape(o[1]) + ' · Logged to Gainsight ✓');
+  // v4.17.0 — FIX 1: auto-regen on status change too.
+  if (typeof fcScheduleRegen === 'function') fcScheduleRegen();
 }
 // Close status + column popovers on outside click.
 document.addEventListener('click', function(){
@@ -14265,12 +14364,21 @@ function fcBuildForecastSummary() {
   var quota = fcReadQuota();
   var lines = [];
   lines.push('Q2 2026 Forecast · Carmen Corio · ' + date);
-  var header = 'Commit: $' + Math.round(commit / 1000) + 'K | At Risk: $' + Math.round(atRisk / 1000) + 'K';
+  // v4.17.0 — FIX 2: managers want attainment % first. When quota is set,
+  // lead with the Attainment line; otherwise prompt the CSM to set one.
   if (quota != null) {
     var gap = commit - quota;
-    header += ' | Gap to Quota: ' + (gap >= 0 ? '+' : '−') + '$' + Math.round(Math.abs(gap) / 1000) + 'K (vs $' + Math.round(quota / 1000) + 'K target)';
+    var pct = Math.round((commit / quota) * 100);
+    var commitK = Math.round(commit / 1000);
+    var quotaK  = Math.round(quota / 1000);
+    var gapSign = gap >= 0 ? '+' : '−';
+    var gapK    = Math.round(Math.abs(gap) / 1000);
+    lines.push('Attainment: $' + commitK + 'K of $' + quotaK + 'K (' + pct + '% · ' + gapSign + '$' + gapK + 'K vs target)');
+    lines.push('Commit: $' + commitK + 'K | At Risk: $' + Math.round(atRisk / 1000) + 'K | Gap: ' + gapSign + '$' + gapK + 'K');
+  } else {
+    lines.push('Commit: $' + Math.round(commit / 1000) + 'K | At Risk: $' + Math.round(atRisk / 1000) + 'K');
+    lines.push('(Set a quota target to see attainment %)');
   }
-  lines.push(header);
   lines.push('—');
   FC_PIPELINE.forEach(function(r){
     var override = fcOverrideAmount(r.key);
@@ -14319,7 +14427,7 @@ function fcRenderDust() {
     + '<div class="fc-hd"><div class="fc-hd-t">🔮 Dust Forecast · Q2 2026</div></div>'
     + fcRenderRollup()
     + '<div class="fc-dust-head">'
-    +   '<div class="fc-dust-gen"><i class="ti ti-sparkles" style="color:#4F46E5"></i> Generated: <span id="fc-dust-gen">' + fcEscape(FC_DUST_GEN) + '</span></div>'
+    +   '<div class="fc-dust-gen"><i class="ti ti-sparkles" style="color:#4F46E5"></i> Generated: <span id="fc-dust-gen" aria-live="polite">' + fcEscape(FC_DUST_GEN) + '</span></div>'
     +   '<button class="fc-btn" type="button" onclick="fcRegenerate()" id="fc-regen-btn"><i class="ti ti-refresh"></i> Regenerate</button>'
     + '</div>'
     + '<div class="fc-dust-summary">'
@@ -14361,6 +14469,61 @@ function fcRegenerate() {
     fcRenderDust();
     toast('Forecast regenerated · Dust analysis complete ✓');
   }, 1500);
+}
+
+// v4.17.0 — FIX 1: Silent auto-regen path. Called by fcScheduleRegen() after
+// any override write debounces. Updates the FC_DUST_GEN timestamp, refreshes
+// the dust forecast view, and surfaces a subtle "Updated just now" indicator
+// in the existing #fc-dust-gen span (aria-live="polite") so screen readers
+// announce the refresh without a toast.
+function fcRegenerateDust() {
+  // Show the "Updating…" indicator on the existing generated-at span. The
+  // span carries aria-live so the announcement happens naturally.
+  var indicator = document.getElementById('fc-dust-gen');
+  if (indicator) {
+    indicator.setAttribute('aria-live', 'polite');
+    indicator.textContent = '↻ Updating…';
+  }
+  setTimeout(function(){
+    var now = new Date();
+    var hr = now.getHours();
+    var min = now.getMinutes();
+    var ampm = hr >= 12 ? 'PM' : 'AM';
+    var hr12 = hr % 12 || 12;
+    var pad = function(n){ return n < 10 ? '0' + n : '' + n; };
+    FC_DUST_GEN = 'Today · ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()] + ' ' + now.getDate() + ' · ' + hr12 + ':' + pad(min) + ' ' + ampm;
+    // If the dust forecast section is currently visible, re-render so the
+    // narrative + timestamp swap together. Otherwise just update the cached
+    // FC_DUST_GEN string — the next render will pick it up.
+    var dustSec = document.getElementById('fc-dustforecast');
+    if (dustSec && dustSec.classList.contains('on')) {
+      fcRenderDust();
+      // After the render, flash "Updated just now" briefly before falling
+      // back to the full timestamp.
+      var after = document.getElementById('fc-dust-gen');
+      if (after) {
+        after.setAttribute('aria-live', 'polite');
+        var orig = FC_DUST_GEN;
+        after.textContent = 'Updated just now';
+        setTimeout(function(){
+          var stillThere = document.getElementById('fc-dust-gen');
+          if (stillThere) stillThere.textContent = orig;
+        }, 1800);
+      }
+    }
+  }, 350);
+}
+
+// v4.17.0 — FIX 1: Debounced scheduler. Forecasts re-derive 2 s after the
+// LAST override change so a CSM dragging a slider or typing a dollar amount
+// doesn't re-fire the regen on every keystroke.
+var _fcRegenTimer = null;
+function fcScheduleRegen() {
+  if (_fcRegenTimer) clearTimeout(_fcRegenTimer);
+  _fcRegenTimer = setTimeout(function(){
+    _fcRegenTimer = null;
+    fcRegenerateDust();
+  }, 2000);
 }
 
 // ── ARR Trends ──────────────────────────────────────────────────────────────
