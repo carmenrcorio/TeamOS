@@ -2703,6 +2703,28 @@ body.offline .rs-mx-snap{top:124px}
 .rs-sig-meta{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:5px}
 .rs-sig-src{font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;line-height:1.5;display:inline-flex;align-items:center;gap:3px}
 .rs-sig-src::before{content:'•';margin-right:1px;opacity:.7}
+
+/* v4.19.0 — FIX 4: signal staleness badges. NEW = teal, FRESH = no badge,
+   STALE = muted gray. Sits inline next to the timestamp chip. */
+.rs-sig-age{font-size:9px;font-weight:800;padding:1px 7px;border-radius:99px;text-transform:uppercase;letter-spacing:.06em;line-height:1.5;display:inline-flex;align-items:center;gap:3px;margin-left:4px}
+.rs-sig-age.new{background:#CCFBF1;color:#0F766E}
+.rs-sig-age.stale{background:#F3F4F6;color:#6B7280}
+
+/* v4.19.0 — FIX 1: Ghost-Buster inbound suppression warning card. */
+.gb-inbound-warn{background:#FFFBEB;border:1px solid #FDE68A;border-left:4px solid #F59E0B;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.gb-inbound-hd{font-size:13px;font-weight:800;color:#92400E;display:flex;align-items:center;gap:8px}
+.gb-inbound-hd i{font-size:16px}
+.gb-inbound-body{font-size:13px;color:#1F2937;font-weight:600;line-height:1.55}
+.gb-inbound-help{font-size:12px;color:#374151;font-weight:500;line-height:1.55}
+.gb-inbound-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.gb-inbound-bypass{font-size:11px;color:#9CA3AF;font-weight:500;text-align:right;padding-top:4px;border-top:1px dashed #FDE68A}
+.gb-inbound-bypass a{color:#9CA3AF;text-decoration:underline;cursor:pointer}
+.gb-inbound-bypass a:hover{color:#6B7280}
+
+/* v4.19.0 — FIX 2: competitor flag row in the matrix snapshot. Amber text,
+   ⚠ prefix. Inherits the .rs-mx-kv grid cell. */
+.rs-mx-kv .rs-mx-comp{color:#B45309;font-weight:700;display:inline-flex;align-items:center;gap:5px}
+.rs-mx-kv .rs-mx-comp::before{content:'⚠';color:#D97706;font-weight:800}
 .rs-sig-time{font-size:10px;color:#6B7280;font-weight:600;display:inline-flex;align-items:center;gap:4px}
 .rs-sig-time i{font-size:11px}
 
@@ -13250,14 +13272,17 @@ var RS_PLAYS = [
         body:{
           doIt:'Send the cold intro email to Michael Torres referencing the SSO rollout James Wu owned. Lead with continuity, not pitch.',
           say:'Hi Michael — I worked with James for the past 18 months on your SSO rollout. He told me you were stepping in to own IT before he left. I want to make sure the renewal conversation lands on your desk with the full context, not as a surprise. Could we grab 20 minutes this week so I can walk you through where your team is in the rollout?',
-          outcome:'Touch 1 reply by May 18. If no reply by then, schedule Touch 2 (AE warm intro request through David Kim relationship).'
+          // v4.19.0 — FIX 3: dynamic dates so the outcome never reads stale.
+          outcome:'Touch 1 reply within 2 business days (by {+2bd}). If no reply by {+5d}, schedule Touch 2 (AE warm intro request through David Kim relationship).'
         }
       },
       { s:'pending', n:3, t:'Executive sponsor call',                             meta:'Scheduled for May 20',
         body:{
           doIt:'Get Sarah Bookman (VP CS) on the call with Torres. Executive sponsor brings weight a CSM cold intro cannot.',
           say:'Michael, I asked Sarah Bookman, our VP of Customer Success, to join this call. She wants to personally make sure the renewal lands smoothly given the leadership change on your side. Sarah will share what we are seeing in your usage and what other teams in your size band have done in the same transition.',
-          outcome:'Torres engages with the renewal frame on this call. Soft-commit to a renewal discussion before May 28.'
+          // v4.19.0 — FIX 3: dynamic date — "before next Friday-ish" reads
+          // correctly every day, not just from May 17.
+          outcome:'Torres engages with the renewal frame on this call. Soft-commit to a renewal discussion before {+10d}.'
         }
       },
       { s:'pending', n:4, t:'Contract re-engagement',                             meta:'Pending Torres response' },
@@ -13333,6 +13358,63 @@ var RS_ACTIVE = 'matrix';
 var RS_SIG_FILTER = 'all';
 var RS_SIG_SORT = 'newest';
 var RS_MX_SEL = null;
+
+// v4.19.0 — FIX 4: signal-age bucketing for the All Signals staleness badge.
+// Parses the freeform `updated` strings the demo data uses ("2h ago",
+// "Today · 6:14 AM", "Yesterday", "7d ago", "Today · 9:00 AM") into a
+// number of whole days, then buckets:
+//   0-1 days → NEW
+//   2-7 days → FRESH (no badge)
+//   7+ days  → STALE
+function rsParseAgeDays(updated) {
+  if (typeof updated !== 'string') return null;
+  var s = updated.toLowerCase();
+  if (/today/.test(s) || /^\s*\d+\s*(m|h|min|hour)/i.test(s.replace(/^\s+/, ''))) return 0;
+  if (/yesterday/.test(s)) return 1;
+  var m = s.match(/(\d+)\s*d/);
+  if (m) return parseInt(m[1], 10);
+  return null;
+}
+function rsAgeBucket(updated) {
+  var d = rsParseAgeDays(updated);
+  if (d == null) return { bucket:'FRESH', days:null };
+  if (d <= 1)   return { bucket:'NEW',   days:d };
+  if (d < 7)    return { bucket:'FRESH', days:d };
+  return            { bucket:'STALE', days:d };
+}
+
+// v4.19.0 — FIX 3: dynamic date helpers for Save Play expected outcomes.
+// Tokens supported in Save Play `body.outcome`:
+//   {+Nbd}  → today + N business days (skips weekends)
+//   {+Nd}   → today + N calendar days
+// Computed at render time so the dates never go stale.
+function rsAddBusinessDays(date, n) {
+  var d = new Date(date.getTime());
+  while (n > 0) {
+    d.setDate(d.getDate() + 1);
+    var dow = d.getDay();
+    if (dow !== 0 && dow !== 6) n--;
+  }
+  return d;
+}
+function rsAddCalendarDays(date, n) {
+  var d = new Date(date.getTime());
+  d.setDate(d.getDate() + n);
+  return d;
+}
+function rsFormatShortDate(d) {
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[d.getMonth()] + ' ' + d.getDate();
+}
+function rsResolveDateTokens(text) {
+  if (typeof text !== 'string') return text;
+  var today = (typeof rsToday === 'function') ? rsToday() : new Date();
+  return text.replace(/\{\+(\d+)bd\}/g, function(_, n) {
+    return rsFormatShortDate(rsAddBusinessDays(today, parseInt(n, 10)));
+  }).replace(/\{\+(\d+)d\}/g, function(_, n) {
+    return rsFormatShortDate(rsAddCalendarDays(today, parseInt(n, 10)));
+  });
+}
 
 function rsEscape(s) {
   return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -13456,6 +13538,26 @@ function rsMxSnapClose() {
   }
   _rsMxSnapTrigger = null;
 }
+// v4.19.0 — FIX 2: detect a Gong-sourced competitor signal for an account
+// and pull out (a) the competitor name + (b) how many calls it surfaced in.
+// Returns null when no competitor signal is registered.
+function rsFindCompetitorFlag(acct) {
+  if (typeof RS_SIGNALS === 'undefined') return null;
+  var hit = RS_SIGNALS.find(function(s){
+    return s.acct === acct && s.src === 'GONG' && /competitor/i.test(s.desc || '');
+  });
+  if (!hit) return null;
+  // Extract competitor name. Patterns from the demo data:
+  //   "Competitor flagged in last 2 Gong calls — Okta mentioned as alternative…"
+  var nameMatch = hit.desc.match(/—\s*([A-Z][A-Za-z0-9]+)/);
+  var callsMatch = hit.desc.match(/(\d+)\s+Gong calls?/i);
+  return {
+    name:    nameMatch ? nameMatch[1] : 'Competitor',
+    calls:   callsMatch ? parseInt(callsMatch[1], 10) : 1,
+    signal:  hit
+  };
+}
+
 function rsMxRenderDetail() {
   var box = document.getElementById('rs-mx-detail');
   if (!box) return;
@@ -13464,6 +13566,14 @@ function rsMxRenderDetail() {
   if (!a) { box.innerHTML = '<div class="rs-mx-detail-empty">Account not found.</div>'; return; }
   var bandLabel = { r:'Critical', a:'At-Risk', g:'Healthy', gy:'Unknown' }[a.band] || '';
   var ctas = a.band === 'r' ? '4 open · 2 overdue' : (a.band === 'a' ? '2 open · 1 overdue' : (a.band === 'g' ? '0 open' : '1 open'));
+  // v4.19.0 — FIX 2: 6th key-value row when a Gong competitor signal is
+  // registered for this account. Hidden when no competitor signal.
+  var compFlag = rsFindCompetitorFlag(a.key);
+  var compRow = '';
+  if (compFlag) {
+    var lbl = compFlag.name + ' flagged · ' + compFlag.calls + ' call' + (compFlag.calls === 1 ? '' : 's');
+    compRow = '<div>Competitor</div><div><span class="rs-mx-comp" aria-label="Competitor flag: ' + rsEscape(compFlag.name) + ' mentioned in ' + compFlag.calls + ' call' + (compFlag.calls === 1 ? '' : 's') + '">' + rsEscape(lbl) + '</span></div>';
+  }
   box.innerHTML = ''
     + '<div class="rs-mx-detail-hd">'
     +   '<div><div class="rs-mx-detail-nm">' + rsEscape(a.name) + '</div><div style="font-size:11px;color:#6B7280;font-weight:600;margin-top:2px">' + (a.unknown ? 'Health unknown · last data ' + a.daysDark + 'd ago' : ('Health ' + a.health)) + '</div></div>'
@@ -13476,6 +13586,7 @@ function rsMxRenderDetail() {
     +   '<div>Champion</div><div>' + rsEscape(a.champion) + '</div>'
     +   '<div>Open CTAs</div><div>' + ctas + '</div>'
     +   '<div>Last Gong</div><div>' + rsEscape(a.gong) + '</div>'
+    +   compRow
     + '</div>'
     + '<div class="rs-mx-acts">'
     +   '<button class="rs-btn prim" type="button" onclick="rsOpenMB(\'' + a.key + '\')"><i class="ti ti-arrow-right"></i> Open in Mission Briefing</button>'
@@ -13513,6 +13624,20 @@ function rsRenderSignals() {
     var arrMap = {}; RS_ACCOUNTS.forEach(function(a){ arrMap[a.key] = a.arr; });
     rows = rows.slice().sort(function(a,b){ return (arrMap[b.acct]||0) - (arrMap[a.acct]||0); });
   }
+  // v4.19.0 — FIX 4: default 'newest' sort now buckets within each severity
+  // tier: NEW (0-1d) → FRESH (2-7d) → STALE (7+d). This makes the Monday-
+  // morning feed read as "here's what's new today", not "here's everything
+  // that's ever been flagged".
+  if (RS_SIG_SORT === 'newest') {
+    var bucketRank = { NEW:0, FRESH:1, STALE:2 };
+    rows = rows.slice().sort(function(a, b){
+      var sevDelta = sevOrder[a.sev] - sevOrder[b.sev];
+      if (sevDelta !== 0) return sevDelta;
+      var ba = rsAgeBucket(a.updated).bucket;
+      var bb = rsAgeBucket(b.updated).bucket;
+      return bucketRank[ba] - bucketRank[bb];
+    });
+  }
   var sevIcon = { crit:'🔴', high:'🟡', watch:'👁', opp:'✅' };
   // v4.3.0 — Title Case so external selectors matching exact text content
   // (e.g. text="Critical") resolve. Visual styling stays uppercased via CSS.
@@ -13524,13 +13649,23 @@ function rsRenderSignals() {
     var srcStyle = RS_SOURCE_STYLE[srcKey] || RS_SOURCE_STYLE.GAINSIGHT;
     var srcChip = '<span class="rs-sig-src" style="background:' + srcStyle.bg + ';color:' + srcStyle.fg + '" aria-label="Signal source: ' + rsEscape(srcKey) + '">' + rsEscape(srcKey) + '</span>';
     var timeChip = '<span class="rs-sig-time" aria-label="Last updated: ' + rsEscape(s.updated || '') + '"><i class="ti ti-clock" aria-hidden="true"></i> Last updated: ' + rsEscape(s.updated || '—') + '</span>';
+    // v4.19.0 — FIX 4: staleness badge sits next to the timestamp. FRESH
+    // signals (2-7 days) carry no badge so the eye reads only the actionable
+    // ones — NEW and STALE.
+    var ageInfo = rsAgeBucket(s.updated);
+    var ageBadge = '';
+    if (ageInfo.bucket === 'NEW') {
+      ageBadge = '<span class="rs-sig-age new" aria-label="Signal age: ' + (ageInfo.days != null ? (ageInfo.days + ' day' + (ageInfo.days === 1 ? '' : 's') + ' ago, ') : '') + 'NEW">NEW</span>';
+    } else if (ageInfo.bucket === 'STALE') {
+      ageBadge = '<span class="rs-sig-age stale" aria-label="Signal age: ' + (ageInfo.days != null ? (ageInfo.days + ' days ago, ') : '') + 'STALE">STALE</span>';
+    }
     return '<div class="rs-sig-row ' + s.sev + '">'
       + '<span class="rs-sig-sev rs-sev ' + s.sev + '">' + sevIcon[s.sev] + ' ' + sevLabel[s.sev] + '</span>'
       + '<div class="rs-sig-mid">'
       +   '<span class="rs-sig-acct acct-lk" onclick="rsOpenMB(\'' + s.acct + '\')">' + rsEscape(s.acctName) + '</span>'
       +   '<div class="rs-sig-desc">' + rsEscape(s.desc) + '</div>'
       +   '<div class="rs-sig-context">' + rsEscape(s.ctx) + '</div>'
-      +   '<div class="rs-sig-meta">' + srcChip + timeChip + '</div>'
+      +   '<div class="rs-sig-meta">' + srcChip + timeChip + ageBadge + '</div>'
       + '</div>'
       + '<div class="rs-sig-actions"><button class="rs-btn" type="button" onclick="rsSigAction(\'' + s.action + '\',\'' + s.acct + '\',' + s.id + ')">' + rsEscape(s.actionLabel) + '</button></div>'
     + '</div>';
@@ -13602,7 +13737,9 @@ function rsPlayCardHTML(p) {
         + '<div class="rs-pl-step-body' + (open ? ' on' : '') + '" id="' + bodyId + '" role="region" aria-labelledby="' + headId + '">'
         +   '<div class="rs-pl-step-block"><div class="rs-pl-step-block-l">What to do</div><div class="rs-pl-step-block-b">' + rsEscape(st.body.doIt) + '</div></div>'
         +   '<div class="rs-pl-step-block say"><div class="rs-pl-step-block-l">What to say</div><div class="rs-pl-step-block-b">' + rsEscape(st.body.say) + '</div></div>'
-        +   '<div class="rs-pl-step-block"><div class="rs-pl-step-block-l">Expected outcome</div><div class="rs-pl-step-block-b">' + rsEscape(st.body.outcome) + '</div></div>'
+        // v4.19.0 — FIX 3: resolve {+Nbd} / {+Nd} tokens before escaping so
+        // expected-outcome dates are always computed from today.
+        +   '<div class="rs-pl-step-block"><div class="rs-pl-step-block-l">Expected outcome</div><div class="rs-pl-step-block-b">' + rsEscape(rsResolveDateTokens(st.body.outcome)) + '</div></div>'
         + '</div>';
     }
     return '<div class="rs-play-step rs-pl-step ' + st.s + '">'
@@ -13813,7 +13950,45 @@ var RS_GB_LABELS = {
   apex:     { nm:'Apex Dynamics',           meta:'$15K ARR · Renews Aug 1 · 61 days dark' },
   nova:     { nm:'NovaVault',               meta:'$31K ARR · Renews Jun 1 · 45 days Gong silence' }
 };
+// v4.19.0 — FIX 1: Ghost-Buster inbound suppression. Returns the matching
+// signal (or null) when the account has an active inbound signal worth
+// surfacing as "reply first, don't cold-sequence". Detection rule:
+//   - signal.src === 'INBOX'  (e.g. Brightex SLA), OR
+//   - signal.desc / signal.ctx contains /\binbound\b|\bemailed\b/i (e.g.
+//     Meridian "Inbound: Jennifer emailed yesterday").
+function rsFindInboundSignal(acct) {
+  if (typeof RS_SIGNALS === 'undefined') return null;
+  var hits = RS_SIGNALS.filter(function(s){
+    if (s.acct !== acct) return null;
+    if (s.src === 'INBOX') return true;
+    var blob = (s.desc || '') + ' ' + (s.ctx || '');
+    return /\binbound\b|\bemailed\b/i.test(blob);
+  });
+  return hits.length ? hits[0] : null;
+}
+// v4.19.0 — FIX 1: extract a likely contact name from an inbound signal so
+// the Reply CTA reads naturally ("Reply to Jennifer →"). Falls back to
+// the account's champion field if no name is parsed.
+function rsInboundContactName(signal, acct) {
+  if (signal) {
+    var blob = (signal.ctx || '') + ' ' + (signal.desc || '');
+    // Match "FirstName Last" or "FirstName" preceding "emailed".
+    var m = blob.match(/([A-Z][a-z]+)(?:\s+[A-Z][a-z]+)?\s+emailed/);
+    if (m) return m[1];
+    var m2 = blob.match(/Inbound:\s+([A-Z][a-z]+)/);
+    if (m2) return m2[1];
+  }
+  var a = (typeof RS_ACCOUNTS !== 'undefined') ? RS_ACCOUNTS.find(function(x){ return x.key === acct; }) : null;
+  if (a && a.champion) return a.champion.split(/\s+/)[0];
+  return 'the contact';
+}
+
 function gbDrawerOpen(acct) {
+  return _gbDrawerOpenInternal(acct, /*forceSequence*/false);
+}
+// v4.19.0 — FIX 1: separate internal opener so the "Launch sequence anyway"
+// link can bypass the inbound suppression.
+function _gbDrawerOpenInternal(acct, forceSequence) {
   var drawer = document.getElementById('gb-drawer');
   var ov     = document.getElementById('gb-drawer-ov');
   var body   = document.getElementById('gb-drawer-body');
@@ -13825,6 +14000,36 @@ function gbDrawerOpen(acct) {
       RS_GB_LAST_TRIGGER = document.activeElement;
     }
   } catch (_) {}
+  // v4.19.0 — FIX 1: check for an active inbound signal BEFORE rendering the
+  // sequence. If one exists and forceSequence isn't set, render the
+  // suppression warning + Reply CTA instead.
+  var inboundSig = forceSequence ? null : rsFindInboundSignal(acct);
+  if (inboundSig) {
+    var firstName = rsInboundContactName(inboundSig, acct);
+    var acctMeta  = RS_GB_LABELS[acct] || { nm: acct, meta: '' };
+    body.innerHTML = ''
+      + '<div class="gb-inbound-warn" role="alert" aria-label="Inbound signal detected — direct reply recommended">'
+      +   '<div class="gb-inbound-hd"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Inbound detected</div>'
+      +   '<div class="gb-inbound-body">' + rsEscape(firstName) + ' ' + rsEscape((inboundSig.ctx || inboundSig.desc || '').replace(/^Inbound:\s*/, '')) + '.</div>'
+      +   '<div class="gb-inbound-help">Don&rsquo;t send a cold sequence. Reply to ' + rsEscape(firstName) + '&rsquo;s email directly instead.</div>'
+      +   '<div class="gb-inbound-acts">'
+      +     '<button class="rs-btn prim" type="button" id="gb-inbound-reply" onclick="rsGbReplyDirect(\'' + acct + '\')"><i class="ti ti-mail"></i> Reply to ' + rsEscape(firstName) + ' →</button>'
+      +     '<button class="rs-btn" type="button" onclick="rsSigJump(' + inboundSig.id + ')"><i class="ti ti-eye"></i> View Signal</button>'
+      +   '</div>'
+      +   '<div class="gb-inbound-bypass"><a href="#" onclick="event.preventDefault();_gbDrawerOpenInternal(\'' + acct + '\',true)">Launch Ghost-Buster anyway →</a></div>'
+      + '</div>';
+    if (sub) sub.textContent = acctMeta.nm + (acctMeta.meta ? ' · ' + acctMeta.meta : '');
+    if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('gb');
+    ov.classList.add('on');
+    drawer.classList.add('on');
+    ov.setAttribute('aria-hidden', 'false');
+    drawer.setAttribute('aria-hidden', 'false');
+    setTimeout(function(){
+      var rep = document.getElementById('gb-inbound-reply');
+      if (rep) try { rep.focus(); } catch (_) {}
+    }, 60);
+    return true;
+  }
   var src = document.getElementById('view-' + acct);
   if (!src) return false;
   // Clone the .rp-scroll content so we don't yank it out of the dashboard
@@ -13896,6 +14101,32 @@ var RS_DRAFT_BRIGHTEX_BODY = ''
   + 'Rather than just sending the contract language, I’d like to walk you through what your team has actually been hitting over the past 90 days — and what the rough edges have been on the support side. That context matters more than the line items.\n\n'
   + 'Could we grab 15 minutes Thursday? I’ll come prepared with the data. {{meeting_link}}\n\n'
   + 'Carmen';
+
+// v4.19.0 — FIX 1: route the Reply CTA inside the GB inbound suppression
+// warning to the right compose surface for each account. Brightex gets the
+// dedicated compose modal (v4.9.0); others fall back to the legacy view-draft
+// path with their existing DRAFT_REPLIES entry.
+function rsGbReplyDirect(acct) {
+  // Close the GB drawer before opening the reply surface so we don't stack
+  // a modal on top of a drawer.
+  if (typeof gbDrawerClose === 'function') gbDrawerClose();
+  setTimeout(function(){
+    if (acct === 'brightex' && typeof rsDraftReplyBrightex === 'function') { rsDraftReplyBrightex(); return; }
+    if (typeof draftReply === 'function') { draftReply(acct); return; }
+    toast('Reply · ' + rsEscape(acct) + ' ✓');
+  }, 80);
+}
+// v4.19.0 — FIX 1: jump to the All Signals row for the named signal so the
+// CSM can see the full context behind the inbound suppression.
+function rsSigJump(sigId) {
+  if (typeof gbDrawerClose === 'function') gbDrawerClose();
+  setTimeout(function(){
+    if (typeof rsShow === 'function') rsShow('signals');
+    // No row-level highlight wired today; the All Signals list is small
+    // enough that surfacing the section is sufficient context.
+    toast('Signal opened · #' + sigId + ' ✓');
+  }, 100);
+}
 
 function rsDraftReplyBrightex() {
   if (typeof cmOpenModal !== 'function') { toast('Draft Reply · brightex ✓'); return; }
