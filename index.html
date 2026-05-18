@@ -2803,8 +2803,53 @@ body.offline .rs-mx-snap{top:124px}
 .fc-tl-hd-t{font-size:11px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em}
 .fc-tl-hd-meta{font-size:12px;color:#1F2937;font-weight:700}
 .fc-tl-hd-meta b{color:#111827;font-weight:800;font-size:14px}
-.fc-tl-acct{background:var(--surf);border:1px solid var(--bd);border-radius:8px;padding:11px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:5px}
+/* v4.14.0 — FIX 3: Timeline cards are clickable. Hovering surfaces a teal
+   border + tooltip; Enter triggers the same jump as click. */
+.fc-tl-acct{background:var(--surf);border:1px solid var(--bd);border-radius:8px;padding:11px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:5px;cursor:pointer;transition:border-color .12s,background .12s;position:relative}
+.fc-tl-acct:hover{border-color:var(--tl);background:var(--tl-bg)}
+.fc-tl-acct:focus-visible{outline:2px solid var(--tl);outline-offset:2px}
 .fc-tl-acct:last-child{margin-bottom:0}
+.fc-tl-acct::after{content:'View in Pipeline →';position:absolute;right:10px;bottom:6px;font-size:9px;font-weight:700;color:var(--tl-dk);text-transform:uppercase;letter-spacing:.05em;opacity:0;transition:opacity .12s;pointer-events:none}
+.fc-tl-acct:hover::after,.fc-tl-acct:focus-visible::after{opacity:1}
+
+/* v4.14.0 — FEATURE: drawer notes section (Save Strategy / Risk Analysis /
+   Pre-Call Brief / Next Steps / Ghost-Buster). Persists per account+drawer
+   to localStorage.teamos_drawer_notes. */
+.dr-notes{margin:24px 0 4px;padding:14px 14px 12px;background:var(--surf2);border:1px solid var(--bd);border-radius:7px;display:flex;flex-direction:column;gap:8px}
+.dr-notes-l{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em}
+.dr-notes-ta{font-family:inherit;font-size:12px;color:#1F2937;border:1px solid var(--bd2);border-radius:5px;padding:8px 10px;background:var(--surf);min-height:62px;resize:vertical;line-height:1.5}
+.dr-notes-ta:focus{outline:none;border-color:var(--tl)}
+.dr-notes-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dr-notes-cc{font-size:10px;color:#6B7280;font-weight:600}
+.dr-notes-save{font-family:inherit;font-size:11px;font-weight:700;padding:6px 11px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:var(--tl-dk);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .12s;min-height:30px}
+.dr-notes-save:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.dr-notes-save:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.dr-notes-save i{font-size:13px}
+
+/* v4.14.0 — FIX 4: Recovery Path section inside Dust Forecast rollup,
+   visible only when quota is set and the gap is negative. */
+.fc-recovery{margin-top:12px;padding:14px 16px;background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:7px}
+.fc-recovery.positive{background:#ECFDF5;border-color:#A7F3D0;border-left-color:var(--tl)}
+.fc-recovery-l{font-size:10px;font-weight:800;color:#92400E;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.fc-recovery.positive .fc-recovery-l{color:#065F46}
+.fc-recovery-gap{font-size:11px;font-weight:700;color:#92400E;background:#FEF3C7;padding:1px 8px;border-radius:99px}
+.fc-recovery.positive .fc-recovery-gap{color:#065F46;background:#D1FAE5}
+.fc-recovery-row{display:flex;align-items:flex-start;gap:12px;background:var(--surf);border:1px solid var(--bd);border-radius:6px;padding:11px 13px;margin-top:8px}
+.fc-recovery-ic{font-size:22px;line-height:1;flex-shrink:0}
+.fc-recovery-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.fc-recovery-t{font-size:13px;font-weight:800;color:#111827;line-height:1.3;letter-spacing:-.01em}
+.fc-recovery-amt{font-size:12px;font-weight:700;color:#065F46;line-height:1.4}
+.fc-recovery-s{font-size:11px;color:#374151;font-weight:500;line-height:1.5}
+.fc-recovery-act{align-self:flex-start;font-family:inherit;font-size:11px;font-weight:700;padding:6px 11px;border-radius:5px;border:none;background:var(--tx);color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-top:2px}
+.fc-recovery-act:hover{background:#2a2a28}
+.fc-recovery-positive-line{font-size:12px;color:#065F46;font-weight:600;line-height:1.55;margin-top:4px}
+
+/* v4.14.0 — ENHANCEMENT: Copy Forecast Summary promoted to a full-width
+   outlined button below the stat tiles. */
+.fc-copy-summary-row{margin-top:12px}
+.fc-copy-summary-btn{width:100%;height:40px;font-family:inherit;font-size:12px;font-weight:700;border-radius:6px;border:1px solid var(--bd2);background:var(--surf);color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .12s}
+.fc-copy-summary-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.fc-copy-summary-btn:focus-visible{outline:2px solid var(--tl);outline-offset:2px}
 .fc-tl-r1{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .fc-tl-nm{font-size:13px;font-weight:800;color:#111827;letter-spacing:-.01em;cursor:pointer}
 .fc-tl-nm:hover{color:var(--tl-dk);text-decoration:underline}
@@ -7398,14 +7443,111 @@ function agentBtn(type, acct, btn) {
 // since v2.8.2 — this populates the Assistant side and forces the toggle to
 // Assistant. Live Call side is initialized lazily by openTeamOSLive /
 // setDrawerMode('live').
-function openAgentDrawer(type, acct) {
-  var data = DRAWER[type] && DRAWER[type][acct];
-  if (!data) { openDrawer(); return; }
+// v4.14.0 — FEATURE: freeform notes section appended to every drawer
+// (Save Strategy, Risk Analysis, Pre-Call Brief, Next Steps, Ghost-Buster).
+// Persisted to localStorage keyed by `${acct}_${type}` so each
+// account+drawer pair carries its own notes across reloads.
+var DRAWER_NOTES_KEY = 'teamos_drawer_notes';
+var DR_NOTE_MAX = 500;
+function dr_ReadNotes() {
+  try {
+    var raw = localStorage.getItem(DRAWER_NOTES_KEY);
+    return raw ? (JSON.parse(raw) || {}) : {};
+  } catch (e) { return {}; }
+}
+function dr_WriteNotes(obj) {
+  try { localStorage.setItem(DRAWER_NOTES_KEY, JSON.stringify(obj || {})); } catch (e) {}
+}
+function dr_NoteKey(type, acct) {
+  // Keep keys human-readable and stable. Risk/save/prep/next/gb map to the
+  // drawer name suffix the spec listed.
+  var suffix = { prep:'pre_call_brief', risk:'risk_analyst', save:'save_strategy', next:'next_steps', gb:'ghost_buster' }[type] || type;
+  return acct + '_' + suffix;
+}
+function dr_NoteHumanLabel(type, acct) {
+  var labels = { prep:'Pre-Call Brief', risk:'Risk Analysis', save:'Save Strategy', next:'Next Steps', gb:'Ghost-Buster' };
+  var nm     = { acme:'Acme Corp', brightex:'Brightex Inc', nova:'NovaVault', meridian:'Meridian Health Systems', creston:'Creston Software', apex:'Apex Dynamics' };
+  return (nm[acct] || acct) + ' ' + (labels[type] || type) + ' notes';
+}
+function dr_NotesSection(type, acct) {
+  var taId    = 'dr-note-ta-' + type + '-' + acct;
+  var ccId    = 'dr-note-cc-' + type + '-' + acct;
+  var btnId   = 'dr-note-btn-' + type + '-' + acct;
+  var label   = dr_NoteHumanLabel(type, acct);
+  return ''
+    + '<div class="dr-notes" data-acct="' + acct + '" data-type="' + type + '">'
+    +   '<div class="dr-notes-l">My notes</div>'
+    +   '<textarea class="dr-notes-ta" id="' + taId + '" rows="3" maxlength="' + DR_NOTE_MAX + '"'
+    +     ' aria-label="Notes for ' + label + '" aria-describedby="' + ccId + '"'
+    +     ' placeholder="Add your own context here…"'
+    +     ' oninput="dr_NoteInput(\'' + type + '\',\'' + acct + '\')"></textarea>'
+    +   '<div class="dr-notes-row">'
+    +     '<div class="dr-notes-cc" id="' + ccId + '" aria-live="polite">0 / ' + DR_NOTE_MAX + '</div>'
+    +     '<button class="dr-notes-save" id="' + btnId + '" type="button" onclick="dr_NoteSave(\'' + type + '\',\'' + acct + '\')"><i class="ti ti-cloud-upload"></i> Save Note</button>'
+    +   '</div>'
+    + '</div>';
+}
+function dr_HydrateNoteField(type, acct) {
+  var ta = document.getElementById('dr-note-ta-' + type + '-' + acct);
+  var cc = document.getElementById('dr-note-cc-' + type + '-' + acct);
+  if (!ta) return;
+  var notes = dr_ReadNotes();
+  var key = dr_NoteKey(type, acct);
+  var val = notes[key] || '';
+  ta.value = val;
+  if (cc) cc.textContent = val.length + ' / ' + DR_NOTE_MAX;
+}
+function dr_NoteInput(type, acct) {
+  var ta = document.getElementById('dr-note-ta-' + type + '-' + acct);
+  var cc = document.getElementById('dr-note-cc-' + type + '-' + acct);
+  if (!ta || !cc) return;
+  cc.textContent = ta.value.length + ' / ' + DR_NOTE_MAX;
+}
+function dr_NoteSave(type, acct) {
+  var ta = document.getElementById('dr-note-ta-' + type + '-' + acct);
+  if (!ta) return;
+  var notes = dr_ReadNotes();
+  var key = dr_NoteKey(type, acct);
+  notes[key] = ta.value || '';
+  dr_WriteNotes(notes);
+  var nm = { acme:'Acme Corp', brightex:'Brightex Inc', nova:'NovaVault', meridian:'Meridian Health Systems', creston:'Creston Software', apex:'Apex Dynamics' }[acct] || acct;
+  toast('Note saved · ' + nm + ' · Gainsight timeline updated ✓');
+}
 
+// v4.14.0 — FIX 1: ACCOUNT ISOLATION. Each drawer open passes accountKey
+// explicitly via the `acct` parameter and we set _drawerCtx.acct from THIS
+// call before any render — never read from shared state. If the data
+// payload is missing for the (type, acct) pair, we render an empty-state
+// card identifying the requested account so the CSM never sees stale
+// content from a previous account.
+function openAgentDrawer(type, acct) {
   var titleEl = document.getElementById('drawer-title');
   var subEl = document.getElementById('drawer-sub');
   var scroll = document.getElementById('drawer-scroll');
   var ft = document.getElementById('drawer-ft');
+
+  // Set new account context FIRST so any guards below see the fresh key.
+  if (typeof _drawerCtx === 'object' && _drawerCtx) {
+    _drawerCtx.acct = acct;
+    _drawerCtx.lastAgent = { type: type, acct: acct };
+  }
+
+  var data = DRAWER[type] && DRAWER[type][acct];
+  if (!data) {
+    // No payload for this (type, acct) — paint an explicit empty-state so the
+    // CSM sees the requested account even when content isn't registered yet.
+    var typeLabels = { prep:'Pre-Call Brief', risk:'Risk Analysis', save:'Save Strategy', next:'Next Steps' };
+    var acctNames  = { acme:'Acme Corp', brightex:'Brightex Inc', nova:'NovaVault', meridian:'Meridian Health Systems', creston:'Creston Software', apex:'Apex Dynamics' };
+    if (titleEl) titleEl.textContent = typeLabels[type] || type;
+    if (subEl)   subEl.textContent   = (acctNames[acct] || acct) + ' · No data registered for this view';
+    if (scroll)  scroll.innerHTML    = '<div style="padding:32px 18px;text-align:center;color:#6B7280;font-size:12px;font-style:italic">No ' + (typeLabels[type] || type) + ' content available for ' + (acctNames[acct] || acct) + ' yet.</div>'
+                                     + dr_NotesSection(type, acct);
+    if (ft)      ft.innerHTML        = '<button class="dr-ft-btn sec" type="button" onclick="closeDrawer()" style="font-size:12px;font-weight:600;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2);flex:1">Close</button>';
+    setDrawerMode('assistant', { skipReinit: true });
+    openDrawer();
+    setTimeout(function(){ dr_HydrateNoteField(type, acct); }, 60);
+    return;
+  }
 
   if (titleEl) titleEl.textContent = data.title;
   if (subEl) subEl.textContent = data.sub;
@@ -7415,7 +7557,13 @@ function openAgentDrawer(type, acct) {
     html += '<div style="margin-bottom:20px">';
     html += '<div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ' + sec.ic + '" style="color:' + sec.cl + ';font-size:12px"></i>' + sec.t + '</div>';
     if (sec.score) {
-      html += '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:14px"><span style="font-size:38px;font-weight:700;letter-spacing:-.04em;color:' + sec.scoreC + '">' + sec.score + '</span><span style="font-size:14px;font-weight:600;color:' + sec.scoreC + '">' + sec.scoreL + '</span></div>';
+      // v4.14.0 — ENHANCEMENT: attribution sentence below the churn score for
+      // Risk Analysis. Static demo copy; Phase 2 will surface the actual
+      // contributing signals dynamically.
+      var attribution = (type === 'risk')
+        ? '<div style="font-size:11px;color:#6B7280;font-weight:500;line-height:1.5;margin-top:-8px;margin-bottom:14px">Based on health velocity, Gong sentiment trend, and champion engagement in the last 30 days.</div>'
+        : '';
+      html += '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:14px"><span style="font-size:38px;font-weight:700;letter-spacing:-.04em;color:' + sec.scoreC + '">' + sec.score + '</span><span style="font-size:14px;font-weight:600;color:' + sec.scoreC + '">' + sec.scoreL + '</span></div>' + attribution;
     }
     if (sec.items && sec.items.length) sec.items.forEach(function(item) {
       html += '<div style="padding:10px 12px;background:var(--surf2);border-radius:var(--r);border-left:3px solid ' + sec.cl + ';margin-bottom:8px;font-size:12px;color:var(--tx2);line-height:1.55">' + item + '</div>';
@@ -7439,7 +7587,10 @@ function openAgentDrawer(type, acct) {
     }
     html += '</div>';
   });
+  // v4.14.0 — FEATURE: notes section appended to every drawer body.
+  html += dr_NotesSection(type, acct);
   if (scroll) scroll.innerHTML = html;
+  setTimeout(function(){ dr_HydrateNoteField(type, acct); }, 60);
 
   // Footer buttons (Push to Gainsight / Generate Deck etc)
   var ftHtml = '';
@@ -7462,9 +7613,8 @@ function openAgentDrawer(type, acct) {
   }
   if (ft) ft.innerHTML = ftHtml;
 
-  // Track last-loaded agent so the toggle can restore it when user flips back.
-  _drawerCtx.lastAgent = { type: type, acct: acct };
-  _drawerCtx.acct = acct;
+  // v4.14.0 — _drawerCtx is set at the TOP of this function now so guards
+  // see fresh state. No re-assignment here.
   setDrawerMode('assistant', { skipReinit: true });
   openDrawer();
 }
@@ -8832,10 +8982,27 @@ function openDrawer() {
   document.getElementById('dov').classList.add('on');
   document.getElementById('drawer').classList.add('on');
 }
+// v4.14.0 — FIX 1: Stale-state account isolation. closeDrawer now clears the
+// title/sub/scroll/footer + nulls _drawerCtx.acct so a subsequent open call
+// can't render stale content for the wrong account if its DRAWER[type][acct]
+// payload is missing. ACCOUNT ISOLATION: each drawer open must pass
+// accountKey explicitly. Never read from shared state on open.
 function closeDrawer() {
   document.getElementById('dov').classList.remove('on');
   document.getElementById('drawer').classList.remove('on');
   if (typeof _tlCancelSignal === 'function') _tlCancelSignal();
+  var titleEl = document.getElementById('drawer-title');
+  var subEl   = document.getElementById('drawer-sub');
+  var scroll  = document.getElementById('drawer-scroll');
+  var ft      = document.getElementById('drawer-ft');
+  if (titleEl) titleEl.textContent = '';
+  if (subEl)   subEl.textContent   = '';
+  if (scroll)  scroll.innerHTML    = '';
+  if (ft)      ft.innerHTML        = '';
+  if (typeof _drawerCtx === 'object' && _drawerCtx) {
+    _drawerCtx.acct = null;
+    _drawerCtx.lastAgent = null;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -12943,6 +13110,13 @@ function gbDrawerOpen(acct) {
     clone.querySelectorAll('.rp-back').forEach(function(el){ el.remove(); });
     body.appendChild(clone);
   }
+  // v4.14.0 — FEATURE: notes section also appended to the Ghost-Buster drawer.
+  if (typeof dr_NotesSection === 'function') {
+    var notesWrap = document.createElement('div');
+    notesWrap.innerHTML = dr_NotesSection('gb', acct);
+    body.appendChild(notesWrap.firstChild);
+    setTimeout(function(){ dr_HydrateNoteField('gb', acct); }, 60);
+  }
   var meta = RS_GB_LABELS[acct] || { nm: acct, meta: '' };
   if (sub) sub.textContent = meta.nm + (meta.meta ? ' · ' + meta.meta : '');
   ov.classList.add('on');
@@ -13616,11 +13790,15 @@ function fcRenderTimeline() {
     apex:     ['champ',   'Champion change'],
     acme:     ['healthy', 'Healthy · Expansion signal']
   };
+  // v4.14.0 — FIX 3: whole timeline card is clickable (was only the name
+  // span). role=button + tabindex + Enter handler for keyboard parity.
+  // aria-label spells out the navigation target per spec.
   function bucketHTML(rows) {
     return rows.map(function(r){
       var b = badges[r.key] || ['dark', '—'];
-      return '<div class="fc-tl-acct">'
-        + '<div class="fc-tl-r1"><span class="fc-tl-nm acct-lk" tabindex="0" onclick="fcJumpToPipelineRow(\'' + r.key + '\')" onkeydown="if(event.key===\'Enter\'){fcJumpToPipelineRow(\'' + r.key + '\')}">' + fcEscape(r.nm) + '</span><span class="fc-tl-date">' + r.renewal + '</span></div>'
+      var aria = fcEscape(r.nm) + ' — view in Pipeline';
+      return '<div class="fc-tl-acct" role="button" tabindex="0" aria-label="' + aria + '" onclick="fcJumpToPipelineRow(\'' + r.key + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();fcJumpToPipelineRow(\'' + r.key + '\')}">'
+        + '<div class="fc-tl-r1"><span class="fc-tl-nm">' + fcEscape(r.nm) + '</span><span class="fc-tl-date">' + r.renewal + '</span></div>'
         + '<div class="fc-tl-r2"><span class="fc-tl-arr">' + r.arrLabel + '</span><span class="fc-tl-dot ' + r.healthCls + '"></span></div>'
         + '<span class="fc-tl-badge ' + b[0] + '">' + fcEscape(b[1]) + '</span>'
       + '</div>';
@@ -13676,15 +13854,48 @@ function fcRenderRollup() {
   var gapHtml;
   if (gap == null) gapHtml = '<div class="fc-rollup-cell-v mute">—</div><button class="fc-rollup-quota" type="button" onclick="fcOpenQuotaForm()">Set quota</button><div class="fc-rollup-quota-form" id="fc-quota-form"><input type="number" id="fc-quota-input" placeholder="$ target" aria-label="Quota target"><button class="cm-btn prim" type="button" onclick="fcSaveQuota()">Set</button></div>';
   else gapHtml = '<div class="fc-rollup-cell-v ' + (gap >= 0 ? 'g' : 'r') + '">' + (gap >= 0 ? '+' : '−') + '$' + Math.round(Math.abs(gap) / 1000) + 'K</div><div class="fc-rollup-cell-sub">Quota: $' + Math.round(quota / 1000) + 'K · <button class="fc-rollup-quota" type="button" onclick="fcOpenQuotaForm()">Change</button></div>';
+  // v4.14.0 — FIX 4: Recovery Path section. When quota is set AND gap is
+  // negative, surface the Acme expansion signal as the recovery option in
+  // the same view as the problem. When gap is positive, show a celebratory
+  // "above quota" line + the same upside reminder.
+  var recoveryHtml = '';
+  if (quota != null) {
+    if (gap < 0) {
+      var gapK = Math.round(Math.abs(gap) / 1000);
+      recoveryHtml = '<div class="fc-recovery" id="fc-recovery" role="note" aria-label="Recovery path for quota gap">'
+        + '<div class="fc-recovery-l"><span>📈 Recovery path</span><span class="fc-recovery-gap">$' + gapK + 'K gap</span></div>'
+        + '<div class="fc-recovery-row">'
+        +   '<div class="fc-recovery-ic" aria-hidden="true">📈</div>'
+        +   '<div class="fc-recovery-body">'
+        +     '<div class="fc-recovery-t">Acme Corp expansion signal</div>'
+        +     '<div class="fc-recovery-amt">+$12K–$18K potential</div>'
+        +     '<div class="fc-recovery-s">SSO enterprise upgrade · David Kim flagged interest unprompted</div>'
+        +     '<button class="fc-recovery-act" type="button" onclick="fcAction(\'prep\',\'acme\')"><i class="ti ti-rocket"></i> Open Expansion Play →</button>'
+        +   '</div>'
+        + '</div>'
+        + '</div>';
+    } else {
+      var aboveK = Math.round(gap / 1000);
+      recoveryHtml = '<div class="fc-recovery positive" id="fc-recovery" role="note" aria-label="Above quota — expansion upside">'
+        + '<div class="fc-recovery-positive-line">✓ Above quota by $' + aboveK + 'K · Acme expansion could add $12–18K more</div>'
+        + '</div>';
+    }
+  }
   return '<div class="fc-rollup">'
     + '<div class="fc-rollup-hd">'
     +   '<div><div class="fc-rollup-l">My forecast commit · Q2 2026</div><div class="fc-rollup-ts">Updated: ' + fcEscape(FC_DUST_GEN) + '</div></div>'
-    +   '<button class="fc-btn" id="fc-copy-summary-btn" type="button" onclick="fcCopyForecastSummary()" aria-label="Copy forecast summary to clipboard"><i class="ti ti-clipboard"></i> 📋 Copy Forecast Summary</button>'
     + '</div>'
     + '<div class="fc-rollup-cells">'
     +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">Commit total</div><div class="fc-rollup-cell-v">$' + Math.round(commit / 1000) + 'K</div></div>'
     +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">At Risk</div><div class="fc-rollup-cell-v r">$' + Math.round(atRisk / 1000) + 'K</div></div>'
     +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">Gap to Quota</div>' + gapHtml + '</div>'
+    + '</div>'
+    + recoveryHtml
+    // v4.14.0 — ENHANCEMENT: Copy Forecast Summary is now a full-width
+    // outlined button below the stat tiles (was a small right-aligned link
+    // in the header).
+    + '<div class="fc-copy-summary-row">'
+    +   '<button class="fc-copy-summary-btn" id="fc-copy-summary-btn" type="button" onclick="fcCopyForecastSummary()" aria-label="Copy forecast summary to clipboard"><i class="ti ti-clipboard"></i> 📋 Copy Forecast Summary to Clipboard</button>'
     + '</div>'
     + '</div>';
 }

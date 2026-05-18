@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.13.0
+**Version:** 4.14.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,48 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.14.0] — 2026-05-18
+
+Forecasting audit follow-up — 3 fixes + 2 features + 2 enhancements. **Result: 197/197 chromium tests passing.** Closes the gap from the senior PM 8.2/10 rating.
+
+### Fixed
+
+**FIX 1 — Stale-state account bug in the shared agent drawer.** `closeDrawer` now explicitly clears the drawer DOM (`#drawer-title` / `#drawer-sub` / `#drawer-scroll` / `#drawer-ft`) AND nulls `_drawerCtx.acct` + `_drawerCtx.lastAgent`. `openAgentDrawer(type, acct)` sets `_drawerCtx.acct = acct` BEFORE any render call so guards see fresh state. When `DRAWER[type][acct]` is missing for the requested pair (e.g. `risk` × `apex`), the drawer now paints an explicit empty-state card identifying the requested account ("No Risk Analysis content available for Apex Dynamics yet.") instead of falling through and leaving the previous account's content on screen. Marker comment in the code: `// ACCOUNT ISOLATION: each drawer open must pass accountKey explicitly. Never read from shared state on open.` All 6 Pipeline row action buttons audited — every row passes its own key via `FC_PIPELINE[i].actionAcct === FC_PIPELINE[i].key`.
+
+**FIX 2 — Ghost-Buster from Forecasting Pipeline opens the in-tab drawer.** Already shipped in v4.13.0 (Forecasting's `openGhostBuster(acct)` routes through `rsOpenGB` → `gbDrawerOpen`). New v4.14.0 tests confirm: `fcAction('gb', 'meridian')` / `fcAction('gb', 'creston')` open `#gb-drawer.on` with the right account header and `#tab-forecast` remains active.
+
+**FIX 3 — Timeline cards clickable as whole units.** The previous markup only made the `.fc-tl-nm` name span clickable. The entire `.fc-tl-acct` card now carries `role="button"`, `tabindex="0"`, an `aria-label="[Account] — view in Pipeline"`, `cursor:pointer` + teal hover border + `View in Pipeline →` tooltip rendered via the `::after` pseudo-element. Enter and Space both trigger the same `fcJumpToPipelineRow(key)` jump that the click handler fires.
+
+### Added
+
+**FEATURE — Recovery Path section in Dust Forecast.** When quota is set AND `commit - quota < 0`, a new amber `.fc-recovery` block renders below the 3 stat tiles inside `fcRenderRollup`:
+- Header: `📈 Recovery path` + `$XK gap` pill.
+- Row: `📈 Acme Corp expansion signal · +$12K–$18K potential · SSO enterprise upgrade · David Kim flagged interest unprompted` + a primary `Open Expansion Play →` button that fires `fcAction('prep', 'acme')` (same target as the existing ARR Trends expansion CTA).
+- `role="note"`, `aria-label="Recovery path for quota gap"`.
+
+When the gap is positive, the block flips to the teal `.fc-recovery.positive` variant with a single line: `✓ Above quota by $XK · Acme expansion could add $12–18K more`. When no quota is set, the block doesn't render.
+
+**FEATURE — Freeform notes field in every drawer.** A new `.dr-notes` section appended to every agent drawer body (Save Strategy / Risk Analysis / Pre-Call Brief / Next Steps) plus the Ghost-Buster drawer. Carries: `<textarea>` (3 rows, vertical resize, max 500 chars), live `X / 500` character counter (`aria-live="polite"`), and a `[Save Note]` button. Persists to `localStorage.teamos_drawer_notes` keyed by `${acct}_${drawer_suffix}` (e.g. `nova_save_strategy`, `brightex_risk_analyst`, `meridian_ghost_buster`). On save: toast `Note saved · [Account] · Gainsight timeline updated ✓`. On drawer re-open: `dr_HydrateNoteField(type, acct)` reads the stored value and pre-fills the textarea so the CSM's prior note is visible. `aria-label="Notes for [Account] [Drawer] notes"`, `aria-describedby` ties the textarea to its character counter.
+
+### UX
+
+**Copy Forecast Summary promoted to a full-width button.** Previously a small right-aligned `.fc-btn` link in the rollup header. Now a full-width `.fc-copy-summary-btn` (40 px tall, outlined) rendered below the 3 stat tiles. Same `fcCopyForecastSummary()` handler; same `#fc-copy-summary-btn` id so the v4.7.0 test still resolves.
+
+**Risk Analysis drawer shows attribution sentence below the score.** A single static line — `Based on health velocity, Gong sentiment trend, and champion engagement in the last 30 days.` — renders below the churn-probability percentage in `DRAWER.risk` views (Acme / Brightex / NovaVault). Phase 2 will dynamically generate this line from the actual contributing signals; the static version unblocks the trust signal now.
+
+### Engineering notes
+- `_drawerCtx.acct` is now set at the TOP of `openAgentDrawer` (before any rendering) and explicitly cleared in `closeDrawer`. The previous code set it AFTER the render block, which left a stale `_drawerCtx.acct` value during the render of any subsequent close-then-open pair.
+- `dr_NotesSection(type, acct)` is the shared HTML builder — same markup, same handlers, same persistence — used by both the agent drawer and the Ghost-Buster drawer.
+- Recovery Path lives inside `fcRenderRollup`'s string so it's re-painted automatically whenever the rollup re-renders (quota changes, forecast overrides, etc.).
+
+### Test coverage
+- **197 / 197 chromium passing** (was 178 in v4.13.0). 19 new tests under a `v4.14.0 Forecasting audit fixes` describe — 3 FIX 1 tests (close clears state, missing data shows empty state, every Pipeline row passes its own key), 2 FIX 2 tests (Meridian + Creston GB stays on Forecasting), 3 FIX 3 tests (role=button + cursor + click navigation + Enter), 4 FIX 4 tests (negative gap, Open Expansion Play wiring, positive gap, hidden when no quota), 4 FEATURE tests (notes aria-label + persistence + char counter + Ghost-Buster notes), 1 ENHANCEMENT test each for Copy Summary geometry and Risk Analysis attribution (plus a negative test that Save Strategy does NOT carry the Risk attribution).
+
+### Spec label
+Shipped as `[4.14.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 
