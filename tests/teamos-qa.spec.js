@@ -2296,3 +2296,193 @@ test.describe('v4.14.0 Forecasting audit fixes', () => {
     expect(body).not.toMatch(/Based on health velocity, Gong sentiment trend/);
   });
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.15.0 — CSM DASHBOARD PRIORITY STACK FIXES
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.15.0 CSM Dashboard fixes', () => {
+  // Default tab is already the Dashboard so no beforeEach navigation needed.
+
+  // ── FIX 1: Draft Reply opens compose drawer ─────────────────────────────
+  test('FIX 1: Priority Stack row 2 wires Draft Reply through psComposeOpen', async ({ page }) => {
+    const onclick = await page.locator('#tab-dash .bf-priority .bf-it').nth(1).locator('.bf-act').getAttribute('onclick');
+    expect(onclick).toMatch(/psBtnAction/);
+    expect(onclick).toMatch(/psComposeOpen\('brightex'\)/);
+  });
+
+  test('FIX 1: psComposeOpen("brightex") opens the compose drawer (role=dialog, aria-modal)', async ({ page }) => {
+    await page.evaluate(() => psComposeOpen('brightex'));
+    await page.waitForTimeout(160);
+    await expect(page.locator('#ps-compose.on')).toBeVisible();
+    expect(await page.locator('#ps-compose').getAttribute('role')).toBe('dialog');
+    expect(await page.locator('#ps-compose').getAttribute('aria-modal')).toBe('true');
+    const aria = await page.locator('#ps-compose').getAttribute('aria-label');
+    expect(aria).toMatch(/Sarah Chen.*Brightex/);
+    // Pre-filled fields.
+    const body = await page.locator('#ps-compose-body').textContent();
+    expect(body).toMatch(/SLA question · 4h ago/);
+    expect(body).toMatch(/sarah.chen@brightex.com/);
+    const subj = await page.locator('#ps-compose-subj').inputValue();
+    expect(subj).toBe('Re: SLA question — Brightex');
+    const ta = await page.locator('#ps-compose-ta').inputValue();
+    expect(ta).toMatch(/Hi Sarah/);
+  });
+
+  test('FIX 1: tone selector swaps body language (professional → direct → empathetic)', async ({ page }) => {
+    await page.evaluate(() => psComposeOpen('brightex'));
+    await page.waitForTimeout(120);
+    const pro = await page.locator('#ps-compose-ta').inputValue();
+    expect(pro).toMatch(/Following up on your SLA question/);
+    await page.evaluate(() => psComposeSetTone('direct'));
+    await page.waitForTimeout(80);
+    const direct = await page.locator('#ps-compose-ta').inputValue();
+    expect(direct).toMatch(/still needs an answer/);
+    expect(direct.length).toBeLessThan(pro.length);
+    await page.evaluate(() => psComposeSetTone('empathetic'));
+    await page.waitForTimeout(80);
+    const emp = await page.locator('#ps-compose-ta').inputValue();
+    expect(emp).toMatch(/I take responsibility/);
+  });
+
+  test('FIX 1: Mark as Sent fires Gainsight toast + closes drawer', async ({ page }) => {
+    await page.evaluate(() => psComposeOpen('brightex'));
+    await page.waitForTimeout(120);
+    await page.evaluate(() => psComposeMarkSent());
+    await page.waitForTimeout(150);
+    await expect(page.locator('#ps-compose.on')).toHaveCount(0);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Reply logged · Brightex · Gainsight timeline/);
+  });
+
+  test('FIX 1: Escape closes the compose drawer', async ({ page }) => {
+    await page.evaluate(() => psComposeOpen('brightex'));
+    await page.waitForTimeout(120);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(150);
+    await expect(page.locator('#ps-compose.on')).toHaveCount(0);
+  });
+
+  // ── FIX 2: Ghost-Buster opens in-tab drawer without crashing ───────────
+  test('FIX 2: Priority Stack row 4 routes Meridian Ghost-Buster through openGhostBuster', async ({ page }) => {
+    const onclick = await page.locator('#tab-dash .bf-priority .bf-it').nth(3).locator('.bf-act').getAttribute('onclick');
+    expect(onclick).toMatch(/openGhostBuster\('meridian'\)/);
+    expect(onclick).not.toMatch(/openGhostBusterFromPopover/);
+  });
+
+  test('FIX 2: Priority Stack Ghost-Buster opens the in-tab gb-drawer', async ({ page }) => {
+    await page.locator('#tab-dash .bf-priority .bf-it').nth(3).locator('.bf-act').click();
+    await page.waitForTimeout(300);
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    // Stayed on the Dashboard tab.
+    await expect(page.locator('#tab-dash')).toHaveClass(/on/);
+  });
+
+  // ── FIX 3: Prep Me on Acme wired ────────────────────────────────────────
+  test('FIX 3: Priority Stack row 3 Prep Me opens the agent drawer for Acme', async ({ page }) => {
+    const onclick = await page.locator('#tab-dash .bf-priority .bf-it').nth(2).locator('.bf-act').getAttribute('onclick');
+    expect(onclick).toMatch(/openAgentDrawer\('prep','acme'\)/);
+    await page.locator('#tab-dash .bf-priority .bf-it').nth(2).locator('.bf-act').click();
+    await page.waitForTimeout(220);
+    await expect(page.locator('#drawer.on')).toBeVisible();
+    const title = await page.locator('#drawer-title').textContent();
+    expect(title).toMatch(/Pre-Call Brief/);
+  });
+
+  // ── FIX 4: loading states ───────────────────────────────────────────────
+  test('FIX 4: every Priority Stack action button routes through psBtnAction', async ({ page }) => {
+    const btns = page.locator('#tab-dash .bf-priority .bf-act');
+    expect(await btns.count()).toBe(5);
+    for (let i = 0; i < 5; i++) {
+      const onclick = await btns.nth(i).getAttribute('onclick');
+      expect(onclick).toMatch(/^psBtnAction\(this,/);
+    }
+  });
+
+  test('FIX 4: clicking a Priority Stack button momentarily flips it to .ps-loading + aria-busy', async ({ page }) => {
+    // Intercept the action so the loading state stays visible.
+    await page.evaluate(() => { window._origOpenAgentDrawer = openAgentDrawer; window.openAgentDrawer = function(){ /* swallow */ }; });
+    await page.locator('#tab-dash .bf-priority .bf-it').nth(0).locator('.bf-act').click();
+    await page.waitForTimeout(80);
+    const cls = await page.locator('#tab-dash .bf-priority .bf-it').nth(0).locator('.bf-act').getAttribute('class');
+    expect(cls).toMatch(/ps-loading/);
+    const busy = await page.locator('#tab-dash .bf-priority .bf-it').nth(0).locator('.bf-act').getAttribute('aria-busy');
+    expect(busy).toBe('true');
+    const aria = await page.locator('#tab-dash .bf-priority .bf-it').nth(0).locator('.bf-act').getAttribute('aria-label');
+    expect(aria).toMatch(/Loading Save Strategy/);
+    // Restore.
+    await page.evaluate(() => { openAgentDrawer = window._origOpenAgentDrawer; });
+  });
+
+  test('FIX 4: loading state clears once the drawer mounts', async ({ page }) => {
+    await page.locator('#tab-dash .bf-priority .bf-it').nth(0).locator('.bf-act').click();
+    await page.waitForTimeout(300);
+    await expect(page.locator('#drawer.on')).toBeVisible();
+    const cls = await page.locator('#tab-dash .bf-priority .bf-it').nth(0).locator('.bf-act').getAttribute('class');
+    expect(cls).not.toMatch(/ps-loading/);
+  });
+
+  // ── FIX 5: company name clicks ──────────────────────────────────────────
+  test('FIX 5: every Priority Stack name carries role=button + tabindex + aria-label', async ({ page }) => {
+    const names = page.locator('#tab-dash .bf-priority .bf-nm');
+    const total = await names.count();
+    expect(total).toBe(5);
+    for (let i = 0; i < total; i++) {
+      expect(await names.nth(i).getAttribute('role')).toBe('button');
+      expect(await names.nth(i).getAttribute('tabindex')).toBe('0');
+      const aria = await names.nth(i).getAttribute('aria-label');
+      expect(aria).toMatch(/^View .* in Agent Hub$/);
+    }
+  });
+
+  test('FIX 5: clicking a Priority Stack name updates _activeAccount via Agent Hub jump', async ({ page }) => {
+    await page.locator('#tab-dash .bf-priority .bf-it').nth(0).locator('.bf-nm').click();
+    await page.waitForTimeout(200);
+    const acct = await page.evaluate(() => window._activeAccount);
+    expect(acct).toBe('nova');
+  });
+
+  test('FIX 5: Enter on a focused Priority Stack name triggers the same jump', async ({ page }) => {
+    // Reset to default.
+    await page.evaluate(() => resetPanel && resetPanel());
+    await page.waitForTimeout(100);
+    await page.locator('#tab-dash .bf-priority .bf-it').nth(1).locator('.bf-nm').focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(200);
+    const acct = await page.evaluate(() => window._activeAccount);
+    expect(acct).toBe('brightex');
+  });
+
+  // ── FIX 6: confirmation toasts on drawer actions ────────────────────────
+  test('FIX 6: Save Strategy "Push to Gainsight" fires the spec toast', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(180);
+    const btn = page.locator('#drawer-ft button').first();
+    const label = await btn.textContent();
+    expect(label).toMatch(/Push to Gainsight/);
+    await btn.click();
+    await page.waitForTimeout(150);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/3 CTAs created in Gainsight · NovaVault · Assigned to Carmen/);
+  });
+
+  test('FIX 6: Pre-Call Brief "Copy battle card" fires clipboard toast', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('prep', 'nova'));
+    await page.waitForTimeout(180);
+    // Find the Copy battle card button by label.
+    const buttons = page.locator('#drawer-ft button');
+    const total = await buttons.count();
+    let hit = false;
+    for (let i = 0; i < total; i++) {
+      const txt = await buttons.nth(i).textContent();
+      if (/Copy battle card/i.test(txt)) {
+        await buttons.nth(i).click();
+        await page.waitForTimeout(150);
+        const t = await page.locator('#toast-el').textContent();
+        expect(t).toMatch(/Battle card copied/);
+        hit = true;
+        break;
+      }
+    }
+    expect(hit).toBe(true);
+  });
+});
