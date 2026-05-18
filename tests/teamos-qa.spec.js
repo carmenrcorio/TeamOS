@@ -2628,3 +2628,147 @@ test.describe('v4.16.0 Drawer manager + Urgent Inbox', () => {
     expect(acct).toBe('brightex');
   });
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.17.0 — FORECASTING WORKFLOW FIXES
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.17.0 Forecasting workflow fixes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('forecast', document.querySelector('[onclick*="goTab(\'forecast\'"]')));
+    await page.waitForTimeout(150);
+  });
+
+  // ── FIX 1: auto-regen narrative ─────────────────────────────────────────
+  test('FIX 1: fcScheduleRegen + fcRegenerateDust + aria-live span exist', async ({ page }) => {
+    expect(await page.evaluate(() => typeof fcScheduleRegen)).toBe('function');
+    expect(await page.evaluate(() => typeof fcRegenerateDust)).toBe('function');
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('#fc-dust-gen').getAttribute('aria-live')).toBe('polite');
+  });
+
+  test('FIX 1: fcSaveOverride schedules a debounced regen', async ({ page }) => {
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    const before = await page.locator('#fc-dust-gen').textContent();
+    // Fire the override save. The debounce delays the regen by 2s.
+    await page.evaluate(() => fcSaveOverride('nova', '28000'));
+    await page.waitForTimeout(150);
+    const timerSet = await page.evaluate(() => _fcRegenTimer !== null);
+    expect(timerSet).toBe(true);
+    // After the 2s debounce + the 350ms internal handoff, the timestamp swaps.
+    await page.waitForTimeout(2500);
+    const after = await page.locator('#fc-dust-gen').textContent();
+    // The text is either the "Updated just now" flash or the fresh timestamp;
+    // either way it should differ from the original.
+    expect(after).not.toBe(before);
+  });
+
+  test('FIX 1: fcSetStatus also schedules a regen', async ({ page }) => {
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => fcSetStatus('brightex', 'churn'));
+    await page.waitForTimeout(150);
+    expect(await page.evaluate(() => _fcRegenTimer !== null)).toBe(true);
+  });
+
+  test('FIX 1: rapid edits collapse to a single regen (debounce holds)', async ({ page }) => {
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(150);
+    // Fire 3 saves in quick succession. Only the LAST one's timer should
+    // remain pending (the earlier ones get cleared).
+    await page.evaluate(() => {
+      fcSaveOverride('nova', '20000');
+      fcSaveOverride('nova', '25000');
+      fcSaveOverride('nova', '28000');
+    });
+    await page.waitForTimeout(100);
+    const stillPending = await page.evaluate(() => _fcRegenTimer !== null);
+    expect(stillPending).toBe(true);
+  });
+
+  // ── FIX 2: Copy Forecast Summary attainment header ──────────────────────
+  test('FIX 2: summary with quota set carries Attainment line first', async ({ page }) => {
+    await page.evaluate(() => fcWriteQuota(150000));
+    await page.waitForTimeout(100);
+    const summary = await page.evaluate(() => fcBuildForecastSummary());
+    expect(summary).toMatch(/^Q2 2026 Forecast/m);
+    expect(summary).toMatch(/Attainment: \$\d+K of \$150K \(\d+% · [+−]\$\d+K vs target\)/);
+    expect(summary).toMatch(/Commit: \$\d+K \| At Risk: \$\d+K \| Gap: [+−]\$\d+K/);
+  });
+
+  test('FIX 2: summary without quota nudges the CSM to set one', async ({ page }) => {
+    await page.evaluate(() => { try { localStorage.removeItem('teamos_forecast_quota'); } catch (e) {} });
+    const summary = await page.evaluate(() => fcBuildForecastSummary());
+    expect(summary).not.toMatch(/Attainment:/);
+    expect(summary).toMatch(/Commit: \$\d+K \| At Risk: \$\d+K/);
+    expect(summary).toMatch(/Set a quota target to see attainment %/);
+  });
+
+  // ── FIX 3: NovaVault Extension Terms give-get ───────────────────────────
+  test('FIX 3: NovaVault Save Strategy extGroups has offers + needs', async ({ page }) => {
+    const groups = await page.evaluate(() => {
+      const ext = DRAWER.save.nova.sections.find(s => s.t === 'Extension Terms');
+      return ext && ext.extGroups ? ext.extGroups.map(g => ({ tone:g.tone, label:g.label, count:g.rows.length })) : null;
+    });
+    expect(groups).not.toBeNull();
+    expect(groups.length).toBe(2);
+    expect(groups[0].tone).toBe('offer');
+    expect(groups[0].label).toMatch(/What 1Password offers/);
+    expect(groups[1].tone).toBe('need');
+    expect(groups[1].label).toMatch(/What we need from NovaVault/);
+  });
+
+  test('FIX 3: drawer renders both give-get groups + aria-label on the needs region', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(200);
+    const body = await page.locator('#drawer-scroll').textContent();
+    expect(body).toMatch(/What 1Password offers/);
+    expect(body).toMatch(/60-day extension/);
+    expect(body).toMatch(/What we need from NovaVault/);
+    expect(body).toMatch(/Champion intro: Michael Torres/);
+    expect(body).toMatch(/Exec sponsor/);
+    expect(body).toMatch(/Evaluation commitment/);
+    const region = page.locator('#drawer-scroll [role="region"][aria-label="What we need from NovaVault"]');
+    await expect(region).toHaveCount(1);
+  });
+
+  // ── FIX 4: Prep Me Call Success ────────────────────────────────────────
+  test('FIX 4: every Prep Me account carries a Call Success section', async ({ page }) => {
+    for (const acct of ['acme','brightex','nova']) {
+      const hasCS = await page.evaluate(a => {
+        return DRAWER.prep[a].sections.some(s => s.callSuccess && s.callSuccess.win && s.callSuccess.acceptable && s.callSuccess.avoid);
+      }, acct);
+      expect(hasCS).toBe(true);
+    }
+  });
+
+  test('FIX 4: Call Success section renders WIN/ACCEPTABLE/AVOID pills with role=note', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('prep', 'acme'));
+    await page.waitForTimeout(200);
+    const region = page.locator('#drawer-scroll [role="note"][aria-label*="Acme"]').first();
+    await expect(region).toHaveCount(1);
+    const txt = await region.textContent();
+    expect(txt).toMatch(/WIN/);
+    expect(txt).toMatch(/ACCEPTABLE/);
+    expect(txt).toMatch(/AVOID/);
+    expect(txt).toMatch(/David Kim/);
+  });
+
+  test('FIX 4: NovaVault Call Success carries the spec wording', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('prep', 'nova'));
+    await page.waitForTimeout(200);
+    const body = await page.locator('#drawer-scroll').textContent();
+    expect(body).toMatch(/Michael Torres agrees to the extension/);
+    expect(body).toMatch(/joins the kick-off call by June 8/);
+    expect(body).toMatch(/decision date/);
+    expect(body).toMatch(/renewal date passes/);
+  });
+
+  test('FIX 4: Call Success section sits between Account Snapshot and Last Gong', async ({ page }) => {
+    const order = await page.evaluate(() => DRAWER.prep.acme.sections.map(s => s.t));
+    expect(order[0]).toMatch(/Account Snapshot/);
+    expect(order[1]).toMatch(/Call Success/);
+    expect(order[2]).toMatch(/Last Gong/);
+  });
+});

@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.16.0
+**Version:** 4.17.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,55 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.17.0] — 2026-05-18
+
+Four Forecasting-tab workflow fixes from CSM QA. **Result: 236/236 chromium tests passing.**
+
+### Added / Fixed
+
+**FIX 1 — Forecast narrative auto-regenerates after overrides change.** Editing a forecast amount or status used to leave the Dust narrative stale until the CSM clicked Regenerate manually. A new debounce + silent regen path:
+- `var _fcRegenTimer` + `fcScheduleRegen()` clear-and-set a 2 s timer; rapid edits collapse to a single regen.
+- `fcRegenerateDust()` flashes `↻ Updating…` in the existing `#fc-dust-gen` span, rebuilds the dust section after 350 ms, swaps the timestamp to "Updated just now" for 1.8 s, then settles on the fresh full timestamp.
+- `#fc-dust-gen` now carries `aria-live="polite"` so screen readers announce the refresh without an alert.
+- Both `fcSaveOverride` (forecast $ override) and `fcSetStatus` (status dropdown) end with `fcScheduleRegen()`.
+- No toast on auto-regen — silent by design. The manual `[Regenerate]` button still fires `fcRegenerate()` which keeps its toast.
+
+**FIX 2 — Copy Forecast Summary leads with Attainment %.** `fcBuildForecastSummary()` now produces a header that puts the manager's question first.
+- When a quota is set:
+  ```
+  Q2 2026 Forecast · Carmen Corio · May 18
+  Attainment: $147K of $150K (98% · −$3K vs target)
+  Commit: $147K | At Risk: $36K | Gap: −$3K
+  —
+  [account lines]
+  ```
+- When no quota is set, the second line nudges: `(Set a quota target to see attainment %)`.
+- The third line (Commit / At Risk / Gap) is kept as a quick-glance summary alongside the headline.
+
+**FIX 3 — NovaVault Extension Terms is a give-get block.** The previous single-list of offer terms didn't show what NovaVault commits to in return. The `DRAWER.save.nova` Extension Terms section migrates from the flat `ext: [[label,value],…]` shape to a new `extGroups: [{ tone, label, rows, aria }]` shape:
+- Group 1 (`tone:'offer'`, amber): `60-day extension (Jun 1 → Jul 31)` / `Current pricing locked` / `Weekly touchpoints with Carmen` / `Decision deadline: July 15, 2026`.
+- Group 2 (`tone:'need'`, indigo, `role="region"` + `aria-label="What we need from NovaVault"`): `Champion intro: Michael Torres joins a 30-min kickoff call by Jun 8` / `Exec sponsor: NovaVault names one executive sponsor for the extension period` / `Evaluation commitment: formal evaluation completed by Jul 1 (not just "thinking about it")`.
+- The legacy `ext` renderer is untouched — Acme + Brightex Save Strategy entries continue to use the flat shape if they had one.
+
+**FIX 4 — Prep Me drawer carries a Call Success section.** A new section type inserted between Account Snapshot and Last Gong in every Prep Me entry (`DRAWER.prep.acme / brightex / nova`):
+- New `callSuccess: { win, acceptable, avoid, aria }` payload renders three color-coded pills (WIN green, ACCEPTABLE amber, AVOID red) inside a `role="note"` region with `aria-label="Call success criteria for [Account]"`.
+- Acme QBR: WIN = SSO pilot + named technical lead; ACCEPTABLE = EBR completed + meeting within 2 weeks; AVOID = no next step.
+- Brightex Risk Review: WIN = specific evaluation criteria + side-by-side comparison; ACCEPTABLE = SLA answered + 30-day extension; AVOID = "still evaluating" with no decision date.
+- NovaVault Exec Check-in: WIN = Torres agrees to extension + kick-off by Jun 8; ACCEPTABLE = Torres commits to a decision date; AVOID = renewal date passes with no commitment.
+
+### Engineering notes
+- `openAgentDrawer` and `restoreAgentOutput` share a sub-renderer that walks the `sections` array — both got the new `extGroups` and `callSuccess` branches. New section types are additive; legacy `items` / `objections` / `ctas` / `note` / `ext` all keep their existing renderers.
+- `fcRegenerateDust` re-renders the entire dust section when it's visible; otherwise it just updates the cached `FC_DUST_GEN` string so the next render picks it up. The "Updated just now" flash → full timestamp swap happens via two staggered setTimeout calls so screen readers announce the natural-language update first and the timestamp second.
+- The auto-regen path deliberately does NOT call `toast()` — the spec wanted a silent update that feels automatic.
+
+### Test coverage
+- **236 / 236 chromium passing** (was 224 in v4.16.0). 12 new tests under a `v4.17.0 Forecasting workflow fixes` describe — 4 FIX 1 (helpers exist, override schedules debounce, status schedules debounce, rapid edits collapse to a single timer), 2 FIX 2 (Attainment line with quota, no-quota nudge), 2 FIX 3 (extGroups structure + drawer renders both groups with aria-label on needs region), 4 FIX 4 (every Prep Me account carries Call Success, drawer renders pills + role=note, NovaVault wording, section ordering between snapshot and Last Gong).
+
+### Spec label
+Shipped as `[4.17.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 
