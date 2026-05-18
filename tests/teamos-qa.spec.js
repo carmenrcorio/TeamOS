@@ -2074,3 +2074,225 @@ test.describe('v4.13.0 Risk & Signals audit fixes', () => {
     expect(exp).toBe('false');
   });
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.14.0 — FORECASTING AUDIT FIXES
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.14.0 Forecasting audit fixes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('forecast', document.querySelector('[onclick*="goTab(\'forecast\'"]')));
+    await page.waitForTimeout(150);
+  });
+
+  // ── FIX 1: stale-state account bug in shared drawer ─────────────────────
+  test('FIX 1: closeDrawer clears title, content, and _drawerCtx.acct', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('risk', 'brightex'));
+    await page.waitForTimeout(150);
+    expect(await page.evaluate(() => _drawerCtx.acct)).toBe('brightex');
+    await page.evaluate(() => closeDrawer());
+    await page.waitForTimeout(100);
+    expect(await page.evaluate(() => _drawerCtx.acct)).toBeNull();
+    expect(await page.locator('#drawer-title').textContent()).toBe('');
+    expect(await page.locator('#drawer-scroll').innerHTML()).toBe('');
+  });
+
+  test('FIX 1: opening drawer with missing data shows empty state for THAT account', async ({ page }) => {
+    // openAgentDrawer('risk','apex') has no DRAWER.risk.apex entry registered
+    // — previously this left the previous Brightex content on screen.
+    await page.evaluate(() => openAgentDrawer('risk', 'brightex'));
+    await page.waitForTimeout(120);
+    await page.evaluate(() => closeDrawer());
+    await page.waitForTimeout(100);
+    await page.evaluate(() => openAgentDrawer('risk', 'apex'));
+    await page.waitForTimeout(120);
+    const sub = await page.locator('#drawer-sub').textContent();
+    expect(sub).toMatch(/Apex Dynamics/);
+    expect(sub).not.toMatch(/Brightex/);
+    // _drawerCtx.acct reflects the new account, not the prior one.
+    expect(await page.evaluate(() => _drawerCtx.acct)).toBe('apex');
+  });
+
+  test('FIX 1: every Pipeline action button passes its own account key', async ({ page }) => {
+    const rows = await page.evaluate(() => FC_PIPELINE.map(r => ({ key:r.key, actionAcct:r.actionAcct })));
+    rows.forEach(r => expect(r.actionAcct).toBe(r.key));
+  });
+
+  // ── FIX 2: Ghost-Buster from Pipeline opens drawer in-tab ───────────────
+  test('FIX 2: Pipeline Ghost-Buster (Meridian) opens drawer + stays on Forecasting', async ({ page }) => {
+    await page.evaluate(() => fcAction('gb', 'meridian'));
+    await page.waitForTimeout(220);
+    await expect(page.locator('#tab-forecast')).toHaveClass(/on/);
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    expect(await page.locator('#gb-drawer-sub').textContent()).toMatch(/Meridian/);
+  });
+
+  test('FIX 2: Pipeline Ghost-Buster (Creston) opens drawer + stays on Forecasting', async ({ page }) => {
+    await page.evaluate(() => fcAction('gb', 'creston'));
+    await page.waitForTimeout(220);
+    await expect(page.locator('#tab-forecast')).toHaveClass(/on/);
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    expect(await page.locator('#gb-drawer-sub').textContent()).toMatch(/Creston/);
+  });
+
+  // ── FIX 3: Timeline cards clickable as whole units ──────────────────────
+  test('FIX 3: every Timeline card is a clickable role=button with aria-label', async ({ page }) => {
+    await page.evaluate(() => fcShow('timeline'));
+    await page.waitForTimeout(150);
+    const cards = page.locator('#fc-timeline .fc-tl-acct');
+    const total = await cards.count();
+    expect(total).toBeGreaterThanOrEqual(3);
+    for (let i = 0; i < total; i++) {
+      const card = cards.nth(i);
+      expect(await card.getAttribute('role')).toBe('button');
+      expect(await card.getAttribute('tabindex')).toBe('0');
+      const aria = await card.getAttribute('aria-label');
+      expect(aria).toMatch(/view in Pipeline/i);
+      const cursor = await card.evaluate(el => getComputedStyle(el).cursor);
+      expect(cursor).toBe('pointer');
+    }
+  });
+
+  test('FIX 3: clicking a Timeline card navigates to Pipeline + highlights the row', async ({ page }) => {
+    await page.evaluate(() => fcShow('timeline'));
+    await page.waitForTimeout(150);
+    // First card in the Jun bucket is NovaVault (renewal Jun 1).
+    await page.locator('#fc-timeline .fc-tl-acct').first().click();
+    await page.waitForTimeout(220);
+    await expect(page.locator('#fc-pipeline.on')).toBeVisible();
+    // The Pipeline row carries the fc-row-highlight class for 2s.
+    await expect(page.locator('#fc-pipeline .fc-pipe-tbl tbody tr.fc-row-highlight')).toHaveCount(1);
+  });
+
+  test('FIX 3: Enter on a focused Timeline card triggers navigation', async ({ page }) => {
+    await page.evaluate(() => fcShow('timeline'));
+    await page.waitForTimeout(150);
+    await page.locator('#fc-timeline .fc-tl-acct').first().focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(220);
+    await expect(page.locator('#fc-pipeline.on')).toBeVisible();
+  });
+
+  // ── FIX 4: Recovery Path section ────────────────────────────────────────
+  test('FIX 4: Recovery Path renders when quota is set and gap is negative', async ({ page }) => {
+    // The current FC_PIPELINE commit total is below a high quota — set one
+    // intentionally large so gap is negative.
+    await page.evaluate(() => fcWriteQuota(500000));
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    await expect(page.locator('#fc-recovery')).toBeVisible();
+    const role = await page.locator('#fc-recovery').getAttribute('role');
+    expect(role).toBe('note');
+    const txt = await page.locator('#fc-recovery').textContent();
+    expect(txt).toMatch(/Recovery path/i);
+    expect(txt).toMatch(/Acme Corp expansion signal/);
+    expect(txt).toMatch(/\$12K.{0,3}\$18K/);
+    expect(txt).toMatch(/David Kim/);
+  });
+
+  test('FIX 4: Recovery Path "Open Expansion Play" fires Prep Me for Acme', async ({ page }) => {
+    await page.evaluate(() => fcWriteQuota(500000));
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => { window._captured = null; const orig = window.openAgentDrawer; window.openAgentDrawer = (t,a) => { window._captured = [t,a]; return orig.apply(this, arguments); }; });
+    await page.locator('#fc-recovery .fc-recovery-act').click();
+    await page.waitForTimeout(120);
+    const cap = await page.evaluate(() => window._captured);
+    expect(cap).toEqual(['prep', 'acme']);
+  });
+
+  test('FIX 4: positive-gap state shows above-quota message + upside reminder', async ({ page }) => {
+    // Small quota → commit total is above quota → positive gap.
+    await page.evaluate(() => fcWriteQuota(10000));
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    await expect(page.locator('#fc-recovery.positive')).toBeVisible();
+    const txt = await page.locator('#fc-recovery').textContent();
+    expect(txt).toMatch(/Above quota/);
+    expect(txt).toMatch(/Acme expansion could add/);
+  });
+
+  test('FIX 4: Recovery Path is hidden when no quota is set', async ({ page }) => {
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('#fc-recovery').count()).toBe(0);
+  });
+
+  // ── FEATURE: freeform notes in every drawer ─────────────────────────────
+  test('FEATURE: notes section renders inside the agent drawer with aria-label', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(180);
+    await expect(page.locator('#dr-note-ta-save-nova')).toBeVisible();
+    const aria = await page.locator('#dr-note-ta-save-nova').getAttribute('aria-label');
+    expect(aria).toMatch(/NovaVault Save Strategy notes/);
+    const describes = await page.locator('#dr-note-ta-save-nova').getAttribute('aria-describedby');
+    expect(describes).toBe('dr-note-cc-save-nova');
+    const max = await page.locator('#dr-note-ta-save-nova').getAttribute('maxlength');
+    expect(max).toBe('500');
+  });
+
+  test('FEATURE: note saves to localStorage and re-hydrates on re-open', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('risk', 'brightex'));
+    await page.waitForTimeout(180);
+    await page.fill('#dr-note-ta-risk-brightex', 'Champion sentiment is bouncing back — Maggie confirmed.');
+    await page.evaluate(() => dr_NoteSave('risk', 'brightex'));
+    await page.waitForTimeout(120);
+    const stored = await page.evaluate(() => { try { return JSON.parse(localStorage.getItem('teamos_drawer_notes') || '{}'); } catch (e) { return {}; } });
+    expect(stored['brightex_risk_analyst']).toMatch(/bouncing back/);
+    // Toast fires.
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Note saved · Brightex Inc · Gainsight timeline updated/);
+    // Close and reopen — note re-hydrates.
+    await page.evaluate(() => closeDrawer());
+    await page.waitForTimeout(100);
+    await page.evaluate(() => openAgentDrawer('risk', 'brightex'));
+    await page.waitForTimeout(180);
+    const val = await page.locator('#dr-note-ta-risk-brightex').inputValue();
+    expect(val).toMatch(/bouncing back/);
+  });
+
+  test('FEATURE: char counter updates on input', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(180);
+    await page.fill('#dr-note-ta-save-nova', 'Hello');
+    await page.waitForTimeout(80);
+    const cc = await page.locator('#dr-note-cc-save-nova').textContent();
+    expect(cc).toMatch(/^5 \/ 500/);
+  });
+
+  test('FEATURE: notes section also renders inside the Ghost-Buster drawer', async ({ page }) => {
+    await page.evaluate(() => rsOpenGB('meridian'));
+    await page.waitForTimeout(220);
+    await expect(page.locator('#dr-note-ta-gb-meridian')).toBeVisible();
+    const aria = await page.locator('#dr-note-ta-gb-meridian').getAttribute('aria-label');
+    expect(aria).toMatch(/Meridian Health Systems Ghost-Buster notes/);
+  });
+
+  // ── ENHANCEMENT: Copy Forecast Summary promoted ─────────────────────────
+  test('ENHANCEMENT: Copy Forecast Summary is a full-width button below the stat tiles', async ({ page }) => {
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    const btn = page.locator('#fc-copy-summary-btn');
+    await expect(btn).toBeVisible();
+    const cls = await btn.getAttribute('class');
+    expect(cls).toContain('fc-copy-summary-btn');
+    const rect = await btn.evaluate(el => ({ w: el.getBoundingClientRect().width, h: el.getBoundingClientRect().height }));
+    expect(rect.h).toBeGreaterThanOrEqual(38);
+    // Width fills the rollup card minus padding — assert > 300 px on a desktop viewport.
+    expect(rect.w).toBeGreaterThan(300);
+  });
+
+  // ── ENHANCEMENT: Risk Analysis attribution sentence ─────────────────────
+  test('ENHANCEMENT: Risk Analysis drawer shows attribution sentence below the score', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('risk', 'brightex'));
+    await page.waitForTimeout(180);
+    const body = await page.locator('#drawer-scroll').textContent();
+    expect(body).toMatch(/Based on health velocity, Gong sentiment trend, and champion engagement in the last 30 days/);
+  });
+
+  test('ENHANCEMENT: Save Strategy drawer does NOT carry the Risk attribution', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(180);
+    const body = await page.locator('#drawer-scroll').textContent();
+    expect(body).not.toMatch(/Based on health velocity, Gong sentiment trend/);
+  });
+});
