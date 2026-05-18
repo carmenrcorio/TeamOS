@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.15.0
+**Version:** 4.16.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,46 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.16.0] — 2026-05-18
+
+Two targeted UI fixes from visual QA screenshots. **Result: 224/224 chromium tests passing.**
+
+### Fixed
+
+**FIX 1 — Drawer manager enforces single-drawer-at-a-time.** Visual QA caught the Account Snapshot slide-over rendering on top of the Save Strategy drawer with no z-index separation. Root cause: each drawer's open path was unaware of every other open drawer. New design:
+- A global `_openDrawer` variable tracks which "full" drawer is on-screen (`'agent' / 'gb' / 'compose' / 'rs-slide-ov' / 'fc-acct' / 'cm-cv'`).
+- A `DRAWER_REGISTRY` map ties each id to its CSS selector + close function. Adding a new drawer surface is a one-line registration.
+- A `DRAWER_SUBPANELS` list holds the Risk Matrix Account Snapshot (`#rs-mx-snap`) — closed whenever a full drawer opens, but never tracked as `_openDrawer` (it's a sub-panel that's free to coexist with itself).
+- `closeAllDrawers(exceptId)` runs every registered close function for the other drawers + all sub-panels.
+- `_drawerManagerOpen(id)` is called at the top of each drawer's open path; `_drawerManagerClose(id)` at the top of each close path.
+- Each open path keeps its own CSS transition (fade-out for the leaving drawer ~100 ms via the existing overlay opacity rule, slide-in for the new drawer ~250 ms via the existing transform transition), so the handoff reads as smooth.
+- Escape continues to close the topmost open drawer via the existing precedence chain (ps-compose → gb-drawer → rs-mx-snap → rs-slide-ov → cm-modal-ov → drawer → dropdowns); the manager doesn't change Escape semantics.
+
+**FIX 2 — Urgent Inbox rows rebuilt for triage-readability.** Visual QA showed names truncated to initials (`N`, `M.`, `S..`, `Maggi...`) when the chips pushed them out of the one-line flex container. New layout: each row is a 52 px two-line card.
+- Row 1: avatar + full first name (`Michael Torres`) + account (`NovaVault`) with a centered-dot separator. Names no longer truncate to initials.
+- Row 2: status chip + source chip + relative time (margin-left:auto pins time right). Chips wrap to row 2 instead of competing with the name on row 1.
+- New row content reads like a triage queue:
+  - `Michael Torres · NovaVault — CRITICAL SAVE · GAINSIGHT · 2h ago`
+  - `Maggie Spry · CS Leadership — DM · SLACK · 1h ago`
+  - `Sarah Chen · Brightex — SLA OPEN · GMAIL · 3h ago`
+  - `Jennifer Ramos · Meridian — INBOUND · GMAIL · 5h ago`
+- Each row is `role="button"` + `tabindex="0"` + a descriptive `aria-label="[Name], [Account], [Status], [time]"`. Enter/Space triggers `acctClick` so keyboard users can route every row to the Mission Briefing.
+- Status chips use the v4.10.0 unified taxonomy (`.tb-crit`, `.tb-high`, `.tb-watch`, `.tb-opp`). Source chips use the outlined `.tb-src` variant with system-specific text colors.
+- A new `.ii-av.opp` teal avatar variant was added to badge the Jennifer Ramos / Meridian inbound row.
+
+### Engineering notes
+- `_drawerManagerOpen` calls `closeAllDrawers(thisId)` first, then sets `_openDrawer = thisId`. The order matters: closing happens before the new drawer flips its `.on` class, so the CSS transitions sequence cleanly.
+- The Risk Matrix snapshot is intentionally NOT tracked in `_openDrawer`. It's a sub-panel of the matrix grid — it's allowed to coexist with itself (clicking a different bubble swaps content without closing) but a "real" drawer dismisses it.
+- Drawer manager wiring touches: `openDrawer` / `closeDrawer` (agent), `gbDrawerOpen` / `gbDrawerClose`, `psComposeOpen` / `psComposeClose`, `cmCampView` / `cmCampViewClose`, `rsOpenSlide` / `rsCloseSlide`, `fcOpenAcctDrawer` / `fcCloseAcctDrawer` — 6 surfaces total.
+
+### Test coverage
+- **224 / 224 chromium passing** (was 213 in v4.15.0). 11 new tests under a `v4.16.0 Drawer manager + Urgent Inbox` describe — 6 FIX 1 tests (drawer→drawer handoff, agent→compose, sub-panel auto-close, helper exists, Escape topmost, cross-tab drawer swap) and 5 FIX 2 tests (full names + accounts present, every row's status+source chip + class assertion, two-line row geometry, role/aria on every row, keyboard Enter routes acctClick).
+
+### Spec label
+Shipped as `[4.16.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 
