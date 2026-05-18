@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.11.0
+**Version:** 4.12.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,59 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.12.0] — 2026-05-18
+
+Campaign Manager QA audit follow-up — 9 items. **Result: 164/164 chromium tests passing.** Four items (FIX 2 per-contact body edits, FIX 3 Pause confirm strip, FIX 4 Archive drawer flow, FIX 5 Export List Blob CSV) were already shipped in v4.8.0 and re-verified here; the other 5 items landed fresh.
+
+### Verified already shipped (no code change, re-tested)
+- **FIX 2 — Body overrides per contact.** `CM_WIZ.drafts[contactId] = { subject, body }` was added in v4.8.0 (FIX 11). New v4.12.0 regression test asserts that editing Sarah's body, cycling to Michael, then cycling back preserves Sarah's edit and does not leak to Michael.
+- **FIX 3 — Pause Campaign drawer confirm strip + Resume button.** `cmCampPause → cmCampPauseConfirm` (v4.8.0 FIX 4) still routes correctly from the drawer footer.
+- **FIX 4 — Archive in detail panel routes through `cmCampArchive`.** Same handler the card-level archive uses; the v4.8.0 `cmCampInDrawer(id)` branch handles the drawer path with the inline confirm strip.
+- **FIX 5 — Export List builds a real CSV via the Blob API.** `cmCampExport` (v4.8.0 FIX 6) still generates the 6-column CSV. New v4.12.0 test hooks `URL.createObjectURL` to capture the Blob contents and asserts the header row + that the drawer stays open.
+
+### Fixed
+
+**FIX 1 — Step 1 Next button no longer stuck disabled.** The previous code rendered the Next button once per `cmWizRender()` call; typing in the name input only mutated `CM_WIZ.name` and never re-evaluated the footer, so the button stayed disabled until the user clicked a type chip (which re-rendered the whole wizard). New behavior:
+- The name `<input>` `oninput` writes through to `CM_WIZ.name` AND calls `cmWizStep1ReevalNext()`, which toggles `disabled` on `#cm-wiz-next-step1` directly.
+- The type chips route through a new `cmWizStep1PickType(typeKey, el)` helper that updates state, swaps the `.on` class on the clicked chip, and calls the same re-evaluator — no full re-render, so the focused name input keeps focus + cursor position.
+- `cmOpenWizard` defers a `cmWizStep1ReevalNext()` call so a freshly-opened wizard always has the correct disabled state.
+- The button now carries `id="cm-wiz-next-step1"` + `data-testid="wiz-next-step1"` for test coverage.
+
+**FIX 6 — Contact rows in campaign detail panel now open an inline sub-panel.** Each `<tr>` in the contacts table is wrapped with a second hidden `<tr class="cm-cv-sub-row" hidden>` directly below it. On click (or Enter from a focused row), the sub-panel toggles open with `role="region"` + `aria-label="[Name] contact details"` + auto-focus on the panel for screen reader users. The panel surfaces: name + company + email header with a Close (×) button; a 4-cell grid (SSO / SCIM / Renewal / ARR); a Sequence history block reusing the same row data the contacts table renders; a `[Send 1:1 Email]` primary button + a `Close` secondary. Only one sub-panel can be open at a time per drawer — opening another row closes the previous. Send 1:1 fires `toast('1:1 email sent · [Name] · Logged in Gainsight ✓')`. The drawer's z-index was bumped to `9001` (was unset) so clicks inside the drawer don't fall through to the overlay's close handler.
+
+**FIX 7 — 0-count segment chips: hover tooltip + click opens wizard.** Previously the 0-count chips only opened the tooltip on click (v4.8.0 FIX 1) and never opened the wizard. New behavior:
+- The `disabled` attribute is replaced with an `.empty` class so the chip stays clickable.
+- A CSS rule (`.cm-seg-chip.empty:hover .cm-seg-empty-pop, …:focus-visible …`) shows the tooltip on hover/focus.
+- `aria-describedby` ties the chip to its tooltip popover (`role="tooltip"`).
+- Click on an empty chip opens the wizard with `CM_WIZ.segmentEmpty = true` and lands at Step 1 (so the CSM names the campaign first). When advancing to Step 2, a new amber `.cm-wiz-empty-banner` ("Configured for: **[Segment]** accounts. No matching accounts found yet — you can still build this campaign for future use.") renders above the existing EBR context note.
+
+**FIX 8 — AI Draft placeholder chips above the body textarea.** A new `.cm-ph-bar` strip is injected by `cmRenderEditablePreview` above the body `<textarea>` whenever `cmCollectPlaceholders` detects bracketed tokens (`[Something]` patterns of 2+ chars on a single line). Each chip carries:
+- Amber styling per spec (bg `#FEF3C7`, color `#B45309`, weight 600).
+- A ✏️ prefix on the visible label.
+- `aria-label="Required: [field name]"`.
+- An `onclick` that focuses the textarea and calls `setSelectionRange(start, end)` so the next keystroke replaces the placeholder.
+
+`cmPhRefresh` rebuilds the chip bar on every `input` event so chips disappear as the CSM fills them. When all placeholders are gone the bar removes itself.
+
+**FIX 9 — Send confirmation submit button updates live.** The "Ready to send?" modal's confirm button now carries `id="cm-send-confirm-btn"` and an `aria-label` + visible label that update every time the user toggles a recipient checkbox:
+- `Confirm & Send to N people` / `Confirm & Send to 1 person`.
+- With 0 recipients: button receives `disabled`, an `Select at least 1 recipient` `title` tooltip, an explanatory `aria-label`, and a "Select at least 1 recipient" inline label.
+- Each recipient checkbox now carries an `aria-label="Send to [First Last]"` for screen-reader parity.
+
+### Engineering notes
+- `cm-drawer` z-index was unset; explicit `z-index:9001` (one above the overlay's 9000) is required for FIX 6's row-click interaction to register inside the drawer.
+- `cmWizStep1PickType` replaces the inline `onclick="CM_WIZ.type='...';cmWizRender()"` so the wizard doesn't re-render mid-edit (which used to drop focus on the name input).
+- `cmCollectPlaceholders` is a pure function and is exposed on `window` for tests. Its regex skips 1-char and multi-line bracketed text to avoid false positives on legitimate bracketed content inside the template body.
+
+### Test coverage
+- **164 / 164 chromium passing** (was 145 in v4.11.0). 19 new tests under a `v4.12.0 Campaign Manager audit fixes` describe — three FIX 1 tests (initial disabled state + name-first + type-first), one regression each for FIX 2/3/4/5, four FIX 6 tests (sub-panel open, single-open invariant, Send 1:1 toast, Close button), two FIX 7 tests (tooltip a11y + hover display), three FIX 8 tests (collector + chip bar + click-to-select), three FIX 9 tests (label updates + disabled state + checkbox aria-labels).
+- Existing v4.8.0 tests for the segment chip behavior were updated to match the new contract: chips now carry `.empty` (not `disabled`) and click opens the wizard with the empty-segment banner instead of just a toast.
+
+### Spec label
+Shipped as `[4.12.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 

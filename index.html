@@ -2113,7 +2113,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* Right-side detail drawer — slides in from right, fixed 480px. */
 .cm-drawer-ov{position:fixed;inset:0;background:rgba(17,24,39,.45);z-index:9000;display:none}
 .cm-drawer-ov.on{display:block}
-.cm-drawer{position:fixed;top:0;right:0;width:480px;max-width:100vw;height:100vh;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease}
+/* v4.12.0 — drawer must sit above its own overlay (z-index 9000) so clicks
+   inside the drawer (e.g. contact row → sub-panel toggle in FIX 6) don't
+   route to the overlay's close handler. */
+.cm-drawer{position:fixed;top:0;right:0;width:480px;max-width:100vw;height:100vh;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;z-index:9001}
 .cm-drawer.on{transform:translateX(0)}
 .cm-drawer-hd{padding:16px 22px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .cm-drawer-nm{font-size:17px;font-weight:800;color:#111827;letter-spacing:-.02em;line-height:1.2}
@@ -2163,11 +2166,50 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* v4.8.0 — 0-count segment-chip empty-state tooltip */
 .cm-seg-empty-pop{position:absolute;top:calc(100% + 6px);left:0;min-width:280px;background:#111827;color:#fff;font-size:11px;font-weight:500;line-height:1.6;padding:10px 13px;border-radius:7px;z-index:200;box-shadow:0 12px 28px rgba(0,0,0,.32);display:none}
 .cm-seg-empty-pop.on{display:block}
+/* v4.12.0 — FIX 7: 0-count chip tooltip also shows on hover/focus so the
+   CSM doesn't have to click. The chip stays clickable — click opens the
+   wizard with a "no accounts yet" banner. */
+.cm-seg-chip.empty:hover .cm-seg-empty-pop,
+.cm-seg-chip.empty:focus-visible .cm-seg-empty-pop{display:block}
+
+/* v4.12.0 — FIX 6: contact row sub-panel inside the campaign detail drawer. */
+.cm-cv-cnt-row:hover td{background:var(--surf2)}
+.cm-cv-cnt-row:focus-visible{outline:2px solid var(--tl);outline-offset:-2px}
+.cm-cv-sub{padding:14px 18px;background:#FAFAF8;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);display:flex;flex-direction:column;gap:10px}
+.cm-cv-sub:focus-visible{outline:2px solid var(--tl);outline-offset:-2px}
+.cm-cv-sub-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.cm-cv-sub-nm{font-size:14px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.cm-cv-sub-meta{font-size:11px;color:#6B7280;font-weight:600;margin-top:2px}
+.cm-cv-sub-x{font-family:inherit;background:transparent;border:none;color:#6B7280;cursor:pointer;font-size:20px;line-height:1;padding:0 4px;border-radius:5px;min-width:32px;min-height:32px}
+.cm-cv-sub-x:hover{color:var(--tx);background:var(--surf)}
+.cm-cv-sub-x:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.cm-cv-sub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cm-cv-sub-grid > div{display:flex;flex-direction:column;gap:2px;background:#fff;border:1px solid var(--bd);border-radius:5px;padding:6px 9px}
+.cm-cv-sub-l{font-size:9px;font-weight:800;color:#6B7280;text-transform:uppercase;letter-spacing:.07em}
+.cm-cv-sub-v{font-size:12px;font-weight:700;color:#111827}
+.cm-cv-sub-sec-t{font-size:9px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+.cm-cv-sub-hist{display:flex;flex-direction:column;gap:3px;background:#fff;border:1px solid var(--bd);border-radius:5px;padding:8px 11px;font-size:12px}
+.cm-cv-sub-hist-row{line-height:1.45;color:#1F2937;font-weight:500}
+.cm-cv-sub-hist-row b{color:#111827;font-weight:700}
+.cm-cv-sub-acts{display:flex;gap:8px}
+
+/* v4.12.0 — FIX 8: AI Draft placeholder chips. Lives above the textarea so
+   the CSM can see unfilled `[…]` placeholders at a glance. Click selects
+   the placeholder text inside the textarea so the next keystroke replaces
+   it. */
+.cm-ph-bar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;padding:8px 10px;background:#FFFBEB;border:1px dashed #F59E0B;border-radius:6px;align-items:center}
+.cm-ph-bar-l{font-size:10px;font-weight:800;color:#92400E;text-transform:uppercase;letter-spacing:.07em;margin-right:4px}
+.cm-ph-chip{font-family:inherit;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;background:#FEF3C7;color:#B45309;border:1px solid transparent;cursor:pointer;line-height:1.4;display:inline-flex;align-items:center;gap:4px}
+.cm-ph-chip:hover{background:#FDE68A;border-color:#F59E0B}
+.cm-ph-chip:focus-visible{outline:2px solid #B45309;outline-offset:1px}
+.cm-ph-chip-ic{font-size:11px}
 .cm-seg-chip{position:relative}
 
 /* v4.8.0 — EBR context note in Step 2 */
 .cm-wiz-ctx-note{font-size:11px;font-weight:600;color:#3730A3;background:#EEF2FF;border:1px solid #C7D2FE;border-left:3px solid #4F46E5;border-radius:6px;padding:8px 11px;margin-bottom:10px;line-height:1.55}
 .cm-wiz-ctx-note b{color:#111827;font-weight:800}
+/* v4.12.0 — empty-segment variant uses amber so it reads as a heads-up, not a filter chip. */
+.cm-wiz-ctx-note.cm-wiz-empty-banner{color:#92400E;background:#FFFBEB;border-color:#FDE68A;border-left-color:#F59E0B}
 .cm-wiz-display-chip{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:4px 10px;border-radius:5px;background:var(--bg);color:#1F2937;border:1px solid var(--bd2);margin-left:8px;letter-spacing:.02em;text-transform:uppercase}
 .cm-wiz-display-chip.ebr{background:#EEF2FF;color:#4F46E5;border-color:#C7D2FE}
 
@@ -9904,11 +9946,14 @@ function cmRenderSegments() {
     +   '<div class="cm-seg-hd">🧠 AI Account Segments <span class="cm-seg-hd-sub">Your book, organized by engagement + product adoption</span></div>'
     +   '<div class="cm-seg-row">'
     +     CM_SEGMENTS.map(function(s){
-            // v4.8.0 — 0-count chips remain clickable so we can show an
-            // empty-state tooltip instead of being silent. Visual "disabled"
-            // styling stays.
-            var dis = s.count === 0 ? ' disabled' : '';
-            return '<button class="cm-seg-chip ' + s.color + dis + '" type="button" onclick="cmSegmentClick(\'' + s.key + '\',event)" title="' + cmEscape(s.tip) + '" aria-label="' + cmEscape(s.lbl + ' — ' + s.count + ' accounts · ' + s.tip) + '"><span>' + s.ic + '</span> ' + cmEscape(s.lbl) + ' <span class="cm-seg-count">' + s.count + '</span><div class="cm-seg-empty-pop" id="cm-seg-empty-' + s.key + '" role="tooltip">No accounts match this segment yet. As accounts are tagged with SSO/SCIM status in Gainsight, they\'ll appear here automatically.</div></button>';
+            // v4.12.0 — FIX 7: 0-count chips carry an .empty class so the CSS
+            // hover/focus rule shows the tooltip without a click. The native
+            // `disabled` attribute is dropped so the click handler can fire
+            // and open the wizard with the "no accounts yet" banner.
+            var empty = s.count === 0 ? ' empty' : '';
+            var popId = 'cm-seg-empty-' + s.key;
+            var aria  = (s.count === 0) ? ' aria-describedby="' + popId + '"' : '';
+            return '<button class="cm-seg-chip ' + s.color + empty + '" type="button" onclick="cmSegmentClick(\'' + s.key + '\',event)" title="' + cmEscape(s.tip) + '"' + aria + ' aria-label="' + cmEscape(s.lbl + ' — ' + s.count + ' accounts · ' + s.tip) + '"><span>' + s.ic + '</span> ' + cmEscape(s.lbl) + ' <span class="cm-seg-count">' + s.count + '</span><div class="cm-seg-empty-pop" id="' + popId + '" role="tooltip">No accounts match this segment yet. As accounts are tagged with SSO/SCIM status in Gainsight, they&rsquo;ll appear here automatically.</div></button>';
           }).join('')
     +   '</div>'
     + '</div>';
@@ -9921,25 +9966,24 @@ function cmSegmentClick(key, ev) {
   if (!seg) return;
   // Close any other open empty-state popover first.
   document.querySelectorAll('.cm-seg-empty-pop.on').forEach(function(p){ p.classList.remove('on'); });
-  if (seg.count === 0) {
-    if (ev && ev.stopPropagation) ev.stopPropagation();
-    var pop = document.getElementById('cm-seg-empty-' + key);
-    if (pop) pop.classList.add('on');
-    return;
-  }
-  // Open wizard at Step 2 with contacts pre-checked and the matching Health
-  // Score + Renewal Window filters pre-set. The template still pre-selects at
-  // Step 3 (template grid card shown as selected with the "AI recommended"
-  // banner). Lands at Step 2 per spec so the CSM can confirm the audience.
+  // v4.12.0 — FIX 7: 0-count chips still open the wizard so the CSM can
+  // build the campaign now and have it ready when the first account hits
+  // the segment criteria. The Step 2 banner explains the empty state.
+  // (The tooltip itself now shows on hover via CSS — no need to toggle it
+  // open here.)
   cmOpenWizard();
   CM_WIZ.name = seg.lbl + ' — ' + new Date().toLocaleDateString('en-US', { month:'short', day:'numeric' });
   CM_WIZ.type = seg.campType;
   CM_WIZ.contacts = seg.accountKeys.slice();
   CM_WIZ.template = seg.tplId;
   CM_WIZ.segmentKey = key;
+  CM_WIZ.segmentEmpty = (seg.count === 0);
+  CM_WIZ.segmentLabel = seg.lbl;
   CM_WIZ.filterHealth = seg.filterHealth || 'all';
   CM_WIZ.filterRenewal = seg.filterRenewal || 'all';
-  CM_WIZ.step = 2;
+  // Lands at Step 1 when the segment is empty (so the CSM names the future
+  // campaign first), Step 2 when there's a real audience to confirm.
+  CM_WIZ.step = (seg.count === 0) ? 1 : 2;
   cmWizRender();
   var panel = document.getElementById('cm-campaigns');
   if (panel && typeof panel.scrollIntoView === 'function') panel.scrollIntoView({ behavior:'smooth', block:'start' });
@@ -10109,19 +10153,55 @@ function cmRenderCampaignView(id) {
       if (!have[CM_CONTACTS[i].id] && CM_CONTACTS[i].seq !== 'departed') contactPool.push(CM_CONTACTS[i]);
     }
   }
+  // v4.12.0 — FIX 6: contact rows are clickable. Each row expands a fly-out
+  // sub-panel directly below it (a second <tr> with a single colspan'd cell)
+  // showing the contact's SSO / SCIM status, last Gong, last CSM touch, the
+  // sequence history for the campaign, and a [Send 1:1 Email] action. Only
+  // one sub-panel open at a time per drawer; click again or hit Close to
+  // collapse. The escape key while focus is inside the panel also closes.
   var contactsHtml = contactPool.map(function(cnt, i){
     var s = CM_CONTACT_STATUS_STATES[i % CM_CONTACT_STATUS_STATES.length];
     var parts = s.txt.split(' · ');
     var touchReached = parts[0] || '';
     var status = parts[1] || '';
     var activity = parts[2] || '';
-    return '<tr>'
+    var rowId = 'cm-cv-row-' + c.id + '-' + cnt.id;
+    var subId = 'cm-cv-sub-' + c.id + '-' + cnt.id;
+    var seqHistory = '<div class="cm-cv-sub-hist-row"><b>' + cmEscape(touchReached || 'Touch 1') + '</b> · ' + cmEscape(status || 'Sent') + ' · <span style="color:#6B7280">' + cmEscape(activity || 'Today') + '</span></div>'
+      + (cnt.seqStatus ? '<div class="cm-cv-sub-hist-row" style="color:#6B7280">' + cmEscape(cnt.seqStatus) + '</div>' : '')
+      + (cnt.lastGong ? '<div class="cm-cv-sub-hist-row" style="color:#6B7280">Last Gong: ' + cmEscape(cnt.lastGong) + '</div>' : '')
+      + (cnt.lastTouch ? '<div class="cm-cv-sub-hist-row" style="color:#6B7280">Last CSM touch: ' + cmEscape(cnt.lastTouch) + '</div>' : '');
+    var sub = ''
+      + '<tr class="cm-cv-sub-row" id="' + subId + '" hidden>'
+      +   '<td colspan="5" style="padding:0">'
+      +     '<div class="cm-cv-sub" role="region" aria-label="' + cmEscape(cnt.fn + ' ' + cnt.ln + ' contact details') + '" tabindex="-1">'
+      +       '<div class="cm-cv-sub-hd">'
+      +         '<div class="cm-cv-sub-hd-l"><div class="cm-cv-sub-nm">' + cmEscape(cnt.fn + ' ' + cnt.ln) + '</div><div class="cm-cv-sub-meta">' + cmEscape(cnt.acct) + ' · ' + cmEscape(cnt.email) + '</div></div>'
+      +         '<button class="cm-cv-sub-x" type="button" aria-label="Close contact details" onclick="cmCvSubClose(\'' + cnt.id + '\',\'' + c.id + '\',event)">&times;</button>'
+      +       '</div>'
+      +       '<div class="cm-cv-sub-grid">'
+      +         '<div><span class="cm-cv-sub-l">SSO</span><span class="cm-cv-sub-v">' + cmEscape(cnt.sso || '—') + '</span></div>'
+      +         '<div><span class="cm-cv-sub-l">SCIM</span><span class="cm-cv-sub-v">' + cmEscape(cnt.scim || '—') + '</span></div>'
+      +         '<div><span class="cm-cv-sub-l">Renewal</span><span class="cm-cv-sub-v">' + cmEscape(cnt.renewal || '—') + '</span></div>'
+      +         '<div><span class="cm-cv-sub-l">ARR</span><span class="cm-cv-sub-v">' + (cnt.arr ? '$' + cnt.arr + 'K' : '—') + '</span></div>'
+      +       '</div>'
+      +       '<div class="cm-cv-sub-sec-t">Sequence history</div>'
+      +       '<div class="cm-cv-sub-hist">' + seqHistory + '</div>'
+      +       '<div class="cm-cv-sub-acts">'
+      +         '<button class="cm-btn prim" type="button" onclick="cmCvSend11(\'' + cnt.id + '\',event)"><i class="ti ti-send"></i> Send 1:1 Email</button>'
+      +         '<button class="cm-btn" type="button" onclick="cmCvSubClose(\'' + cnt.id + '\',\'' + c.id + '\',event)">Close</button>'
+      +       '</div>'
+      +     '</div>'
+      +   '</td>'
+      + '</tr>';
+    return '<tr id="' + rowId + '" class="cm-cv-cnt-row" tabindex="0" style="cursor:pointer" onclick="cmCvRowToggle(\'' + cnt.id + '\',\'' + c.id + '\',event)" onkeydown="if(event.key===\'Enter\'){cmCvRowToggle(\'' + cnt.id + '\',\'' + c.id + '\',event)}">'
       + '<td><b>' + cmEscape(cnt.fn + ' ' + cnt.ln) + '</b></td>'
       + '<td>' + cmEscape(cnt.acct) + '</td>'
       + '<td>' + cmEscape(touchReached) + '</td>'
       + '<td><span class="cm-cnt-status ' + s.cls + '">' + cmEscape(status) + '</span></td>'
       + '<td>' + cmEscape(activity) + '</td>'
-    + '</tr>';
+    + '</tr>'
+    + sub;
   }).join('') || '<tr><td colspan="5" style="text-align:center;padding:20px;font-style:italic;color:#6B7280">No contacts yet</td></tr>';
 
   // Sequence progress.
@@ -10173,6 +10253,45 @@ function cmRenderCampaignView(id) {
     +   '<button class="cm-btn" type="button" onclick="cmCampExport(\'' + c.id + '\')"><i class="ti ti-copy"></i> Export List</button>'
     + '</div>';
 }
+// v4.12.0 — FIX 6: per-row inline sub-panel toggling inside the campaign
+// detail drawer's contacts table. Only one sub-panel open at a time within
+// a campaign. Tracks the open contact id on the campaign object so re-render
+// (after archive/pause confirm strip etc.) preserves the open state.
+function cmCvRowToggle(contactId, cmpId, ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  var subId = 'cm-cv-sub-' + cmpId + '-' + contactId;
+  var sub = document.getElementById(subId);
+  if (!sub) return;
+  var isOpen = !sub.hasAttribute('hidden');
+  // Close any other open sub-panels in this drawer first.
+  document.querySelectorAll('#cm-cv-drawer .cm-cv-sub-row').forEach(function(r){
+    if (r.id !== subId) r.setAttribute('hidden', '');
+  });
+  if (isOpen) {
+    sub.setAttribute('hidden', '');
+  } else {
+    sub.removeAttribute('hidden');
+    setTimeout(function(){
+      var region = sub.querySelector('.cm-cv-sub');
+      if (region) try { region.focus(); } catch (_) {}
+    }, 30);
+  }
+}
+function cmCvSubClose(contactId, cmpId, ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  var sub = document.getElementById('cm-cv-sub-' + cmpId + '-' + contactId);
+  if (sub) sub.setAttribute('hidden', '');
+  // Return focus to the parent row for keyboard users.
+  var row = document.getElementById('cm-cv-row-' + cmpId + '-' + contactId);
+  if (row) try { row.focus(); } catch (_) {}
+}
+function cmCvSend11(contactId, ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  var cnt = CM_CONTACTS.find(function(x){ return x.id === contactId; });
+  if (!cnt) return;
+  toast('1:1 email sent · ' + cmEscape(cnt.fn + ' ' + cnt.ln) + ' · Logged in Gainsight ✓');
+}
+
 // v4.8.0 — Real CSV download via Blob + <a download>. Filename:
 // "<campaign-name>-contacts-YYYY-MM-DD.csv". Pulls per-contact sequence
 // status from the same CM_CONTACT_STATUS_STATES cycle the detail panel uses
@@ -10375,7 +10494,9 @@ function cmOpenSendConfirm(ctx) {
   CM_SEND_SELECTED = contactPool.map(function(cn){ return cn.id; });
   CM_SEND_CTX = ctx;
   var listHtml = contactPool.map(function(cn){
-    return '<label class="cm-send-row" data-id="' + cn.id + '"><input type="checkbox" checked onchange="cmSendToggleRecipient(\'' + cn.id + '\',this.checked)"><span><b>' + cmEscape(cn.fn + ' ' + cn.ln) + '</b> <span class="co">· ' + cmEscape(cn.acct) + '</span></span></label>';
+    // v4.12.0 — FIX 9: per-row aria-label so screen readers announce each
+    // recipient when toggling.
+    return '<label class="cm-send-row" data-id="' + cn.id + '"><input type="checkbox" checked aria-label="Send to ' + cmEscape(cn.fn + ' ' + cn.ln) + '" onchange="cmSendToggleRecipient(\'' + cn.id + '\',this.checked)"><span><b>' + cmEscape(cn.fn + ' ' + cn.ln) + '</b> <span class="co">· ' + cmEscape(cn.acct) + '</span></span></label>';
   }).join('');
   var summary = '<div class="cm-send-summary">'
     + '<b>Campaign:</b> ' + cmEscape(nameLabel) + '<br>'
@@ -10386,9 +10507,14 @@ function cmOpenSendConfirm(ctx) {
   var body = summary
     + '<div class="cm-form-label" style="margin-bottom:5px">Recipient list</div>'
     + '<div class="cm-send-list">' + listHtml + '</div>';
+  // v4.12.0 — FIX 9: Submit button label, aria-label, and disabled state all
+  // update live as recipients are toggled. Tooltip on disabled button
+  // explains the constraint.
+  var n0 = contactPool.length;
+  var initLabel = 'Confirm & Send to ' + n0 + ' ' + (n0 === 1 ? 'person' : 'people');
   var foot = ''
     + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
-    + '<button class="cm-btn prim" type="button" onclick="cmSendConfirm()"><i class="ti ti-send"></i> Send &rarr;</button>';
+    + '<button class="cm-btn prim" type="button" id="cm-send-confirm-btn" aria-label="' + initLabel + '" onclick="cmSendConfirm()"><i class="ti ti-send"></i> ' + initLabel + '</button>';
   cmOpenModal('Ready to send?', body, foot);
 }
 var CM_SEND_SELECTED = [];
@@ -10399,6 +10525,28 @@ function cmSendToggleRecipient(id, on) {
   if (!on && i !== -1) CM_SEND_SELECTED.splice(i, 1);
   var el = document.getElementById('cm-send-count');
   if (el) el.textContent = CM_SEND_SELECTED.length;
+  // v4.12.0 — FIX 9: keep the submit button in sync with the live recipient
+  // count (label + aria-label + disabled). Tooltip explains the empty-state.
+  var btn = document.getElementById('cm-send-confirm-btn');
+  if (btn) {
+    var n = CM_SEND_SELECTED.length;
+    if (n === 0) {
+      btn.setAttribute('disabled', 'disabled');
+      btn.setAttribute('title', 'Select at least 1 recipient');
+      btn.setAttribute('aria-label', 'Confirm & Send disabled — select at least 1 recipient');
+      btn.innerHTML = '<i class="ti ti-send"></i> Select at least 1 recipient';
+      btn.style.opacity = '.45';
+      btn.style.cursor = 'not-allowed';
+    } else {
+      btn.removeAttribute('disabled');
+      btn.removeAttribute('title');
+      var label = 'Confirm & Send to ' + n + ' ' + (n === 1 ? 'person' : 'people');
+      btn.setAttribute('aria-label', label);
+      btn.innerHTML = '<i class="ti ti-send"></i> ' + label;
+      btn.style.opacity = '';
+      btn.style.cursor = '';
+    }
+  }
 }
 function cmSendConfirm() {
   if (!CM_SEND_SELECTED.length) { toast('Select at least one recipient to send'); return; }
@@ -11306,6 +11454,9 @@ function cmOpenWizard() {
   var ov = document.getElementById('cm-wiz-ov');
   if (ov) ov.classList.add('on');
   cmWizRender();
+  // v4.12.0 — FIX 1: ensure the Next button's disabled state reflects the
+  // freshly-reset state (empty name + empty type → disabled).
+  setTimeout(cmWizStep1ReevalNext, 0);
 }
 function cmCloseWizard(e) {
   if (e && e.target && e.target.id !== 'cm-wiz-ov' && e.type === 'click') return;
@@ -11335,15 +11486,45 @@ function cmWizStep1(body) {
   body.innerHTML = ''
     + '<div class="cm-wiz-step-l">Step 1 of 5</div>'
     + '<div class="cm-wiz-h">Basics</div>'
-    + '<label class="cm-wiz-label">Campaign name</label>'
-    + '<input class="cm-wiz-input" id="cm-wiz-name" type="text" value="' + cmEscape(CM_WIZ.name) + '" placeholder="e.g. June Renewal Push" oninput="CM_WIZ.name=this.value">'
+    + '<label class="cm-wiz-label" for="cm-wiz-name">Campaign name</label>'
+    // v4.12.0 — FIX 1: name input now writes through to CM_WIZ AND re-evaluates the
+    // Step 1 Next button on every keystroke (no full re-render — keeps focus +
+    // cursor position). Previously the button was rendered once with disabled
+    // and only updated when the user clicked a type chip (which re-rendered
+    // the whole wizard); typing the name first left Next stuck disabled.
+    + '<input class="cm-wiz-input" id="cm-wiz-name" type="text" value="' + cmEscape(CM_WIZ.name) + '" placeholder="e.g. June Renewal Push" oninput="CM_WIZ.name=this.value;cmWizStep1ReevalNext()">'
     + '<label class="cm-wiz-label">Campaign type</label>'
     + '<div class="cm-wiz-types">' + types.map(function(t){
         var on = (CM_WIZ.type === t[0]) ? ' on' : '';
-        return '<button class="cm-wiz-type' + on + '" type="button" onclick="CM_WIZ.type=\'' + t[0] + '\';cmWizRender()">' + cmEscape(t[1]) + '</button>';
+        return '<button class="cm-wiz-type' + on + '" type="button" onclick="cmWizStep1PickType(\'' + t[0] + '\',this)">' + cmEscape(t[1]) + '</button>';
       }).join('') + '</div>'
-    + '<label class="cm-wiz-label">Goal (optional)</label>'
+    + '<label class="cm-wiz-label" for="cm-wiz-goal">Goal (optional)</label>'
     + '<input class="cm-wiz-input" id="cm-wiz-goal" type="text" value="' + cmEscape(CM_WIZ.goal) + '" placeholder="e.g. Schedule 5 EBRs before Jun 30" oninput="CM_WIZ.goal=this.value">';
+}
+// v4.12.0 — FIX 1: type select now toggles state + re-evaluates Next without
+// re-rendering the whole wizard (which would tear down the focused name input).
+function cmWizStep1PickType(typeKey, el) {
+  if (!CM_WIZ) return;
+  CM_WIZ.type = typeKey;
+  if (el && el.parentNode) {
+    el.parentNode.querySelectorAll('.cm-wiz-type').forEach(function(b){ b.classList.remove('on'); });
+    el.classList.add('on');
+  }
+  cmWizStep1ReevalNext();
+}
+function cmWizStep1ReevalNext() {
+  var btn = document.getElementById('cm-wiz-next-step1');
+  if (!btn) return;
+  var ok = !!(CM_WIZ && CM_WIZ.name && CM_WIZ.name.trim() && CM_WIZ.type);
+  if (ok) {
+    btn.removeAttribute('disabled');
+    btn.style.opacity = '';
+    btn.style.cursor = '';
+  } else {
+    btn.setAttribute('disabled', 'disabled');
+    btn.style.opacity = '.45';
+    btn.style.cursor = 'not-allowed';
+  }
 }
 // v4.4.0 — Step 2 health-score + renewal-window filters bind to real account
 // data; a search field above the list narrows by name + company; rows are
@@ -11385,9 +11566,16 @@ function cmWizStep2(body) {
   var ebrChip = (CM_WIZ.segmentKey === 'ebr-overdue')
     ? '<span class="cm-wiz-display-chip ebr">EBR Status: Overdue</span>'
     : '';
+  // v4.12.0 — FIX 7: empty-segment banner. When the wizard was opened from a
+  // 0-count chip, show a banner so the CSM knows the campaign is being built
+  // for future use.
+  var emptyCtx = (CM_WIZ.segmentEmpty)
+    ? '<div class="cm-wiz-ctx-note cm-wiz-empty-banner">Configured for: <b>' + cmEscape(CM_WIZ.segmentLabel || 'this segment') + '</b> accounts. No matching accounts found yet — you can still build this campaign for future use.</div>'
+    : '';
   body.innerHTML = ''
     + '<div class="cm-wiz-step-l">Step 2 of 5</div>'
     + '<div class="cm-wiz-h">Who&rsquo;s this campaign for?' + ebrChip + '</div>'
+    + emptyCtx
     + ebrCtx
     + '<div class="cm-wiz-filter">'
     +   '<div><div class="cm-wiz-label">Health score</div><select class="cm-wiz-select" style="margin-bottom:0" onchange="cmWizSetFilter(\'filterHealth\',this.value)">'
@@ -11753,6 +11941,19 @@ function cmRenderEditablePreview(stepCtx) {
   var nextDisabled = (idx === n - 1) ? ' disabled' : '';
   var sig = cmGetSignature();
   var stepId = stepCtx || 'wiz';
+  // v4.12.0 — FIX 8: detect unfilled placeholders (text wrapped in [square
+  // brackets]) and surface them as amber click-to-select chips above the
+  // body. Clicking a chip focuses the textarea and selects the placeholder
+  // text so the next keystroke replaces it.
+  var fullBody = draft.body + '\n\n— — —\n' + sig;
+  var placeholders = cmCollectPlaceholders(fullBody);
+  var phBarHtml = '';
+  if (placeholders.length) {
+    var chips = placeholders.map(function(p){
+      return '<button class="cm-ph-chip" type="button" aria-label="Required: ' + cmEscape(p.label) + '" onclick="cmPhSelect(\'cm-prev-body-' + stepId + '\',' + p.start + ',' + p.end + ',event)"><span class="cm-ph-chip-ic" aria-hidden="true">&#9999;&#65039;</span> ' + cmEscape(p.token) + '</button>';
+    }).join('');
+    phBarHtml = '<div class="cm-ph-bar" role="note" aria-label="Unfilled placeholders"><span class="cm-ph-bar-l">Fill in</span>' + chips + '</div>';
+  }
   return ''
     + '<div class="cm-prev-switcher">'
     +   '<div class="cm-prev-switcher-l">Showing: ' + cmEscape(c.fn + ' ' + c.ln) + ' · ' + cmEscape(c.acct) + '</div>'
@@ -11768,9 +11969,57 @@ function cmRenderEditablePreview(stepCtx) {
     +     '<b>TO:</b> ' + cmEscape(c.fn + ' ' + c.ln) + ' &lt;' + cmEscape(c.email) + '&gt;<br>'
     +     '<b>SUBJECT:</b> <span contenteditable="true" id="cm-prev-subj-' + stepId + '" oninput="cmSetDraftField(\'' + contactId + '\',\'subject\',this.textContent)">' + cmEscape(draft.subject) + '</span>'
     +   '</div>'
-    +   '<textarea class="cm-prev-edit" id="cm-prev-body-' + stepId + '" aria-label="Editable email body" oninput="cmSetDraftField(\'' + contactId + '\',\'body\',this.value)">' + cmEscape(draft.body + '\n\n— — —\n' + sig) + '</textarea>'
+    +   phBarHtml
+    +   '<textarea class="cm-prev-edit" id="cm-prev-body-' + stepId + '" aria-label="Editable email body" oninput="cmSetDraftField(\'' + contactId + '\',\'body\',this.value);cmPhRefresh(this,\'' + stepId + '\')">' + cmEscape(fullBody) + '</textarea>'
     +   '<button class="cm-prev-reset" type="button" onclick="cmResetDraft(\'' + contactId + '\')">Reset to template</button>'
     + '</div>';
+}
+
+// v4.12.0 — FIX 8 helpers. cmCollectPlaceholders scans body text for
+// `[Something]` tokens that look like unfilled fields (skip 1-char tokens
+// and skip tokens that contain newlines, which are usually just bracketed
+// asides). cmPhSelect focuses the textarea and selects the placeholder
+// span so typing replaces it. cmPhRefresh rebuilds the chip bar on every
+// keystroke so chips disappear as the CSM fills them.
+function cmCollectPlaceholders(text) {
+  if (typeof text !== 'string') return [];
+  var out = [];
+  var re = /\[([^\[\]\n]{2,})\]/g;
+  var m;
+  while ((m = re.exec(text)) !== null) {
+    out.push({ token: '[✏️ ' + m[1] + ']', label: m[1], start: m.index, end: m.index + m[0].length });
+  }
+  return out;
+}
+function cmPhSelect(taId, start, end, ev) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  var ta = document.getElementById(taId);
+  if (!ta) return;
+  try { ta.focus(); } catch (_) {}
+  try { ta.setSelectionRange(start, end); } catch (_) {}
+}
+function cmPhRefresh(ta, stepId) {
+  if (!ta) return;
+  var bar = ta.parentNode && ta.parentNode.querySelector('.cm-ph-bar');
+  var placeholders = cmCollectPlaceholders(ta.value || '');
+  if (!placeholders.length) {
+    if (bar) bar.remove();
+    return;
+  }
+  var chips = placeholders.map(function(p){
+    return '<button class="cm-ph-chip" type="button" aria-label="Required: ' + cmEscape(p.label) + '" onclick="cmPhSelect(\'cm-prev-body-' + stepId + '\',' + p.start + ',' + p.end + ',event)"><span class="cm-ph-chip-ic" aria-hidden="true">&#9999;&#65039;</span> ' + cmEscape(p.token) + '</button>';
+  }).join('');
+  var inner = '<span class="cm-ph-bar-l">Fill in</span>' + chips;
+  if (bar) {
+    bar.innerHTML = inner;
+  } else {
+    var fresh = document.createElement('div');
+    fresh.className = 'cm-ph-bar';
+    fresh.setAttribute('role', 'note');
+    fresh.setAttribute('aria-label', 'Unfilled placeholders');
+    fresh.innerHTML = inner;
+    ta.parentNode.insertBefore(fresh, ta);
+  }
 }
 
 // Legacy callers (analytics + tests) — keep the previous signature for the
@@ -11841,7 +12090,11 @@ function cmWizRenderFooter(foot) {
   var leftBtn = CM_WIZ.step > 1 ? '<button class="cm-btn" type="button" onclick="cmWizBack()"><i class="ti ti-arrow-left"></i> Back</button>' : '<span></span>';
   var rightBtn;
   if (CM_WIZ.step < 5) {
-    rightBtn = '<button class="cm-btn prim" type="button" ' + (canNext ? '' : 'disabled style="opacity:.45;cursor:not-allowed"') + ' onclick="cmWizNext()">Next <i class="ti ti-arrow-right"></i></button>';
+    // v4.12.0 — FIX 1: stable id + data-testid on the Step 1 Next button so
+    // the on-input/on-pick re-evaluator can target it without re-rendering
+    // the footer.
+    var nextId = (CM_WIZ.step === 1) ? ' id="cm-wiz-next-step1" data-testid="wiz-next-step1"' : '';
+    rightBtn = '<button class="cm-btn prim"' + nextId + ' type="button" ' + (canNext ? '' : 'disabled style="opacity:.45;cursor:not-allowed"') + ' onclick="cmWizNext()">Next <i class="ti ti-arrow-right"></i></button>';
   } else {
     rightBtn = ''
       + '<button class="cm-btn" type="button" onclick="cmWizSaveDraft()"><i class="ti ti-file"></i> Save as Draft</button>'
