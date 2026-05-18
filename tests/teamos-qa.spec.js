@@ -3214,3 +3214,186 @@ test.describe('v4.19.0 Risk & Signals workflow fixes', () => {
     expect(fresh).toMatch(/, NEW$/);
   });
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.20.0 — CSM DASHBOARD WORKFLOW FIXES
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.20.0 CSM Dashboard workflow fixes', () => {
+  // Default tab is the Dashboard — no beforeEach navigation needed.
+
+  // ── FIX 1: Maggie Spry internal panel ───────────────────────────────────
+  test('FIX 1: Maggie Spry row is tagged data-type="internal" and routes to psInternalOpen', async ({ page }) => {
+    const row = page.locator('#tab-dash .ii[data-inbox-id="maggie-spry"]');
+    await expect(row).toBeVisible();
+    expect(await row.getAttribute('data-type')).toBe('internal');
+    const onclick = await row.getAttribute('onclick');
+    expect(onclick).toMatch(/psInternalOpen\('maggie-spry'\)/);
+    expect(onclick).not.toMatch(/acctClick/);
+  });
+
+  test('FIX 1: clicking Maggie Spry opens the internal panel, not the NovaVault briefing', async ({ page }) => {
+    // Capture _activeAccount before click — if the customer briefing
+    // accidentally fired, it would update _activeAccount to 'nova'.
+    await page.evaluate(() => { window._activeAccount = '__unchanged__'; });
+    await page.locator('#tab-dash .ii[data-inbox-id="maggie-spry"]').click();
+    await page.waitForTimeout(200);
+    await expect(page.locator('#int-panel.on')).toBeVisible();
+    const acct = await page.evaluate(() => window._activeAccount);
+    expect(acct).toBe('__unchanged__');
+  });
+
+  test('FIX 1: internal panel has role=dialog, aria-modal=false, aria-label per spec', async ({ page }) => {
+    await page.evaluate(() => psInternalOpen('maggie-spry'));
+    await page.waitForTimeout(180);
+    const panel = page.locator('#int-panel');
+    expect(await panel.getAttribute('role')).toBe('dialog');
+    expect(await panel.getAttribute('aria-modal')).toBe('false');
+    expect(await panel.getAttribute('aria-label')).toMatch(/Internal message from Maggie Spry/);
+  });
+
+  test('FIX 1: panel body shows Message context + Likely topic + Suggested actions', async ({ page }) => {
+    await page.evaluate(() => psInternalOpen('maggie-spry'));
+    await page.waitForTimeout(180);
+    const body = await page.locator('#int-panel-body').textContent();
+    expect(body).toMatch(/Message context/);
+    expect(body).toMatch(/Likely topic/);
+    expect(body).toMatch(/Suggested actions/);
+    expect(body).toMatch(/Maggie Spry is your CS Team Lead/);
+    expect(body).toMatch(/Forecast call prep or NovaVault account status/);
+    // Three suggested-action buttons.
+    expect(await page.locator('#int-panel-body .int-panel-act').count()).toBe(3);
+  });
+
+  test('FIX 1: Reply in Slack action fires the expected toast', async ({ page }) => {
+    await page.evaluate(() => psInternalOpen('maggie-spry'));
+    await page.waitForTimeout(180);
+    await page.locator('#int-panel-body .int-panel-act').first().click();
+    await page.waitForTimeout(150);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Opening Slack thread · Maggie Spry/);
+  });
+
+  test('FIX 1: View NovaVault Brief action closes the panel + opens view-nova', async ({ page }) => {
+    await page.evaluate(() => psInternalOpen('maggie-spry'));
+    await page.waitForTimeout(180);
+    // Find and click the "View NovaVault Brief" button.
+    const acts = page.locator('#int-panel-body .int-panel-act');
+    const labels = await acts.allTextContents();
+    const ix = labels.findIndex(t => /View NovaVault Brief/.test(t));
+    expect(ix).toBeGreaterThanOrEqual(0);
+    await acts.nth(ix).click();
+    await page.waitForTimeout(300);
+    await expect(page.locator('#int-panel.on')).toHaveCount(0);
+    const acct = await page.evaluate(() => window._activeAccount);
+    expect(acct).toBe('nova');
+  });
+
+  test('FIX 1: Escape closes the internal panel + returns focus to the inbox row', async ({ page }) => {
+    await page.locator('#tab-dash .ii[data-inbox-id="maggie-spry"]').focus();
+    await page.locator('#tab-dash .ii[data-inbox-id="maggie-spry"]').click();
+    await page.waitForTimeout(200);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(180);
+    await expect(page.locator('#int-panel.on')).toHaveCount(0);
+    const focusedId = await page.evaluate(() => {
+      const el = document.activeElement;
+      return el ? (el.getAttribute && el.getAttribute('data-inbox-id')) : null;
+    });
+    expect(focusedId).toBe('maggie-spry');
+  });
+
+  test('FIX 1: customer-row clicks (Michael Torres) still route to acctClick(nova)', async ({ page }) => {
+    await page.locator('#tab-dash .ii').first().click();
+    await page.waitForTimeout(180);
+    const acct = await page.evaluate(() => window._activeAccount);
+    expect(acct).toBe('nova');
+    // Internal panel should NOT have opened.
+    await expect(page.locator('#int-panel.on')).toHaveCount(0);
+  });
+
+  // ── FIX 2: data-source attribution footer ───────────────────────────────
+  test('FIX 2: dataAttribHtml helper produces a role=note "Demo data" footer', async ({ page }) => {
+    const html = await page.evaluate(() => dataAttribHtml());
+    expect(html).toMatch(/role="note"/);
+    expect(html).toMatch(/aria-label="Data source attribution"/);
+    expect(html).toMatch(/Demo data/);
+    expect(html).toMatch(/Live sync available in Phase 2/);
+  });
+
+  test('FIX 2: Next Up widget carries an attribution footer', async ({ page }) => {
+    const attribs = await page.locator('#bf-next .data-attrib').count();
+    expect(attribs).toBe(1);
+    const txt = await page.locator('#bf-next .data-attrib').textContent();
+    expect(txt).toMatch(/Demo data/);
+  });
+
+  test('FIX 2: agent drawer body carries an attribution footer', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('prep', 'acme'));
+    await page.waitForTimeout(200);
+    const cnt = await page.locator('#drawer-scroll .data-attrib').count();
+    expect(cnt).toBe(1);
+  });
+
+  test('FIX 2: Risk Matrix snapshot slide-over carries an attribution footer', async ({ page }) => {
+    await page.evaluate(() => goTab('risk', document.querySelector('[onclick*="goTab(\'risk\'"]')));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsMxSelect('nova'));
+    await page.waitForTimeout(150);
+    const cnt = await page.locator('#rs-mx-detail .data-attrib').count();
+    expect(cnt).toBe(1);
+  });
+
+  test('FIX 2: All Signals section carries an attribution footer', async ({ page }) => {
+    await page.evaluate(() => goTab('risk', document.querySelector('[onclick*="goTab(\'risk\'"]')));
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(180);
+    const cnt = await page.locator('#rs-sec-signals .data-attrib').count();
+    expect(cnt).toBe(1);
+  });
+
+  test('FIX 2: Forecasting Pipeline carries an attribution footer', async ({ page }) => {
+    await page.evaluate(() => goTab('forecast', document.querySelector('[onclick*="goTab(\'forecast\'"]')));
+    await page.evaluate(() => fcShow('pipeline'));
+    await page.waitForTimeout(180);
+    const cnt = await page.locator('#fc-pipeline .data-attrib').count();
+    expect(cnt).toBe(1);
+  });
+
+  // ── FIX 3: Forecast quick-link in Mission Briefing header ───────────────
+  test('FIX 3 Part A: pulse-strip "renews this month" routes to Forecasting Timeline', async ({ page }) => {
+    await page.click('#pb-renew');
+    await page.waitForTimeout(220);
+    await expect(page.locator('#tab-forecast')).toHaveClass(/on/);
+    await expect(page.locator('#fc-timeline.on')).toBeVisible();
+  });
+
+  test('FIX 3 Part B: Mission Briefing header carries Forecast quick-link with role=link', async ({ page }) => {
+    const btn = page.locator('#view-default .mb-fc-btn');
+    await expect(btn).toBeVisible();
+    expect(await btn.getAttribute('role')).toBe('link');
+    expect(await btn.getAttribute('aria-label')).toBe('View Forecasting tab');
+    const txt = await btn.textContent();
+    expect(txt.trim()).toMatch(/^Forecast$/);
+  });
+
+  test('FIX 3 Part B: clicking Forecast quick-link navigates to Pipeline', async ({ page }) => {
+    await page.click('#view-default .mb-fc-btn');
+    await page.waitForTimeout(220);
+    await expect(page.locator('#tab-forecast')).toHaveClass(/on/);
+    await expect(page.locator('#fc-pipeline.on')).toBeVisible();
+  });
+
+  test('FIX 3 Part B: Forecast button sits between pl-tag and Live chip', async ({ page }) => {
+    const order = await page.evaluate(() => {
+      const hd = document.querySelector('#view-default .rp-hd.pl');
+      const children = Array.from(hd.children).map(el => el.className);
+      return children;
+    });
+    const tagIx  = order.findIndex(c => /pl-tag/.test(c));
+    const fcIx   = order.findIndex(c => /mb-fc-btn/.test(c));
+    const liveIx = order.findIndex(c => /mb-tl-btn/.test(c));
+    expect(tagIx).toBeGreaterThanOrEqual(0);
+    expect(fcIx).toBeGreaterThan(tagIx);
+    expect(liveIx).toBeGreaterThan(fcIx);
+  });
+});
