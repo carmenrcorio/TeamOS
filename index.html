@@ -153,18 +153,27 @@ body.offline .main > div:nth-child(3){
 .tip-w:hover .tip-bx{display:block}
 .tip-bx em{color:var(--tl);font-style:normal}
 
-/* v4.10.0 — Urgent Inbox compacted to single-line rows (SPEC §1). Each row:
-   avatar + name·account + source chip + time. No body preview. */
-.ii{padding:9px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;transition:background .1s;min-height:42px}
+/* v4.10.0 / v4.16.0 — Urgent Inbox rows. Two-row layout: line 1 = avatar +
+   full first name · account; line 2 = status chip + source chip + time.
+   v4.16.0 fix: previous one-line layout truncated names to initials when
+   chips pushed them out of the flex container. Wrapping to a second line
+   keeps the name and the account fully readable. Row min-height 52 px. */
+.ii{padding:9px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:10px;transition:background .1s;min-height:52px;cursor:pointer}
 .ii:last-child{border-bottom:none}
 .ii:hover{background:var(--surf2)}
-.ii-av{width:26px;height:26px;border-radius:50%;background:var(--surf2);color:var(--tx);font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--bd)}
+.ii:focus-visible{outline:2px solid var(--tl);outline-offset:-2px}
+.ii-av{width:28px;height:28px;border-radius:50%;background:var(--surf2);color:var(--tx);font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--bd);margin-top:1px}
 .ii-av.crit{background:#FEE2E2;color:#DC2626;border-color:#FCA5A5}
 .ii-av.high{background:#FEF3C7;color:#B45309;border-color:#FBBF24}
 .ii-av.watch{background:#F3F4F6;color:#4B5563;border-color:var(--bd2)}
-.ii-mid{flex:1;min-width:0;display:flex;align-items:center;gap:8px;overflow:hidden}
-.ii-nm{font-size:12px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0}
-.ii-time{font-size:10px;color:var(--tx3);white-space:nowrap;flex-shrink:0;font-weight:600}
+.ii-av.opp{background:#CCFBF1;color:#0F766E;border-color:#5EEAD4}
+.ii-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.ii-row1{display:flex;align-items:baseline;gap:6px;line-height:1.3;min-width:0}
+.ii-nm{font-size:12px;font-weight:700;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.005em}
+.ii-acct{font-size:11px;color:#6B7280;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ii-acct::before{content:'·';margin-right:4px;color:#9CA3AF}
+.ii-row2{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ii-time{font-size:10px;color:#6B7280;white-space:nowrap;flex-shrink:0;font-weight:600;margin-left:auto}
 
 /* v4.10.0 — Today's Tasks simplified to a numbered list with source dot only
    (SPEC §1). No sender attribution, no admin cards. */
@@ -3533,28 +3542,36 @@ body.offline .rs-mx-snap{top:124px}
             <span class="cached-badge"><i class="ti ti-database-off"></i> Cached</span>
           </div>
         </div>
-        <!-- v4.10.0 — SPEC §1: compact single-line rows. Avatar initial +
-             name·account + source chip + time. No multi-line preview.
-             Max 4 rows. -->
-        <div class="ii" onclick="acctClick('nova',event)">
-          <div class="ii-av crit">N</div>
-          <div class="ii-mid"><span class="ii-nm">Gainsight Alert · <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span></span><span class="tb tb-crit" aria-label="Critical">CRITICAL</span><span class="tb-src gainsight">GAINSIGHT</span></div>
-          <span class="ii-time">2h ago</span>
+        <!-- v4.16.0 — FIX 2: Each row reads like a triage card. Line 1 = full
+             first name + account (no truncation to initials). Line 2 =
+             specific status chip + source chip + relative time. -->
+        <div class="ii" role="button" tabindex="0" aria-label="Michael Torres, NovaVault, Critical Save, 2h ago" onclick="acctClick('nova',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('nova',event)}">
+          <div class="ii-av crit" aria-label="Michael Torres at NovaVault">M</div>
+          <div class="ii-mid">
+            <div class="ii-row1"><span class="ii-nm">Michael Torres</span><span class="ii-acct">NovaVault</span></div>
+            <div class="ii-row2"><span class="tb tb-crit" aria-label="Status: Critical Save">CRITICAL SAVE</span><span class="tb-src gainsight" aria-label="Source: Gainsight">GAINSIGHT</span><span class="ii-time">2h ago</span></div>
+          </div>
         </div>
-        <div class="ii" onclick="acctClick('nova',event)">
-          <div class="ii-av crit">M</div>
-          <div class="ii-mid"><span class="ii-nm">Michael Torres · <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span></span><span class="tb tb-watch" aria-label="No reply">NO REPLY</span><span class="tb-src gmail">GMAIL</span></div>
-          <span class="ii-time">5h ago</span>
+        <div class="ii" role="button" tabindex="0" aria-label="Maggie Spry, CS Leadership, DM, 1h ago" onclick="acctClick('nova',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('nova',event)}">
+          <div class="ii-av high" aria-label="Maggie Spry at CS Leadership">M</div>
+          <div class="ii-mid">
+            <div class="ii-row1"><span class="ii-nm">Maggie Spry</span><span class="ii-acct">CS Leadership</span></div>
+            <div class="ii-row2"><span class="tb tb-watch" aria-label="Status: Direct Message">DM</span><span class="tb-src slack" aria-label="Source: Slack">SLACK</span><span class="ii-time">1h ago</span></div>
+          </div>
         </div>
-        <div class="ii" onclick="acctClick('brightex',event)">
-          <div class="ii-av high">S</div>
-          <div class="ii-mid"><span class="ii-nm">Sarah Chen · <span class="acct-lk" onclick="event.stopPropagation();acctClick('brightex',event)">Brightex Inc</span></span><span class="tb tb-high" aria-label="No reply">NO REPLY</span><span class="tb-src gmail">GMAIL</span></div>
-          <span class="ii-time">3h ago</span>
+        <div class="ii" role="button" tabindex="0" aria-label="Sarah Chen, Brightex, SLA Open, 3h ago" onclick="acctClick('brightex',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('brightex',event)}">
+          <div class="ii-av high" aria-label="Sarah Chen at Brightex">S</div>
+          <div class="ii-mid">
+            <div class="ii-row1"><span class="ii-nm">Sarah Chen</span><span class="ii-acct">Brightex</span></div>
+            <div class="ii-row2"><span class="tb tb-high" aria-label="Status: SLA Open">SLA OPEN</span><span class="tb-src gmail" aria-label="Source: Gmail">GMAIL</span><span class="ii-time">3h ago</span></div>
+          </div>
         </div>
-        <div class="ii" onclick="acctClick('acme',event)">
-          <div class="ii-av watch">M</div>
-          <div class="ii-mid"><span class="ii-nm">Maggie Spry · <span class="acct-lk" onclick="event.stopPropagation();acctClick('acme',event)">Acme</span></span><span class="tb tb-watch" aria-label="DM">DM</span><span class="tb-src slack">SLACK</span></div>
-          <span class="ii-time">1h ago</span>
+        <div class="ii" role="button" tabindex="0" aria-label="Jennifer Ramos, Meridian, Inbound, 5h ago" onclick="acctClick('meridian',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('meridian',event)}">
+          <div class="ii-av opp" aria-label="Jennifer Ramos at Meridian">J</div>
+          <div class="ii-mid">
+            <div class="ii-row1"><span class="ii-nm">Jennifer Ramos</span><span class="ii-acct">Meridian</span></div>
+            <div class="ii-row2"><span class="tb tb-opp" aria-label="Status: Inbound">INBOUND</span><span class="tb-src gmail" aria-label="Source: Gmail">GMAIL</span><span class="ii-time">5h ago</span></div>
+          </div>
         </div>
       </div>
 
@@ -9046,6 +9063,8 @@ function buildNext(acct) {
 }
 
 function openDrawer() {
+  // v4.16.0 — single-drawer-at-a-time invariant.
+  if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('agent');
   document.getElementById('dov').classList.add('on');
   document.getElementById('drawer').classList.add('on');
 }
@@ -9058,6 +9077,7 @@ function closeDrawer() {
   document.getElementById('dov').classList.remove('on');
   document.getElementById('drawer').classList.remove('on');
   if (typeof _tlCancelSignal === 'function') _tlCancelSignal();
+  if (typeof _drawerManagerClose === 'function') _drawerManagerClose('agent');
   var titleEl = document.getElementById('drawer-title');
   var subEl   = document.getElementById('drawer-sub');
   var scroll  = document.getElementById('drawer-scroll');
@@ -9307,6 +9327,57 @@ function _tlSendMessage(e) {
 var _drawerCtx = { mode:'assistant', lastAgent:null, acct:null };
 
 // ═════════════════════════════════════════════════════════════════════════
+// v4.16.0 — FIX 1: Drawer Manager. Enforces single-drawer-at-a-time across
+// the agent drawer, Ghost-Buster drawer, Compose drawer, KPI slide-overs,
+// Forecasting account drawer, and Campaign Manager view drawer. Opening
+// any of these auto-closes the others. The Risk Matrix Account Snapshot
+// (#rs-mx-snap) is a sub-panel — not a "full" drawer — and is also closed
+// whenever a full drawer opens. Closing one full drawer does NOT auto-open
+// the previous one.
+// ═════════════════════════════════════════════════════════════════════════
+var _openDrawer = null;
+var DRAWER_REGISTRY = {
+  agent:    { sel:'#drawer',          close:function(){ if (typeof closeDrawer        === 'function') closeDrawer();        } },
+  gb:       { sel:'#gb-drawer',       close:function(){ if (typeof gbDrawerClose      === 'function') gbDrawerClose();      } },
+  compose:  { sel:'#ps-compose',      close:function(){ if (typeof psComposeClose     === 'function') psComposeClose();     } },
+  'rs-slide-ov': { sel:'#rs-slide-ov',close:function(){ if (typeof rsCloseSlide       === 'function') rsCloseSlide();       } },
+  'fc-acct':{ sel:'#fc-acct-drawer',  close:function(){ if (typeof fcCloseAcctDrawer  === 'function') fcCloseAcctDrawer();  } },
+  'cm-cv':  { sel:'#cm-cv-drawer',    close:function(){ if (typeof cmCampViewClose    === 'function') cmCampViewClose();    } }
+};
+// Sub-panels — closed when any full drawer opens, but not tracked as _openDrawer.
+var DRAWER_SUBPANELS = [
+  { sel:'#rs-mx-snap', close:function(){ if (typeof rsMxSnapClose === 'function') rsMxSnapClose(); } }
+];
+// Close every full drawer except the named one, plus all sub-panels.
+function closeAllDrawers(exceptId) {
+  Object.keys(DRAWER_REGISTRY).forEach(function(id){
+    if (id === exceptId) return;
+    var d = DRAWER_REGISTRY[id];
+    var el = document.querySelector(d.sel);
+    if (el && el.classList && el.classList.contains('on')) {
+      try { d.close(); } catch (_) {}
+    }
+  });
+  DRAWER_SUBPANELS.forEach(function(p){
+    var el = document.querySelector(p.sel);
+    if (el && el.classList && el.classList.contains('on')) {
+      try { p.close(); } catch (_) {}
+    }
+  });
+}
+// Called by each drawer's open path. The actual open call runs synchronously
+// after the previous drawer's close — both elements use CSS transitions, so
+// the visual handoff (fade-out → slide-in) reads as a smooth transition.
+function _drawerManagerOpen(id) {
+  if (_openDrawer && _openDrawer !== id) closeAllDrawers(id);
+  else closeAllDrawers(id); // still close sub-panels + ensure single-on invariant
+  _openDrawer = id;
+}
+function _drawerManagerClose(id) {
+  if (_openDrawer === id) _openDrawer = null;
+}
+
+// ═════════════════════════════════════════════════════════════════════════
 // v4.15.0 — Priority Stack helpers (Compose drawer + loading state + name
 // clicks). The Compose drawer (#ps-compose) is a fixed right-side overlay
 // shaped like the Ghost-Buster drawer, used by Priority Stack row 2
@@ -9398,6 +9469,8 @@ function psComposeOpen(acct) {
     + '<button class="cm-btn prim" type="button" onclick="psComposeMarkSent()"><i class="ti ti-mail-check"></i> Mark as Sent</button>';
 
   var ov = document.getElementById('ps-compose-ov');
+  // v4.16.0 — single-drawer-at-a-time.
+  if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('compose');
   if (ov) { ov.classList.add('on'); ov.setAttribute('aria-hidden', 'false'); }
   drawer.classList.add('on');
   drawer.setAttribute('aria-hidden', 'false');
@@ -9413,6 +9486,7 @@ function psComposeClose(e) {
   var drawer = document.getElementById('ps-compose');
   if (ov) { ov.classList.remove('on'); ov.setAttribute('aria-hidden', 'true'); }
   if (drawer) { drawer.classList.remove('on'); drawer.setAttribute('aria-hidden', 'true'); }
+  if (typeof _drawerManagerClose === 'function') _drawerManagerClose('compose');
   if (PS_COMPOSE_TRIGGER && typeof PS_COMPOSE_TRIGGER.focus === 'function') {
     try { PS_COMPOSE_TRIGGER.focus(); } catch (_) {}
   }
@@ -10575,6 +10649,8 @@ function cmCampView(id) {
   var ov = document.getElementById('cm-cv-ov');
   if (!drawer || !ov) return;
   drawer.innerHTML = cmRenderCampaignView(id);
+  // v4.16.0 — single-drawer-at-a-time.
+  if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('cm-cv');
   ov.classList.add('on');
   drawer.classList.add('on');
   drawer.setAttribute('aria-hidden', 'false');
@@ -10588,6 +10664,7 @@ function cmCampViewClose(e) {
   var ov = document.getElementById('cm-cv-ov');
   if (drawer) { drawer.classList.remove('on'); drawer.setAttribute('aria-hidden','true'); }
   if (ov) ov.classList.remove('on');
+  if (typeof _drawerManagerClose === 'function') _drawerManagerClose('cm-cv');
 }
 // v4.8.0 — Pause is a 2-step interaction. Step 1 surfaces an inline confirm
 // strip inside the drawer footer ("Pause this campaign? Contacts will not
@@ -13390,6 +13467,8 @@ function gbDrawerOpen(acct) {
   }
   var meta = RS_GB_LABELS[acct] || { nm: acct, meta: '' };
   if (sub) sub.textContent = meta.nm + (meta.meta ? ' · ' + meta.meta : '');
+  // v4.16.0 — single-drawer-at-a-time.
+  if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('gb');
   ov.classList.add('on');
   drawer.classList.add('on');
   ov.setAttribute('aria-hidden', 'false');
@@ -13408,6 +13487,7 @@ function gbDrawerClose(e) {
   var ov     = document.getElementById('gb-drawer-ov');
   if (drawer) { drawer.classList.remove('on'); drawer.setAttribute('aria-hidden', 'true'); }
   if (ov)     { ov.classList.remove('on');     ov.setAttribute('aria-hidden', 'true'); }
+  if (typeof _drawerManagerClose === 'function') _drawerManagerClose('gb');
   if (RS_GB_LAST_TRIGGER && typeof RS_GB_LAST_TRIGGER.focus === 'function') {
     try { RS_GB_LAST_TRIGGER.focus(); } catch (_) {}
   }
@@ -13663,6 +13743,8 @@ function rsOpenSlide(title, html) {
   if (!ov || !t || !b) return;
   t.textContent = title;
   b.innerHTML = html || '';
+  // v4.16.0 — single-drawer-at-a-time.
+  if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('rs-slide-ov');
   ov.classList.add('on');
   ov.setAttribute('aria-hidden', 'false');
   setTimeout(function(){
@@ -13674,6 +13756,7 @@ function rsCloseSlide(e) {
   if (e && e.target && e.target.id !== 'rs-slide-ov' && e.type === 'click') return;
   var ov = document.getElementById('rs-slide-ov');
   if (ov) { ov.classList.remove('on'); ov.setAttribute('aria-hidden','true'); }
+  if (typeof _drawerManagerClose === 'function') _drawerManagerClose('rs-slide-ov');
 }
 
 // Pre-render default section so opening the tab is instant.
@@ -14474,6 +14557,8 @@ function fcOpenAcctDrawer(key) {
     +     '<button class="rs-btn" type="button" onclick="toast(\'Opening Gainsight · ' + fcEscape(r.nm) + ' ✓\')"><i class="ti ti-external-link"></i> Open in Gainsight</button>'
     +   '</div>'
     + '</div>';
+  // v4.16.0 — single-drawer-at-a-time.
+  if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('fc-acct');
   ov.classList.add('on');
   drawer.classList.add('on');
   drawer.setAttribute('aria-hidden', 'false');
@@ -14485,6 +14570,7 @@ function fcCloseAcctDrawer(e) {
   var ov = document.getElementById('fc-acct-drawer-ov');
   if (drawer) { drawer.classList.remove('on'); drawer.setAttribute('aria-hidden','true'); }
   if (ov) ov.classList.remove('on');
+  if (typeof _drawerManagerClose === 'function') _drawerManagerClose('fc-acct');
 }
 
 // v4.4.0 — Reply compose modal. Reused for Jennifer (Meridian) + Sarah

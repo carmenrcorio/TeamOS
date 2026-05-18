@@ -2486,3 +2486,145 @@ test.describe('v4.15.0 CSM Dashboard fixes', () => {
     expect(hit).toBe(true);
   });
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.16.0 — DRAWER MANAGER + URGENT INBOX REDESIGN
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.16.0 Drawer manager + Urgent Inbox', () => {
+  // ── FIX 1: single-drawer-at-a-time invariant ────────────────────────────
+  test('FIX 1: opening a second drawer closes the first', async ({ page }) => {
+    // Open the agent drawer (Save Strategy / NovaVault).
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(180);
+    await expect(page.locator('#drawer.on')).toBeVisible();
+    expect(await page.evaluate(() => _openDrawer)).toBe('agent');
+    // Open the Ghost-Buster drawer — agent drawer should close.
+    await page.evaluate(() => rsOpenGB('meridian'));
+    await page.waitForTimeout(220);
+    await expect(page.locator('#gb-drawer.on')).toBeVisible();
+    await expect(page.locator('#drawer.on')).toHaveCount(0);
+    expect(await page.evaluate(() => _openDrawer)).toBe('gb');
+  });
+
+  test('FIX 1: opening the Compose drawer closes the agent drawer', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => psComposeOpen('brightex'));
+    await page.waitForTimeout(220);
+    await expect(page.locator('#ps-compose.on')).toBeVisible();
+    await expect(page.locator('#drawer.on')).toHaveCount(0);
+    expect(await page.evaluate(() => _openDrawer)).toBe('compose');
+  });
+
+  test('FIX 1: closeAllDrawers also clears the Account Snapshot sub-panel', async ({ page }) => {
+    await page.evaluate(() => goTab('risk', document.querySelector('[onclick*="goTab(\'risk\'"]')));
+    await page.waitForTimeout(150);
+    // Open the matrix snapshot.
+    await page.evaluate(() => rsMxSelect('nova'));
+    await page.waitForTimeout(120);
+    await expect(page.locator('#rs-mx-snap.on')).toBeVisible();
+    // Open a full drawer — snapshot should close.
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(200);
+    await expect(page.locator('#drawer.on')).toBeVisible();
+    await expect(page.locator('#rs-mx-snap.on')).toHaveCount(0);
+  });
+
+  test('FIX 1: closeAllDrawers helper exists at window scope', async ({ page }) => {
+    expect(await page.evaluate(() => typeof closeAllDrawers)).toBe('function');
+    // Open + close cycles return _openDrawer to null.
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(180);
+    expect(await page.evaluate(() => _openDrawer)).toBe('agent');
+    await page.evaluate(() => closeDrawer());
+    await page.waitForTimeout(120);
+    expect(await page.evaluate(() => _openDrawer)).toBeNull();
+  });
+
+  test('FIX 1: Escape closes the topmost drawer (compose) without affecting others', async ({ page }) => {
+    await page.evaluate(() => psComposeOpen('brightex'));
+    await page.waitForTimeout(180);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(180);
+    await expect(page.locator('#ps-compose.on')).toHaveCount(0);
+    expect(await page.evaluate(() => _openDrawer)).toBeNull();
+  });
+
+  test('FIX 1: opening the Campaign view drawer closes the agent drawer', async ({ page }) => {
+    await page.evaluate(() => openAgentDrawer('save', 'nova'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => goTab('campaigns', document.querySelector('[onclick*="goTab(\'campaigns\'"]')));
+    await page.waitForTimeout(180);
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(200);
+    await expect(page.locator('#cm-cv-drawer.on')).toBeVisible();
+    await expect(page.locator('#drawer.on')).toHaveCount(0);
+  });
+
+  // ── FIX 2: Urgent Inbox rows ────────────────────────────────────────────
+  test('FIX 2: every Urgent Inbox row shows full first name + account, no truncation', async ({ page }) => {
+    const rows = page.locator('#tab-dash .ii');
+    expect(await rows.count()).toBe(4);
+    const expected = [
+      { nm:'Michael Torres', acct:'NovaVault' },
+      { nm:'Maggie Spry',    acct:'CS Leadership' },
+      { nm:'Sarah Chen',     acct:'Brightex' },
+      { nm:'Jennifer Ramos', acct:'Meridian' }
+    ];
+    for (let i = 0; i < 4; i++) {
+      const nm   = await rows.nth(i).locator('.ii-nm').textContent();
+      const acct = await rows.nth(i).locator('.ii-acct').textContent();
+      expect(nm.trim()).toBe(expected[i].nm);
+      expect(acct.trim()).toBe(expected[i].acct);
+    }
+  });
+
+  test('FIX 2: every row carries the expected status chip + source chip', async ({ page }) => {
+    const rows = page.locator('#tab-dash .ii');
+    const expected = [
+      { status:'CRITICAL SAVE', statusCls:'tb-crit',  source:'GAINSIGHT', sourceCls:'gainsight' },
+      { status:'DM',            statusCls:'tb-watch', source:'SLACK',     sourceCls:'slack'     },
+      { status:'SLA OPEN',      statusCls:'tb-high',  source:'GMAIL',     sourceCls:'gmail'     },
+      { status:'INBOUND',       statusCls:'tb-opp',   source:'GMAIL',     sourceCls:'gmail'     }
+    ];
+    for (let i = 0; i < 4; i++) {
+      const row = rows.nth(i);
+      const statusEl = row.locator('.tb').first();
+      const statusTxt = (await statusEl.textContent()).trim();
+      const statusCls = await statusEl.getAttribute('class');
+      const sourceEl = row.locator('.tb-src');
+      const sourceTxt = (await sourceEl.textContent()).trim();
+      const sourceCls = await sourceEl.getAttribute('class');
+      expect(statusTxt).toBe(expected[i].status);
+      expect(statusCls).toContain(expected[i].statusCls);
+      expect(sourceTxt).toBe(expected[i].source);
+      expect(sourceCls).toContain(expected[i].sourceCls);
+    }
+  });
+
+  test('FIX 2: row layout is two-line — Row 1 above Row 2 (chips wrapped below name)', async ({ page }) => {
+    const row = page.locator('#tab-dash .ii').first();
+    const r1Top = await row.locator('.ii-row1').evaluate(el => el.getBoundingClientRect().top);
+    const r2Top = await row.locator('.ii-row2').evaluate(el => el.getBoundingClientRect().top);
+    expect(r2Top).toBeGreaterThan(r1Top);
+  });
+
+  test('FIX 2: each row is keyboard-reachable (role=button + tabindex + aria-label)', async ({ page }) => {
+    const rows = page.locator('#tab-dash .ii');
+    for (let i = 0; i < 4; i++) {
+      expect(await rows.nth(i).getAttribute('role')).toBe('button');
+      expect(await rows.nth(i).getAttribute('tabindex')).toBe('0');
+      const aria = await rows.nth(i).getAttribute('aria-label');
+      expect(aria).toMatch(/[A-Z][a-z]+ [A-Z][a-z]+,/);
+      expect(aria).toMatch(/h ago$/);
+    }
+  });
+
+  test('FIX 2: Enter on a focused row triggers acctClick', async ({ page }) => {
+    await page.locator('#tab-dash .ii').nth(2).focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(200);
+    const acct = await page.evaluate(() => window._activeAccount);
+    expect(acct).toBe('brightex');
+  });
+});
