@@ -2208,6 +2208,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
    it. */
 .cm-ph-bar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;padding:8px 10px;background:#FFFBEB;border:1px dashed #F59E0B;border-radius:6px;align-items:center}
 .cm-ph-bar-l{font-size:10px;font-weight:800;color:#92400E;text-transform:uppercase;letter-spacing:.07em;margin-right:4px}
+/* v4.18.0 — FIX 1: unfilled-placeholder warning modal body. */
+.cm-ph-warn-hd{font-size:14px;font-weight:800;color:#B91C1C;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.cm-ph-warn-hd i{font-size:18px}
+.cm-ph-warn-sum{font-size:12px;color:#1F2937;font-weight:600;margin-bottom:10px;line-height:1.55}
+.cm-ph-warn-list{background:#FEF2F2;border:1px solid #FECACA;border-radius:6px;padding:8px 12px;display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.cm-ph-warn-row{font-size:12px;color:#7F1D1D;line-height:1.45}
+.cm-ph-warn-row b{color:#991B1B;font-weight:700}
+.cm-ph-warn-sub{color:#9A3412;font-weight:500}
+.cm-ph-warn-help{font-size:11px;color:#6B7280;font-style:italic;line-height:1.55}
 .cm-ph-chip{font-family:inherit;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;background:#FEF3C7;color:#B45309;border:1px solid transparent;cursor:pointer;line-height:1.4;display:inline-flex;align-items:center;gap:4px}
 .cm-ph-chip:hover{background:#FDE68A;border-color:#F59E0B}
 .cm-ph-chip:focus-visible{outline:2px solid #B45309;outline-offset:1px}
@@ -2227,6 +2236,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cm-wiz-grp-meta b{color:#111827;font-weight:700}
 .cm-wiz-grp-hd{justify-content:space-between}
 .cm-wiz-grp-hd-r{display:flex;align-items:center;gap:12px}
+/* v4.18.0 — FIX 2: color-coded health-score badge in Step 2 group headers. */
+.cm-wiz-grp-health{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:99px;line-height:1.5;letter-spacing:.02em}
+.cm-wiz-grp-health.r{background:#FEE2E2;color:#B91C1C}
+.cm-wiz-grp-health.a{background:#FEF3C7;color:#92400E}
+.cm-wiz-grp-health.g{background:#D1FAE5;color:#065F46}
+.cm-wiz-grp-health.gy{background:#F3F4F6;color:#6B7280}
 
 /* v4.8.0 — Editable preview body + contact switcher in Step 3 / Step 5 */
 .cm-prev-switcher{display:flex;align-items:center;justify-content:space-between;background:var(--surf2);border:1px solid var(--bd);border-radius:7px;padding:7px 12px;margin-bottom:8px;font-size:12px;font-weight:600;color:#1F2937}
@@ -11179,6 +11194,13 @@ function cmOpenSendConfirm(ctx) {
     }
     nameLabel = c.name;
   }
+  // v4.18.0 — FIX 1: scan every contact's effective draft for unfilled
+  // [Bracket] placeholders. If any exist, block the send and show an
+  // alertdialog warning with a [Review Drafts] shortcut into the wizard.
+  if (ctx.source === 'wizard') {
+    var offenders = cmFindWizardUnfilled(contactPool);
+    if (offenders.length) { cmShowUnfilledWarning(offenders); return; }
+  }
   var accts = {}; contactPool.forEach(function(cn){ accts[cn.acctKey] = true; });
   CM_SEND_SELECTED = contactPool.map(function(cn){ return cn.id; });
   CM_SEND_CTX = ctx;
@@ -12008,6 +12030,23 @@ function cmQuickSendSubmit() {
     else if (msg) { try { msg.focus(); } catch (_) {} }
     return;
   }
+  // v4.18.0 — FIX 1: Quick Send body is shared across recipients, so a
+  // single freeform-body placeholder check applies to all of them. Synthesize
+  // one offender per recipient so the warning copy reads naturally.
+  var qsLabels = cmFindFreeformUnfilled(msgVal);
+  if (qsLabels.length) {
+    var offenders = CM_QS.to.map(function(c){
+      return { contactId:c.id, name:(c.fn + ' ' + c.ln).trim(), acct:c.acct || '', placeholderLabels: qsLabels };
+    });
+    // Close the Quick Send modal first; the warning replaces it.
+    cmCloseModal();
+    // Stash the unsent message so [Review Drafts] can reopen the Quick Send
+    // modal with the same content for the CSM to fix.
+    window._cmQsLastBody = { subject: subjVal, message: msgVal, to: CM_QS.to.slice(), appendSig: !!CM_QS.appendSig };
+    // Use the wizard warning shell but swap Review Drafts → reopen Quick Send.
+    cmShowUnfilledWarningQuickSend(offenders);
+    return;
+  }
   var record = {
     id: 'qs' + Date.now(),
     subject: subjVal,
@@ -12294,7 +12333,13 @@ function cmWizStep2BuildGroups() {
   var grouped = {};
   var order = [];
   visible.forEach(function(c){
-    if (!grouped[c.acctKey]) { grouped[c.acctKey] = { acct:c.acct, rows:[], sso:c.sso, arr:c.arr }; order.push(c.acctKey); }
+    if (!grouped[c.acctKey]) {
+      // v4.18.0 — FIX 2: also remember the account's most recent CSM touch.
+      // Each contact carries c.lastTouch; the first contact in the group
+      // serves as the canonical value for the header.
+      grouped[c.acctKey] = { acct:c.acct, rows:[], sso:c.sso, arr:c.arr, lastTouch:c.lastTouch };
+      order.push(c.acctKey);
+    }
     grouped[c.acctKey].rows.push(c);
   });
   return order.map(function(k){
@@ -12307,11 +12352,20 @@ function cmWizStep2BuildGroups() {
     }).join('');
     var ssoLabel = g.sso || 'Unknown';
     var arrLabel = (g.arr != null) ? ('$' + g.arr + 'K') : '—';
+    // v4.18.0 — FIX 2: exact health score (color-coded) + last-touch date.
+    var health = CM_ACCT_HEALTH[k];
+    var healthCls, healthLbl, healthAriaStatus;
+    if (health == null) { healthCls = 'gy'; healthLbl = '—';            healthAriaStatus = 'Unknown'; }
+    else if (health < 50)   { healthCls = 'r';  healthLbl = String(health); healthAriaStatus = 'Critical';  }
+    else if (health < 75)   { healthCls = 'a';  healthLbl = String(health); healthAriaStatus = 'At risk';   }
+    else                    { healthCls = 'g';  healthLbl = String(health); healthAriaStatus = 'Healthy';   }
+    var healthBadge = '<span class="cm-wiz-grp-health ' + healthCls + '" aria-label="Health score: ' + healthLbl + ', ' + healthAriaStatus + '">' + healthLbl + '</span>';
+    var lastTouch = g.lastTouch || '—';
     return ''
       + '<div class="cm-wiz-grp">'
       +   '<div class="cm-wiz-grp-hd"><span>' + cmEscape(g.acct.toUpperCase()) + '</span>'
       +     '<div class="cm-wiz-grp-hd-r">'
-      +       '<span class="cm-wiz-grp-meta">SSO: <b>' + cmEscape(ssoLabel) + '</b> · ARR: <b>' + cmEscape(arrLabel) + '</b></span>'
+      +       '<span class="cm-wiz-grp-meta">SSO: <b>' + cmEscape(ssoLabel) + '</b> · ARR: <b>' + cmEscape(arrLabel) + '</b> · Health: ' + healthBadge + ' · Last touch: <b>' + cmEscape(lastTouch) + '</b></span>'
       +       '<span class="cm-wiz-grp-count">' + g.rows.length + ' contact' + (g.rows.length === 1 ? '' : 's') + '</span>'
       +     '</div>'
       +   '</div>'
@@ -12680,6 +12734,142 @@ function cmCollectPlaceholders(text) {
   }
   return out;
 }
+
+// v4.18.0 — FIX 1: Build the offender list for the wizard send path. Each
+// entry is { contactId, name, placeholderLabels[] }. The check looks at the
+// effective draft (per-contact override OR template default) for every
+// selected contact.
+function cmFindWizardUnfilled(contactPool) {
+  var out = [];
+  contactPool.forEach(function(cn){
+    if (!cn) return;
+    var draft = cmGetEffectiveDraft(cn.id);
+    if (!draft || !draft.body) return;
+    var phs = cmCollectPlaceholders(draft.body);
+    if (phs.length) {
+      out.push({
+        contactId: cn.id,
+        name: (cn.fn + ' ' + cn.ln).trim(),
+        acct: cn.acct,
+        placeholderLabels: phs.map(function(p){ return p.label; })
+      });
+    }
+  });
+  return out;
+}
+
+// v4.18.0 — FIX 1: Detect unfilled tokens in a single freeform body — used
+// by Quick Send where there's only one body (the same to N people).
+function cmFindFreeformUnfilled(body) {
+  return cmCollectPlaceholders(body || '').map(function(p){ return p.label; });
+}
+
+function cmShowUnfilledWarning(offenders) {
+  // Build the warning body. role=alertdialog set on the modal itself via the
+  // existing #cm-modal element; cmOpenModal carries role=dialog so we
+  // override the role after opening.
+  var n = offenders.length;
+  var rows = offenders.map(function(o){
+    var labels = o.placeholderLabels.map(function(l){ return '[' + l + ']'; }).join(', ');
+    return '<div class="cm-ph-warn-row"><b>' + cmEscape(o.name) + '</b> <span class="cm-ph-warn-sub">· ' + cmEscape(o.acct) + ' — ' + cmEscape(labels) + '</span></div>';
+  }).join('');
+  var body = ''
+    + '<div class="cm-ph-warn-hd"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Unfilled placeholders detected</div>'
+    + '<div class="cm-ph-warn-sum">' + n + ' contact' + (n === 1 ? '' : 's') + ' ' + (n === 1 ? 'has' : 'have') + ' unfilled placeholders in their email body:</div>'
+    + '<div class="cm-ph-warn-list" role="list">' + rows + '</div>'
+    + '<div class="cm-ph-warn-help">Edit these drafts before sending or remove the placeholders.</div>';
+  var firstId = offenders[0].contactId;
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn prim" type="button" id="cm-ph-warn-review" onclick="cmReviewUnfilled(\'' + firstId + '\')"><i class="ti ti-edit"></i> Review Drafts</button>';
+  cmOpenModal('Cannot send · placeholders unfilled', body, foot);
+  // Promote the modal to alertdialog + focus the Review button.
+  var modal = document.getElementById('cm-modal');
+  if (modal) {
+    modal.setAttribute('role', 'alertdialog');
+    modal.setAttribute('aria-label', 'Unfilled placeholders detected — cannot send');
+  }
+  setTimeout(function(){
+    var rev = document.getElementById('cm-ph-warn-review');
+    if (rev) try { rev.focus(); } catch (_) {}
+  }, 60);
+}
+
+// v4.18.0 — FIX 1: jump the wizard to Step 3 on the first contact with the
+// unfilled placeholder so the CSM lands directly on the problem.
+function cmReviewUnfilled(contactId) {
+  if (typeof cmCloseModal === 'function') cmCloseModal();
+  // Restore the modal role for subsequent uses.
+  var modal = document.getElementById('cm-modal');
+  if (modal) { modal.setAttribute('role', 'dialog'); modal.removeAttribute('aria-label'); }
+  if (CM_WIZ) {
+    var idx = CM_WIZ.contacts.indexOf(contactId);
+    if (idx >= 0) CM_WIZ.previewIdx = idx;
+    CM_WIZ.step = 3;
+    cmWizRender();
+  }
+}
+
+// v4.18.0 — FIX 1: Quick Send variant of the warning. Same shell, but the
+// Review Drafts button reopens the Quick Send modal with the prior body so
+// the CSM can fix the placeholders inline.
+function cmShowUnfilledWarningQuickSend(offenders) {
+  var n = offenders.length;
+  var rows = offenders.map(function(o){
+    var labels = o.placeholderLabels.map(function(l){ return '[' + l + ']'; }).join(', ');
+    return '<div class="cm-ph-warn-row"><b>' + cmEscape(o.name) + '</b> <span class="cm-ph-warn-sub">· ' + cmEscape(o.acct || '') + ' — ' + cmEscape(labels) + '</span></div>';
+  }).join('');
+  var body = ''
+    + '<div class="cm-ph-warn-hd"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Unfilled placeholders detected</div>'
+    + '<div class="cm-ph-warn-sum">' + n + ' contact' + (n === 1 ? '' : 's') + ' would receive your message with unfilled placeholders:</div>'
+    + '<div class="cm-ph-warn-list" role="list">' + rows + '</div>'
+    + '<div class="cm-ph-warn-help">Edit the message before sending or remove the placeholders.</div>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn prim" type="button" id="cm-ph-warn-review" onclick="cmReviewUnfilledQuickSend()"><i class="ti ti-edit"></i> Review Message</button>';
+  cmOpenModal('Cannot send · placeholders unfilled', body, foot);
+  var modal = document.getElementById('cm-modal');
+  if (modal) {
+    modal.setAttribute('role', 'alertdialog');
+    modal.setAttribute('aria-label', 'Unfilled placeholders detected — cannot send');
+  }
+  setTimeout(function(){
+    var rev = document.getElementById('cm-ph-warn-review');
+    if (rev) try { rev.focus(); } catch (_) {}
+  }, 60);
+}
+function cmReviewUnfilledQuickSend() {
+  if (typeof cmCloseModal === 'function') cmCloseModal();
+  var modal = document.getElementById('cm-modal');
+  if (modal) { modal.setAttribute('role', 'dialog'); modal.removeAttribute('aria-label'); }
+  // Reopen Quick Send with the prior body restored.
+  if (typeof cmQuickSendOpen === 'function') {
+    cmQuickSendOpen();
+    setTimeout(function(){
+      var prior = window._cmQsLastBody;
+      if (!prior) return;
+      // Restore subject + message + recipients + signature flag.
+      var subj = document.getElementById('cm-qs-subj');
+      var msg  = document.getElementById('cm-qs-msg');
+      var sig  = document.getElementById('cm-qs-sig-cb');
+      if (subj) subj.value = prior.subject || '';
+      if (msg)  msg.value  = prior.message || '';
+      if (sig)  sig.checked = !!prior.appendSig;
+      if (CM_QS) {
+        CM_QS.subject = prior.subject || '';
+        CM_QS.message = prior.message || '';
+        CM_QS.appendSig = !!prior.appendSig;
+        if (Array.isArray(prior.to)) {
+          CM_QS.to = prior.to.slice();
+          if (typeof cmQsRenderChips === 'function') cmQsRenderChips();
+        }
+      }
+      if (msg) try { msg.focus(); } catch (_) {}
+      window._cmQsLastBody = null;
+    }, 80);
+  }
+}
+
 function cmPhSelect(taId, start, end, ev) {
   if (ev && ev.stopPropagation) ev.stopPropagation();
   var ta = document.getElementById(taId);
@@ -12731,17 +12921,48 @@ function cmWizStep4(body) {
     var on = (CM_WIZ.touchCount === n) ? ' on' : '';
     return '<button class="cm-wiz-count-btn' + on + '" type="button" onclick="cmWizSetTouchCount(' + n + ')">' + n + '</button>';
   }).join('');
-  // ensure touches array matches count
-  while (CM_WIZ.touches.length < CM_WIZ.touchCount) CM_WIZ.touches.push({c:'email',d:'7',t:''});
+  // v4.18.0 — FIX 3: each touch carries an explicit `tpl` field (default
+  // 'same' = inherit campaign template). FIX 4: 'call' is a 4th channel
+  // option that creates a Gainsight CTA reminder instead of an automated send.
+  while (CM_WIZ.touches.length < CM_WIZ.touchCount) CM_WIZ.touches.push({c:'email',d:'7',t:'',tpl:'same'});
   CM_WIZ.touches = CM_WIZ.touches.slice(0, CM_WIZ.touchCount);
+  CM_WIZ.touches.forEach(function(t){ if (!t.tpl) t.tpl = 'same'; });
   var touchBlocks = CM_WIZ.touches.map(function(tch, i){
-    return '<div class="cm-wiz-touch">'
+    var channels = [
+      ['email',    '📧 Email'],
+      ['slack',    '💬 Slack DM'],
+      ['linkedin', '🔗 LinkedIn'],
+      ['call',     '📞 Call task']   // v4.18.0 — FIX 4
+    ];
+    var chOpts = channels.map(function(o){
+      return '<option value="' + o[0] + '"' + (tch.c === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+    }).join('');
+    // v4.18.0 — FIX 3: per-touch template options. "Same as campaign" =
+    // inherit; then every CM_TEMPLATES entry; then "+ New template" sentinel
+    // that opens the template builder modal.
+    var tplOpts = '<option value="same"' + (tch.tpl === 'same' ? ' selected' : '') + '>Same as campaign</option>';
+    tplOpts += (CM_TEMPLATES || []).map(function(t){
+      return '<option value="' + t.id + '"' + (tch.tpl === t.id ? ' selected' : '') + '>' + cmEscape(t.icon ? t.icon + ' ' : '') + cmEscape(t.name) + '</option>';
+    }).join('');
+    tplOpts += '<option value="__new__">+ New template…</option>';
+    // Channel-specific footer copy. Call task is a Gainsight CTA, not a send.
+    var tplName = '';
+    if (tch.tpl === 'same') tplName = 'Same as campaign';
+    else {
+      var match = (CM_TEMPLATES || []).find(function(t){ return t.id === tch.tpl; });
+      tplName = match ? match.name : 'Same as campaign';
+    }
+    var chSummary = (tch.c === 'call')
+      ? '<b style="color:#92400E">Call task</b> · reminder created in Gainsight CTA on Day ' + cmEscape(tch.d === 'now' ? '0' : tch.d)
+      : 'Template: <b>' + cmEscape(tplName) + '</b> · Stop sequence if contact replies: <b style="color:#0A5C41">✓ Yes</b>';
+    var dropdowns = ''
+      +   '<select class="cm-wiz-select" aria-label="Channel for Touch ' + (i+1) + '" onchange="cmWizSetTouchField(' + i + ',\'c\',this.value)">' + chOpts + '</select>'
+      +   '<select class="cm-wiz-select" aria-label="Delay for Touch ' + (i+1) + '" onchange="CM_WIZ.touches[' + i + '].d=this.value;cmWizStep4RefreshSummary(' + i + ')"><option value="now"' + (tch.d==='now'?' selected':'') + '>Immediately</option><option value="3"' + (tch.d==='3'?' selected':'') + '>Day 3</option><option value="5"' + (tch.d==='5'?' selected':'') + '>Day 5</option><option value="7"' + (tch.d==='7'?' selected':'') + '>Day 7</option><option value="10"' + (tch.d==='10'?' selected':'') + '>Day 10</option><option value="14"' + (tch.d==='14'?' selected':'') + '>Day 14</option><option value="30"' + (tch.d==='30'?' selected':'') + '>Day 30</option></select>'
+      +   '<select class="cm-wiz-select" aria-label="Template for Touch ' + (i+1) + '" onchange="cmWizSetTouchTpl(' + i + ',this.value)">' + tplOpts + '</select>';
+    return '<div class="cm-wiz-touch" id="cm-wiz-touch-' + i + '">'
       + '<div class="cm-wiz-touch-hd">Touch ' + (i+1) + '</div>'
-      + '<div class="cm-wiz-touch-r">'
-      +   '<select class="cm-wiz-select" onchange="CM_WIZ.touches[' + i + '].c=this.value"><option value="email"' + (tch.c==='email'?' selected':'') + '>📧 Email</option><option value="slack"' + (tch.c==='slack'?' selected':'') + '>💬 Slack DM</option><option value="linkedin"' + (tch.c==='linkedin'?' selected':'') + '>🔗 LinkedIn</option></select>'
-      +   '<select class="cm-wiz-select" onchange="CM_WIZ.touches[' + i + '].d=this.value"><option value="now"' + (tch.d==='now'?' selected':'') + '>Immediately</option><option value="3"' + (tch.d==='3'?' selected':'') + '>Day 3</option><option value="5"' + (tch.d==='5'?' selected':'') + '>Day 5</option><option value="7"' + (tch.d==='7'?' selected':'') + '>Day 7</option><option value="10"' + (tch.d==='10'?' selected':'') + '>Day 10</option><option value="14"' + (tch.d==='14'?' selected':'') + '>Day 14</option><option value="30"' + (tch.d==='30'?' selected':'') + '>Day 30</option></select>'
-      + '</div>'
-      + '<div style="font-size:11px;color:#6B7280;font-weight:600">Template: Same as campaign · Stop sequence if contact replies: <b style="color:#0A5C41">✓ Yes</b></div>'
+      + '<div class="cm-wiz-touch-r">' + dropdowns + '</div>'
+      + '<div id="cm-wiz-touch-sum-' + i + '" style="font-size:11px;color:#6B7280;font-weight:600">' + chSummary + '</div>'
     + '</div>';
   }).join('');
   body.innerHTML = ''
@@ -12751,10 +12972,65 @@ function cmWizStep4(body) {
     + touchBlocks;
 }
 function cmWizSetTouchCount(n) { CM_WIZ.touchCount = n; cmWizRender(); }
+
+// v4.18.0 — FIX 3: helper to refresh the per-touch summary line without
+// re-rendering the whole step (avoids dropping focus on an open dropdown).
+function cmWizStep4RefreshSummary(i) {
+  var tch = CM_WIZ && CM_WIZ.touches && CM_WIZ.touches[i];
+  if (!tch) return;
+  var sumEl = document.getElementById('cm-wiz-touch-sum-' + i);
+  if (!sumEl) return;
+  var tplName = 'Same as campaign';
+  if (tch.tpl && tch.tpl !== 'same') {
+    var match = (CM_TEMPLATES || []).find(function(t){ return t.id === tch.tpl; });
+    if (match) tplName = match.name;
+  }
+  if (tch.c === 'call') {
+    sumEl.innerHTML = '<b style="color:#92400E">Call task</b> · reminder created in Gainsight CTA on Day ' + cmEscape(tch.d === 'now' ? '0' : tch.d);
+  } else {
+    sumEl.innerHTML = 'Template: <b>' + cmEscape(tplName) + '</b> · Stop sequence if contact replies: <b style="color:#0A5C41">✓ Yes</b>';
+  }
+}
+// v4.18.0 — FIX 4: channel setter that also refreshes the touch summary so
+// the Call task / Email switch reads correctly without a full Step 4 rebuild.
+function cmWizSetTouchField(i, field, val) {
+  if (!CM_WIZ || !CM_WIZ.touches[i]) return;
+  CM_WIZ.touches[i][field] = val;
+  cmWizStep4RefreshSummary(i);
+}
+// v4.18.0 — FIX 3: template setter. "+ New template…" reverts the selected
+// value back to the previous selection and opens the template builder modal
+// so the CSM can build a template inline and pick it on return.
+function cmWizSetTouchTpl(i, val) {
+  if (!CM_WIZ || !CM_WIZ.touches[i]) return;
+  if (val === '__new__') {
+    // Revert the dropdown to the prior value; the new template (if any)
+    // will appear in the list after cmNewTemplate completes and the CSM
+    // re-opens Step 4.
+    var sel = document.querySelector('#cm-wiz-touch-' + i + ' select[aria-label^="Template"]');
+    if (sel) sel.value = CM_WIZ.touches[i].tpl || 'same';
+    if (typeof cmNewTemplate === 'function') cmNewTemplate();
+    return;
+  }
+  CM_WIZ.touches[i].tpl = val;
+  cmWizStep4RefreshSummary(i);
+}
 function cmWizStep5(body) {
   var accts = {};
   CM_WIZ.contacts.forEach(function(id){ var c = CM_CONTACTS.find(function(x){return x.id===id;}); if (c) accts[c.acctKey] = true; });
   var totalDays = CM_WIZ.touches.reduce(function(acc, t){ return acc + (t.d === 'now' ? 0 : parseInt(t.d, 10) || 0); }, 0);
+  // v4.18.0 — Step 5 sequence summary surfaces per-touch channel + template
+  // so the CSM can verify the mixed-channel cadence at a glance.
+  var channelLbls = { email:'Email', slack:'Slack DM', linkedin:'LinkedIn', call:'Call task' };
+  var perTouchChannels = CM_WIZ.touches.map(function(t){ return channelLbls[t.c] || 'Email'; }).join(' → ');
+  var perTouchTpls = CM_WIZ.touches.map(function(t, i){
+    var name = 'Same as campaign';
+    if (t.tpl && t.tpl !== 'same') {
+      var match = (CM_TEMPLATES || []).find(function(x){ return x.id === t.tpl; });
+      if (match) name = match.name;
+    }
+    return 'T' + (i+1) + ': ' + name;
+  }).join(' · ');
   // v4.8.0 — Step 5 preview is editable (matches Step 3). Same contact
   // switcher; edits persist into CM_WIZ.drafts and flow into the campaign
   // record on save/send/schedule via cmFlushDraftsToCampaign.
@@ -12766,7 +13042,8 @@ function cmWizStep5(body) {
     +   '<div class="cm-wiz-summary-r"><span>Name</span><b>' + cmEscape(CM_WIZ.name || '(untitled)') + '</b></div>'
     +   '<div class="cm-wiz-summary-r"><span>Type</span><b>' + cmEscape(CM_WIZ.type || '—') + '</b></div>'
     +   '<div class="cm-wiz-summary-r"><span>Contacts</span><b>' + CM_WIZ.contacts.length + ' across ' + Object.keys(accts).length + ' accounts</b></div>'
-    +   '<div class="cm-wiz-summary-r"><span>Sequence</span><b>' + CM_WIZ.touchCount + ' touches over ' + totalDays + ' days</b></div>'
+    +   '<div class="cm-wiz-summary-r"><span>Sequence</span><b>' + CM_WIZ.touchCount + ' touches over ' + totalDays + ' days · ' + cmEscape(perTouchChannels) + '</b></div>'
+    +   '<div class="cm-wiz-summary-r"><span>Templates</span><b>' + cmEscape(perTouchTpls) + '</b></div>'
     +   '<div class="cm-wiz-summary-r"><span>Sending from</span><b>Carmen Corio · carmen@1password.com</b></div>'
     + '</div>'
     + (preview ? '<div class="cm-wiz-step-l">Preview · editable per contact</div>' + preview : '');
@@ -12871,9 +13148,18 @@ function cmWizSendActual() {
   var c = cmWizBuild('active', 'Today');
   CM_CAMPAIGNS.unshift(c);
   cmFlushDraftsToCampaign(c.id);
+  // v4.18.0 — FIX 4: any 'call' touches register a Gainsight CTA reminder
+  // toast instead of an automated send. Fire one toast per call-task touch.
+  var callTouches = (CM_WIZ.touches || []).filter(function(t){ return t.c === 'call'; });
   cmCloseWizard();
   cmShowSection('campaigns');
   toast('Campaign &ldquo;' + cmEscape(c.name) + '&rdquo; launched · ' + c.contactCount + ' Touch 1 emails sending · Logged in Gainsight ✓');
+  callTouches.forEach(function(t, idx){
+    setTimeout(function(){
+      var dayLabel = t.d === 'now' ? 'today' : 'Day ' + t.d;
+      toast('Call task created · Gainsight CTA · ' + dayLabel + ' reminder for ' + c.contactCount + ' contact' + (c.contactCount === 1 ? '' : 's') + ' ✓');
+    }, 600 + idx * 600);
+  });
 }
 function cmWizBuild(status, sentDate) {
   var typeMap = { reeng:'Re-engagement', ebr:'EBR Invite', renewal:'Renewal', prod:'Product Update', news:'Newsletter', custom:'Custom' };

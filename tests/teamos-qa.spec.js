@@ -327,6 +327,15 @@ test.describe('Campaign Manager actions', () => {
     await page.evaluate(() => cmOpenWizard());
     await page.evaluate(() => { CM_WIZ.name='QA'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c3','c4']; CM_WIZ.template='t3'; CM_WIZ.step=5; cmWizRender(); });
     await page.waitForTimeout(150);
+    // v4.18.0 — pre-fill per-contact drafts so cmFindWizardUnfilled finds no
+    // unfilled placeholders (template t3 carries {{value_delivered}} which
+    // expands to a bracketed placeholder by default).
+    await page.evaluate(() => {
+      CM_WIZ.drafts = {
+        c3: { subject:'Sarah subject', body:'Sarah body — fully filled.' },
+        c4: { subject:'Marcus subject', body:'Marcus body — fully filled.' }
+      };
+    });
     await page.evaluate(() => cmWizSend());
     await page.waitForTimeout(200);
     await expect(page.locator('#cm-modal-ov')).toHaveClass(/on/);
@@ -2770,5 +2779,247 @@ test.describe('v4.17.0 Forecasting workflow fixes', () => {
     expect(order[0]).toMatch(/Account Snapshot/);
     expect(order[1]).toMatch(/Call Success/);
     expect(order[2]).toMatch(/Last Gong/);
+  });
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.18.0 — CAMPAIGN MANAGER WORKFLOW FIXES
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.18.0 Campaign Manager workflow fixes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('campaigns', document.querySelector('[onclick*="goTab(\'campaigns\'"]')));
+    await page.waitForTimeout(150);
+  });
+
+  // ── FIX 1: unfilled placeholder blocks send ─────────────────────────────
+  test('FIX 1: cmFindWizardUnfilled returns per-contact placeholder labels', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c3','c5']; CM_WIZ.template='t3'; });
+    const offenders = await page.evaluate(() => {
+      const pool = CM_WIZ.contacts.map(id => CM_CONTACTS.find(c => c.id === id));
+      return cmFindWizardUnfilled(pool).map(o => ({ name:o.name, n:o.placeholderLabels.length }));
+    });
+    expect(offenders.length).toBe(2);
+    expect(offenders[0].n).toBeGreaterThanOrEqual(1);
+    expect(offenders[1].n).toBeGreaterThanOrEqual(1);
+  });
+
+  test('FIX 1: Send Now from wizard blocks when placeholders are unfilled', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c3','c5']; CM_WIZ.template='t3'; CM_WIZ.step=5; cmWizRender(); });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmWizSend());
+    await page.waitForTimeout(200);
+    // Warning modal opens; recipient list does NOT.
+    const role = await page.locator('#cm-modal').getAttribute('role');
+    expect(role).toBe('alertdialog');
+    const aria = await page.locator('#cm-modal').getAttribute('aria-label');
+    expect(aria).toMatch(/Unfilled placeholders detected/);
+    const body = await page.locator('#cm-modal-body').textContent();
+    expect(body).toMatch(/Unfilled placeholders detected/);
+    expect(body).toMatch(/Sarah Chen/);
+    expect(body).toMatch(/Michael Torres/);
+    // Review Drafts button focused.
+    const focusedId = await page.evaluate(() => document.activeElement && document.activeElement.id);
+    expect(focusedId).toBe('cm-ph-warn-review');
+  });
+
+  test('FIX 1: Review Drafts jumps wizard to Step 3 on the first offender', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c3','c5']; CM_WIZ.template='t3'; CM_WIZ.step=5; cmWizRender(); });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmWizSend());
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmReviewUnfilled('c3'));
+    await page.waitForTimeout(200);
+    const step = await page.evaluate(() => CM_WIZ.step);
+    expect(step).toBe(3);
+    const previewIdx = await page.evaluate(() => CM_WIZ.previewIdx);
+    expect(previewIdx).toBe(0);
+  });
+
+  test('FIX 1: Quick Send blocks when placeholders are in the message body', async ({ page }) => {
+    await page.evaluate(() => cmQuickSendOpen());
+    await page.waitForTimeout(150);
+    await page.evaluate(() => { cmQsPick('c1'); });
+    await page.fill('#cm-qs-subj', 'Hi');
+    await page.fill('#cm-qs-msg', 'Hi David, here is the [Account-specific value summary]. — Carmen');
+    await page.evaluate(() => cmQuickSendSubmit());
+    await page.waitForTimeout(180);
+    const role = await page.locator('#cm-modal').getAttribute('role');
+    expect(role).toBe('alertdialog');
+    const body = await page.locator('#cm-modal-body').textContent();
+    expect(body).toMatch(/David/);
+    expect(body).toMatch(/Account-specific value summary/);
+  });
+
+  test('FIX 1: wizard with clean drafts sends without blocking', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => {
+      CM_WIZ.name='QA'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c3']; CM_WIZ.template='t3'; CM_WIZ.step=5;
+      CM_WIZ.drafts = { c3: { subject:'Clean subject', body:'Clean body, no brackets at all.' } };
+      cmWizRender();
+    });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmWizSend());
+    await page.waitForTimeout(200);
+    const role = await page.locator('#cm-modal').getAttribute('role');
+    expect(role).toBe('dialog');
+    const cnt = await page.locator('.cm-send-row').count();
+    expect(cnt).toBe(1);
+  });
+
+  // ── FIX 2: Step 2 account header health + last touch ────────────────────
+  test('FIX 2: account header carries Health badge + Last touch field', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.step=2; cmWizRender(); });
+    await page.waitForTimeout(180);
+    const acmeMeta = await page.evaluate(() => {
+      var groups = document.querySelectorAll('.cm-wiz-grp');
+      for (var i = 0; i < groups.length; i++) {
+        if (/ACME CORP/.test(groups[i].textContent)) {
+          return groups[i].querySelector('.cm-wiz-grp-meta')?.textContent || null;
+        }
+      }
+      return null;
+    });
+    expect(acmeMeta).toMatch(/Health: \s*82/);
+    expect(acmeMeta).toMatch(/Last touch: \s*May 10/);
+  });
+
+  test('FIX 2: health badge color maps to band (red/amber/teal/gray)', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.step=2; cmWizRender(); });
+    await page.waitForTimeout(180);
+    const bands = await page.evaluate(() => {
+      const out = {};
+      document.querySelectorAll('.cm-wiz-grp').forEach(g => {
+        const hd = g.querySelector('.cm-wiz-grp-hd > span');
+        const badge = g.querySelector('.cm-wiz-grp-health');
+        if (hd && badge) {
+          out[hd.textContent.trim()] = Array.from(badge.classList).filter(c => /^(r|a|g|gy)$/.test(c))[0] || '';
+        }
+      });
+      return out;
+    });
+    expect(bands['ACME CORP']).toBe('g');          // 82 → ≥75 → teal
+    expect(bands['BRIGHTEX INC']).toBe('r');       // 48 → <50 → red
+    expect(bands['NOVAVAULT']).toBe('r');          // 23 → <50 → red
+    expect(bands['KLAXTON LABS']).toBe('a');       // 65 → 50-74 → amber
+    expect(bands['MERIDIAN HEALTH SYSTEMS']).toBe('gy'); // null → gray
+  });
+
+  test('FIX 2: health badge aria-label spells out status', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.step=2; cmWizRender(); });
+    await page.waitForTimeout(180);
+    const aria = await page.evaluate(() => {
+      const groups = document.querySelectorAll('.cm-wiz-grp');
+      for (const g of groups) {
+        if (/NOVAVAULT/.test(g.textContent)) {
+          return g.querySelector('.cm-wiz-grp-health')?.getAttribute('aria-label');
+        }
+      }
+      return null;
+    });
+    expect(aria).toMatch(/Health score: 23, Critical/);
+  });
+
+  // ── FIX 3: per-touch template selector ──────────────────────────────────
+  test('FIX 3: every touch row has a Template select with "Same as campaign" + 6 templates + new', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.touchCount=3; CM_WIZ.step=4; cmWizRender(); });
+    await page.waitForTimeout(180);
+    const selects = await page.locator('.cm-wiz-touch select[aria-label^="Template"]').count();
+    expect(selects).toBe(3);
+    const firstOptions = await page.evaluate(() => Array.from(document.querySelectorAll('.cm-wiz-touch select[aria-label^="Template"]')[0].options).map(o => o.value));
+    expect(firstOptions[0]).toBe('same');
+    expect(firstOptions[firstOptions.length - 1]).toBe('__new__');
+    // 6 default templates exist in CM_TEMPLATES.
+    expect(firstOptions.length).toBe(2 + 6);
+  });
+
+  test('FIX 3: changing a touch template updates CM_WIZ + per-touch summary', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.touchCount=2; CM_WIZ.step=4; cmWizRender(); });
+    await page.waitForTimeout(180);
+    await page.evaluate(() => cmWizSetTouchTpl(1, 't2'));
+    await page.waitForTimeout(100);
+    const tpl = await page.evaluate(() => CM_WIZ.touches[1].tpl);
+    expect(tpl).toBe('t2');
+    const sum = await page.locator('#cm-wiz-touch-sum-1').textContent();
+    expect(sum).toMatch(/EBR Invitation/);
+  });
+
+  test('FIX 3: "+ New template" opens the template builder modal without changing state', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.touchCount=2; CM_WIZ.step=4; cmWizRender(); });
+    await page.waitForTimeout(180);
+    await page.evaluate(() => cmWizSetTouchTpl(0, '__new__'));
+    await page.waitForTimeout(180);
+    const tpl = await page.evaluate(() => CM_WIZ.touches[0].tpl);
+    expect(tpl).toBe('same');
+    // The generic modal is now showing the template builder (cmNewTemplate).
+    await expect(page.locator('#cm-modal-ov.on')).toBeVisible();
+  });
+
+  test('FIX 3: Step 5 sequence summary surfaces per-touch templates', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c1']; CM_WIZ.template='t3'; CM_WIZ.touchCount=3; CM_WIZ.step=4; cmWizRender(); });
+    await page.evaluate(() => { cmWizSetTouchTpl(1, 't2'); cmWizSetTouchTpl(2, 't5'); });
+    await page.evaluate(() => { CM_WIZ.step=5; cmWizRender(); });
+    await page.waitForTimeout(200);
+    const txt = await page.locator('.cm-wiz-summary').textContent();
+    expect(txt).toMatch(/T1: Same as campaign/);
+    expect(txt).toMatch(/T2: EBR Invitation/);
+    expect(txt).toMatch(/T3: Champion Introduction/);
+  });
+
+  // ── FIX 4: Call task channel ────────────────────────────────────────────
+  test('FIX 4: channel dropdown carries Call task as 4th option', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.touchCount=1; CM_WIZ.step=4; cmWizRender(); });
+    await page.waitForTimeout(180);
+    const opts = await page.evaluate(() => Array.from(document.querySelector('.cm-wiz-touch select[aria-label^="Channel"]').options).map(o => o.value));
+    expect(opts).toEqual(['email','slack','linkedin','call']);
+  });
+
+  test('FIX 4: selecting Call task swaps summary to Gainsight CTA wording', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.touchCount=2; CM_WIZ.step=4; cmWizRender(); });
+    await page.waitForTimeout(180);
+    await page.evaluate(() => cmWizSetTouchField(1, 'c', 'call'));
+    await page.waitForTimeout(100);
+    const sum = await page.locator('#cm-wiz-touch-sum-1').textContent();
+    expect(sum).toMatch(/Call task/);
+    expect(sum).toMatch(/Gainsight CTA/);
+  });
+
+  test('FIX 4: Step 5 sequence shows mixed channels (Email → Call task → Email)', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => { CM_WIZ.name='X'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c1']; CM_WIZ.template='t3'; CM_WIZ.touchCount=3; CM_WIZ.step=4; cmWizRender(); });
+    await page.evaluate(() => cmWizSetTouchField(1, 'c', 'call'));
+    await page.evaluate(() => { CM_WIZ.step=5; cmWizRender(); });
+    await page.waitForTimeout(200);
+    const txt = await page.locator('.cm-wiz-summary').textContent();
+    expect(txt).toMatch(/Email → Call task → Email/);
+  });
+
+  test('FIX 4: launching a campaign with a Call touch fires the Gainsight CTA toast', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => {
+      CM_WIZ.name='QA Call'; CM_WIZ.type='renewal'; CM_WIZ.contacts=['c1']; CM_WIZ.template='t3'; CM_WIZ.step=5;
+      CM_WIZ.touches = [{c:'email',d:'now',t:'',tpl:'same'},{c:'call',d:'5',t:'',tpl:'same'}];
+      CM_WIZ.touchCount = 2;
+      // Clean drafts so the send isn't blocked by the v4.18.0 placeholder check.
+      CM_WIZ.drafts = { c1: { subject:'Clean', body:'Clean body, no brackets.' } };
+      cmWizRender();
+    });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmWizSendActual());
+    // Wait long enough for the deferred call-toast (600 ms after the launch toast).
+    await page.waitForTimeout(1000);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Call task created · Gainsight CTA/);
   });
 });

@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.17.0
+**Version:** 4.18.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,39 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.18.0] — 2026-05-18
+
+Four Campaign Manager workflow fixes. **Result: 252/252 chromium tests passing.**
+
+### Fixed / Added
+
+**FIX 1 — Unfilled `[Bracket]` placeholders block the send.** Previously a missing personalization (`[Account-specific value summary]`) would ship as a literal bracket in the outgoing email. New blocking flow on every send path:
+- `cmFindWizardUnfilled(contactPool)` walks each contact's effective draft (per-contact override OR template default), runs `cmCollectPlaceholders`, and returns `{ contactId, name, acct, placeholderLabels }` for every offender.
+- `cmFindFreeformUnfilled(body)` is the single-body variant used by Quick Send (one shared message → broadcast).
+- `cmOpenSendConfirm` short-circuits the confirmation modal when offenders exist and calls `cmShowUnfilledWarning` instead. The warning modal is promoted to `role="alertdialog"` with `aria-label="Unfilled placeholders detected — cannot send"`, lists each offender with their company + bracketed labels in a red-tinted box, and focuses a `[Review Drafts]` button that calls `cmReviewUnfilled(firstContactId)` → jumps the wizard to Step 3 on the first affected contact.
+- `cmQuickSendSubmit` calls `cmShowUnfilledWarningQuickSend` which reopens the Quick Send modal with subject/recipients/signature flag restored when the CSM clicks `[Review Message]`.
+- Part B of the spec (amber chip highlight on placeholders) ships across Step 3 + Step 5 via the existing v4.12.0 FIX 8 `.cm-ph-bar` chip strip — confirmed in place during this work.
+
+**FIX 2 — Step 2 account headers show exact health score + last touch.** `cmWizStep2BuildGroups` now reads `CM_ACCT_HEALTH[acctKey]` and `lastTouch` (from the first contact in each group). The right-side meta line reads `SSO: Deployed · ARR: $48K · Health: 82 · Last touch: May 10`, with the health number rendered as a color-coded pill (`<50 red`, `50-74 amber`, `75+ teal`, `null gray`) and `aria-label="Health score: 48, At risk"` for screen readers.
+
+**FIX 3 — Per-touch template selector in Step 4.** Each touch row now carries a third dropdown: "Same as campaign" (default) + every entry in `CM_TEMPLATES` (6 defaults + any user-built) + `+ New template…`. New `tpl` field added to each touch object (initialized to `'same'`). The "+ New template…" sentinel reverts the dropdown to the prior value and opens the existing template builder (`cmNewTemplate`) so a CSM can build a template inline and pick it from the dropdown when she returns. `cmWizStep4RefreshSummary(i)` repaints just the per-touch footer text — no full Step 4 rebuild — so focus stays on the open dropdown. Step 5 summary surfaces `T1: Same as campaign · T2: EBR Invitation · T3: Champion Introduction`.
+
+**FIX 4 — Call task as 4th channel option.** The channel `<select>` on every touch row now includes `📞 Call task` as the 4th option. Selecting it swaps the per-touch footer line to `Call task · reminder created in Gainsight CTA on Day N` (amber) instead of the standard "Template / Stop on reply" copy. Step 5's Sequence summary renders the mixed cadence as `Email → Call task → Email` so the CSM can verify it at a glance. When the campaign launches, every Call touch fires its own toast: `Call task created · Gainsight CTA · Day N reminder for X contacts ✓`.
+
+### Engineering notes
+- `cmOpenSendConfirm` short-circuit applies only to `ctx.source === 'wizard'` paths today — campaign-card sends operate on already-stored contact records and don't have per-recipient draft override state in scope. Phase 2 will extend the check to card sends once the per-campaign draft store is wired up to the active campaign loader.
+- The placeholder-blocking warning re-uses the generic `#cm-modal-ov` shell. Promoting the modal to `role="alertdialog"` happens after `cmOpenModal` returns; the role is reverted back to `"dialog"` when the CSM dismisses the warning so the next caller gets a stock dialog.
+- The Step 2 health bands use a single CSS class (`.cm-wiz-grp-health.r/a/g/gy`) shared with the existing v4.10.0 badge taxonomy palette — no new color tokens.
+
+### Test coverage
+- **252 / 252 chromium passing** (was 236 in v4.17.0). 16 new tests under a `v4.18.0 Campaign Manager workflow fixes` describe — 5 FIX 1 (finder helper, wizard block, Review Drafts jump, Quick Send block, clean-drafts happy path), 3 FIX 2 (header content, color band per account, aria-label wording), 4 FIX 3 (selector options + change + new-template modal + Step 5 summary), 4 FIX 4 (Call task option + summary swap + Step 5 mixed cadence + send-time toast).
+- One pre-existing test (`Send opens confirmation modal with reviewable recipient list`) was updated to pre-seed clean draft bodies so the placeholder check doesn't block its happy-path assertion.
+
+### Spec label
+Shipped as `[4.18.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 
