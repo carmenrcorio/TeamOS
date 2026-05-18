@@ -2210,6 +2210,48 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cm-modal-body{padding:18px 22px;overflow-y:auto;flex:1}
 .cm-modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 22px;border-top:1px solid var(--bd);background:var(--surf2);flex-shrink:0;flex-wrap:wrap}
 
+/* v4.11.0 — Inline [+ Add contact] link used by Step 2, drawer contacts
+   table, and Quick Send TO field (FEATURE 1). Small, gray, indented. */
+.cm-add-cnt-link{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--tx3);font-weight:500}
+.cm-add-cnt-btn{font-family:inherit;font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;border:1px dashed var(--bd2);background:transparent;color:var(--tl-dk);cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .12s;min-height:28px}
+.cm-add-cnt-btn:hover{background:var(--tl-bg);border-color:var(--tl);border-style:solid}
+.cm-add-cnt-btn:focus-visible{outline:2px solid var(--tl);outline-offset:2px}
+.cm-add-cnt-btn i{font-size:13px}
+
+/* v4.11.0 — Quick Send modal (FEATURE 2). Uses cm-modal-ov chrome but
+   widens to 560px and adds its own internal layout. */
+.cm-modal.qs{max-width:560px}
+.cm-qs-row{margin-bottom:12px}
+.cm-qs-row-l{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.cm-qs-row-l .req{color:var(--rd);font-weight:800}
+.cm-qs-to{position:relative}
+.cm-qs-to-bx{display:flex;flex-wrap:wrap;align-items:center;gap:6px;border:1px solid var(--bd2);border-radius:6px;padding:6px 8px;min-height:42px;background:var(--surf);transition:border-color .1s}
+.cm-qs-to-bx:focus-within{border-color:var(--tl)}
+.cm-qs-chip{display:inline-flex;align-items:center;gap:5px;background:var(--tl-bg);color:var(--tl-dk);font-size:11px;font-weight:600;padding:3px 8px;border-radius:99px;line-height:1.4}
+.cm-qs-chip-x{background:transparent;border:none;color:var(--tl-dk);cursor:pointer;font-family:inherit;font-size:14px;line-height:1;padding:0 2px;font-weight:700}
+.cm-qs-chip-x:hover{color:var(--rd)}
+.cm-qs-to-input{flex:1;min-width:160px;border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;color:#1F2937;padding:6px 4px}
+.cm-qs-to-pop{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surf);border:1px solid var(--bd);border-radius:7px;box-shadow:0 10px 26px rgba(0,0,0,.14);z-index:10;max-height:260px;overflow-y:auto;display:none}
+.cm-qs-to-pop.on{display:block}
+.cm-qs-to-opt{padding:9px 12px;font-size:12px;color:#1F2937;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--bd)}
+.cm-qs-to-opt:last-child{border-bottom:none}
+.cm-qs-to-opt:hover,.cm-qs-to-opt.kbd{background:var(--tl-bg);color:var(--tl-dk)}
+.cm-qs-to-opt b{color:#111827;font-weight:700}
+.cm-qs-to-opt-em{color:#6B7280;font-weight:500;font-size:11px}
+.cm-qs-from{font-family:inherit;font-size:13px;padding:9px 11px;border-radius:6px;background:var(--surf2);color:#6B7280;border:1px solid var(--bd);width:100%;box-sizing:border-box}
+.cm-qs-input,.cm-qs-textarea{font-family:inherit;font-size:13px;color:#1F2937;border:1px solid var(--bd2);border-radius:6px;padding:9px 11px;width:100%;box-sizing:border-box;background:var(--surf);outline:none;transition:border-color .1s}
+.cm-qs-input:focus,.cm-qs-textarea:focus{border-color:var(--tl)}
+.cm-qs-input.err,.cm-qs-textarea.err{border-color:var(--rd)}
+.cm-qs-textarea{min-height:200px;line-height:1.55;resize:vertical}
+.cm-qs-sig{display:flex;align-items:center;gap:7px;font-size:12px;color:#1F2937;font-weight:500;margin-top:6px}
+.cm-qs-sig input{margin:0;width:14px;height:14px;accent-color:var(--tl)}
+.cm-qs-err{font-size:11px;color:var(--rd-dk);font-weight:600;margin-top:4px;display:none}
+.cm-qs-err.on{display:block}
+
+/* Quick Sends row in Analytics carries a subtle indigo accent + Details btn. */
+.cm-perf-table tr.qs-row td{background:#F5F3FF}
+.cm-perf-table tr.qs-row:first-child td{border-top:2px solid #DDD6FE}
+
 .cm-form-row{display:grid;grid-template-columns:140px 1fr;gap:8px 14px;align-items:center;margin-bottom:10px}
 .cm-form-row.col{grid-template-columns:1fr}
 .cm-form-label{font-size:11px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em}
@@ -9923,7 +9965,11 @@ function cmRenderCampaigns() {
     + cmRenderSegments()
     + '<div class="cm-hd">'
     +   '<div class="cm-hd-t">📣 Campaigns</div>'
-    +   '<button class="cm-btn-prim" type="button" onclick="cmOpenWizard()"><i class="ti ti-plus"></i> New Campaign</button>'
+    +   '<div class="cm-hd-acts" style="display:flex;gap:8px;align-items:center">'
+    +     '<button class="cm-btn-prim" type="button" onclick="cmOpenWizard()"><i class="ti ti-plus"></i> New Campaign</button>'
+    // v4.11.0 — FEATURE 2: Quick Send sits next to New Campaign.
+    +     '<button class="cm-btn" type="button" onclick="cmQuickSendOpen()" aria-label="Quick Send — compose individual emails to multiple contacts"><i class="ti ti-send"></i> Quick Send</button>'
+    +   '</div>'
     + '</div>'
     + '<div class="cm-filters">' + chips + '</div>'
     + '<div class="cm-list" id="cm-camp-list-anchor" style="max-height:none">' + listHtml + '</div>';
@@ -10118,6 +10164,7 @@ function cmRenderCampaignView(id) {
     +   '<div class="cm-drawer-sec"><div class="cm-drawer-sec-t">Sequence progress</div><div class="cm-view-seq">' + seqRowsHtml + '</div></div>'
     +   '<div class="cm-drawer-sec"><div class="cm-drawer-sec-t">Contacts (' + c.contactCount + ')</div>'
     +     '<table class="cm-cnt-tbl"><thead><tr><th>Contact</th><th>Account</th><th>Touch Reached</th><th>Status</th><th>Last Activity</th></tr></thead><tbody>' + contactsHtml + '</tbody></table>'
+    +     '<div class="cm-add-cnt-link"><button type="button" class="cm-add-cnt-btn" onclick="cmAddContactPrompt({kind:&quot;campaign&quot;,cmpId:&quot;' + c.id + '&quot;})"><i class="ti ti-plus"></i> Add contact to this campaign</button></div>'
     +   '</div>'
     + '</div>'
     + '<div class="cm-drawer-foot">'
@@ -10300,6 +10347,9 @@ function cmCloseModal(e) {
   if (e && e.target && e.target.id !== 'cm-modal-ov' && e.type === 'click') return;
   var ov = document.getElementById('cm-modal-ov');
   if (ov) { ov.classList.remove('on'); ov.setAttribute('aria-hidden','true'); }
+  // v4.11.0 — reset Quick Send width class so the next modal opens at default size.
+  var modal = document.getElementById('cm-modal');
+  if (modal) modal.classList.remove('qs');
 }
 
 // ── Send Confirmation modal (Fix 10) ────────────────────────────────────────
@@ -10548,42 +10598,83 @@ function cmAddNote(id) {
 // new contact appears in the list immediately (in-memory unshift).
 var CM_KNOWN_ACCOUNTS = ['Acme Corp','Brightex Inc','NovaVault','Meridian Health Systems','Creston Software','Apex Dynamics'];
 var CM_ACCT_KEY_MAP   = { 'Acme Corp':'acme','Brightex Inc':'brightex','NovaVault':'nova','Meridian Health Systems':'meridian','Creston Software':'creston','Apex Dynamics':'apex' };
+
+// v4.11.0 — User-added contacts persist to localStorage so the four inline
+// [+ Add contact] entry points (wizard Step 2, Contacts tab, campaign detail
+// drawer, Quick Send TO field) all share the same pool across reloads.
+var CM_CONTACTS_KEY = 'teamos_contacts';
+function cmReadStoredContacts() {
+  try {
+    var raw = localStorage.getItem(CM_CONTACTS_KEY);
+    if (!raw) return [];
+    var arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) { return []; }
+}
+function cmWriteStoredContacts(arr) {
+  try { localStorage.setItem(CM_CONTACTS_KEY, JSON.stringify(arr)); } catch (e) {}
+}
+// Merge any persisted user contacts into CM_CONTACTS on script load (dedupe by id).
+(function _cmHydrateContacts() {
+  var stored = cmReadStoredContacts();
+  if (!stored.length) return;
+  var have = {}; CM_CONTACTS.forEach(function(c){ have[c.id] = true; });
+  stored.forEach(function(c){ if (c && c.id && !have[c.id]) CM_CONTACTS.push(c); });
+})();
+
+// v4.11.0 — Shared "Add contact" modal used by 4 entry points. The optional
+// `ctx` object tells the save handler what to do after persisting the new
+// contact:
+//   { kind: 'contacts' }   (default) re-render the Contacts list.
+//   { kind: 'wizard' }     pre-check the new contact in Step 2 and refresh.
+//   { kind: 'campaign', cmpId } append the contact to that campaign + refresh drawer.
+//   { kind: 'compose',  cb } call cb(newContact) — used by Quick Send TO field.
+var CM_ADD_CONTACT_CTX = null;
 // v4.8.0 — Public alias used by external tests / docs.
-function cmOpenAddContact() { return cmAddContactPrompt(); }
-function cmAddContactPrompt() {
+function cmOpenAddContact(ctx) { return cmAddContactPrompt(ctx); }
+function cmAddContactPrompt(ctx) {
+  CM_ADD_CONTACT_CTX = ctx || { kind:'contacts' };
   var acctOpts = CM_KNOWN_ACCOUNTS.map(function(a){ return '<option value="' + cmEscape(a) + '">' + cmEscape(a) + '</option>'; }).join('') + '<option value="other">Other / not in system</option>';
   var body = ''
-    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-fn">First name</label><input class="cm-form-input" id="cm-ac-fn" type="text"></div>'
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-fn">First name <span class="req">*</span></label><div><input class="cm-form-input" id="cm-ac-fn" type="text" aria-required="true"><div class="cm-form-err" id="cm-ac-fn-err" role="alert">First name is required</div></div></div>'
     + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-ln">Last name</label><input class="cm-form-input" id="cm-ac-ln" type="text"></div>'
     + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-em">Email <span class="req">*</span></label><div><input class="cm-form-input" id="cm-ac-em" type="email" aria-required="true"><div class="cm-form-err" id="cm-ac-em-err" role="alert">Email is required</div></div></div>'
-    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-role">Role</label><input class="cm-form-input" id="cm-ac-role" type="text"></div>'
     + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-co">Company</label><input class="cm-form-input" id="cm-ac-co" type="text"></div>'
     + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-acct">Account</label><select class="cm-form-select" id="cm-ac-acct"><option value="">Select…</option>' + acctOpts + '</select></div>'
-    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-sso">SSO Status</label><select class="cm-form-select" id="cm-ac-sso"><option>Not Deployed</option><option>Deployed</option></select></div>'
-    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-scim">SCIM Status</label><select class="cm-form-select" id="cm-ac-scim"><option>Not Active</option><option>Active</option></select></div>'
-    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-last">Last Active</label><input class="cm-form-input" id="cm-ac-last" type="date"></div>'
-    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-seat">Seat Util %</label><input class="cm-form-input" id="cm-ac-seat" type="number" min="0" max="100"></div>';
+    + '<div class="cm-form-row"><label class="cm-form-label" for="cm-ac-role">Role</label><input class="cm-form-input" id="cm-ac-role" type="text"></div>';
   var foot = ''
     + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
-    + '<button class="cm-btn prim" type="button" onclick="cmAddContactSave()"><i class="ti ti-check"></i> Save Contact</button>';
+    + '<button class="cm-btn prim" type="button" onclick="cmAddContactSave()"><i class="ti ti-check"></i> Add Contact</button>';
   cmOpenModal('Add contact', body, foot);
 }
 function cmAddContactSave() {
+  var fnEl = document.getElementById('cm-ac-fn');
+  var fnErr = document.getElementById('cm-ac-fn-err');
   var em = document.getElementById('cm-ac-em');
   var err = document.getElementById('cm-ac-em-err');
   if (!em) return;
-  if (!em.value.trim()) { em.classList.add('err'); if (err) err.classList.add('on'); em.focus(); return; }
-  em.classList.remove('err'); if (err) err.classList.remove('on');
-  var fn = (document.getElementById('cm-ac-fn').value || '').trim();
+  // Email is required.
+  var bad = false;
+  if (!em.value.trim()) { em.classList.add('err'); if (err) err.classList.add('on'); bad = true; }
+  else                   { em.classList.remove('err'); if (err) err.classList.remove('on'); }
+  // v4.11.0 — First name also required per spec.
+  if (fnEl && !fnEl.value.trim()) { fnEl.classList.add('err'); if (fnErr) fnErr.classList.add('on'); bad = bad || true; }
+  else if (fnEl)                  { fnEl.classList.remove('err'); if (fnErr) fnErr.classList.remove('on'); }
+  if (bad) {
+    if (em && !em.value.trim()) { try { em.focus(); } catch (_) {} }
+    else if (fnEl && !fnEl.value.trim()) { try { fnEl.focus(); } catch (_) {} }
+    return;
+  }
+  var fn = (fnEl.value || '').trim();
   var ln = (document.getElementById('cm-ac-ln').value || '').trim();
   var acct = (document.getElementById('cm-ac-acct').value || '').trim();
   var co   = (document.getElementById('cm-ac-co').value || '').trim();
   var acctName = (acct && acct !== 'other') ? acct : (co || 'Unknown');
   var acctKey  = CM_ACCT_KEY_MAP[acctName] || 'other';
   var newId = 'cn' + Date.now();
-  CM_CONTACTS.push({
+  var newContact = {
     id: newId,
-    fn: fn || 'Unnamed',
+    fn: fn,
     ln: ln,
     role: (document.getElementById('cm-ac-role').value || '').trim() || '—',
     email: em.value.trim(),
@@ -10594,11 +10685,43 @@ function cmAddContactSave() {
     lastTouch: 'Never',
     lastGong: 'No data',
     renewal: '',
-    note: 'Added manually · SSO ' + document.getElementById('cm-ac-sso').value + ' · SCIM ' + document.getElementById('cm-ac-scim').value
-  });
+    note: 'Added manually',
+    sso: 'Not Deployed',
+    scim: 'Not Active',
+    arr: 0,
+    lastActive: 'Never',
+    addedAt: new Date().toISOString()
+  };
+  CM_CONTACTS.push(newContact);
+  // Persist user-added contacts.
+  var stored = cmReadStoredContacts();
+  stored.push(newContact);
+  cmWriteStoredContacts(stored);
   cmCloseModal();
-  if (CM_ACTIVE === 'contacts') cmRenderContacts();
-  toast('Contact saved · ' + cmEscape((fn ? fn + ' ' + ln : em.value)) + ' · ' + cmEscape(acctName) + ' ✓');
+  // Dispatch by origin context (set when the modal was opened).
+  var ctx = CM_ADD_CONTACT_CTX || { kind:'contacts' };
+  CM_ADD_CONTACT_CTX = null;
+  if (ctx.kind === 'wizard' && CM_WIZ) {
+    if (CM_WIZ.contacts.indexOf(newId) === -1) CM_WIZ.contacts.push(newId);
+    var list = document.getElementById('cm-wiz-step2-list');
+    if (list) list.innerHTML = cmWizStep2BuildGroups();
+    var counter = document.getElementById('cm-wiz-step2-counter');
+    if (counter) counter.textContent = cmWizStep2Counter();
+  } else if (ctx.kind === 'campaign' && ctx.cmpId) {
+    var camp = CM_CAMPAIGNS.find(function(x){ return x.id === ctx.cmpId; });
+    if (camp) {
+      if (!camp.contactIds) camp.contactIds = [];
+      if (camp.contactIds.indexOf(newId) === -1) camp.contactIds.push(newId);
+      camp.contactCount = (camp.contactCount || 0) + 1;
+      var drawer = document.getElementById('cm-cv-drawer');
+      if (CM_VIEW_ID === ctx.cmpId && drawer) drawer.innerHTML = cmRenderCampaignView(ctx.cmpId);
+    }
+  } else if (ctx.kind === 'compose' && typeof ctx.cb === 'function') {
+    try { ctx.cb(newContact); } catch (_) {}
+  } else {
+    if (CM_ACTIVE === 'contacts') cmRenderContacts();
+  }
+  toast(cmEscape(fn + (ln ? ' ' + ln : '')) + ' added · ' + cmEscape(acctName) + ' ✓');
 }
 function cmToggleDD(id, ev) {
   if (ev && ev.stopPropagation) ev.stopPropagation();
@@ -10842,6 +10965,264 @@ function cmSetAnalyticsPeriod(p) { CM_ANALYTICS_PERIOD = p; cmRenderAnalytics();
 // v4.8.0 — Analytics row click → switch sub-section + open detail drawer.
 // Ignores clicks on buttons (Send →) inside the progress cell so they keep
 // their own behavior.
+// ═══════════════════════════════════════════════════════════════════════════
+// v4.11.0 — FEATURE 2: Quick Send. Bulk 1:1 emails without a campaign.
+// Each contact gets their own individual simulated send; the batch is logged
+// to QUICK_SENDS so Analytics can show it as a separate row at the bottom of
+// the performance table.
+// ═══════════════════════════════════════════════════════════════════════════
+var CM_QUICK_SENDS_KEY = 'teamos_quick_sends';
+function cmReadQuickSends() {
+  try {
+    var raw = localStorage.getItem(CM_QUICK_SENDS_KEY);
+    if (!raw) return [];
+    var arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) { return []; }
+}
+function cmWriteQuickSends(arr) {
+  try { localStorage.setItem(CM_QUICK_SENDS_KEY, JSON.stringify(arr)); } catch (e) {}
+}
+var CM_QUICK_SENDS = cmReadQuickSends();
+
+// Active Quick Send composer state (resets every time the modal opens).
+var CM_QS = null;
+
+function cmQuickSendOpen() {
+  CM_QS = { to:[], appendSig:true, subject:'', message:'' };
+  var body = ''
+    + '<div class="cm-qs-row">'
+    +   '<div class="cm-qs-row-l">To <span class="req">*</span></div>'
+    +   '<div class="cm-qs-to">'
+    +     '<div class="cm-qs-to-bx" id="cm-qs-to-bx" onclick="document.getElementById(\'cm-qs-to-input\').focus()">'
+    +       '<input class="cm-qs-to-input" id="cm-qs-to-input" type="text" autocomplete="off" placeholder="Search by name or email…" oninput="cmQsToInput(this.value)" onfocus="cmQsToInput(this.value)" onkeydown="cmQsToKeydown(event)" aria-label="Search contacts to send to">'
+    +     '</div>'
+    +     '<div class="cm-qs-to-pop" id="cm-qs-to-pop" role="listbox"></div>'
+    +   '</div>'
+    +   '<div class="cm-add-cnt-link"><button type="button" class="cm-add-cnt-btn" onclick="cmAddContactPrompt({kind:&quot;compose&quot;,cb:cmQsAddContact})"><i class="ti ti-plus"></i> Add new contact</button></div>'
+    +   '<div class="cm-qs-err" id="cm-qs-to-err" role="alert">Add at least one recipient</div>'
+    + '</div>'
+    + '<div class="cm-qs-row">'
+    +   '<div class="cm-qs-row-l">From</div>'
+    +   '<input class="cm-qs-from" type="text" value="carmen@1password.com" readonly disabled aria-label="Sending from">'
+    + '</div>'
+    + '<div class="cm-qs-row">'
+    +   '<div class="cm-qs-row-l"><label for="cm-qs-subj">Subject <span class="req">*</span></label></div>'
+    +   '<input class="cm-qs-input" id="cm-qs-subj" type="text" aria-required="true" oninput="CM_QS&&(CM_QS.subject=this.value);cmQsClearErr(\'subj\')" onkeydown="cmQsSubjKeydown(event)">'
+    +   '<div class="cm-qs-err" id="cm-qs-subj-err" role="alert">Subject is required</div>'
+    + '</div>'
+    + '<div class="cm-qs-row">'
+    +   '<div class="cm-qs-row-l"><label for="cm-qs-msg">Message <span class="req">*</span></label></div>'
+    +   '<textarea class="cm-qs-textarea" id="cm-qs-msg" aria-required="true" oninput="CM_QS&&(CM_QS.message=this.value);cmQsClearErr(\'msg\')" onkeydown="cmQsMsgKeydown(event)" placeholder="Type your message — no template, no variables. Each contact gets their own individual email."></textarea>'
+    +   '<div class="cm-qs-err" id="cm-qs-msg-err" role="alert">Message is required (10 characters minimum)</div>'
+    +   '<label class="cm-qs-sig"><input type="checkbox" id="cm-qs-sig-cb" checked onchange="CM_QS&&(CM_QS.appendSig=this.checked)"> Append signature</label>'
+    + '</div>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn prim" type="button" id="cm-qs-submit" onclick="cmQuickSendSubmit()" aria-label="Send to 0 people"><i class="ti ti-send"></i> Send to 0 people</button>';
+  cmOpenModal('Quick Send', body, foot, { wide:true });
+  // Apply the .qs class for the 560 px width.
+  var modal = document.getElementById('cm-modal');
+  if (modal) modal.classList.add('qs');
+  setTimeout(function(){ var i = document.getElementById('cm-qs-to-input'); if (i) try { i.focus(); } catch (_) {} }, 60);
+}
+
+function cmQsRenderChips() {
+  var bx = document.getElementById('cm-qs-to-bx');
+  if (!bx) return;
+  // Strip all chips then re-render before the input field.
+  bx.querySelectorAll('.cm-qs-chip').forEach(function(el){ el.remove(); });
+  var input = bx.querySelector('.cm-qs-to-input');
+  CM_QS.to.forEach(function(c){
+    var chip = document.createElement('span');
+    chip.className = 'cm-qs-chip';
+    chip.setAttribute('data-id', c.id);
+    chip.innerHTML = cmEscape(c.fn + (c.ln ? ' ' + c.ln : '') + ' · ' + c.email) + ' <button type="button" class="cm-qs-chip-x" aria-label="Remove ' + cmEscape(c.fn + ' ' + c.ln) + '" onclick="cmQsRemove(\'' + c.id + '\')">&times;</button>';
+    bx.insertBefore(chip, input);
+  });
+  cmQsUpdateSubmitLabel();
+  cmQsClearErr('to');
+}
+
+function cmQsUpdateSubmitLabel() {
+  var btn = document.getElementById('cm-qs-submit');
+  if (!btn) return;
+  var n = CM_QS ? CM_QS.to.length : 0;
+  var label = 'Send to ' + n + ' ' + (n === 1 ? 'person' : 'people');
+  btn.innerHTML = '<i class="ti ti-send"></i> ' + label;
+  btn.setAttribute('aria-label', label);
+}
+
+function cmQsToInput(v) {
+  var pop = document.getElementById('cm-qs-to-pop');
+  if (!pop) return;
+  var q = (v || '').trim().toLowerCase();
+  var pickedIds = {}; CM_QS.to.forEach(function(c){ pickedIds[c.id] = true; });
+  var matches = CM_CONTACTS.filter(function(c){
+    if (pickedIds[c.id]) return false;
+    if (c.seq === 'departed') return false;
+    if (!q) return false;
+    var name = (c.fn + ' ' + c.ln).toLowerCase();
+    return name.indexOf(q) !== -1 || (c.email || '').toLowerCase().indexOf(q) !== -1 || (c.acct || '').toLowerCase().indexOf(q) !== -1;
+  }).slice(0, 8);
+  if (!matches.length) { pop.classList.remove('on'); pop.innerHTML = ''; return; }
+  pop.innerHTML = matches.map(function(c, i){
+    return '<div class="cm-qs-to-opt' + (i === 0 ? ' kbd' : '') + '" role="option" data-id="' + c.id + '" onclick="cmQsPick(\'' + c.id + '\')"><span><b>' + cmEscape(c.fn + ' ' + c.ln) + '</b> · ' + cmEscape(c.acct) + '</span><span class="cm-qs-to-opt-em">' + cmEscape(c.email) + '</span></div>';
+  }).join('');
+  pop.classList.add('on');
+}
+function cmQsPick(id) {
+  var c = CM_CONTACTS.find(function(x){ return x.id === id; });
+  if (!c || !CM_QS) return;
+  if (!CM_QS.to.some(function(x){ return x.id === id; })) CM_QS.to.push(c);
+  var input = document.getElementById('cm-qs-to-input');
+  if (input) input.value = '';
+  var pop = document.getElementById('cm-qs-to-pop');
+  if (pop) { pop.classList.remove('on'); pop.innerHTML = ''; }
+  cmQsRenderChips();
+  if (input) try { input.focus(); } catch (_) {}
+}
+function cmQsRemove(id) {
+  if (!CM_QS) return;
+  CM_QS.to = CM_QS.to.filter(function(c){ return c.id !== id; });
+  cmQsRenderChips();
+}
+function cmQsAddContact(newContact) {
+  if (!CM_QS || !newContact) return;
+  CM_QS.to.push(newContact);
+  cmQsRenderChips();
+}
+
+function cmQsToKeydown(e) {
+  if (!CM_QS) return;
+  var pop = document.getElementById('cm-qs-to-pop');
+  var opts = pop ? Array.prototype.slice.call(pop.querySelectorAll('.cm-qs-to-opt')) : [];
+  var kbd = pop ? pop.querySelector('.cm-qs-to-opt.kbd') : null;
+  if (e.key === 'ArrowDown' && opts.length) {
+    e.preventDefault();
+    var i = kbd ? opts.indexOf(kbd) : -1;
+    opts.forEach(function(o){ o.classList.remove('kbd'); });
+    opts[(i + 1) % opts.length].classList.add('kbd');
+  } else if (e.key === 'ArrowUp' && opts.length) {
+    e.preventDefault();
+    var j = kbd ? opts.indexOf(kbd) : 0;
+    opts.forEach(function(o){ o.classList.remove('kbd'); });
+    opts[(j - 1 + opts.length) % opts.length].classList.add('kbd');
+  } else if (e.key === 'Enter') {
+    if (kbd) { e.preventDefault(); cmQsPick(kbd.getAttribute('data-id')); }
+  } else if (e.key === 'Escape') {
+    if (pop && pop.classList.contains('on')) { e.stopPropagation(); pop.classList.remove('on'); pop.innerHTML = ''; }
+  } else if (e.key === 'Backspace') {
+    var input = e.currentTarget;
+    if (input && !input.value && CM_QS.to.length) {
+      e.preventDefault();
+      CM_QS.to.pop();
+      cmQsRenderChips();
+    }
+  }
+}
+
+// Keyboard: Enter in SUBJECT moves focus to MESSAGE.
+function cmQsSubjKeydown(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    var ta = document.getElementById('cm-qs-msg');
+    if (ta) try { ta.focus(); } catch (_) {}
+  }
+}
+// Keyboard: Cmd+Enter (or Ctrl+Enter) in MESSAGE submits.
+function cmQsMsgKeydown(e) {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+    e.preventDefault();
+    cmQuickSendSubmit();
+  }
+}
+
+function cmQsClearErr(field) {
+  if (field === 'to')   { var t = document.getElementById('cm-qs-to-err');   if (t) t.classList.remove('on'); }
+  if (field === 'subj') { var s = document.getElementById('cm-qs-subj-err'); if (s) s.classList.remove('on'); var si = document.getElementById('cm-qs-subj'); if (si) si.classList.remove('err'); }
+  if (field === 'msg')  { var m = document.getElementById('cm-qs-msg-err');  if (m) m.classList.remove('on'); var mi = document.getElementById('cm-qs-msg'); if (mi) mi.classList.remove('err'); }
+}
+
+function cmQuickSendSubmit() {
+  if (!CM_QS) return;
+  var bad = false;
+  if (!CM_QS.to.length) {
+    var t = document.getElementById('cm-qs-to-err'); if (t) t.classList.add('on');
+    bad = true;
+  }
+  var subj = document.getElementById('cm-qs-subj');
+  var subjVal = (subj && subj.value || '').trim();
+  if (!subjVal) {
+    if (subj) subj.classList.add('err');
+    var se = document.getElementById('cm-qs-subj-err'); if (se) se.classList.add('on');
+    bad = true;
+  }
+  var msg = document.getElementById('cm-qs-msg');
+  var msgVal = (msg && msg.value || '').trim();
+  if (msgVal.length < 10) {
+    if (msg) msg.classList.add('err');
+    var me = document.getElementById('cm-qs-msg-err'); if (me) me.classList.add('on');
+    bad = true;
+  }
+  if (bad) {
+    if (!CM_QS.to.length) { var ti = document.getElementById('cm-qs-to-input'); if (ti) try { ti.focus(); } catch (_) {} }
+    else if (!subjVal && subj) { try { subj.focus(); } catch (_) {} }
+    else if (msg) { try { msg.focus(); } catch (_) {} }
+    return;
+  }
+  var record = {
+    id: 'qs' + Date.now(),
+    subject: subjVal,
+    message: msgVal,
+    appendSig: !!CM_QS.appendSig,
+    contacts: CM_QS.to.map(function(c){ return { id:c.id, email:c.email, name:(c.fn + ' ' + c.ln).trim() }; }),
+    ts: new Date().toISOString(),
+    sent: CM_QS.to.length
+  };
+  CM_QUICK_SENDS.unshift(record);
+  cmWriteQuickSends(CM_QUICK_SENDS);
+  var n = record.sent;
+  cmCloseModal();
+  // Reset modal-specific styling so the next cmOpenModal caller doesn't inherit .qs width.
+  var modal = document.getElementById('cm-modal');
+  if (modal) modal.classList.remove('qs');
+  toast('Sent to ' + n + ' contact' + (n === 1 ? '' : 's') + ' · Logged in Gainsight ✓');
+  CM_QS = null;
+  // Re-render Analytics so the new Quick Sends row picks up the latest count.
+  if (CM_ACTIVE === 'analytics') cmRenderAnalytics();
+}
+
+// Close the typeahead popover on any outside click.
+document.addEventListener('click', function(ev){
+  var pop = document.getElementById('cm-qs-to-pop');
+  if (pop && pop.classList.contains('on') && !ev.target.closest('.cm-qs-to')) {
+    pop.classList.remove('on');
+    pop.innerHTML = '';
+  }
+});
+
+// v4.11.0 — Quick Send Details: lightweight modal summarising the most recent
+// send + a list of all logged Quick Sends. Stays a modal (not a drawer) so we
+// don't compete with cm-cv-drawer for the same surface.
+function cmQuickSendDetails(ev) {
+  if (ev && ev.target && ev.target.tagName === 'BUTTON' && ev.target.classList.contains('cm-btn-prim')) return;
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  if (!CM_QUICK_SENDS || !CM_QUICK_SENDS.length) { toast('No Quick Sends yet'); return; }
+  var rowsHtml = CM_QUICK_SENDS.map(function(r){
+    var when = '';
+    try { when = new Date(r.ts).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }); } catch (e) {}
+    return '<tr><td><b>' + cmEscape(r.subject) + '</b></td><td>' + cmEscape(when) + '</td><td>' + r.sent + '</td></tr>';
+  }).join('');
+  var body = ''
+    + '<table class="cm-cnt-tbl" style="margin-top:4px">'
+    +   '<thead><tr><th>Subject</th><th>When</th><th>Recipients</th></tr></thead>'
+    +   '<tbody>' + rowsHtml + '</tbody>'
+    + '</table>';
+  var foot = '<button class="cm-btn" type="button" onclick="cmCloseModal()">Close</button>';
+  cmOpenModal('Quick Send history', body, foot);
+}
+
 function cmAnalyticsRowClick(id, ev) {
   if (ev && ev.target && ev.target.tagName === 'BUTTON') return;
   cmShowSection('campaigns');
@@ -10872,6 +11253,23 @@ function cmRenderAnalytics() {
     return '<tr tabindex="0" style="cursor:pointer" onclick="cmAnalyticsRowClick(\'' + id + '\',event)" onkeydown="if(event.key===\'Enter\'){cmAnalyticsRowClick(\'' + id + '\',event)}"><td><b>' + cmEscape(r.nm) + '</b></td><td>' + r.type + '</td><td>' + r.sent + '</td><td>' + openTxt + '</td><td>' + replyTxt + '</td><td>' + unsubTxt + '</td><td>' + progress + '</td></tr>';
   }).join('');
   if (!rowsHtml) rowsHtml = '<tr><td colspan="7" style="text-align:center;padding:14px;color:#6B7280;font-style:italic">No campaigns sent in this period.</td></tr>';
+  // v4.11.0 — FEATURE 2: append a "Quick Sends" aggregated row at the bottom
+  // when any Quick Send records exist. Subject of the most recent send is
+  // surfaced as the campaign name. "Open: —" and "Reply: —" reflect that
+  // individual 1:1 sends aren't tracked in the demo data layer.
+  if (CM_QUICK_SENDS && CM_QUICK_SENDS.length) {
+    var sentTotal = CM_QUICK_SENDS.reduce(function(s, r){ return s + (r.sent || 0); }, 0);
+    var latest = CM_QUICK_SENDS[0];
+    var when = '';
+    try {
+      // v4.11.0 — separate var name (qsDate) so we don't shadow the outer
+      // `d` that holds the analytics-period dataset and is read below.
+      var qsDate = new Date(latest.ts);
+      when = qsDate.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    } catch (e) {}
+    var qsLabel = 'Quick Sends' + (when ? ' · ' + when : '');
+    rowsHtml += '<tr class="qs-row" tabindex="0" data-qs="1" onclick="cmQuickSendDetails(event)" onkeydown="if(event.key===\'Enter\'){cmQuickSendDetails(event)}" style="cursor:pointer"><td><b>' + cmEscape(qsLabel) + '</b></td><td>1:1 / Quick Send</td><td>' + sentTotal + '</td><td>—</td><td>—</td><td>—</td><td><button class="cm-btn" type="button" onclick="event.stopPropagation();cmQuickSendDetails(event)" style="font-size:10px;padding:4px 8px">Details &rarr;</button></td></tr>';
+  }
   sec.innerHTML = ''
     + '<div class="cm-hd">'
     +   '<div class="cm-hd-t">📊 Analytics — Campaign Performance</div>'
@@ -11007,6 +11405,8 @@ function cmWizStep2(body) {
     + '</div>'
     + '<input class="cm-wiz-search" type="text" id="cm-wiz-search" placeholder="🔍 Search contacts by name or company" value="' + cmEscape(CM_WIZ.filterSearch) + '" oninput="cmWizSearchInput(this.value)" aria-label="Search contacts">'
     + '<div id="cm-wiz-step2-list">' + cmWizStep2BuildGroups() + '</div>'
+    // v4.11.0 — inline [+ Add contact] (FEATURE 1, Location 1)
+    + '<div class="cm-add-cnt-link"><span>Don&rsquo;t see someone?</span> <button type="button" class="cm-add-cnt-btn" onclick="cmAddContactPrompt({kind:&quot;wizard&quot;})"><i class="ti ti-plus"></i> Add contact</button></div>'
     + '<div style="margin-top:12px"><span class="cm-wiz-counter" id="cm-wiz-step2-counter">' + cmWizStep2Counter() + '</span></div>';
 }
 // v4.8.0 — Group-list HTML factored out so the search input can re-render

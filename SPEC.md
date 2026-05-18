@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.10.0
+**Version:** 4.11.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,54 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.11.0] — 2026-05-18
+
+Two additive Campaign Manager features. **Result: 145/145 chromium tests passing.** No structural changes — both features piggyback on the existing `#cm-modal-ov` chrome.
+
+### Added
+
+**FEATURE 1 — Inline `[+ Add contact]` everywhere email flows exist.** A single shared modal component, opened with `cmAddContactPrompt(ctx)`, surfaces from four locations:
+1. **Wizard Step 2 audience picker** — a "Don't see someone? `[+ Add contact]`" line below the grouped contact list. Saves with `ctx={kind:'wizard'}` so the new contact is pre-checked and the list re-renders without re-running Step 2.
+2. **Contacts tab header** — the existing `Add Contact` button (the FIX 7 alias from v4.8.0) now routes to the lightweight modal too.
+3. **Campaign detail drawer** — `[+ Add contact to this campaign]` below the contacts table. Saves with `ctx={kind:'campaign', cmpId}` so the contact is pushed into `camp.contactIds`, `contactCount` bumps, and the drawer re-renders.
+4. **Compose flows (Quick Send TO field)** — `[+ Add new contact]` below the recipient field. Saves with `ctx={kind:'compose', cb}` so the new contact's email auto-populates the TO list via the callback.
+
+Modal fields: First name (required, aria-required), Last name, Email (required, aria-required), Company, Account (`<select>` of known accounts + `Other / not in system`), Role. Inline `role="alert"` errors fire on blank submit for both required fields. `role="dialog"` + `aria-modal="true"` are inherited from `#cm-modal`. New contacts persist to `localStorage.teamos_contacts` and hydrate back into `CM_CONTACTS` on script load (deduped by id). Toast: `[First Last] added · [Account] ✓`.
+
+**FEATURE 2 — Quick Send (`✉ Quick Send`).** A 560 px modal opened from a new button next to `[+ New Campaign]` in the Campaigns sub-section header. Lets the CSM blast individual emails to multiple contacts without going through the wizard.
+
+Fields:
+- **TO**: typeahead-search chip-picker over `CM_CONTACTS`. Departed contacts excluded. Backspace on empty input pops the last chip. ArrowUp/Down/Enter pick a result. Up to 8 matches shown at a time.
+- **FROM**: read-only `carmen@1password.com`.
+- **SUBJECT**: required (`aria-required`); `Enter` moves focus to MESSAGE.
+- **MESSAGE**: required, 10 char min (`aria-required`); `Cmd+Enter` / `Ctrl+Enter` submits.
+- **Append signature** checkbox (default checked, pulls from the existing `teamos_signature` localStorage value when the signature is appended at simulated-send time).
+
+Submit button label and `aria-label` update live: `Send to 1 person` / `Send to N people` / `Send to 0 people` while empty. On submit:
+1. Validation fires inline errors via `role="alert"` for each missing field; the field with the first error receives focus.
+2. The record is unshifted into `CM_QUICK_SENDS` (in-memory + `localStorage.teamos_quick_sends`).
+3. Toast: `Sent to N contacts · Logged in Gainsight ✓`.
+4. Modal closes; `.qs` width class is cleared on `cmCloseModal`.
+
+A new bottom row in the **Analytics → Per-campaign performance** table renders the aggregated total when any Quick Sends exist:
+> `Quick Sends · May 18 · 3 sent · — · — · — · [Details →]`
+
+Clicking the row (or the `Details →` button) opens a Quick Send history modal listing every record (subject + timestamp + recipient count).
+
+### Engineering notes
+- The shared modal mounts into the existing `#cm-modal-ov` chrome (hoisted out of `#tab-campaign` to body-level in v4.9.0). `CM_ADD_CONTACT_CTX` carries the origin context across the open → save lifecycle so a single save handler can dispatch four different post-save behaviors.
+- `CM_QS` holds the in-flight Quick Send composer state (chips, subject, message, signature flag) and resets on every open / close. The typeahead popover positions absolute under the chip bar; an outside-click handler dismisses it.
+- The Quick Sends Analytics row build initially shadowed the outer `var d = CM_ANALYTICS_DATA[...]` with `var d = new Date(latest.ts)`. JS function-scoped var hoisting made `d` reference the Date object when `sec.innerHTML` was assembled, blowing up at `d.sent.toLocaleString()`. Caught by the new FEATURE 2 Analytics test; the inner variable was renamed `qsDate`.
+
+### Test coverage
+- **145 / 145 chromium passing** (was 129 in v4.10.0). 17 new tests under a `v4.11.0 Campaign Manager features` describe — three modal-shape tests for FEATURE 1 + one location test per entry point + 9 Quick Send tests covering keyboard, typeahead, validation, persistence, Analytics row, and Escape close.
+- Existing `Add Contact save validates required Email then persists` test was updated to also fill `#cm-ac-fn` (First name is now required per spec).
+
+### Spec label
+Shipped as `[4.11.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 
