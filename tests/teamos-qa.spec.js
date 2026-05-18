@@ -3425,12 +3425,10 @@ test.describe('v4.21.0 Recipe for Success overhaul', () => {
 
   test('Section 1: header carries Retention $127K + Growth $32K, both targets, gaps', async ({ page }) => {
     const txt = await page.locator('.rcp-bonus').textContent();
-    expect(txt).toMatch(/\$127K committed/);
-    expect(txt).toMatch(/\$150K target/);
-    expect(txt).toMatch(/−\$23K gap/);
-    expect(txt).toMatch(/\$32K closed/);
-    expect(txt).toMatch(/\$650K target/);
-    expect(txt).toMatch(/−\$618K gap/);
+    expect(txt).toMatch(/\$127K \/ \$150K/);
+    expect(txt).toMatch(/−\$23K · 6 wks/);
+    expect(txt).toMatch(/\$32K \/ \$650K/);
+    expect(txt).toMatch(/−\$618K · 7 mo/);
   });
 
   test('Section 1: navigation buttons route to Forecasting Pipeline', async ({ page }) => {
@@ -3451,7 +3449,27 @@ test.describe('v4.21.0 Recipe for Success overhaul', () => {
     await page.evaluate(() => buildRecipe());
     await page.waitForTimeout(150);
     const txt = await page.locator('.rcp-bonus').textContent();
-    expect(txt).toMatch(/\$113K committed/);
+    expect(txt).toMatch(/\$113K \/ \$150K/);
+  });
+
+  // v4.21.1 — slim-bar redesign: max 56px, flush bottom border, no card.
+  test('Section 1: bonus bar is a slim flush strip (≤56px, no card border-radius)', async ({ page }) => {
+    const metrics = await page.evaluate(() => {
+      const el = document.querySelector('.rcp-bonus');
+      const cs = getComputedStyle(el);
+      return {
+        height: el.getBoundingClientRect().height,
+        radius: cs.borderTopLeftRadius,
+        borderLeft: cs.borderLeftWidth,
+        borderBottom: cs.borderBottomWidth,
+        syncTxt: document.querySelector('.rcp-bonus-sync').textContent.trim()
+      };
+    });
+    expect(metrics.height).toBeLessThanOrEqual(56);
+    expect(metrics.radius).toBe('0px');
+    expect(metrics.borderLeft).toBe('0px');
+    expect(metrics.borderBottom).toBe('1px');
+    expect(metrics.syncTxt).toBe('Synced · auto-updates');
   });
 
   // ── Section 2: Score → bonus translation ─────────────────────────────────

@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.21.0
+**Version:** 4.21.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,19 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.21.1] — 2026-05-18
+
+UX polish on the Recipe for Success Bonus Targets panel. **Result: 302/302 chromium tests passing.**
+
+### Changed
+
+- **UX**: Bonus Targets bar redesigned as a slim single-row strip, max 56px height, flush with the page (no card border-radius, no thick teal left border, no shadow). Background is `var(--surf)` with a 1px bottom border only.
+- Layout: one row with two groups separated by a subtle 1px vertical divider — `🎯 Retention  $127K / $150K  −$23K · 6 wks  |  📈 Growth  $32K / $650K  −$618K · 7 mo` — followed by two text-link actions (`View Forecast →` / `View Pipeline →`) and a right-aligned `Synced · auto-updates` label.
+- Typography: numbers 15px / weight 600, labels 10px uppercase muted, gap text 12px (red only when negative — no pills or badges), action links 12px, sync label 10px muted gray.
+- `sr-only` spans preserve "Retention bonus:" / "Growth bonus:" labels for screen readers; emoji + uppercase label stays `aria-hidden`.
 
 ---
 
