@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.12.0
+**Version:** 4.13.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,42 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.13.0] — 2026-05-18
+
+Risk & Signals QA audit — 6 fixes + 1 enhancement. **Result: 178/178 chromium tests passing.**
+
+### Fixed
+
+**FIX 1 — Ghost-Buster now opens an in-tab drawer overlay from all 3 locations.** Previously `rsOpenGB` switched to the Dashboard tab and swapped the Mission Briefing into a `view-{acct}` panel — the user reported this as "navigates to CSM Dashboard" because the visual context shift was indistinguishable from a route change. New behavior: a body-level `<aside id="gb-drawer" role="dialog" aria-modal="true">` slides in from the right (520 px wide, z-index 9101 over its overlay), and `gbDrawerOpen(acct)` clones the existing `#view-{acct} .rp-scroll` content into the drawer so all the rich Ghost-Buster wizard content (Situation Read, 3-touch sequences, channel selection, editable email drafts, signature panel) renders unchanged. All three call sites — All Signals signal 3, Champions NovaVault "View Ghost-Buster", Dark Zone Meridian/Creston/Apex — and the Forecasting Pipeline action button + Silent Accounts row + `window.openGhostBuster` alias all route through the same drawer. Escape closes; focus returns to the trigger element. The legacy `openGhostBusterFromPopover` (used by the pulse-strip dark popover) keeps its in-dashboard panel-swap behavior so that flow still works.
+
+**FIX 2 — "Open Save Strategy" in All Signals opens the Save Strategy drawer.** The All Signals row's `rsSigAction('save', acct, id)` routes through `rsOpenSave` → `openAgentDrawer('save', acct)` and the agent drawer opens correctly. A new test asserts that the All Signals NovaVault row opens the drawer with the Save Strategy title and keeps the CSM on the Risk & Signals tab.
+
+**FIX 3 — Escalate to TL reworded.** `rsPlayEscalate` now toasts `Situation brief sent to Team Lead · [Account] · Escalation summary attached ✓` instead of the previous `· Dust summary attached ✓`. The handler has been wired since v4.9.0; the QA audit report likely reflected the prior misleading wording.
+
+**FIX 4 — Risk Matrix snapshot restored to a right-side slide-over.** The previous `rs-mx-split` grid (`1fr 320px`) put the snapshot in the right column on wide viewports but collapsed to inline below the chart at the `<= 1100 px` breakpoint — the user-reported regression. The detail panel is now a fixed-position `<aside id="rs-mx-snap">` mounted at body level (360 px wide, sticky from `top:88px`) that slides in on bubble click. The matrix chart now occupies the full content width permanently — the snapshot can never push it off-screen. `rsMxSelect` opens the slide-over and remembers the triggering bubble; Escape closes and returns focus.
+
+**FIX 5 — "Generate Save Deck" fires a distinct Dust-deck toast.** The Save Strategy drawer footer's `deck-sec` button now invokes a new `rsFireSaveDeckToast(acct)` helper before opening the deck progress modal: `Save deck generating · [Account name] · Dust is building your slides ✓`. Distinct from the `Push to Gainsight` Gainsight-CTA toast.
+
+**FIX 6 — KPI portfolio bar moved above the matrix chart.** The `.rs-portfolio` block (4 cells: at-risk count + dark zone count + healthy count + total ARR) is now rendered between the section header and the chart. The 10-second portfolio read justifies the whole tab and is now the first thing visible. A new layout test asserts the portfolio bar's bounding-rect top is above the matrix chart's.
+
+### Enhancement
+
+**Auto-expand in-progress Save Play step.** On `rsRenderPlays()` (first call per session), every play scans its steps for an `s === 'in-prog'` entry with a `body` field and sets `RS_PLAY_STEP_OPEN[acct][stepNum] = true` BEFORE building the cards — so the HTML renders with `aria-expanded="true"` + `.on` directly. `RS_PLAY_AUTO_EXPANDED[acct]` flag prevents re-expansion on subsequent renders, so a manual collapse by the CSM is honored. NovaVault Step 2 (Cold intro to Michael Torres) and Brightex Step 3 (Draft SLA response) both auto-expand on load.
+
+### Engineering notes
+- `#gb-drawer` clones `view-{acct}` content rather than moving it so the dashboard's own Mission Briefing flow (via `openPanel`/`openGhostBusterFromPopover`) still works for the pulse-strip dark popover.
+- The `rs-mx-detail` id moved from an inline grid column into the `<div class="rs-mx-snap-body">` body-level node. `rsMxRenderDetail` is unchanged — `getElementById('rs-mx-detail')` still resolves.
+- The pre-existing v4.9.0 FIX 4 test for Escalate wording was updated to assert the new spec phrase; the v4.9.0 FIX 10 step-toggle tests were updated to target a non-auto-expanded step (Brightex Step 4 pending) so the toggle assertion still flips false → true.
+- Three tests that previously asserted Ghost-Buster opens `view-{acct}` on the Dashboard were updated to assert `#gb-drawer.on` instead.
+
+### Test coverage
+- **178 / 178 chromium passing** (was 164 in v4.12.0). 14 new tests under a `v4.13.0 Risk & Signals audit fixes` describe — 6 FIX 1 tests (drawer markup + 3 entry points + Escape + content), 1 FIX 2 test, 1 FIX 3 wording test, 2 FIX 4 tests (slide-over open + Escape), 1 FIX 5 toast test, 1 FIX 6 layout test, 2 enhancement tests (auto-expand + manual-collapse-persists).
+
+### Spec label
+Shipped as `[4.13.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 

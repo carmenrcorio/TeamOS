@@ -2421,6 +2421,38 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .fc-acct-drawer-acts{display:flex;flex-direction:column;gap:7px}
 
 /* ═════════════════════════════════════════════════════════════════════════
+   v4.13.0 — Ghost-Buster drawer (FIX 1)
+   Fixed right-side overlay. Mounts cloned view-{acct} content via
+   gbDrawerOpen(acct). Visible above its overlay (z-index 9101 > 9100)
+   so clicks inside the drawer never fall through.
+   ═════════════════════════════════════════════════════════════════════════ */
+.gb-drawer-ov{position:fixed;inset:0;background:rgba(17,24,39,.45);z-index:9100;display:none}
+.gb-drawer-ov.on{display:block}
+.gb-drawer{position:fixed;top:0;right:0;width:520px;max-width:100vw;height:100vh;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;z-index:9101}
+.gb-drawer.on{transform:translateX(0)}
+.gb-drawer-hd{padding:14px 22px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.gb-drawer-hd-l{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.gb-drawer-t{font-size:15px;font-weight:800;color:#111827;letter-spacing:-.01em;display:flex;align-items:center;gap:7px}
+.gb-drawer-sub{font-size:11px;color:#374151;font-weight:600;line-height:1.5}
+.gb-drawer-x{font-family:inherit;font-size:22px;line-height:1;background:transparent;border:none;color:#6B7280;cursor:pointer;padding:4px 8px;border-radius:5px;min-width:44px;min-height:44px}
+.gb-drawer-x:hover{background:var(--surf2);color:var(--tx)}
+.gb-drawer-x:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.gb-drawer-body{flex:1;overflow-y:auto;padding:18px 22px}
+
+/* v4.13.0 — Risk Matrix snapshot panel slides in from the right (FIX 4).
+   Replaces the inline grid layout so the matrix retains full width and
+   the snapshot can be reached without scrolling. */
+.rs-mx-snap-ov{position:fixed;inset:0;background:rgba(17,24,39,.25);z-index:9090;display:none;pointer-events:none}
+.rs-mx-snap-ov.on{display:block;pointer-events:none}
+.rs-mx-snap{position:fixed;top:88px;right:0;bottom:0;width:360px;max-width:100vw;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 28px rgba(0,0,0,.14);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s ease;z-index:9092}
+.rs-mx-snap.on{transform:translateX(0)}
+body.offline .rs-mx-snap{top:124px}
+.rs-mx-snap-hd{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-shrink:0}
+.rs-mx-snap-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.rs-mx-snap-x{font-family:inherit;font-size:20px;line-height:1;background:transparent;border:none;color:#6B7280;cursor:pointer;padding:4px 8px;border-radius:5px;min-width:36px;min-height:36px}
+.rs-mx-snap-x:hover{background:var(--surf2);color:var(--tx)}
+
+/* ═════════════════════════════════════════════════════════════════════════
    v4.1.0 — Risk & Signals (replaces Coming Soon for #tab-risk)
    ═════════════════════════════════════════════════════════════════════════ */
 .rs-pg{padding:20px 28px 40px;max-width:1400px;margin:0 auto}
@@ -4131,6 +4163,34 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 <div class="fc-acct-drawer-ov" id="fc-acct-drawer-ov" onclick="fcCloseAcctDrawer(event)" aria-hidden="true"></div>
 <aside class="fc-acct-drawer" id="fc-acct-drawer" role="dialog" aria-modal="true" aria-label="Account snapshot" aria-hidden="true"></aside>
 
+<!-- v4.13.0 — Risk Matrix snapshot slide-over (FIX 4). Restores the
+     right-panel layout by lifting the rs-mx-detail out of the inline grid
+     and into a fixed-position 360px slide-over so the matrix always
+     remains fully visible while the snapshot is open. -->
+<aside class="rs-mx-snap" id="rs-mx-snap" role="region" aria-label="Account snapshot" aria-hidden="true">
+  <div class="rs-mx-snap-hd">
+    <div style="font-size:11px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em">Account snapshot</div>
+    <button class="rs-mx-snap-x" type="button" onclick="rsMxSnapClose()" aria-label="Close account snapshot">&times;</button>
+  </div>
+  <div class="rs-mx-snap-body" id="rs-mx-detail"></div>
+</aside>
+
+<!-- v4.13.0 — Ghost-Buster drawer (FIX 1). The pre-existing view-{acct}
+     content lives inside #tab-dash. The drawer clones that content on
+     open so the CSM can run the Ghost-Buster wizard without leaving
+     whichever tab they're on (Risk & Signals, Forecasting, etc.). -->
+<div class="gb-drawer-ov" id="gb-drawer-ov" onclick="gbDrawerClose(event)" aria-hidden="true"></div>
+<aside class="gb-drawer" id="gb-drawer" role="dialog" aria-modal="true" aria-labelledby="gb-drawer-title" aria-hidden="true">
+  <div class="gb-drawer-hd">
+    <div class="gb-drawer-hd-l">
+      <div class="gb-drawer-t" id="gb-drawer-title"><i class="ti ti-ghost" style="color:var(--rd)"></i> Ghost-Buster</div>
+      <div class="gb-drawer-sub" id="gb-drawer-sub">—</div>
+    </div>
+    <button class="gb-drawer-x" type="button" onclick="gbDrawerClose()" aria-label="Close Ghost-Buster drawer">&times;</button>
+  </div>
+  <div class="gb-drawer-body" id="gb-drawer-body"></div>
+</aside>
+
 <!-- v4.9.0 — Slide-over panel reused by top-bar KPI buttons (FIX 6).
      role=dialog, aria-modal="false" because this layer is non-blocking
      (the user can still click the underlying tabs). Escape closes via
@@ -4789,6 +4849,13 @@ function toast(msg) {
 // First open layer Escape consumes is what closes; nothing further fires.
 document.addEventListener('keydown', function(e){
   if (e.key !== 'Escape') return;
+  // v4.13.0 — Ghost-Buster drawer has the highest Escape precedence because
+  // it's the topmost overlay when open.
+  var gbDrawer = document.getElementById('gb-drawer');
+  if (gbDrawer && gbDrawer.classList.contains('on') && typeof gbDrawerClose === 'function') { gbDrawerClose(); e.preventDefault(); return; }
+  // v4.13.0 — Risk Matrix snapshot slide-over.
+  var mxSnap = document.getElementById('rs-mx-snap');
+  if (mxSnap && mxSnap.classList.contains('on') && typeof rsMxSnapClose === 'function') { rsMxSnapClose(); e.preventDefault(); return; }
   // v4.9.0 — Slide-over panel (top-bar KPI Tasks / Overdue CTAs) has highest
   // Escape precedence because it sits above the rest of the chrome.
   var slideOv = document.getElementById('rs-slide-ov');
@@ -7383,7 +7450,10 @@ function openAgentDrawer(type, acct) {
       } else if (f.a === 'deck-sec') {
         // v2.12.0 — outlined variant for the NovaVault Save Deck footer button.
         // Same height/padding/flex as the toast-style secondary button.
-        ftHtml += '<button class="dr-ft-btn sec" type="button" onclick="openDeckModal(\'' + acct + '\');closeDrawer()" style="font-size:12px;font-weight:600;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2);flex:1">' + f.l + '</button>';
+        // v4.13.0 — FIX 5: fire the distinct Dust deck toast (not the generic
+        // Gainsight CTA toast) so the action reads correctly in the activity
+        // feed and in any QA audit observing the toast text.
+        ftHtml += '<button class="dr-ft-btn sec" type="button" onclick="rsFireSaveDeckToast(\'' + acct + '\');openDeckModal(\'' + acct + '\');closeDrawer()" style="font-size:12px;font-weight:600;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2);flex:1">' + f.l + '</button>';
       } else {
         var safe = (f.a || '').replace(/'/g, "\\'");
         ftHtml += '<button class="dr-ft-btn sec" type="button" onclick="toast(\'' + safe + '\');closeDrawer()" style="font-size:12px;font-weight:600;padding:11px;border-radius:var(--r);cursor:pointer;font-family:inherit;background:var(--surf2);color:var(--tx);border:1px solid var(--bd2);flex:1">' + f.l + '</button>';
@@ -9075,6 +9145,16 @@ function setDrawerMode(mode, opts) {
 }
 
 var _deckTimer = null;
+// v4.13.0 — FIX 5: shared toast helper invoked by the Save Strategy drawer's
+// "Generate Save Deck" footer button. Distinct from the Gainsight CTA toast
+// fired by "Push to Gainsight". Maps the acct key to the readable name used
+// in the rest of the Risk & Signals copy.
+var RS_DECK_ACCT_NAMES = { acme:'Acme Corp', brightex:'Brightex Inc', nova:'NovaVault', meridian:'Meridian Health Systems', creston:'Creston Software', apex:'Apex Dynamics' };
+function rsFireSaveDeckToast(acct) {
+  var nm = RS_DECK_ACCT_NAMES[acct] || acct;
+  toast('Save deck generating &middot; ' + nm + ' &middot; Dust is building your slides ✓');
+}
+
 function openDeckModal(acct) {
   var titles = { acme:'Building your QBR deck', brightex:'Building your Risk Review deck', nova:'Building your NovaVault Save Deck' };
   var names = {acme:'QBR Builder agent · Powered by Dust API',brightex:'Risk Review Builder · Powered by Dust API',nova:'Save Deck Builder · Emergency retention build'};
@@ -12409,38 +12489,38 @@ function rsRenderMatrix() {
   var healthy= RS_ACCOUNTS.filter(function(a){return a.band === 'g';});
   var sumARR = function(arr){ return arr.reduce(function(s,a){return s + a.arr;}, 0); };
   var totalARR = sumARR(RS_ACCOUNTS);
+  // v4.13.0 — FIX 6: KPI portfolio bar lifted ABOVE the matrix chart so it's
+  // the first thing visible in the section (10-second portfolio read).
+  // FIX 4: rs-mx-detail moved out of an inline grid column into a fixed
+  // right-side slide-over (mounted at body level). The matrix now occupies
+  // the full content width and stays visible while the snapshot is open.
   sec.innerHTML = ''
     + '<div class="rs-hd"><div class="rs-hd-t">⚡ Risk Matrix</div><div class="rs-hd-meta">' + RS_ACCOUNTS.length + ' accounts · Health × Days to Renewal</div></div>'
-    + '<div class="rs-mx-split">'
-    +   '<div>'
-    +     '<div class="rs-mx-wrap">'
-    +       '<div class="rs-mx-l">Health score (0–100) vs. days to renewal (0–120)</div>'
-    +       '<div class="rs-mx" style="margin-left:30px;margin-bottom:24px">'
-    +         '<div class="rs-mx-grid"></div>'
-    +         '<div class="rs-mx-quad tl">⚠ Watch</div>'
-    +         '<div class="rs-mx-quad tr">✓ Stable</div>'
-    +         '<div class="rs-mx-quad bl">⚡ Act Now</div>'
-    +         '<div class="rs-mx-quad br">👁 Monitor</div>'
-    +         dots
-    +         '<span class="rs-mx-axis y-max">100</span>'
-    +         '<span class="rs-mx-axis y-mid">50</span>'
-    +         '<span class="rs-mx-axis y-min">0</span>'
-    +         '<span class="rs-mx-axis x-min">0d</span>'
-    +         '<span class="rs-mx-axis x-mid">60d</span>'
-    +         '<span class="rs-mx-axis x-max">120d+</span>'
-    +       '</div>'
-    +       '<div class="rs-mx-axis-x" style="margin-left:30px">Days to renewal →</div>'
-    +       '<div class="rs-mx-legend"><span class="rs-mx-legend-d r">Critical</span><span class="rs-mx-legend-d a">At-Risk</span><span class="rs-mx-legend-d g">Healthy</span><span class="rs-mx-legend-d gy">Unknown (dark)</span><span style="color:#6B7280">· Circle size = ARR</span></div>'
-    +       '<div class="rs-trend-key" aria-label="Health trend key"><span class="rs-trend-key-l">Trend</span><span class="rs-trend-key-i up"><b>↑</b> Improving</span><span class="rs-trend-key-i flat"><b>→</b> Stable</span><span class="rs-trend-key-i down"><b>↓</b> Declining</span><span class="rs-trend-key-i dd"><b>↓↓</b> Sharp decline</span><span class="rs-trend-key-i un"><b>?</b> Unknown (dark)</span><span style="color:#6B7280">· Red dashed ring = at-risk warning</span></div>'
-    +     '</div>'
-    +   '</div>'
-    +   '<div class="rs-mx-detail" id="rs-mx-detail"></div>'
-    + '</div>'
     + '<div class="rs-portfolio">'
     +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Total accounts at risk</div><div class="rs-portfolio-v r">' + atRisk.length + '</div><div class="rs-portfolio-sub">$' + sumARR(atRisk) + 'K ARR</div></div>'
     +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Dark zone</div><div class="rs-portfolio-v gy">' + dark.length + '</div><div class="rs-portfolio-sub">$' + sumARR(dark) + 'K ARR</div></div>'
     +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Healthy</div><div class="rs-portfolio-v g">' + healthy.length + '</div><div class="rs-portfolio-sub">$' + sumARR(healthy) + 'K ARR</div></div>'
     +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Total ARR managed</div><div class="rs-portfolio-v">$' + totalARR + 'K</div><div class="rs-portfolio-sub">' + RS_ACCOUNTS.length + ' accounts</div></div>'
+    + '</div>'
+    + '<div class="rs-mx-wrap" style="margin-top:14px">'
+    +   '<div class="rs-mx-l">Health score (0–100) vs. days to renewal (0–120)</div>'
+    +   '<div class="rs-mx" style="margin-left:30px;margin-bottom:24px">'
+    +     '<div class="rs-mx-grid"></div>'
+    +     '<div class="rs-mx-quad tl">⚠ Watch</div>'
+    +     '<div class="rs-mx-quad tr">✓ Stable</div>'
+    +     '<div class="rs-mx-quad bl">⚡ Act Now</div>'
+    +     '<div class="rs-mx-quad br">👁 Monitor</div>'
+    +     dots
+    +     '<span class="rs-mx-axis y-max">100</span>'
+    +     '<span class="rs-mx-axis y-mid">50</span>'
+    +     '<span class="rs-mx-axis y-min">0</span>'
+    +     '<span class="rs-mx-axis x-min">0d</span>'
+    +     '<span class="rs-mx-axis x-mid">60d</span>'
+    +     '<span class="rs-mx-axis x-max">120d+</span>'
+    +   '</div>'
+    +   '<div class="rs-mx-axis-x" style="margin-left:30px">Days to renewal →</div>'
+    +   '<div class="rs-mx-legend"><span class="rs-mx-legend-d r">Critical</span><span class="rs-mx-legend-d a">At-Risk</span><span class="rs-mx-legend-d g">Healthy</span><span class="rs-mx-legend-d gy">Unknown (dark)</span><span style="color:#6B7280">· Circle size = ARR</span></div>'
+    +   '<div class="rs-trend-key" aria-label="Health trend key"><span class="rs-trend-key-l">Trend</span><span class="rs-trend-key-i up"><b>↑</b> Improving</span><span class="rs-trend-key-i flat"><b>→</b> Stable</span><span class="rs-trend-key-i down"><b>↓</b> Declining</span><span class="rs-trend-key-i dd"><b>↓↓</b> Sharp decline</span><span class="rs-trend-key-i un"><b>?</b> Unknown (dark)</span><span style="color:#6B7280">· Red dashed ring = at-risk warning</span></div>'
     + '</div>';
   rsMxRenderDetail();
 }
@@ -12448,12 +12528,38 @@ function rsRenderMatrix() {
 // `.sel` directly + repainting only the detail panel keeps the buttons in
 // the panel from being torn down between mousedown / click, which was the
 // source of the "Open Save Strategy needs two clicks" bug.
+// v4.13.0 — FIX 4: also opens the right-side snapshot slide-over so the
+// matrix stays fully visible.
+var _rsMxSnapTrigger = null;
 function rsMxSelect(key) {
   RS_MX_SEL = key;
   document.querySelectorAll('#rs-sec-matrix .rs-mx-dot').forEach(function(d){
     d.classList.toggle('sel', d.getAttribute('data-acct') === key);
   });
   rsMxRenderDetail();
+  // Remember the trigger so Escape returns focus to the clicked bubble.
+  try {
+    if (document.activeElement && document.activeElement.classList.contains('rs-mx-dot')) {
+      _rsMxSnapTrigger = document.activeElement;
+    }
+  } catch (_) {}
+  rsMxSnapOpen();
+}
+function rsMxSnapOpen() {
+  var snap = document.getElementById('rs-mx-snap');
+  if (!snap) return;
+  snap.classList.add('on');
+  snap.setAttribute('aria-hidden', 'false');
+}
+function rsMxSnapClose() {
+  var snap = document.getElementById('rs-mx-snap');
+  if (!snap) return;
+  snap.classList.remove('on');
+  snap.setAttribute('aria-hidden', 'true');
+  if (_rsMxSnapTrigger && typeof _rsMxSnapTrigger.focus === 'function') {
+    try { _rsMxSnapTrigger.focus(); } catch (_) {}
+  }
+  _rsMxSnapTrigger = null;
 }
 function rsMxRenderDetail() {
   var box = document.getElementById('rs-mx-detail');
@@ -12558,9 +12664,26 @@ function rsSigAction(kind, acct, sigId) {
 }
 
 // ── Save Plays ──────────────────────────────────────────────────────────────
+// v4.13.0 — ENHANCEMENT: auto-expand the in-progress step's talk track on
+// initial Save Plays render so the CSM lands on the most time-critical
+// action without an extra click. Tracked per-play in RS_PLAY_AUTO_EXPANDED
+// so the user's subsequent collapse is honored (we only auto-expand once
+// per play per session, never on re-render after a manual toggle).
+var RS_PLAY_AUTO_EXPANDED = {};
 function rsRenderPlays() {
   var sec = document.getElementById('rs-sec-plays');
   if (!sec) return;
+  // Seed RS_PLAY_STEP_OPEN with the in-progress step BEFORE building cards
+  // so the HTML renders with aria-expanded="true" + .on directly.
+  RS_PLAYS.forEach(function(p){
+    if (RS_PLAY_AUTO_EXPANDED[p.acct]) return;
+    var inProg = p.steps.find(function(st){ return st.s === 'in-prog' && st.body; });
+    if (inProg) {
+      RS_PLAY_STEP_OPEN[p.acct] = RS_PLAY_STEP_OPEN[p.acct] || {};
+      RS_PLAY_STEP_OPEN[p.acct][inProg.n] = true;
+    }
+    RS_PLAY_AUTO_EXPANDED[p.acct] = true;
+  });
   var totalARR = RS_PLAYS.reduce(function(s,p){ return s + parseInt(p.arr.replace(/[^0-9]/g,''),10); }, 0);
   var cards = RS_PLAYS.map(rsPlayCardHTML).join('');
   sec.innerHTML = ''
@@ -12681,11 +12804,14 @@ function rsPlayNoteSave(ev, acct) {
   return false;
 }
 function rsPlayPush(acct) { toast('Save play updated · Gainsight ✓'); }
-// v4.9.0 — FIX 4: Escalate fires the spec's exact toast wording.
+// v4.13.0 — FIX 3: rewording per spec — "Escalation summary attached" (was
+// "Dust summary attached"). The QA audit reported the button as silent,
+// but the toast handler has been wired since v4.9.0; the report likely
+// reflected the prior misleading wording. Updated for clarity.
 function rsPlayEscalate(acct) {
   var p = RS_PLAYS.find(function(x){return x.acct===acct;});
   var label = p ? p.name.replace(/ Save Play$/, '') : acct;
-  toast('Situation brief sent to Team Lead · ' + rsEscape(label) + ' · Dust summary attached ✓');
+  toast('Situation brief sent to Team Lead · ' + rsEscape(label) + ' · Escalation summary attached ✓');
 }
 function rsStartPlay() { toast('Save play started · New account · Created in Gainsight ✓'); }
 
@@ -12777,30 +12903,83 @@ function rsOpenMB(acct) {
 function rsRunRisk(acct) { if (typeof openAgentDrawer === 'function') openAgentDrawer('risk', acct); else toast('Risk Analyst · ' + rsEscape(acct) + ' ✓'); }
 function rsRunPrep(acct) { if (typeof openAgentDrawer === 'function') openAgentDrawer('prep', acct); else toast('Prep Me · ' + rsEscape(acct) + ' ✓'); }
 function rsOpenSave(acct){ if (typeof openAgentDrawer === 'function') openAgentDrawer('save', acct); else toast('Save Strategy · ' + rsEscape(acct) + ' ✓'); }
-// v4.9.0 — FIX 1: Ghost-Buster broken in 5 places (All Signals signal 3 +
-// signals 7-8-9, Champions NovaVault "View Ghost-Buster", Dark Zone
-// Meridian / Creston / Apex). Root cause: openGhostBusterFromPopover toggles
-// the view-{acct} class inside #tab-dash, but the user is on the Risk &
-// Signals (or other) tab so the view never paints. Switch to the dashboard
-// tab first, then defer the openPanel call so the tab swap is visible.
-function rsOpenGB(acct) {
-  if (typeof goTab === 'function') {
-    var tab = document.querySelector('.n-tab[onclick*="goTab(\'dash\'"]');
-    if (tab) goTab('dash', tab);
+// v4.13.0 — FIX 1: Ghost-Buster now opens as a fixed right-side drawer on
+// whichever tab is currently active. Previously rsOpenGB switched to the
+// Dashboard tab and swapped the Mission Briefing panel — the user reported
+// this as "navigates to CSM Dashboard" because the visual context shift was
+// indistinguishable from a navigation away. The drawer clones the existing
+// view-{acct} content (which lives inside #tab-dash but isn't visible)
+// into a body-level overlay so all the existing 3-touch sequences, situation
+// reads, and email drafts render unchanged.
+var RS_GB_LAST_TRIGGER = null;
+var RS_GB_LABELS = {
+  meridian: { nm:'Meridian Health Systems', meta:'$22K ARR · Renews Jun 30 · 73 days dark' },
+  creston:  { nm:'Creston Software',        meta:'$18K ARR · Renews Jul 15 · 67 days dark' },
+  apex:     { nm:'Apex Dynamics',           meta:'$15K ARR · Renews Aug 1 · 61 days dark' },
+  nova:     { nm:'NovaVault',               meta:'$31K ARR · Renews Jun 1 · 45 days Gong silence' }
+};
+function gbDrawerOpen(acct) {
+  var drawer = document.getElementById('gb-drawer');
+  var ov     = document.getElementById('gb-drawer-ov');
+  var body   = document.getElementById('gb-drawer-body');
+  var sub    = document.getElementById('gb-drawer-sub');
+  if (!drawer || !ov || !body) return false;
+  // Remember the trigger so Escape can return focus.
+  try {
+    if (document.activeElement && document.activeElement !== document.body) {
+      RS_GB_LAST_TRIGGER = document.activeElement;
+    }
+  } catch (_) {}
+  var src = document.getElementById('view-' + acct);
+  if (!src) return false;
+  // Clone the .rp-scroll content so we don't yank it out of the dashboard
+  // (the dashboard's own Mission Briefing flow still uses these views).
+  var scroll = src.querySelector('.rp-scroll');
+  body.innerHTML = '';
+  if (scroll) {
+    var clone = scroll.cloneNode(true);
+    // Strip any internal "Back" controls that only make sense inside the
+    // dashboard's panel-swap flow.
+    clone.querySelectorAll('.rp-back').forEach(function(el){ el.remove(); });
+    body.appendChild(clone);
   }
+  var meta = RS_GB_LABELS[acct] || { nm: acct, meta: '' };
+  if (sub) sub.textContent = meta.nm + (meta.meta ? ' · ' + meta.meta : '');
+  ov.classList.add('on');
+  drawer.classList.add('on');
+  ov.setAttribute('aria-hidden', 'false');
+  drawer.setAttribute('aria-hidden', 'false');
+  // Move focus to the close button so screen readers + keyboard users land
+  // inside the drawer.
   setTimeout(function(){
-    if (typeof openGhostBusterFromPopover === 'function') {
-      try { openGhostBusterFromPopover(acct); return; } catch (_) {}
-    }
-    if (typeof openPanel === 'function' && document.getElementById('view-' + acct)) {
-      try { openPanel(acct, null); return; } catch (_) {}
-    }
-    toast('Ghost-Buster · ' + rsEscape(acct) + ' ✓');
-  }, 80);
+    var x = drawer.querySelector('.gb-drawer-x');
+    if (x) try { x.focus(); } catch (_) {}
+  }, 60);
+  return true;
+}
+function gbDrawerClose(e) {
+  if (e && e.target && e.target.id !== 'gb-drawer-ov' && e.type === 'click') return;
+  var drawer = document.getElementById('gb-drawer');
+  var ov     = document.getElementById('gb-drawer-ov');
+  if (drawer) { drawer.classList.remove('on'); drawer.setAttribute('aria-hidden', 'true'); }
+  if (ov)     { ov.classList.remove('on');     ov.setAttribute('aria-hidden', 'true'); }
+  if (RS_GB_LAST_TRIGGER && typeof RS_GB_LAST_TRIGGER.focus === 'function') {
+    try { RS_GB_LAST_TRIGGER.focus(); } catch (_) {}
+  }
+  RS_GB_LAST_TRIGGER = null;
+}
+
+function rsOpenGB(acct) {
+  if (gbDrawerOpen(acct)) return;
+  // Fallbacks for environments where the drawer markup isn't in the DOM yet:
+  // (a) the legacy in-dashboard panel swap, (b) a toast.
+  if (typeof openPanel === 'function' && document.getElementById('view-' + acct)) {
+    try { openPanel(acct, null); return; } catch (_) {}
+  }
+  toast('Ghost-Buster · ' + rsEscape(acct) + ' ✓');
 }
 // v4.9.0 — Global alias so external selectors / specs that say
-// `openGhostBuster('account-key')` (e.g. the QA toolbar) resolve. Routes
-// through the same tab-switch-first path.
+// `openGhostBuster('account-key')` resolve. Routes through the in-tab drawer.
 window.openGhostBuster = function(acct) { rsOpenGB(acct); };
 
 // ═════════════════════════════════════════════════════════════════════════
@@ -13723,6 +13902,11 @@ function fcAction(kind, acct) {
 // Ghost-Buster popover-based flow for known accounts; falls back to a toast
 // for accounts without a registered Ghost-Buster view.
 function openGhostBuster(acct) {
+  // v4.13.0 — FIX 1: route through the in-tab Ghost-Buster drawer so the
+  // CSM stays on the Forecasting tab. Previously this called
+  // openGhostBusterFromPopover which navigated to the Dashboard's Mission
+  // Briefing view-swap.
+  if (typeof rsOpenGB === 'function') { try { rsOpenGB(acct); return; } catch (_) {} }
   if (typeof openGhostBusterFromPopover === 'function') {
     try { openGhostBusterFromPopover(acct); return; } catch (_) {}
   }
