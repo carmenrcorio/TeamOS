@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.14.0
+**Version:** 4.15.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,50 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.15.0] — 2026-05-18
+
+CSM Dashboard QA audit — 6 fixes (2 crashes + 4 wiring/UX). **Result: 213/213 chromium tests passing.**
+
+### Fixed
+
+**FIX 1 — Priority Stack row 2 Draft Reply opens a compose drawer (was a hard crash).** The previous handler called `draftReply('brightex')` which paints into `view-draft` inside the dashboard's Mission Briefing panel — a path that crashed when the surrounding tab state was inconsistent. New flow: `psComposeOpen('brightex')` mounts a body-level `<aside id="ps-compose" role="dialog" aria-modal="true">` (520 px right-side overlay, z-index 9101 over the 9100 overlay) and renders:
+- A context block (Last email · 4h ago / Last Gong · May 10 / Health 48 / Renewal Jun 15).
+- A 3-button tone selector — Professional / Direct / Empathetic — wired through `psComposeSetTone(t)`. Each tone swaps the body to a distinct pre-filled draft; the textarea is editable after switching.
+- FROM (`carmen@1password.com` read-only), TO (`sarah.chen@brightex.com` read-only), SUBJECT (`Re: SLA question — Brightex` editable input), and a 220-px body `<textarea>`.
+- Footer: `[Cancel]`, `[Copy Draft]` (Clipboard API + `execCommand('copy')` fallback), `[Mark as Sent]` (fires `Reply logged · Brightex · Gainsight timeline ✓` and closes).
+- Escape closes; focus returns to the trigger element via `PS_COMPOSE_TRIGGER`.
+
+**FIX 2 — Priority Stack row 4 Ghost-Buster opens the in-tab drawer (was a hard crash).** The previous handler called `openGhostBusterFromPopover('meridian')` which toggled the dashboard's `view-meridian` panel. The audit reported this as a crash; the spec was to route through the same drawer Risk & Signals uses. Onclick now calls `openGhostBuster('meridian')` which routes through `rsOpenGB` → `gbDrawerOpen` (the v4.13.0 drawer). No tab change; the existing 3-touch sequence + Situation Read content renders inside the body-level `#gb-drawer` overlay.
+
+**FIX 3 — Priority Stack row 3 Prep Me is wired correctly.** The Acme button calls `openAgentDrawer('prep', 'acme')` which mounts `DRAWER.prep.acme` into the agent drawer. New v4.15.0 test asserts the drawer opens with the Pre-Call Brief title when the row 3 button is clicked.
+
+**FIX 4 — Loading states on all 5 Priority Stack action buttons.** Every row's `.bf-act` button is wrapped with `psBtnAction(this, label, fn)`. The wrapper:
+1. Saves the original `innerHTML` + `aria-label`.
+2. Adds `.ps-loading` (CSS spins the leading `i.ti` icon + drops opacity to .7 + disables pointer events).
+3. Sets `aria-busy="true"` and `aria-label="Loading [label]…"`.
+4. Runs the supplied action (`openAgentDrawer` / `psComposeOpen` / `openGhostBuster` / `openTaskBrief`).
+5. Polls every 80 ms for `#drawer.on, #gb-drawer.on, #ps-compose.on, #cm-modal-ov.on`. When any of them mounts, restores the button.
+6. Times out at 3 s with toast `Unable to load [label] · Try again ✓`.
+
+**FIX 5 — Priority Stack company names are interactive buttons.** Every `.bf-nm` span now carries `role="button"`, `tabindex="0"`, `aria-label="View [Account] in Agent Hub"`, and an `onkeydown` handler so Enter / Space trigger the same `psNameClick(key, event)` jump (which routes through the existing `acctClick` → `openPanel` → `_updateAgentHubAccount` chain). CSS: explicit cursor:pointer + teal underline on hover + visible focus ring. `window._activeAccount` updates correctly on click + keyboard activation.
+
+**FIX 6 — Confirmation toasts audit.** Audited and verified that drawer footer buttons fire toasts on completion. New regression tests assert:
+- Save Strategy "Push to Gainsight" → `3 CTAs created in Gainsight · NovaVault · Assigned to Carmen ✓`.
+- Pre-Call Brief "Copy battle card" → `Battle card copied to clipboard ✓`.
+
+### Engineering notes
+- The compose drawer is generic enough that other 1:1 reply entry points could reuse it; today only Brightex Draft Reply is wired. The `PS_COMPOSE_PAYLOADS` map keys off the account key so adding new contacts is a data-only change.
+- `psBtnAction` uses a 3-second timeout because some drawer initializers (Risk & Signals → goTab → openPanel) defer renders by ~80 ms. The 80 ms poll interval keeps the loading flash visible long enough to be noticed but short enough that it never feels stuck.
+- The Escape handler chain now reads (highest precedence first): `#ps-compose` → `#gb-drawer` → `#rs-mx-snap` → `#rs-slide-ov` → `#cm-modal-ov` → drawer / dropdowns.
+
+### Test coverage
+- **213 / 213 chromium passing** (was 197 in v4.14.0). 16 new tests under a `v4.15.0 CSM Dashboard fixes` describe — 5 FIX 1 tests (handler wiring, drawer markup, tone swap, Mark as Sent toast, Escape), 2 FIX 2 tests (handler wiring + drawer mount stays on dash), 1 FIX 3 test (Prep Me Acme), 3 FIX 4 tests (wrapper wiring + loading class flips + clears), 3 FIX 5 tests (role/aria on every name + click jump + Enter jump), 2 FIX 6 tests (Push to Gainsight + Copy battle card toasts).
+
+### Spec label
+Shipped as `[4.15.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 
