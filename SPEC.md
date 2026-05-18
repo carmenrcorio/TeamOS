@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.20.0
+**Version:** 4.21.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,42 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.21.0] — 2026-05-18
+
+Recipe for Success tab rebuilt from report card to coaching tool. The two numbers that matter — $650K annual growth goal and $150K Q2 retention target — anchor every category. **Result: 301/301 chromium tests passing (285 prior + 16 new v4.21.0 tests).**
+
+### Fixed / Added
+
+**Section 1 — MY BONUS TARGETS panel above the hero.** A new `.rcp-bonus` panel renders at the very top of the Recipe tab (above the 74.5% score), with `role="region"` + `aria-label="My bonus targets"`. Two columns:
+- **Retention bonus**: `$127K committed` / `$150K target` with a `-$23K gap` chip (`role="status"`). The committed number is computed live from `fcReadOverrides()` deltas against `FC_PIPELINE` — when a CSM updates a forecast amount on the Forecasting Pipeline tab, the Recipe header recomputes on next render.
+- **Growth bonus**: `$32K closed` / `$650K target` with a `-$618K gap` chip (`role="status"`).
+- Two `.rcp-bonus-btn` actions (`Update Retention Forecast`, `Log Growth`) call `rcpJumpRetention()` / `rcpJumpGrowth()` which route to `forecast` → `pipeline` and toast.
+
+**Section 2 — Reframe the score with bonus translation.** Below the 74.5% score, a new `.rcp-bonus-trans` sentence reads: *"~78% bonus attainment if Q2 closes as forecast. **Renewal Forecast** is the highest-risk category — every $1K of churn there is $1K off your retention bonus."* The 78% figure is hardcoded per spec.
+
+**Section 3 — Named accounts in every category gap.** Each of the 4 `.sc-card` blocks now renders a `.rcp-gap-detail` block beneath the status pills, populated by a new `rcpGapDetail(sec)` helper:
+- **Success Plans**: NovaVault + Meridian listed as missing plans, each with a `Create Plan` button (`rcpCreatePlan('nova'|'meridian')`) that flips the named-accounts-resolved state in `RCP_SUCCESS_PLANS_RESOLVED` and increments the card count (`16/18` → `17/18` → `18/18`).
+- **Book of Business Growth**: Acme expansion lead with `$12K–$18K` ARR range and a `Prep expansion ask` button (`rcpExpansionAcme()`) that opens the Acme drawer if available.
+- **Renewal Forecast Actions**: Meridian + Creston + Apex listed as blank statuses, plus an `Update All 3` button (`rcpJumpForecastBlanks()`) that routes to Forecasting Pipeline and highlights the three rows in sequence.
+- **EBR + Advocacy**: NovaVault (`role="alert"`, `URGENT — bonus risk`) + Brightex (`Owed in 30 days`) as priority EBRs, plus a `Draft both EBR outreach` button (`rcpEbrDraftBoth()`). Advocacy section lists Acme case study + Brightex reference call (seeded from `teamos_recipe_advocacy` localStorage key) and an `Add milestone` button (`rcpOpenAddMilestone()`) that opens a modal with account + label + status fields. Saved milestones bump the Advocacy card count.
+
+**Section 4 — Quarter Projection upgrade.** The 3-line projection block is rewritten as `.rcp-proj-bonus`:
+- Dollar-denominated retention pacing (`$127K committed of $150K target — $23K short`).
+- Dollar-denominated growth pacing (`$32K closed of $162K Q2 pacing — $130K short`).
+- A new `.rcp-proj-warn` (`role="alert"`) NovaVault churn scenario card: *"If NovaVault churns, retention drops from $127K → $96K — $54K below target."*
+- Score-to-Exceeding sentence retained.
+
+**Section 5 — Dust Action Plan updated with named accounts.** The 3 action plan cards now name specific accounts:
+- Card 1: "Draft EBR outreach for **NovaVault** (URGENT) + **Brightex** (owed in 30 days)".
+- Card 2: "Get renewal commitment from **Meridian**, **Creston**, **Apex** (3 blank forecasts blocking your $150K target)".
+- Card 3: keeps the NovaVault + Brightex prep CTAs.
+
+**Accessibility.** All new interactive elements carry keyboard handlers (Enter/Space). `.rcp-bonus` is a `region`; gap chips and the NovaVault churn warning use `role="status"` / `role="alert"`. The Add milestone modal traps focus, restores it on close, and binds Escape.
+
+**Internal cleanup.** Removed a 395-line duplicate `buildRecipe` + notes-module block (the file had carried the dup across many prior versions). Also removed a redundant script-level `buildRecipe()` call that ran before `RCP_NOTES_KEY` was assigned and crashed under the de-duped layout.
 
 ---
 

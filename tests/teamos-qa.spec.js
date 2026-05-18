@@ -3397,3 +3397,185 @@ test.describe('v4.20.0 CSM Dashboard workflow fixes', () => {
     expect(liveIx).toBeGreaterThan(fcIx);
   });
 });
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.21.0 — RECIPE FOR SUCCESS OVERHAUL
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.21.0 Recipe for Success overhaul', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('recipe', document.querySelector('[onclick*="goTab(\'recipe\'"]')));
+    await page.waitForTimeout(200);
+  });
+
+  // ── Section 1: Bonus Targets header ─────────────────────────────────────
+  test('Section 1: MY BONUS TARGETS panel renders above the hero', async ({ page }) => {
+    const bonus = page.locator('.rcp-bonus');
+    await expect(bonus).toBeVisible();
+    expect(await bonus.getAttribute('role')).toBe('region');
+    expect(await bonus.getAttribute('aria-label')).toBe('Q2 Bonus Targets');
+    // DOM order: bonus precedes hero.
+    const positions = await page.evaluate(() => {
+      const b = document.querySelector('.rcp-bonus');
+      const h = document.querySelector('.rcp-hero');
+      return { bonus: b.compareDocumentPosition(h) };
+    });
+    // 4 = DOCUMENT_POSITION_FOLLOWING (hero follows bonus).
+    expect(positions.bonus & 4).toBe(4);
+  });
+
+  test('Section 1: header carries Retention $127K + Growth $32K, both targets, gaps', async ({ page }) => {
+    const txt = await page.locator('.rcp-bonus').textContent();
+    expect(txt).toMatch(/\$127K committed/);
+    expect(txt).toMatch(/\$150K target/);
+    expect(txt).toMatch(/−\$23K gap/);
+    expect(txt).toMatch(/\$32K closed/);
+    expect(txt).toMatch(/\$650K target/);
+    expect(txt).toMatch(/−\$618K gap/);
+  });
+
+  test('Section 1: navigation buttons route to Forecasting Pipeline', async ({ page }) => {
+    await page.evaluate(() => rcpJumpRetention());
+    await page.waitForTimeout(200);
+    await expect(page.locator('#tab-forecast')).toHaveClass(/on/);
+    await expect(page.locator('#fc-pipeline.on')).toBeVisible();
+  });
+
+  test('Section 1: committed amount tracks forecast overrides live', async ({ page }) => {
+    // fcReadOverrides seeds Nova $28K + Brightex $30K on first load (vs
+    // contract $31K / $36K), so baseline committed = 127 − 3 − 6 = $118K.
+    // Push Nova down another $5K ($28K → $23K) — committed should drop to
+    // $113K.
+    await page.evaluate(() => fcSaveOverride('nova', '23000'));
+    await page.waitForTimeout(150);
+    // Re-render the Recipe tab to pick up the new value.
+    await page.evaluate(() => buildRecipe());
+    await page.waitForTimeout(150);
+    const txt = await page.locator('.rcp-bonus').textContent();
+    expect(txt).toMatch(/\$113K committed/);
+  });
+
+  // ── Section 2: Score → bonus translation ─────────────────────────────────
+  test('Section 2: bonus translation sentence renders below the score', async ({ page }) => {
+    const trans = page.locator('.rcp-bonus-trans');
+    await expect(trans).toBeVisible();
+    const txt = await trans.textContent();
+    // 74.5 × 1.05 = 78.225, rounded = 78.
+    expect(txt).toMatch(/~78% bonus attainment/);
+    expect(txt).toMatch(/Renewal Forecast is the highest-risk category/);
+    expect(txt).toMatch(/3 blank statuses/);
+  });
+
+  // ── Section 3: Named accounts in every category gap ──────────────────────
+  test('Section 3: Success Plans card names NovaVault + Meridian with Create Plan buttons', async ({ page }) => {
+    const card = page.locator('.sc-card').nth(0);
+    const txt = await card.textContent();
+    expect(txt).toMatch(/2 accounts without active plans/);
+    expect(txt).toMatch(/NovaVault Inc.*No plan.*17d to renewal/);
+    expect(txt).toMatch(/Meridian Health Systems.*No plan.*45d to renewal/);
+    expect(await card.locator('.rcp-gap-btn').count()).toBe(2);
+  });
+
+  test('Section 3: clicking Create Plan increments count to 17/18', async ({ page }) => {
+    const before = await page.locator('.sc-card').nth(0).locator('.sc-mv').first().textContent();
+    expect(before).toBe('16/18');
+    await page.evaluate(() => rcpCreatePlan('nova'));
+    await page.waitForTimeout(200);
+    const after = await page.locator('.sc-card').nth(0).locator('.sc-mv').first().textContent();
+    expect(after).toBe('17/18');
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/Success Plan created · NovaVault · Gainsight/);
+  });
+
+  test('Section 3: Book of Business Growth shows Acme expansion with $12K–$18K', async ({ page }) => {
+    const card = page.locator('.sc-card').nth(1);
+    const txt = await card.textContent();
+    expect(txt).toMatch(/Acme Corp/);
+    expect(txt).toMatch(/\$12K–\$18K potential/);
+    expect(txt).toMatch(/SSO enterprise tier · David Kim signal/);
+    expect(txt).toMatch(/\$96K ARR in upsell-eligible/);
+    expect(txt).toMatch(/\$32K · progress toward \$650K target/);
+    expect(txt).toMatch(/\$18K ARR/);
+  });
+
+  test('Section 3: Renewal Forecast Actions names Meridian + Creston + Apex', async ({ page }) => {
+    const card = page.locator('.sc-card').nth(2);
+    const txt = await card.textContent();
+    expect(txt).toMatch(/3 accounts with blank forecast status/);
+    expect(txt).toMatch(/−3.3 pts/);
+    expect(txt).toMatch(/Meridian Health/);
+    expect(txt).toMatch(/Creston Software/);
+    expect(txt).toMatch(/Apex Dynamics/);
+  });
+
+  test('Section 3: Update All 3 button navigates to Forecasting Pipeline', async ({ page }) => {
+    await page.evaluate(() => rcpJumpForecastBlanks());
+    await page.waitForTimeout(220);
+    await expect(page.locator('#tab-forecast')).toHaveClass(/on/);
+    await expect(page.locator('#fc-pipeline.on')).toBeVisible();
+  });
+
+  test('Section 3: EBR + Advocacy card names priority accounts + advocacy milestones', async ({ page }) => {
+    const card = page.locator('.sc-card').nth(3);
+    const txt = await card.textContent();
+    expect(txt).toMatch(/EBR priority accounts/);
+    expect(txt).toMatch(/NovaVault.*\$31K.*Jun 1.*17d/);
+    expect(txt).toMatch(/URGENT/);
+    expect(txt).toMatch(/Brightex Inc.*\$36K.*Jun 15.*31d/);
+    expect(txt).toMatch(/Acme Corp case study/);
+    expect(txt).toMatch(/Brightex reference call/);
+    expect(txt).toMatch(/Add milestone/);
+  });
+
+  test('Section 3: Add milestone modal saves to localStorage + bumps count', async ({ page }) => {
+    await page.evaluate(() => rcpOpenAddMilestone());
+    await page.waitForTimeout(150);
+    await page.fill('#rcp-adv-acct', 'Klaxton Labs');
+    await page.fill('#rcp-adv-lbl', 'Q2 case study draft');
+    await page.evaluate(() => rcpSaveAdvocacy());
+    await page.waitForTimeout(200);
+    const stored = await page.evaluate(() => { try { return JSON.parse(localStorage.getItem('teamos_recipe_advocacy') || '[]'); } catch (e) { return []; } });
+    expect(stored.length).toBe(1);
+    expect(stored[0].acct).toBe('Klaxton Labs');
+    // Count becomes 3 (2 seeded + 1 user-added).
+    const advCount = await page.locator('.sc-card').nth(3).locator('.sc-mv').last().textContent();
+    expect(advCount.trim()).toBe('3');
+  });
+
+  // ── Section 4: Quarter Projection upgrade ────────────────────────────────
+  test('Section 4: Quarter Projection shows dollar-denominated retention pacing', async ({ page }) => {
+    const proj = page.locator('.rcp-proj');
+    const txt = await proj.textContent();
+    expect(txt).toMatch(/Retention: tracking to \$127K vs \$150K target/);
+    expect(txt).toMatch(/\$23K gap/);
+    expect(txt).toMatch(/Growth: \$32K of \$650K annual target/);
+    expect(txt).toMatch(/\$618K remaining across 7 months/);
+    expect(txt).toMatch(/Next expansion play: Acme Corp/);
+  });
+
+  test('Section 4: NovaVault churn scenario fires as role=alert with $96K drop', async ({ page }) => {
+    const warn = page.locator('.rcp-proj .rcp-proj-warn').first();
+    expect(await warn.getAttribute('role')).toBe('alert');
+    const txt = await warn.textContent();
+    expect(txt).toMatch(/If NovaVault churns/);
+    expect(txt).toMatch(/drops to \$96K/);
+    expect(txt).toMatch(/gap becomes \$54K/);
+  });
+
+  // ── Section 5: Dust Action Plan updated ─────────────────────────────────
+  test('Section 5: Dust Action Plan item 1 names NovaVault + Brightex as EBR priorities', async ({ page }) => {
+    const card = page.locator('.rcp-card.gap');
+    const txt = await card.textContent();
+    expect(txt).toMatch(/NovaVault \(\$31K, Jun 1\)/);
+    expect(txt).toMatch(/Brightex \(\$36K, Jun 15\)/);
+    expect(txt).toMatch(/no EBR has been completed for either/);
+  });
+
+  test('Section 5: Dust Action Plan item 2 names Meridian/Creston/Apex + cost/week', async ({ page }) => {
+    const card = page.locator('.rcp-card.win');
+    const txt = await card.textContent();
+    expect(txt).toMatch(/Meridian Health/);
+    expect(txt).toMatch(/Creston Software/);
+    expect(txt).toMatch(/Apex Dynamics/);
+    expect(txt).toMatch(/1.1 pts\/week/);
+  });
+});
