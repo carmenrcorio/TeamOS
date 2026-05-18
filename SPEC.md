@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.18.0
+**Version:** 4.19.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,46 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.19.0] — 2026-05-18
+
+Four Risk & Signals workflow fixes. **Result: 267/267 chromium tests passing.**
+
+### Added / Fixed
+
+**FIX 1 — Ghost-Buster auto-suppresses when an inbound signal exists.** Launching a 3-touch cold sequence after the contact just emailed reads like the CSM never noticed. New flow:
+- `rsFindInboundSignal(acct)` returns the matching signal when `src === 'INBOX'` OR the desc/ctx blob contains `/\binbound\b|\bemailed\b/i`. Meridian + Brightex hit; Creston / Apex / NovaVault don't.
+- `rsInboundContactName(signal, acct)` extracts the first name from the signal text (e.g. "Jennifer Ramos emailed yesterday" → `Jennifer`) with a champion-field fallback.
+- `gbDrawerOpen(acct)` checks for an inbound signal before rendering. When one is found, the drawer body becomes a `<div class="gb-inbound-warn" role="alert" aria-label="Inbound signal detected — direct reply recommended">` with: amber `⚠ Inbound detected` header, plain-English summary, `[Reply to Jennifer →]` primary CTA (focused on open) routing to `draftReply` or `rsDraftReplyBrightex`, `[View Signal]` secondary that jumps to All Signals, and a small "Launch Ghost-Buster anyway →" bypass link for edge cases.
+- A new `_gbDrawerOpenInternal(acct, forceSequence)` carries the bypass flag.
+
+**FIX 2 — Competitor flag in Risk Matrix account snapshot.** `rsFindCompetitorFlag(acct)` scans `RS_SIGNALS` for a Gong-sourced row whose description contains `/competitor/i`, then extracts the competitor name (the capitalized token after "— ") and the call count (digit before "Gong call"). When found, `rsMxRenderDetail` renders a 6th key-value row: `Competitor · ⚠ Okta flagged · 2 calls` (amber, prefixed with ⚠ via CSS `::before`). When no Gong competitor signal exists, the row is hidden — no empty placeholder. Brightex shows the row; Acme / NovaVault / dark accounts do not. `aria-label="Competitor flag: Okta mentioned in 2 calls"` for screen readers.
+
+**FIX 3 — Save Play expected-outcome dates are dynamic.** Hardcoded dates ("Touch 1 reply by May 18") were already stale on May 19. New date-token system:
+- `{+Nbd}` resolves to today + N business days (skips Sat/Sun).
+- `{+Nd}` resolves to today + N calendar days.
+- `rsAddBusinessDays`, `rsAddCalendarDays`, `rsFormatShortDate` ("May 18"), and `rsResolveDateTokens` work together to substitute tokens at render time inside `rsPlayCardHTML` (before HTML-escaping).
+- `RS_PLAYS.nova` Step 2 outcome rewritten: `Touch 1 reply within 2 business days (by {+2bd}). If no reply by {+5d}, schedule Touch 2 (AE warm intro request through David Kim relationship).`
+- `RS_PLAYS.nova` Step 3 outcome rewritten: `Soft-commit to a renewal discussion before {+10d}.`
+- Renewal-fixed dates (e.g. Brightex "Renewal signed by Jun 10") remain hardcoded because they're anchored to the actual renewal date, not a relative deadline.
+
+**FIX 4 — Signal staleness badges + NEW-first sort.** Two pieces:
+- `rsParseAgeDays(updated)` parses freeform timestamp strings ("Today · 6:14 AM", "Yesterday", "2h ago", "7d ago", "45d ago", etc.) into a day count. `rsAgeBucket` maps to `{ bucket: NEW|FRESH|STALE, days }` with thresholds 0-1 / 2-6 / 7+. NEW renders a teal `.rs-sig-age.new` pill; STALE renders a muted gray `.rs-sig-age.stale` pill; FRESH renders no badge so the eye reads only the actionable extremes.
+- The default `RS_SIG_SORT = 'newest'` no longer fires the legacy creation-order sort. It now buckets within each severity tier — within Critical, NEW comes before STALE; the same applies within High, Watch, and Opportunity. The Monday-morning feed reads as "here's what's new today" instead of "here's everything that's ever been flagged."
+
+### Engineering notes
+- `_gbDrawerOpenInternal` is intentionally underscore-prefixed: the "Launch anyway" link is the only caller besides `gbDrawerOpen`, which itself delegates with `forceSequence:false`.
+- `rsResolveDateTokens` runs before `rsEscape` because the substituted strings contain no HTML and the order keeps the test surface predictable.
+- The staleness sort runs alongside the existing severity + ARR sort options — switching to "Severity" or "ARR at risk" via the existing select still works.
+- Two pre-existing tests (v4.13.0 FIX 1 + v4.14.0 notes section) switched from Meridian → Creston for the Ghost-Buster drawer assertion because Meridian now triggers the inbound-suppression warning, which doesn't include the Situation Read or the notes section.
+
+### Test coverage
+- **267 / 267 chromium passing** (was 252 in v4.18.0). 15 new tests under a `v4.19.0 Risk & Signals workflow fixes` describe — 5 FIX 1 (helper + suppression render + Reply CTA + bypass + clean account), 3 FIX 2 (helper + Brightex row + Acme no-row), 3 FIX 3 (token resolver + Step 2 dynamic date + business-day math), 4 FIX 4 (bucket helper + NEW/STALE counts + sort ordering + aria-label wording).
+
+### Spec label
+Shipped as `[4.19.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 

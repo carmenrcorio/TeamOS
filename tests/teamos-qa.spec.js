@@ -1971,11 +1971,14 @@ test.describe('v4.13.0 Risk & Signals audit fixes', () => {
   });
 
   test('FIX 1: drawer body carries the Ghost-Buster content (Situation Read)', async ({ page }) => {
-    await page.evaluate(() => rsOpenGB('meridian'));
+    // v4.19.0 — Meridian now triggers inbound suppression (Jennifer emailed
+    // yesterday). Creston has no inbound signal so it shows the regular
+    // Situation Read sequence.
+    await page.evaluate(() => rsOpenGB('creston'));
     await page.waitForTimeout(200);
     const body = await page.locator('#gb-drawer-body').textContent();
     expect(body).toMatch(/Situation Read/);
-    expect(body).toMatch(/Meridian Health Systems/);
+    expect(body).toMatch(/Creston Software/);
   });
 
   // ── FIX 2: Open Save Strategy in All Signals opens the agent drawer ─────
@@ -2269,11 +2272,13 @@ test.describe('v4.14.0 Forecasting audit fixes', () => {
   });
 
   test('FEATURE: notes section also renders inside the Ghost-Buster drawer', async ({ page }) => {
-    await page.evaluate(() => rsOpenGB('meridian'));
+    // v4.19.0 — switched from Meridian → Creston because Meridian now triggers
+    // the inbound-suppression warning, which doesn't include the notes field.
+    await page.evaluate(() => rsOpenGB('creston'));
     await page.waitForTimeout(220);
-    await expect(page.locator('#dr-note-ta-gb-meridian')).toBeVisible();
-    const aria = await page.locator('#dr-note-ta-gb-meridian').getAttribute('aria-label');
-    expect(aria).toMatch(/Meridian Health Systems Ghost-Buster notes/);
+    await expect(page.locator('#dr-note-ta-gb-creston')).toBeVisible();
+    const aria = await page.locator('#dr-note-ta-gb-creston').getAttribute('aria-label');
+    expect(aria).toMatch(/Creston Software Ghost-Buster notes/);
   });
 
   // ── ENHANCEMENT: Copy Forecast Summary promoted ─────────────────────────
@@ -3021,5 +3026,191 @@ test.describe('v4.18.0 Campaign Manager workflow fixes', () => {
     await page.waitForTimeout(1000);
     const t = await page.locator('#toast-el').textContent();
     expect(t).toMatch(/Call task created · Gainsight CTA/);
+  });
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.19.0 — RISK & SIGNALS WORKFLOW FIXES
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.19.0 Risk & Signals workflow fixes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('risk', document.querySelector('[onclick*="goTab(\'risk\'"]')));
+    await page.waitForTimeout(150);
+  });
+
+  // ── FIX 1: Ghost-Buster inbound suppression ─────────────────────────────
+  test('FIX 1: rsFindInboundSignal hits Meridian + Brightex, misses Creston/Apex/Nova', async ({ page }) => {
+    const map = await page.evaluate(() => ({
+      meridian: !!rsFindInboundSignal('meridian'),
+      brightex: !!rsFindInboundSignal('brightex'),
+      creston:  !!rsFindInboundSignal('creston'),
+      apex:     !!rsFindInboundSignal('apex'),
+      nova:     !!rsFindInboundSignal('nova')
+    }));
+    expect(map.meridian).toBe(true);
+    expect(map.brightex).toBe(true);  // signal 6 src=INBOX (Sarah emailed 4h ago)
+    expect(map.creston).toBe(false);
+    expect(map.apex).toBe(false);
+    expect(map.nova).toBe(false);
+  });
+
+  test('FIX 1: Meridian Ghost-Buster shows inbound suppression instead of sequence', async ({ page }) => {
+    await page.evaluate(() => rsOpenGB('meridian'));
+    await page.waitForTimeout(220);
+    const warn = page.locator('.gb-inbound-warn');
+    await expect(warn).toBeVisible();
+    expect(await warn.getAttribute('role')).toBe('alert');
+    const body = await page.locator('#gb-drawer-body').textContent();
+    expect(body).toMatch(/Inbound detected/);
+    expect(body).toMatch(/Jennifer/);
+    expect(body).toMatch(/Reply to Jennifer/);
+    expect(body).not.toMatch(/Situation Read/);
+  });
+
+  test('FIX 1: Reply to Jennifer button routes to draftReply(meridian)', async ({ page }) => {
+    await page.evaluate(() => { window._captured = null; const orig = window.draftReply; window.draftReply = function(a){ window._captured = a; if (typeof orig === 'function') return orig.apply(this, arguments); }; });
+    await page.evaluate(() => rsOpenGB('meridian'));
+    await page.waitForTimeout(180);
+    await page.click('#gb-inbound-reply');
+    await page.waitForTimeout(200);
+    const cap = await page.evaluate(() => window._captured);
+    expect(cap).toBe('meridian');
+  });
+
+  test('FIX 1: "Launch Ghost-Buster anyway" bypasses suppression and shows the sequence', async ({ page }) => {
+    await page.evaluate(() => rsOpenGB('meridian'));
+    await page.waitForTimeout(180);
+    await page.evaluate(() => _gbDrawerOpenInternal('meridian', true));
+    await page.waitForTimeout(220);
+    await expect(page.locator('.gb-inbound-warn')).toHaveCount(0);
+    const body = await page.locator('#gb-drawer-body').textContent();
+    expect(body).toMatch(/Situation Read/);
+  });
+
+  test('FIX 1: Apex Ghost-Buster (no inbound) goes straight to the sequence', async ({ page }) => {
+    await page.evaluate(() => rsOpenGB('apex'));
+    await page.waitForTimeout(220);
+    await expect(page.locator('.gb-inbound-warn')).toHaveCount(0);
+    const body = await page.locator('#gb-drawer-body').textContent();
+    expect(body).toMatch(/Situation Read/);
+  });
+
+  // ── FIX 2: Competitor flag in snapshot card ─────────────────────────────
+  test('FIX 2: rsFindCompetitorFlag identifies Brightex + Okta + 2 calls', async ({ page }) => {
+    const flag = await page.evaluate(() => rsFindCompetitorFlag('brightex'));
+    expect(flag).not.toBeNull();
+    expect(flag.name).toBe('Okta');
+    expect(flag.calls).toBe(2);
+  });
+
+  test('FIX 2: Brightex snapshot card shows a Competitor row with Okta + ⚠', async ({ page }) => {
+    await page.evaluate(() => rsMxSelect('brightex'));
+    await page.waitForTimeout(150);
+    const compRow = page.locator('#rs-mx-detail .rs-mx-comp');
+    await expect(compRow).toBeVisible();
+    const txt = await compRow.textContent();
+    expect(txt).toMatch(/Okta flagged/);
+    expect(txt).toMatch(/2 calls/);
+    const aria = await compRow.getAttribute('aria-label');
+    expect(aria).toMatch(/Competitor flag: Okta mentioned in 2 calls/);
+  });
+
+  test('FIX 2: Acme snapshot has no Competitor row (no competitor signal)', async ({ page }) => {
+    await page.evaluate(() => rsMxSelect('acme'));
+    await page.waitForTimeout(150);
+    await expect(page.locator('#rs-mx-detail .rs-mx-comp')).toHaveCount(0);
+  });
+
+  // ── FIX 3: Dynamic dates in Save Play outcomes ──────────────────────────
+  test('FIX 3: rsResolveDateTokens swaps {+Nbd} and {+Nd} tokens for real dates', async ({ page }) => {
+    const result = await page.evaluate(() => rsResolveDateTokens('Touch 1 reply by {+2bd}. Touch 2 by {+5d}.'));
+    // Output should have month-abbrev + day numerals; no leftover tokens.
+    expect(result).not.toMatch(/\{\+/);
+    expect(result).toMatch(/Touch 1 reply by [A-Z][a-z]{2} \d{1,2}/);
+    expect(result).toMatch(/Touch 2 by [A-Z][a-z]{2} \d{1,2}/);
+  });
+
+  test('FIX 3: NovaVault Step 2 outcome renders dynamic dates (no May 18 hardcode)', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(180);
+    // Step 2 auto-expands (v4.13.0 ENHANCEMENT). Read the rendered body.
+    const body = await page.locator('#rs-pl-nova-step-2-body').textContent();
+    expect(body).toMatch(/Touch 1 reply within 2 business days/);
+    // The text should NOT carry an unresolved token.
+    expect(body).not.toMatch(/\{\+/);
+    // It should carry today + 2 business days, formatted "Mon DD".
+    const expected = await page.evaluate(() => {
+      function bd(date, n){ var d = new Date(date.getTime()); while (n>0){ d.setDate(d.getDate()+1); var dow = d.getDay(); if (dow!==0&&dow!==6) n--; } return d; }
+      var m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var t = bd(new Date(), 2);
+      return m[t.getMonth()] + ' ' + t.getDate();
+    });
+    expect(body).toContain(expected);
+  });
+
+  test('FIX 3: rsAddBusinessDays skips weekends', async ({ page }) => {
+    const out = await page.evaluate(() => {
+      // Fri 2026-05-15 + 2 business days = Tue 2026-05-19 (skip Sat/Sun).
+      var fri = new Date('2026-05-15T12:00:00Z');
+      var d = rsAddBusinessDays(fri, 2);
+      return d.getUTCDate();
+    });
+    expect(out).toBe(19);
+  });
+
+  // ── FIX 4: Signal staleness badges + sort ───────────────────────────────
+  test('FIX 4: rsAgeBucket maps strings to NEW / FRESH / STALE', async ({ page }) => {
+    const map = await page.evaluate(() => ({
+      today:      rsAgeBucket('Today · 6:14 AM').bucket,
+      hours:      rsAgeBucket('2h ago').bucket,
+      yesterday:  rsAgeBucket('Yesterday').bucket,
+      threeD:     rsAgeBucket('3d ago').bucket,
+      sevenD:     rsAgeBucket('7d ago').bucket,
+      fortyFive:  rsAgeBucket('45d ago').bucket
+    }));
+    expect(map.today).toBe('NEW');
+    expect(map.hours).toBe('NEW');
+    expect(map.yesterday).toBe('NEW');
+    expect(map.threeD).toBe('FRESH');
+    expect(map.sevenD).toBe('STALE');
+    expect(map.fortyFive).toBe('STALE');
+  });
+
+  test('FIX 4: All Signals list carries NEW and STALE badges (FRESH carries none)', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(180);
+    const counts = await page.evaluate(() => ({
+      newCount:   document.querySelectorAll('.rs-sig-age.new').length,
+      staleCount: document.querySelectorAll('.rs-sig-age.stale').length,
+      anyFreshClass: document.querySelectorAll('.rs-sig-age.fresh').length
+    }));
+    expect(counts.newCount).toBeGreaterThanOrEqual(2);   // multiple "Today" + "Yesterday" + "Xh ago" entries
+    expect(counts.staleCount).toBeGreaterThanOrEqual(2); // 17d ago, 45d ago, 67d ago at least
+    expect(counts.anyFreshClass).toBe(0);
+  });
+
+  test('FIX 4: default "newest" sort puts NEW signals before STALE within each severity tier', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(180);
+    // Compare positions of the 3 Critical signals: NovaVault champion (2h),
+    // NovaVault contract not opened (17d → STALE), NovaVault Gong silence
+    // (45d → STALE). The NEW one should render before the STALE pair.
+    const order = await page.evaluate(() => {
+      const rows = Array.from(document.querySelectorAll('#rs-sec-signals .rs-sig-row.crit'));
+      return rows.map(r => r.querySelector('.rs-sig-desc')?.textContent || '');
+    });
+    expect(order.length).toBe(3);
+    expect(order[0]).toMatch(/Champion departed/); // 2h ago → NEW
+    expect(order.slice(1).join(' ')).toMatch(/Contract not opened/);
+    expect(order.slice(1).join(' ')).toMatch(/Gong silence/);
+  });
+
+  test('FIX 4: staleness aria-label spells out the age + bucket', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(180);
+    const stale = await page.locator('.rs-sig-age.stale').first().getAttribute('aria-label');
+    expect(stale).toMatch(/Signal age: \d+ days ago, STALE/);
+    const fresh = await page.locator('.rs-sig-age.new').first().getAttribute('aria-label');
+    expect(fresh).toMatch(/, NEW$/);
   });
 });
