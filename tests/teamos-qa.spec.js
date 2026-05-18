@@ -173,9 +173,12 @@ test.describe('Campaigns', () => {
     expect(chips).toBe(7);
   });
 
-  test('2 of the 7 segments are disabled (SSO Active + SSO+SCIM)', async ({ page }) => {
-    const disabled = await page.locator('.cm-seg-chip.disabled').count();
-    expect(disabled).toBe(2);
+  test('2 of the 7 segments carry the empty marker (SSO Active + SSO+SCIM)', async ({ page }) => {
+    // v4.12.0 — 0-count chips no longer use the native `disabled` attribute
+    // (they must remain clickable so the FIX 7 wizard-with-banner flow can
+    // fire). They carry the .empty class instead.
+    const empty = await page.locator('.cm-seg-chip.empty').count();
+    expect(empty).toBe(2);
   });
 
   test('clicking At-Risk segment opens wizard at Step 2 with filters', async ({ page }) => {
@@ -735,15 +738,29 @@ test.describe('v4.8.0 Campaign Manager fixes', () => {
     await page.waitForTimeout(200);
   });
 
-  test('FIX 1: 0-count segment click shows empty-state tooltip', async ({ page }) => {
-    // SSO Active segment has count=0
+  test('FIX 1: 0-count segment chip carries hover tooltip + click opens wizard (v4.12.0)', async ({ page }) => {
+    // The tooltip element is mounted in DOM with role=tooltip and is shown
+    // on hover/focus through a pure CSS rule. The click handler now opens
+    // the wizard with the empty-segment banner (v4.12.0 changed behavior
+    // from tooltip-only → click opens wizard with banner).
+    expect(await page.locator('#cm-seg-empty-unengaged-sso').count()).toBe(1);
+    expect(await page.locator('#cm-seg-empty-unengaged-sso').getAttribute('role')).toBe('tooltip');
     await page.evaluate(() => cmSegmentClick('unengaged-sso', new Event('click')));
-    await page.waitForTimeout(150);
-    const pop = await page.locator('#cm-seg-empty-unengaged-sso.on').count();
-    expect(pop).toBe(1);
-    // Wizard does NOT open
+    await page.waitForTimeout(200);
     const wizOpen = await page.evaluate(() => document.getElementById('cm-wiz-ov')?.classList.contains('on'));
-    expect(wizOpen).toBeFalsy();
+    expect(wizOpen).toBe(true);
+    // Empty segments land at Step 1 so the CSM can name the future campaign
+    // first; the banner shows in Step 2.
+    const step = await page.evaluate(() => CM_WIZ && CM_WIZ.step);
+    expect(step).toBe(1);
+    expect(await page.evaluate(() => CM_WIZ && CM_WIZ.segmentEmpty)).toBe(true);
+    // Advance to Step 2 and assert the banner.
+    await page.evaluate(() => { CM_WIZ.step = 2; cmWizRender(); });
+    await page.waitForTimeout(150);
+    const banner = await page.locator('.cm-wiz-empty-banner').count();
+    expect(banner).toBe(1);
+    const txt = await page.locator('.cm-wiz-empty-banner').textContent();
+    expect(txt).toMatch(/No matching accounts found yet/);
   });
 
   test('FIX 2: EBR Overdue chip surfaces filter context note in Step 2', async ({ page }) => {
@@ -1600,5 +1617,272 @@ test.describe('v4.11.0 Campaign Manager features', () => {
     await page.evaluate(() => cmQuickSendOpen());
     await page.waitForTimeout(150);
     await expect(page.locator('#cm-modal-body .cm-add-cnt-link .cm-add-cnt-btn')).toBeVisible();
+  });
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+// v4.12.0 — CAMPAIGN MANAGER QA AUDIT FIXES
+// ════════════════════════════════════════════════════════════════════════════
+test.describe('v4.12.0 Campaign Manager audit fixes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('campaigns', document.querySelector('[onclick*="goTab(\'campaigns\'"]')));
+    await page.waitForTimeout(150);
+  });
+
+  // ── FIX 1: Step 1 Next button live re-evaluation ────────────────────────
+  test('FIX 1: Step 1 Next button is disabled on open', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.waitForTimeout(150);
+    const btn = page.locator('#cm-wiz-next-step1');
+    await expect(btn).toBeVisible();
+    expect(await btn.getAttribute('disabled')).not.toBeNull();
+    expect(await btn.getAttribute('data-testid')).toBe('wiz-next-step1');
+  });
+
+  test('FIX 1: typing a name does not enable Next until a type is also picked', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.waitForTimeout(150);
+    await page.fill('#cm-wiz-name', 'June Renewal Push');
+    await page.waitForTimeout(80);
+    // Still disabled because no type chosen yet.
+    expect(await page.locator('#cm-wiz-next-step1').getAttribute('disabled')).not.toBeNull();
+    // Pick a type → button enables on the spot (no re-render needed).
+    await page.evaluate(() => cmWizStep1PickType('renewal', document.querySelector('.cm-wiz-type')));
+    await page.waitForTimeout(80);
+    expect(await page.locator('#cm-wiz-next-step1').getAttribute('disabled')).toBeNull();
+  });
+
+  test('FIX 1: type then name also unlocks Next without re-render', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmWizStep1PickType('renewal', document.querySelector('.cm-wiz-type')));
+    await page.waitForTimeout(60);
+    expect(await page.locator('#cm-wiz-next-step1').getAttribute('disabled')).not.toBeNull();
+    await page.fill('#cm-wiz-name', 'Q3 Push');
+    await page.waitForTimeout(80);
+    expect(await page.locator('#cm-wiz-next-step1').getAttribute('disabled')).toBeNull();
+    // And the name input keeps focus (the fix avoids re-rendering Step 1).
+    const focusedId = await page.evaluate(() => document.activeElement && document.activeElement.id);
+    expect(focusedId).toBe('cm-wiz-name');
+  });
+
+  // ── FIX 2: per-contact body edits (regression of v4.8.0 FIX 11) ─────────
+  test('FIX 2: body overrides are per-contact, not shared', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => {
+      CM_WIZ.name = 'QA'; CM_WIZ.type = 'renewal';
+      CM_WIZ.contacts = ['c3', 'c5']; CM_WIZ.template = 't3'; CM_WIZ.step = 3;
+      cmWizRender();
+    });
+    await page.waitForTimeout(180);
+    // Edit body for contact #1 (Sarah Chen).
+    await page.evaluate(() => {
+      const ta = document.getElementById('cm-prev-body-s3');
+      ta.value = 'Custom note for Sarah only';
+      ta.dispatchEvent(new Event('input'));
+    });
+    await page.waitForTimeout(120);
+    // Cycle to contact #2 (Michael Torres).
+    await page.evaluate(() => cmCyclePreview(1));
+    await page.waitForTimeout(120);
+    const torresBody = await page.evaluate(() => document.getElementById('cm-prev-body-s3').value);
+    expect(torresBody).not.toContain('Custom note for Sarah only');
+    // Cycle back; Sarah's edit must still be there.
+    await page.evaluate(() => cmCyclePreview(-1));
+    await page.waitForTimeout(120);
+    const sarahBody = await page.evaluate(() => document.getElementById('cm-prev-body-s3').value);
+    expect(sarahBody).toContain('Custom note for Sarah only');
+  });
+
+  // ── FIX 3 / FIX 4 / FIX 5: drawer footer flows (regressions of v4.8.0) ──
+  test('FIX 3: Pause in drawer shows confirm strip + transitions to Resume', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(180);
+    await page.evaluate(() => cmCampPause('cmp1'));
+    await page.waitForTimeout(120);
+    await expect(page.locator('#cm-cv-drawer .cm-card-confirm.pause')).toBeVisible();
+    await page.evaluate(() => cmCampPauseConfirm('cmp1'));
+    await page.waitForTimeout(180);
+    const status = await page.evaluate(() => CM_CAMPAIGNS.find(x => x.id === 'cmp1').status);
+    expect(status).toBe('paused');
+    // Drawer re-renders with a Resume button now.
+    const drawerTxt = await page.locator('#cm-cv-drawer').textContent();
+    expect(drawerTxt).toMatch(/Resume Campaign/);
+  });
+
+  test('FIX 4: Archive in drawer routes through the same confirm strip', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmCampArchive('cmp1'));
+    await page.waitForTimeout(120);
+    // Drawer footer carries the confirm strip (not a duplicate handler).
+    await expect(page.locator('#cm-cv-drawer .cm-card-confirm')).toBeVisible();
+  });
+
+  test('FIX 5: Export List builds CSV + drawer stays open', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(150);
+    // Hook URL.createObjectURL so we can capture the Blob contents.
+    const captured = await page.evaluate(() => new Promise(resolve => {
+      const origCreate = URL.createObjectURL;
+      URL.createObjectURL = function(blob) {
+        blob.text().then(text => resolve(text));
+        return origCreate.call(URL, blob);
+      };
+      cmCampExport('cmp1');
+    }));
+    expect(captured).toMatch(/^Contact,Account,Email,Touch Reached,Status,Last Activity/);
+    // Drawer is still open.
+    await expect(page.locator('#cm-cv-drawer.on')).toBeVisible();
+  });
+
+  // ── FIX 6: contact row inline sub-panel ─────────────────────────────────
+  test('FIX 6: clicking a contact row opens an inline sub-panel (does not close drawer)', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(180);
+    const firstRow = page.locator('#cm-cv-drawer .cm-cv-cnt-row').first();
+    await firstRow.click();
+    await page.waitForTimeout(150);
+    // Drawer still open
+    await expect(page.locator('#cm-cv-drawer.on')).toBeVisible();
+    // A sub-panel row appears.
+    await expect(page.locator('#cm-cv-drawer .cm-cv-sub-row:not([hidden])')).toHaveCount(1);
+    const panel = page.locator('#cm-cv-drawer .cm-cv-sub').first();
+    expect(await panel.getAttribute('role')).toBe('region');
+    const aria = await panel.getAttribute('aria-label');
+    expect(aria).toMatch(/contact details/);
+  });
+
+  test('FIX 6: only one sub-panel open at a time', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(180);
+    const rows = page.locator('#cm-cv-drawer .cm-cv-cnt-row');
+    await rows.nth(0).click();
+    await page.waitForTimeout(100);
+    await rows.nth(1).click();
+    await page.waitForTimeout(120);
+    await expect(page.locator('#cm-cv-drawer .cm-cv-sub-row:not([hidden])')).toHaveCount(1);
+  });
+
+  test('FIX 6: Send 1:1 Email button fires toast with Gainsight log', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(180);
+    await page.locator('#cm-cv-drawer .cm-cv-cnt-row').first().click();
+    await page.waitForTimeout(120);
+    // Only the open (non-hidden) sub-panel's button. The other sub-panels
+    // exist in DOM but are hidden — narrow to the visible one.
+    await page.locator('#cm-cv-drawer .cm-cv-sub-row:not([hidden]) .cm-cv-sub .cm-btn.prim').click();
+    await page.waitForTimeout(120);
+    const t = await page.locator('#toast-el').textContent();
+    expect(t).toMatch(/1:1 email sent/);
+    expect(t).toMatch(/Logged in Gainsight/);
+  });
+
+  test('FIX 6: Close button collapses the sub-panel', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp1'));
+    await page.waitForTimeout(180);
+    await page.locator('#cm-cv-drawer .cm-cv-cnt-row').first().click();
+    await page.waitForTimeout(120);
+    // Click the inline Close (×) button.
+    await page.locator('#cm-cv-drawer .cm-cv-sub-x').first().click();
+    await page.waitForTimeout(120);
+    await expect(page.locator('#cm-cv-drawer .cm-cv-sub-row:not([hidden])')).toHaveCount(0);
+  });
+
+  // ── FIX 7: 0-count chip hover tooltip + click opens wizard ──────────────
+  test('FIX 7: empty chip carries role=tooltip + aria-describedby', async ({ page }) => {
+    const chip = page.locator('.cm-seg-chip.empty').first();
+    const describedby = await chip.getAttribute('aria-describedby');
+    expect(describedby).toMatch(/^cm-seg-empty-/);
+    const tip = page.locator('#' + describedby);
+    expect(await tip.getAttribute('role')).toBe('tooltip');
+    const txt = await tip.textContent();
+    expect(txt).toMatch(/No accounts match this segment yet/);
+  });
+
+  test('FIX 7: hovering an empty chip surfaces the tooltip via CSS', async ({ page }) => {
+    const chip = page.locator('.cm-seg-chip.empty').first();
+    await chip.hover();
+    await page.waitForTimeout(50);
+    const visible = await page.evaluate(() => {
+      const c = document.querySelector('.cm-seg-chip.empty');
+      const tip = c && c.querySelector('.cm-seg-empty-pop');
+      return tip ? getComputedStyle(tip).display : 'none';
+    });
+    expect(visible).toBe('block');
+  });
+
+  // ── FIX 8: AI Draft placeholder highlight ───────────────────────────────
+  test('FIX 8: cmCollectPlaceholders extracts bracketed tokens from body text', async ({ page }) => {
+    const tokens = await page.evaluate(() => cmCollectPlaceholders('Hi Sarah,\n\nThis is the [Account-specific value summary] line.\n\nThe [Feature name] is great.'));
+    expect(tokens.length).toBe(2);
+    expect(tokens[0].label).toBe('Account-specific value summary');
+    expect(tokens[1].label).toBe('Feature name');
+  });
+
+  test('FIX 8: Step 3 renders a placeholder chip bar above the body textarea', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => {
+      CM_WIZ.name = 'QA'; CM_WIZ.type = 'renewal'; CM_WIZ.contacts = ['c3'];
+      CM_WIZ.template = 't3'; CM_WIZ.step = 3; cmWizRender();
+    });
+    await page.waitForTimeout(180);
+    const chips = await page.locator('.cm-ph-bar .cm-ph-chip').count();
+    expect(chips).toBeGreaterThanOrEqual(1);
+    const txt = await page.locator('.cm-ph-bar .cm-ph-chip').first().textContent();
+    expect(txt).toMatch(/Account-specific value summary/);
+    const aria = await page.locator('.cm-ph-bar .cm-ph-chip').first().getAttribute('aria-label');
+    expect(aria).toMatch(/^Required:/);
+  });
+
+  test('FIX 8: clicking a placeholder chip selects the matching text in the textarea', async ({ page }) => {
+    await page.evaluate(() => cmOpenWizard());
+    await page.evaluate(() => {
+      CM_WIZ.name = 'QA'; CM_WIZ.type = 'renewal'; CM_WIZ.contacts = ['c3'];
+      CM_WIZ.template = 't3'; CM_WIZ.step = 3; cmWizRender();
+    });
+    await page.waitForTimeout(180);
+    await page.locator('.cm-ph-bar .cm-ph-chip').first().click();
+    await page.waitForTimeout(60);
+    const sel = await page.evaluate(() => {
+      const ta = document.getElementById('cm-prev-body-s3');
+      return ta ? ta.value.substring(ta.selectionStart, ta.selectionEnd) : '';
+    });
+    expect(sel).toMatch(/Account-specific value summary/);
+  });
+
+  // ── FIX 9: send confirmation checkboxes live label + disabled ───────────
+  test('FIX 9: send confirm submit button label updates as recipients toggle', async ({ page }) => {
+    await page.evaluate(() => cmOpenSendConfirm({ source:'card', campaignId:'cmp1' }));
+    await page.waitForTimeout(150);
+    const before = await page.locator('#cm-send-confirm-btn').textContent();
+    expect(before).toMatch(/Confirm & Send to \d+ (person|people)/);
+    // Untick one
+    const firstId = await page.evaluate(() => CM_SEND_SELECTED[0]);
+    const startN = await page.evaluate(() => CM_SEND_SELECTED.length);
+    await page.evaluate(id => cmSendToggleRecipient(id, false), firstId);
+    await page.waitForTimeout(80);
+    const txt2 = await page.locator('#cm-send-confirm-btn').textContent();
+    expect(txt2).toContain('Confirm & Send to ' + (startN - 1));
+    // aria-label also updated.
+    const aria = await page.locator('#cm-send-confirm-btn').getAttribute('aria-label');
+    expect(aria).toBe('Confirm & Send to ' + (startN - 1) + ' ' + (startN - 1 === 1 ? 'person' : 'people'));
+  });
+
+  test('FIX 9: untoggling all recipients disables the submit button', async ({ page }) => {
+    await page.evaluate(() => cmOpenSendConfirm({ source:'card', campaignId:'cmp1' }));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => CM_SEND_SELECTED.slice().forEach(id => cmSendToggleRecipient(id, false)));
+    await page.waitForTimeout(80);
+    expect(await page.locator('#cm-send-confirm-btn').getAttribute('disabled')).not.toBeNull();
+    const tip = await page.locator('#cm-send-confirm-btn').getAttribute('title');
+    expect(tip).toMatch(/Select at least 1 recipient/);
+  });
+
+  test('FIX 9: each recipient checkbox has an aria-label naming the contact', async ({ page }) => {
+    await page.evaluate(() => cmOpenSendConfirm({ source:'card', campaignId:'cmp1' }));
+    await page.waitForTimeout(150);
+    const labels = await page.locator('.cm-send-row input[type=checkbox]').first().getAttribute('aria-label');
+    expect(labels).toMatch(/^Send to /);
   });
 });
