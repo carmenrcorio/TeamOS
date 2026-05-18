@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.19.0
+**Version:** 4.20.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,45 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.20.0] — 2026-05-18
+
+Three CSM Dashboard workflow fixes. **Result: 285/285 chromium tests passing.**
+
+### Fixed / Added
+
+**FIX 1 — Internal Urgent Inbox items open a dedicated context panel.** Previously the Maggie Spry Slack DM row called `acctClick('nova')` and routed the CSM to the NovaVault account briefing — wrong template for a leadership DM. New flow:
+- The Maggie row now carries `data-type="internal"` + `data-inbox-id="maggie-spry"` and routes to `psInternalOpen('maggie-spry')` on click + Enter/Space.
+- A new body-level `#int-panel-ov` + `#int-panel` slide-over (380 px, anchored to the right, indigo accent, `role="dialog"`, `aria-modal="false"`) shows: section header "Internal message" + sender name + role/channel/age subline, a `.int-panel-card` for **Message context** (the Phase-2 placeholder copy from the spec), an amber `.likely` card for **Likely topic (based on timing)**, three suggested-action buttons (Reply in Slack / Share Forecast / View NovaVault Brief), and a Phase-2 footer.
+- The "View NovaVault Brief" action closes the panel and routes to `acctClick('nova', null)` — the only path that touches the customer briefing surface, and only when explicitly chosen.
+- `INBOX_INTERNAL` is a small map so other internal contacts (CS Ops, AE pings) can be added later by extending the data, not the markup.
+- Customer rows (Michael Torres, Sarah Chen, Jennifer Ramos) keep their existing `acctClick(acct, event)` routing — no regression to the briefing flow that was correct.
+- Escape closes; focus returns to the triggering inbox row.
+
+**FIX 2 — Data-source attribution footer on every data-bearing surface.** A new `dataAttribHtml(extra)` helper returns a `<div class="data-attrib" role="note" aria-label="Data source attribution">` line with the shared text `Data: Demo data · Live sync available in Phase 2`. Centralized so the Phase 2 swap (when the Gainsight / Gong / Salesforce APIs land) is a one-line change to `DATA_ATTRIB_TEXT`. Wired into:
+- **Agent drawer body** — appended after the notes section in both `openAgentDrawer` paths (full payload + missing-data empty state).
+- **Next Up widget** — static markup added below the action button row.
+- **Risk Matrix snapshot slide-over** — appended to `rsMxRenderDetail` after the action buttons.
+- **All Signals section** — appended to `rsRenderSignals` after the signal list.
+- **Forecasting Pipeline table** — appended to `fcRenderPipeline` after the summary tiles.
+
+**FIX 3 — Forecast quick-link in the Mission Briefing header.**
+- Part A — `psKpiRenew()` ("$89K renews this month" pulse chip) already routes to Forecasting → Timeline as of v4.10.0; re-verified with a new dedicated test.
+- Part B — `view-default .rp-hd.pl` gains a new `.mb-fc-btn` chip (`📊 Forecast`, `role="link"`, `aria-label="View Forecasting tab"`) between the `Prepare My Day · Auto-loaded` pl-tag and the existing `⚡ Live` chip. Click navigates to Forecasting → Pipeline via the new `psOpenForecastTab()` helper. Same gray outlined visual treatment as the Live chip so neither dominates the header.
+
+### Engineering notes
+- `#int-panel` mounts at body level (not inside `#tab-dash`) so it survives tab swaps. Sticky `top: 88px` matches the existing `.rs-mx-snap` slide-over geometry; offline-banner offset bumps to 124 px the same way.
+- The internal panel uses a transparent overlay (`#int-panel-ov`) so the page behind it stays interactive (non-modal per spec).
+- The drawer manager (v4.16.0 `_drawerManagerOpen`) is intentionally NOT called for the internal panel — it's a sub-panel that's free to coexist with the underlying tab, not a competing full drawer.
+- `dataAttribHtml(extra)` accepts an optional override string so future per-panel customization (e.g. "Data: Gainsight live · Last synced 9:14 AM") is a single argument away.
+
+### Test coverage
+- **285 / 285 chromium passing** (was 267 in v4.19.0). 18 new tests under a `v4.20.0 CSM Dashboard workflow fixes` describe — 8 FIX 1 (data-type tagging, click routing, panel a11y, body sections, Reply in Slack toast, View NovaVault Brief jump, Escape returns focus, customer-row regression), 6 FIX 2 (helper output + per-surface footer count for Next Up / drawer / matrix snapshot / All Signals / Pipeline), 4 FIX 3 (pulse-strip Part A re-verify, header chip a11y, click navigation, button ordering).
+
+### Spec label
+Shipped as `[4.20.0]`. Firefox + WebKit still blocked by container network policy.
 
 ---
 
