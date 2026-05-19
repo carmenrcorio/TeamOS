@@ -3597,3 +3597,122 @@ test.describe('v4.21.0 Recipe for Success overhaul', () => {
     expect(txt).toMatch(/1.1 pts\/week/);
   });
 });
+
+test.describe('v4.22.0 Risk Matrix overflow + clarity', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('risk', document.querySelector('[onclick*="goTab(\'risk\'"]')));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsShow('matrix'));
+    await page.waitForTimeout(200);
+  });
+
+  // ── FIX 1: overflow ──────────────────────────────────────────────────────
+  test('Matrix wrapper clips overflow + matrix has min-height ≥ 320px', async ({ page }) => {
+    const m = await page.evaluate(() => {
+      const wrap = document.querySelector('#rs-sec-matrix .rs-mx-wrap');
+      const mx   = document.querySelector('#rs-sec-matrix .rs-mx');
+      return {
+        wrapOverflow: getComputedStyle(wrap).overflow,
+        mxOverflow:   getComputedStyle(mx).overflow,
+        mxHeight:     mx.getBoundingClientRect().height,
+        mxRatio:      getComputedStyle(mx).aspectRatio
+      };
+    });
+    expect(m.wrapOverflow).toMatch(/hidden/);
+    expect(m.mxOverflow).toMatch(/hidden/);
+    expect(m.mxHeight).toBeGreaterThanOrEqual(320);
+    expect(m.mxRatio).toMatch(/1 ?\/ ?1|^1$/);
+  });
+
+  test('Edge bubbles inset from matrix border (no clipping)', async ({ page }) => {
+    // Every dot's center is at least ~5% from any edge after the 6/94 inset.
+    const inset = await page.evaluate(() => {
+      return Array.from(document.querySelectorAll('#rs-sec-matrix .rs-mx-dot')).map(d => ({
+        left: parseFloat(d.style.left),
+        top:  parseFloat(d.style.top)
+      }));
+    });
+    inset.forEach(p => {
+      expect(p.left).toBeGreaterThanOrEqual(5);
+      expect(p.left).toBeLessThanOrEqual(95);
+      expect(p.top).toBeGreaterThanOrEqual(5);
+      expect(p.top).toBeLessThanOrEqual(95);
+    });
+  });
+
+  test('Mobile viewport scales matrix proportionally', async ({ page }) => {
+    await page.setViewportSize({ width: 420, height: 800 });
+    await page.waitForTimeout(200);
+    const dim = await page.evaluate(() => {
+      const mx = document.querySelector('#rs-sec-matrix .rs-mx');
+      const r  = mx.getBoundingClientRect();
+      return { w: r.width, h: r.height };
+    });
+    expect(dim.w).toBeLessThan(420);
+    // aspect-ratio 1/1 means height ≈ width.
+    expect(Math.abs(dim.h - dim.w)).toBeLessThan(40);
+  });
+
+  // ── FIX 2: clarity ───────────────────────────────────────────────────────
+  test('Matrix container carries role=img + descriptive aria-label', async ({ page }) => {
+    const mx = page.locator('#rs-sec-matrix .rs-mx');
+    expect(await mx.getAttribute('role')).toBe('img');
+    expect(await mx.getAttribute('aria-label')).toMatch(/Risk matrix showing \d+ accounts by health score and days to renewal/);
+  });
+
+  test('Header explains what you are looking at', async ({ page }) => {
+    const h = page.locator('#rs-sec-matrix .rs-mx-hd2');
+    await expect(h).toBeVisible();
+    const t = await h.textContent();
+    expect(t).toMatch(/Risk Matrix · 6 accounts/);
+    expect(t).toMatch(/Each bubble = one account/);
+    expect(t).toMatch(/Position shows risk/);
+    expect(t).toMatch(/Size shows ARR/);
+  });
+
+  test('Axis labels render with aria-hidden', async ({ page }) => {
+    const x = page.locator('#rs-sec-matrix .rs-mx-axislbl-x');
+    const y = page.locator('#rs-sec-matrix .rs-mx-axislbl-y');
+    await expect(x).toHaveText(/← Renewal sooner · later →/);
+    await expect(y).toHaveText(/↑ Healthier/);
+    expect(await x.getAttribute('aria-hidden')).toBe('true');
+    expect(await y.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  test('Quadrants are 2-line with plain-language explanations', async ({ page }) => {
+    const data = await page.evaluate(() => {
+      return Array.from(document.querySelectorAll('#rs-sec-matrix .rs-mx-quad')).map(q => ({
+        cls: q.className,
+        txt: q.textContent.trim()
+      }));
+    });
+    const find = c => data.find(d => d.cls.includes(' ' + c) || d.cls.endsWith(c));
+    expect(find('tl').txt).toMatch(/Watch/);
+    expect(find('tl').txt).toMatch(/Healthy · renewal approaching/);
+    expect(find('tr').txt).toMatch(/Stable ✓/);
+    expect(find('tr').txt).toMatch(/Healthy · renewal not urgent/);
+    expect(find('bl').txt).toMatch(/Act now 🔴/);
+    expect(find('bl').txt).toMatch(/Low health · renewal soon/);
+    expect(find('br').txt).toMatch(/Monitor/);
+    expect(find('br').txt).toMatch(/Low health · renewal not urgent/);
+    // Each has a sub line styled .rs-mx-quad-sub.
+    expect(await page.locator('#rs-sec-matrix .rs-mx-quad .rs-mx-quad-sub').count()).toBe(4);
+  });
+
+  test('Legend names ARR sizing + declining-fast arrow + dark-account "?"', async ({ page }) => {
+    const t = await page.locator('#rs-sec-matrix .rs-mx-legend').textContent();
+    expect(t).toMatch(/Bubble size = ARR/);
+    expect(t).toMatch(/Arrow = health declining fast/);
+    expect(t).toMatch(/No recent data \(dark account\)/);
+  });
+
+  test('Bubble aria-labels still describe each account', async ({ page }) => {
+    const labels = await page.evaluate(() => Array.from(document.querySelectorAll('#rs-sec-matrix .rs-mx-dot')).map(d => d.getAttribute('aria-label')));
+    expect(labels.length).toBe(6);
+    labels.forEach(l => {
+      expect(l).toMatch(/Health/);
+      expect(l).toMatch(/days to renewal/);
+      expect(l).toMatch(/ARR/);
+    });
+  });
+});

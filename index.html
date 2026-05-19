@@ -2598,15 +2598,21 @@ body.offline .rs-mx-snap{top:124px}
 /* ─── Risk Matrix ───────────────────────────────────────────────────────── */
 .rs-mx-split{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
 @media (max-width:1100px){.rs-mx-split{grid-template-columns:1fr}}
-.rs-mx-wrap{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:18px 18px 22px}
+.rs-mx-wrap{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:18px 18px 22px;overflow:hidden}
+.rs-mx-hd2{display:flex;flex-direction:column;gap:2px;margin-bottom:10px}
+.rs-mx-hd2-t{font-size:11px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em}
+.rs-mx-hd2-sub{font-size:11px;color:#6B7280;font-weight:500;line-height:1.45}
 .rs-mx-l{font-size:10px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
 .rs-mx-axis-title{font-size:11px;font-weight:700;color:#374151;text-align:center;margin-top:8px}
-.rs-mx{position:relative;width:100%;height:360px;background:linear-gradient(135deg,#FEE2E2 0%,#FEE2E2 25%,#FEF3C7 25%,#FEF3C7 50%,#FEF3C7 50%,#FEF3C7 75%,#D1FAE5 75%,#D1FAE5 100%);background:linear-gradient(to top right,#FEE2E2,#FEF3C7 50%,#D1FAE5);border:1px solid var(--bd2);border-radius:8px;margin-top:6px;overflow:visible}
-.rs-mx-quad{position:absolute;font-size:9px;font-weight:800;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;padding:6px 8px;background:rgba(255,255,255,.7);border-radius:4px;pointer-events:none}
-.rs-mx-quad.tr{top:6px;right:8px;color:#065F46;background:rgba(209,250,229,.85)}
-.rs-mx-quad.tl{top:6px;left:8px;color:#78350F;background:rgba(254,243,199,.85)}
-.rs-mx-quad.br{bottom:6px;right:8px;color:#78350F;background:rgba(254,243,199,.85)}
-.rs-mx-quad.bl{bottom:6px;left:8px;color:#7F1D1D;background:rgba(254,226,226,.85)}
+.rs-mx-stage{position:relative;margin-top:6px;padding:0 0 28px 40px}
+.rs-mx{position:relative;width:100%;min-height:320px;aspect-ratio:1/1;max-height:480px;background:linear-gradient(to top right,#FEE2E2,#FEF3C7 50%,#D1FAE5);border:1px solid var(--bd2);border-radius:8px;overflow:hidden;box-sizing:border-box}
+@media (max-width:480px){.rs-mx{aspect-ratio:1/1;min-height:0}}
+.rs-mx-quad{position:absolute;font-size:9px;font-weight:800;color:#6B7280;text-transform:uppercase;letter-spacing:.08em;padding:6px 9px;background:rgba(255,255,255,.78);border-radius:5px;pointer-events:none;display:flex;flex-direction:column;gap:2px;max-width:46%}
+.rs-mx-quad-sub{font-size:10px;font-weight:500;color:#6B7280;text-transform:none;letter-spacing:0;line-height:1.3}
+.rs-mx-quad.tr{top:6px;right:8px;color:#065F46;background:rgba(209,250,229,.9);align-items:flex-end;text-align:right}
+.rs-mx-quad.tl{top:6px;left:8px;color:#78350F;background:rgba(254,243,199,.9)}
+.rs-mx-quad.br{bottom:6px;right:8px;color:#78350F;background:rgba(254,243,199,.9);align-items:flex-end;text-align:right}
+.rs-mx-quad.bl{bottom:6px;left:8px;color:#7F1D1D;background:rgba(254,226,226,.9)}
 .rs-mx-grid{position:absolute;inset:0;pointer-events:none}
 .rs-mx-grid::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(0,0,0,.07)}
 .rs-mx-grid::after{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(0,0,0,.07)}
@@ -2625,8 +2631,8 @@ body.offline .rs-mx-snap{top:124px}
 .rs-mx-axis.y-min{left:-30px;bottom:0}
 .rs-mx-axis.y-mid{left:-30px;top:50%;transform:translateY(-50%)}
 .rs-mx-axis.y-max{left:-30px;top:0}
-.rs-mx-axis-x{text-align:center;margin-top:24px;font-size:11px;font-weight:700;color:#374151}
-.rs-mx-axis-y{writing-mode:vertical-rl;transform:rotate(180deg);position:absolute;left:-58px;top:50%;transform:rotate(180deg) translateY(50%);font-size:11px;font-weight:700;color:#374151}
+.rs-mx-axislbl-x{text-align:center;font-size:11px;color:#6B7280;font-weight:500;margin-top:18px;letter-spacing:.02em}
+.rs-mx-axislbl-y{position:absolute;left:0;top:50%;transform:translate(-50%,-50%) rotate(-90deg);font-size:11px;color:#6B7280;font-weight:500;letter-spacing:.02em;white-space:nowrap;transform-origin:center}
 .rs-mx-legend{display:flex;gap:14px;font-size:10px;color:#374151;font-weight:600;margin-top:14px;flex-wrap:wrap}
 .rs-mx-legend-d{display:inline-flex;align-items:center;gap:5px}
 .rs-mx-legend-d::before{content:'';width:10px;height:10px;border-radius:50%;display:inline-block}
@@ -2634,6 +2640,8 @@ body.offline .rs-mx-snap{top:124px}
 .rs-mx-legend-d.a::before{background:#D97706}
 .rs-mx-legend-d.g::before{background:#059669}
 .rs-mx-legend-d.gy::before{background:#9CA3AF}
+.rs-mx-legend-i{display:inline-flex;align-items:center;gap:5px;color:#374151;font-weight:600}
+.rs-mx-legend-i b{font-weight:800;color:#111827}
 
 .rs-mx-detail{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;min-height:340px}
 .rs-mx-detail-empty{font-size:13px;color:#6B7280;font-style:italic;padding:40px 10px;text-align:center}
@@ -13530,9 +13538,14 @@ function rsRenderMatrix() {
   if (!sec) return;
   // X = daysOut / 120 (0 on left → 120 on right). Y = health (0 bottom → 100 top).
   // CSS gradient runs bottom-left red → top-right green to match quadrant zones.
+  // v4.22.0 — inset bubble positions so edge cases (daysOut=0 / health=100)
+  // don't clip against the matrix border. Map 0–100 → 6–94 so even bubbles
+  // at the extreme axis values have ~16px of breathing room.
   var dots = RS_ACCOUNTS.map(function(a){
-    var x = Math.min(100, (a.daysOut / 120) * 100);
-    var y = Math.max(0, Math.min(100, a.health));
+    var rawX = Math.min(100, (a.daysOut / 120) * 100);
+    var rawY = Math.max(0, Math.min(100, a.health));
+    var x = 6 + rawX * 0.88;
+    var y = 6 + rawY * 0.88;
     var size = 26 + Math.min(28, a.arr * 0.55); // 26-54px range; ARR sized
     var sel = (RS_MX_SEL === a.key) ? ' sel' : '';
     var warn = a.warnRing ? ' warn-ring' : '';
@@ -13560,7 +13573,7 @@ function rsRenderMatrix() {
   // right-side slide-over (mounted at body level). The matrix now occupies
   // the full content width and stays visible while the snapshot is open.
   sec.innerHTML = ''
-    + '<div class="rs-hd"><div class="rs-hd-t">⚡ Risk Matrix</div><div class="rs-hd-meta">' + RS_ACCOUNTS.length + ' accounts · Health × Days to Renewal</div></div>'
+    + '<div class="rs-hd"><div class="rs-hd-t">⚡ Risk Matrix</div></div>'
     + '<div class="rs-portfolio">'
     +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Total accounts at risk</div><div class="rs-portfolio-v r">' + atRisk.length + '</div><div class="rs-portfolio-sub">$' + sumARR(atRisk) + 'K ARR</div></div>'
     +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Dark zone</div><div class="rs-portfolio-v gy">' + dark.length + '</div><div class="rs-portfolio-sub">$' + sumARR(dark) + 'K ARR</div></div>'
@@ -13568,23 +13581,23 @@ function rsRenderMatrix() {
     +   '<div class="rs-portfolio-cell"><div class="rs-portfolio-l">Total ARR managed</div><div class="rs-portfolio-v">$' + totalARR + 'K</div><div class="rs-portfolio-sub">' + RS_ACCOUNTS.length + ' accounts</div></div>'
     + '</div>'
     + '<div class="rs-mx-wrap" style="margin-top:14px">'
-    +   '<div class="rs-mx-l">Health score (0–100) vs. days to renewal (0–120)</div>'
-    +   '<div class="rs-mx" style="margin-left:30px;margin-bottom:24px">'
-    +     '<div class="rs-mx-grid"></div>'
-    +     '<div class="rs-mx-quad tl">⚠ Watch</div>'
-    +     '<div class="rs-mx-quad tr">✓ Stable</div>'
-    +     '<div class="rs-mx-quad bl">⚡ Act Now</div>'
-    +     '<div class="rs-mx-quad br">👁 Monitor</div>'
-    +     dots
-    +     '<span class="rs-mx-axis y-max">100</span>'
-    +     '<span class="rs-mx-axis y-mid">50</span>'
-    +     '<span class="rs-mx-axis y-min">0</span>'
-    +     '<span class="rs-mx-axis x-min">0d</span>'
-    +     '<span class="rs-mx-axis x-mid">60d</span>'
-    +     '<span class="rs-mx-axis x-max">120d+</span>'
+    +   '<div class="rs-mx-hd2">'
+    +     '<div class="rs-mx-hd2-t">Risk Matrix · ' + RS_ACCOUNTS.length + ' accounts</div>'
+    +     '<div class="rs-mx-hd2-sub">Each bubble = one account. Position shows risk. Size shows ARR.</div>'
     +   '</div>'
-    +   '<div class="rs-mx-axis-x" style="margin-left:30px">Days to renewal →</div>'
-    +   '<div class="rs-mx-legend"><span class="rs-mx-legend-d r">Critical</span><span class="rs-mx-legend-d a">At-Risk</span><span class="rs-mx-legend-d g">Healthy</span><span class="rs-mx-legend-d gy">Unknown (dark)</span><span style="color:#6B7280">· Circle size = ARR</span></div>'
+    +   '<div class="rs-mx-stage">'
+    +     '<div class="rs-mx-axislbl-y" aria-hidden="true">↑ Healthier</div>'
+    +     '<div class="rs-mx" role="img" aria-label="Risk matrix showing ' + RS_ACCOUNTS.length + ' accounts by health score and days to renewal">'
+    +       '<div class="rs-mx-grid"></div>'
+    +       '<div class="rs-mx-quad tl"><span>Watch</span><span class="rs-mx-quad-sub">Healthy · renewal approaching</span></div>'
+    +       '<div class="rs-mx-quad tr"><span>Stable ✓</span><span class="rs-mx-quad-sub">Healthy · renewal not urgent</span></div>'
+    +       '<div class="rs-mx-quad bl"><span>Act now 🔴</span><span class="rs-mx-quad-sub">Low health · renewal soon</span></div>'
+    +       '<div class="rs-mx-quad br"><span>Monitor</span><span class="rs-mx-quad-sub">Low health · renewal not urgent</span></div>'
+    +       dots
+    +     '</div>'
+    +     '<div class="rs-mx-axislbl-x" aria-hidden="true">← Renewal sooner · later →</div>'
+    +   '</div>'
+    +   '<div class="rs-mx-legend"><span class="rs-mx-legend-d r">Critical</span><span class="rs-mx-legend-d a">At-Risk</span><span class="rs-mx-legend-d g">Healthy</span><span class="rs-mx-legend-d gy">Unknown (dark)</span><span class="rs-mx-legend-i"><b>●</b> Bubble size = ARR</span><span class="rs-mx-legend-i"><b>↓↓</b> Arrow = health declining fast</span><span class="rs-mx-legend-i"><b>?</b> No recent data (dark account)</span></div>'
     +   '<div class="rs-trend-key" aria-label="Health trend key"><span class="rs-trend-key-l">Trend</span><span class="rs-trend-key-i up"><b>↑</b> Improving</span><span class="rs-trend-key-i flat"><b>→</b> Stable</span><span class="rs-trend-key-i down"><b>↓</b> Declining</span><span class="rs-trend-key-i dd"><b>↓↓</b> Sharp decline</span><span class="rs-trend-key-i un"><b>?</b> Unknown (dark)</span><span style="color:#6B7280">· Red dashed ring = at-risk warning</span></div>'
     + '</div>';
   rsMxRenderDetail();

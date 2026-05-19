@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.21.1
+**Version:** 4.22.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,21 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.22.0] — 2026-05-19
+
+Two Risk Matrix fixes in the Risk & Signals tab. **Result: 311/311 chromium tests passing.**
+
+### Fixed / Added
+
+- **Fix**: Risk Matrix overflow — container clipping resolved. `.rs-mx-wrap` and `.rs-mx` both carry `overflow:hidden`, the matrix has `min-height:320px` + `aspect-ratio:1/1` + `max-height:480px`, and bubble positions are inset to the 6 %–94 % range so dots at extreme axis values (`daysOut=0` / `health=100`) no longer clip the border. Mobile viewports (≤ 480 px) keep the same aspect ratio and scale proportionally.
+- **UX**: Risk Matrix axis labels added for orientation. A vertical `↑ Healthier` label sits left of the matrix and a centered `← Renewal sooner · later →` label below it. Both `aria-hidden="true"` so screen readers get the per-bubble `aria-label` instead.
+- **UX**: Quadrant labels are now two-line — bold action word on line 1 and a plain-language explanation on line 2. Watch · *Healthy · renewal approaching*. Stable ✓ · *Healthy · renewal not urgent*. Act now 🔴 · *Low health · renewal soon*. Monitor · *Low health · renewal not urgent*.
+- **UX**: Legend below the matrix now spells out the encoding — `● Bubble size = ARR`, `↓↓ Arrow = health declining fast`, `? = No recent data (dark account)` — in addition to the existing colour swatches.
+- **UX**: Matrix header replaced with `Risk Matrix · 6 accounts` + the sentence *"Each bubble = one account. Position shows risk. Size shows ARR."* — readable by an executive seeing it for the first time.
+- **Accessibility**: `.rs-mx` carries `role="img"` + `aria-label="Risk matrix showing 6 accounts by health score and days to renewal"`. Per-bubble `aria-label`s (Health / days / ARR / trend) are unchanged.
 
 ---
 
