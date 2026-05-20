@@ -11603,6 +11603,9 @@ function cmCampExport(id) {
   var stamp = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
   var safeName = (c.name || 'campaign').replace(/[^a-z0-9-]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase();
   var filename = safeName + '-contacts-' + stamp + '.csv';
+  // v4.26.1 — FIX 2: surface the export visibly. The toast was firing but
+  // the catch path (Blob unsupported) was silent — now both paths toast.
+  var blobOk = false;
   try {
     var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
     var url  = URL.createObjectURL(blob);
@@ -11612,11 +11615,17 @@ function cmCampExport(id) {
     document.body.appendChild(a);
     a.click();
     setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+    blobOk = true;
   } catch (e) {
-    // Fallback for browsers without Blob support — copy CSV to clipboard.
+    // Fallback for browsers without Blob support — copy CSV to clipboard so
+    // the CSM can paste into a spreadsheet.
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv);
   }
-  toast('Contact list exported · ' + pool.length + ' contacts · CSV ✓');
+  if (blobOk) {
+    toast('Contact list exported · ' + pool.length + ' contacts · CSV ✓');
+  } else {
+    toast('Contact list copied to clipboard · ' + pool.length + ' contacts · CSV ✓');
+  }
 }
 
 // v4.4.0 — Duplicate creates a real DRAFT card with "Copy of …" name.
@@ -12252,6 +12261,9 @@ function cmTplEdit(id) {
   if (!t) return;
   var box = document.getElementById('cm-tpl-detail');
   if (!box) return;
+  // v4.26.1 — FIX 3: parity with the +New Template modal. Edit view now
+  // shows the same B/I/U/Link/Variable toolbar above the body textarea,
+  // plus a +Insert Variable picker on the subject line.
   box.innerHTML = ''
     + '<div class="cm-detail-hd" style="border-bottom:1px solid var(--bd);padding-bottom:12px">'
     +   '<div style="font-size:22px">' + t.icon + '</div>'
@@ -12260,13 +12272,12 @@ function cmTplEdit(id) {
     +     '<div class="cm-detail-sub">Editing · ' + cmEscape(t.category) + '</div>'
     +   '</div>'
     + '</div>'
-    + '<label class="cm-wiz-label">Subject</label>'
+    + '<label class="cm-wiz-label" for="cm-tpl-edit-subj">Subject</label>'
     + '<input class="cm-wiz-input" id="cm-tpl-edit-subj" type="text" value="' + cmEscape(t.subject) + '">'
-    + '<label class="cm-wiz-label">Body</label>'
+    + cmMountSubjectVarPicker('cm-tpl-edit-subj', 'cm-tpl-edit-subj-vars-pop')
+    + '<label class="cm-wiz-label" for="cm-tpl-edit-body">Body</label>'
+    + cmMountFormatToolbar('cm-tpl-edit-body', 'cm-tpl-edit-body-vars-pop')
     + '<textarea class="cm-tpl-editor" id="cm-tpl-edit-body">' + cmEscape(t.body) + '</textarea>'
-    + '<div style="margin-top:10px"><div class="cm-detail-sec-t">Insert variable</div><div class="cm-tpl-vars">'
-    +   t.vars.map(function(v){ return '<button class="cm-tpl-var-pill" type="button" onclick="cmTplInsertVar(\'' + v + '\')">' + cmEscape(v) + '</button>'; }).join('')
-    + '</div></div>'
     + '<div class="cm-detail-acts">'
     +   '<button class="cm-btn" type="button" onclick="cmRenderTplDetail()">Cancel</button>'
     +   '<button class="cm-btn prim" type="button" onclick="cmTplSave(\'' + t.id + '\')"><i class="ti ti-check"></i> Save changes</button>'
@@ -12299,19 +12310,14 @@ var CM_TPL_VARS = ['{{first_name}}','{{company}}','{{csm_name}}','{{renewal_date
 function cmNewTemplate() {
   var cats = ['Re-engagement','EBR','Renewal','Product Update','Champion Intro','Newsletter','Custom'];
   var catOpts = cats.map(function(c){ return '<option value="' + cmEscape(c) + '">' + cmEscape(c) + '</option>'; }).join('');
-  var varBtns = CM_TPL_VARS.map(function(v){ return '<button class="cm-tb-vars-item" type="button" onmousedown="event.preventDefault()" onclick="cmTbInsertVar(\'' + v + '\')">' + cmEscape(v) + '</button>'; }).join('');
   var body = ''
     + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-tb-nm">Template name</label><input class="cm-form-input" id="cm-tb-nm" type="text" placeholder="e.g. Q2 Renewal Save"></div>'
     + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-tb-cat">Category</label><select class="cm-form-select" id="cm-tb-cat" onchange="cmTbCatChange()">' + catOpts + '</select></div>'
-    + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-tb-subj">Subject line</label><input class="cm-form-input" id="cm-tb-subj" type="text" placeholder="Use {{first_name}}, {{company}}, etc."></div>'
+    + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-tb-subj">Subject line</label><input class="cm-form-input" id="cm-tb-subj" type="text" placeholder="Use {{first_name}}, {{company}}, etc.">'
+    +   cmMountSubjectVarPicker('cm-tb-subj', 'cm-tb-subj-vars-pop')
+    + '</div>'
     + '<div class="cm-form-row col"><label class="cm-form-label" for="cm-tb-body">Body</label>'
-    +   '<div class="cm-tb-toolbar">'
-    +     '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbWrap(\'**\')" aria-label="Bold"><b>B</b></button>'
-    +     '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbWrap(\'_\')" aria-label="Italic"><i>I</i></button>'
-    +     '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbWrap(\'__\')" aria-label="Underline"><u>U</u></button>'
-    +     '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbInsertLink()" aria-label="Insert link"><i class="ti ti-link"></i> Link</button>'
-    +     '<div class="cm-tb-vars-wrap"><button class="cm-tb-btn" type="button" onclick="cmTbToggleVars(event)"><i class="ti ti-variable"></i> Variable <i class="ti ti-chevron-down"></i></button><div class="cm-tb-vars-pop" id="cm-tb-vars-pop">' + varBtns + '</div></div>'
-    +   '</div>'
+    +   cmMountFormatToolbar('cm-tb-body', 'cm-tb-vars-pop')
     +   '<textarea class="cm-form-ta" id="cm-tb-body" placeholder="Hi {{first_name}}, ..."></textarea>'
     + '</div>'
     + '<div class="cm-form-row col"><label style="font-size:12px;color:#1F2937;font-weight:600;display:flex;align-items:center;gap:8px"><input type="checkbox" id="cm-tb-sig" checked style="accent-color:var(--tl)"> Auto-append signature</label></div>'
@@ -12326,21 +12332,34 @@ function cmTbCatChange() {
   var row = document.getElementById('cm-tb-unsub-row');
   if (row) row.style.display = (cat === 'Newsletter') ? '' : 'none';
 }
-function cmTbToggleVars(ev) {
+// v4.26.1 — FIX 3: toolbar functions accept an optional target id so the
+// same toolbar can mount above any textarea / input. cmMountFormatToolbar
+// emits a complete toolbar bound to a specific textarea + popover id, and
+// cmMountSubjectVarPicker emits the same Variable dropdown without the
+// formatting buttons (subject lines don't support B/I/U).
+function cmTbToggleVars(ev, popId) {
   if (ev && ev.stopPropagation) ev.stopPropagation();
-  var pop = document.getElementById('cm-tb-vars-pop');
+  // Close every other open variable popover so multiple toolbars on screen
+  // don't fight each other.
+  document.querySelectorAll('.cm-tb-vars-pop.on').forEach(function(p){
+    if (!popId || p.id !== popId) p.classList.remove('on');
+  });
+  var pop = document.getElementById(popId || 'cm-tb-vars-pop');
   if (pop) pop.classList.toggle('on');
 }
-function cmTbInsertVar(v) {
-  var ta = document.getElementById('cm-tb-body');
+function cmTbInsertVar(v, taId, popId) {
+  var ta = document.getElementById(taId || 'cm-tb-body');
   if (!ta) return;
-  var s = ta.selectionStart, e = ta.selectionEnd;
-  ta.value = ta.value.slice(0,s) + v + ta.value.slice(e);
-  ta.focus(); ta.selectionStart = ta.selectionEnd = s + v.length;
-  var pop = document.getElementById('cm-tb-vars-pop'); if (pop) pop.classList.remove('on');
+  if (ta.tagName === 'INPUT' || ta.tagName === 'TEXTAREA') {
+    var s = ta.selectionStart, e = ta.selectionEnd;
+    ta.value = ta.value.slice(0,s) + v + ta.value.slice(e);
+    ta.focus(); ta.selectionStart = ta.selectionEnd = s + v.length;
+  }
+  var pop = document.getElementById(popId || 'cm-tb-vars-pop');
+  if (pop) pop.classList.remove('on');
 }
-function cmTbWrap(marker) {
-  var ta = document.getElementById('cm-tb-body');
+function cmTbWrap(marker, taId) {
+  var ta = document.getElementById(taId || 'cm-tb-body');
   if (!ta) return;
   var s = ta.selectionStart, e = ta.selectionEnd;
   var sel = ta.value.slice(s,e);
@@ -12348,14 +12367,38 @@ function cmTbWrap(marker) {
   ta.value = ta.value.slice(0,s) + rep + ta.value.slice(e);
   ta.focus(); ta.selectionStart = s + marker.length; ta.selectionEnd = s + marker.length + (sel || 'text').length;
 }
-function cmTbInsertLink() {
-  var ta = document.getElementById('cm-tb-body');
+function cmTbInsertLink(taId) {
+  var ta = document.getElementById(taId || 'cm-tb-body');
   if (!ta) return;
   var s = ta.selectionStart, e = ta.selectionEnd;
   var sel = ta.value.slice(s,e) || 'meeting link';
   var rep = '[' + sel + '](https://calendly.com/carmen-corio)';
   ta.value = ta.value.slice(0,s) + rep + ta.value.slice(e);
   ta.focus();
+}
+function cmMountFormatToolbar(taId, popId) {
+  popId = popId || (taId + '-vars-pop');
+  var varBtns = CM_TPL_VARS.map(function(v){
+    return '<button class="cm-tb-vars-item" type="button" onmousedown="event.preventDefault()" onclick="cmTbInsertVar(\'' + v + '\',\'' + taId + '\',\'' + popId + '\')" role="option">' + cmEscape(v) + '</button>';
+  }).join('');
+  return ''
+    + '<div class="cm-tb-toolbar" role="toolbar" aria-label="Body formatting">'
+    +   '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbWrap(\'**\',\'' + taId + '\')" aria-label="Bold"><b>B</b></button>'
+    +   '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbWrap(\'_\',\'' + taId + '\')" aria-label="Italic"><i>I</i></button>'
+    +   '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbWrap(\'__\',\'' + taId + '\')" aria-label="Underline"><u>U</u></button>'
+    +   '<button class="cm-tb-btn" type="button" onmousedown="event.preventDefault()" onclick="cmTbInsertLink(\'' + taId + '\')" aria-label="Insert link"><i class="ti ti-link"></i> Link</button>'
+    +   '<div class="cm-tb-vars-wrap"><button class="cm-tb-btn" type="button" onclick="cmTbToggleVars(event,\'' + popId + '\')" aria-haspopup="listbox" aria-label="Insert variable"><i class="ti ti-variable"></i> Variable <i class="ti ti-chevron-down"></i></button><div class="cm-tb-vars-pop" id="' + popId + '" role="listbox">' + varBtns + '</div></div>'
+    + '</div>';
+}
+function cmMountSubjectVarPicker(taId, popId) {
+  popId = popId || (taId + '-vars-pop');
+  var varBtns = CM_TPL_VARS.map(function(v){
+    return '<button class="cm-tb-vars-item" type="button" onmousedown="event.preventDefault()" onclick="cmTbInsertVar(\'' + v + '\',\'' + taId + '\',\'' + popId + '\')" role="option">' + cmEscape(v) + '</button>';
+  }).join('');
+  return ''
+    + '<div class="cm-tb-toolbar cm-tb-toolbar-subj" role="toolbar" aria-label="Subject variable picker">'
+    +   '<div class="cm-tb-vars-wrap"><button class="cm-tb-btn" type="button" onclick="cmTbToggleVars(event,\'' + popId + '\')" aria-haspopup="listbox" aria-label="Insert variable"><i class="ti ti-variable"></i> + Insert Variable <i class="ti ti-chevron-down"></i></button><div class="cm-tb-vars-pop" id="' + popId + '" role="listbox">' + varBtns + '</div></div>'
+    + '</div>';
 }
 function cmTbSave() {
   var nm = (document.getElementById('cm-tb-nm').value || '').trim();
@@ -12374,8 +12417,18 @@ function cmTbSave() {
   if (CM_ACTIVE === 'templates') cmRenderTemplates();
   toast('Template saved · ' + cmEscape(nm) + ' ✓');
 }
-// Close variable popover on outside click.
-document.addEventListener('click', function(){ var p = document.getElementById('cm-tb-vars-pop'); if (p) p.classList.remove('on'); });
+// Close every variable popover on outside click. v4.26.1 — generalized so
+// multiple toolbars (New Template + Edit Template + subject picker) all
+// share the same dismiss behavior.
+document.addEventListener('click', function(e){
+  document.querySelectorAll('.cm-tb-vars-pop.on').forEach(function(p){
+    if (p.contains(e.target)) return;
+    // Don't dismiss when the click landed on the toggle button itself —
+    // cmTbToggleVars handles that case so we don't immediately re-open.
+    if (e.target.closest('.cm-tb-vars-wrap') && e.target.closest('.cm-tb-vars-wrap').contains(p)) return;
+    p.classList.remove('on');
+  });
+});
 function cmTplUseInCampaign(id) { cmOpenWizard(); CM_WIZ.template = id; CM_WIZ.step = 3; cmWizRender(); }
 
 // ── Analytics section ───────────────────────────────────────────────────────
@@ -12914,8 +12967,24 @@ function cmWizStep2BuildGroups() {
     var rowsHtml = g.rows.map(function(c){
       var checked = CM_WIZ.contacts.indexOf(c.id) !== -1;
       var sel = checked ? ' sel' : '';
-      var dis = (c.seq === 'departed') ? ' style="opacity:.45;cursor:not-allowed"' : '';
-      return '<label class="cm-wiz-cnt-item' + sel + '"' + dis + '><input type="checkbox" ' + (checked ? 'checked' : '') + (c.seq === 'departed' ? ' disabled' : '') + ' onchange="cmWizToggleContact(\'' + c.id + '\',this.checked)"><span><b>' + cmEscape(c.fn + ' ' + c.ln) + '</b> · ' + cmEscape(c.role) + ' · <span style="color:#6B7280">' + cmEscape(c.email) + '</span></span></label>';
+      var disabled = (c.seq === 'departed');
+      var dis = disabled ? ' style="opacity:.45;cursor:not-allowed"' : '';
+      // v4.26.1 — FIX 1: full-row click target. The row is a role=checkbox
+      // div instead of a label so a single click handler covers the whole
+      // surface (the small native checkbox area was a hotspot for misclicks).
+      // The checkbox stays visible + clickable but its onchange now just
+      // calls cmStep2ToggleRow with the synced state.
+      var rowAttrs = disabled
+        ? ' aria-disabled="true" tabindex="-1"'
+        : ' role="checkbox" tabindex="0" aria-checked="' + (checked ? 'true' : 'false') + '"'
+          + ' onclick="cmStep2ToggleRow(\'' + c.id + '\', event)"'
+          + ' onkeydown="if((event.key===\'Enter\'||event.key===\' \')&&event.target.tagName!==\'INPUT\'){event.preventDefault();cmStep2ToggleRow(\'' + c.id + '\', event)}"';
+      return '<div class="cm-wiz-cnt-item' + sel + '"' + dis + rowAttrs + '>'
+        + '<input type="checkbox" id="cm-step2-cb-' + cmEscape(c.id) + '" ' + (checked ? 'checked' : '') + (disabled ? ' disabled' : '')
+        + ' onclick="event.stopPropagation()"'
+        + ' onchange="cmWizToggleContact(\'' + c.id + '\',this.checked)">'
+        + '<span><b>' + cmEscape(c.fn + ' ' + c.ln) + '</b> · ' + cmEscape(c.role) + ' · <span style="color:#6B7280">' + cmEscape(c.email) + '</span></span>'
+        + '</div>';
     }).join('');
     var ssoLabel = g.sso || 'Unknown';
     var arrLabel = (g.arr != null) ? ('$' + g.arr + 'K') : '—';
@@ -12978,16 +13047,30 @@ function cmWizToggleContact(id, on) {
   var i = CM_WIZ.contacts.indexOf(id);
   if (on && i === -1) CM_WIZ.contacts.push(id);
   if (!on && i !== -1) CM_WIZ.contacts.splice(i, 1);
-  // Update the label's sel class without re-rendering the whole list.
+  // Update the row's sel class + aria-checked without re-rendering the list.
   var labels = document.querySelectorAll('.cm-wiz-cnt-item');
   labels.forEach(function(l){
     var input = l.querySelector('input[type=checkbox]');
     if (input && input.getAttribute('onchange') && input.getAttribute('onchange').indexOf("'" + id + "'") !== -1) {
       l.classList.toggle('sel', !!on);
+      if (l.getAttribute('role') === 'checkbox') l.setAttribute('aria-checked', on ? 'true' : 'false');
     }
   });
   var counter = document.getElementById('cm-wiz-step2-counter');
   if (counter) counter.textContent = cmWizStep2Counter();
+}
+
+// v4.26.1 — FIX 1: full-row click handler for the Step 2 audience selector.
+// Toggles the row's checkbox and routes through cmWizToggleContact so all
+// state + counter + aria-checked stay in sync. Clicks on the checkbox itself
+// stop propagation (the native onchange runs instead) — that path is the
+// keyboard / assistive-tech path.
+function cmStep2ToggleRow(id, evt) {
+  if (evt && evt.target && (evt.target.tagName === 'INPUT' || evt.target.closest('input'))) return;
+  var cb = document.getElementById('cm-step2-cb-' + id);
+  if (!cb || cb.disabled) return;
+  cb.checked = !cb.checked;
+  cmWizToggleContact(id, cb.checked);
 }
 function cmWizStep3(body) {
   var cards = CM_TEMPLATES.map(function(t){

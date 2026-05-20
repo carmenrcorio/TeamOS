@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.26.0
+**Version:** 4.26.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,18 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.26.1] — 2026-05-21
+
+Campaign Manager quick-win bundle — 3 small fixes shipping together. The requested label was [4.22.0], but that's already used; this entry covers the same bundle under 4.26.1. **Result: 373/373 chromium tests passing.**
+
+### Fixed
+
+- **Fix**: Wizard Step 2 contact rows have full-width click targets. The row was already wrapped in a `<label>`, but Playwright + screen-reader QA both reported misclicks on the small native checkbox area. Each row is now a `role="checkbox"` `<div>` with `tabindex="0"`, an explicit `onclick` handler (`cmStep2ToggleRow`), and Enter / Space keyboard handlers. `aria-checked` stays in sync with the underlying input. The native checkbox remains visible and clickable (with `stopPropagation` so it doesn't double-fire the row handler). Departed contacts get `aria-disabled="true"` + `tabindex="-1"`.
+- **Fix**: Export List in the campaign detail panel was always firing a toast, but the previous `catch` path (Blob unsupported) was silent. Both paths now toast — *"Contact list exported · {N} contacts · CSV ✓"* on a successful download, or *"Contact list copied to clipboard · {N} contacts · CSV ✓"* on the clipboard fallback.
+- **Fix**: Edit Template inline editor now shows the same full toolbar as the +New Template modal. Refactored the four toolbar primitives (`cmTbWrap` / `cmTbInsertLink` / `cmTbInsertVar` / `cmTbToggleVars`) to accept an optional `taId` + `popId` so they bind to any textarea. Added two reusable mount helpers — `cmMountFormatToolbar(taId, popId)` (B / I / U / Link / Variable) and `cmMountSubjectVarPicker(inputId, popId)` (Variable only) — and rebuilt both the New Template modal and the Edit Template view on top of them. Subject lines on both surfaces now carry a `+ Insert Variable` dropdown. Every variable button has `role="option"`; the parent popovers carry `role="listbox"`. The outside-click dismiss handler now closes any open `.cm-tb-vars-pop`, not just the legacy single-id popover.
 
 ---
 
