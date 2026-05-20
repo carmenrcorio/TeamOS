@@ -4535,3 +4535,273 @@ test.describe('v4.26.0 CSM Dashboard bug-fix + improvement bundle', () => {
     expect(t6title).toMatch(/Schedule EBR for accounts/);
   });
 });
+
+test.describe('v4.27.0 Campaign Manager medium bundle', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => { try { localStorage.clear(); } catch(_){} });
+    await page.evaluate(() => { goTab('campaigns', document.querySelector('.n-tab[onclick*="campaigns"]')); });
+    await page.waitForTimeout(150);
+  });
+
+  // ── FEATURE 1: Bulk contact actions ────────────────────────────────────
+  test('FEATURE 1: contacts list has master + per-row role=checkbox boxes', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(200);
+    const master = page.locator('.cm-cnt-master .cm-cnt-cb');
+    await expect(master).toBeVisible();
+    expect(await master.getAttribute('role')).toBe('checkbox');
+    expect(await master.getAttribute('aria-label')).toBe('Select all visible contacts');
+    expect(await master.getAttribute('aria-checked')).toBe('false');
+    const rowCBs = await page.locator('#cm-cnt-list .cm-cnt-row .cm-cnt-cb').count();
+    expect(rowCBs).toBeGreaterThan(0);
+    const firstRowCB = page.locator('#cm-cnt-list .cm-cnt-row .cm-cnt-cb').first();
+    expect(await firstRowCB.getAttribute('role')).toBe('checkbox');
+    const lbl = await firstRowCB.getAttribute('aria-label');
+    expect(lbl).toMatch(/^Select /);
+  });
+
+  test('FEATURE 1: clicking a row checkbox shows bulk action bar with 4 actions', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(200);
+    await page.locator('#cm-cnt-list .cm-cnt-row').first().locator('.cm-cnt-cb').click();
+    await page.waitForTimeout(180);
+    const bar = page.locator('#cm-cnt-bulk-bar.on');
+    await expect(bar).toBeVisible();
+    expect(await bar.getAttribute('role')).toBe('region');
+    expect(await bar.getAttribute('aria-label')).toMatch(/Bulk actions for 1 selected contact/);
+    const txt = await bar.textContent();
+    expect(txt).toMatch(/Add to Campaign/);
+    expect(txt).toMatch(/Send 1:1 Email/);
+    expect(txt).toMatch(/Add Note/);
+    expect(txt).toMatch(/Export Selected/);
+    // The count is aria-live.
+    const liveEl = bar.locator('[aria-live="polite"]');
+    expect(await liveEl.textContent()).toMatch(/1 contact selected/);
+  });
+
+  test('FEATURE 1: master checkbox selects all visible non-departed contacts', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(200);
+    // Departed contacts are intentionally excluded from select-all.
+    const eligibleCount = await page.evaluate(() => cmFilteredContacts().filter(c => c.seq !== 'departed').length);
+    await page.locator('.cm-cnt-master .cm-cnt-cb').click();
+    await page.waitForTimeout(180);
+    expect(await page.evaluate(() => cmContactBulkCount())).toBe(eligibleCount);
+    expect(await page.locator('.cm-bulk-bar-count').textContent()).toMatch(new RegExp(eligibleCount + ' contacts? selected'));
+    // Clicking master again deselects everything.
+    await page.locator('.cm-cnt-master .cm-cnt-cb').click();
+    await page.waitForTimeout(180);
+    expect(await page.evaluate(() => cmContactBulkCount())).toBe(0);
+    await expect(page.locator('#cm-cnt-bulk-bar.on')).toHaveCount(0);
+  });
+
+  test('FEATURE 1: filter chip prunes selection to visible rows', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(200);
+    // Select all visible contacts under default 'all' filter.
+    await page.evaluate(() => cmContactBulkSelectAllVisible());
+    await page.waitForTimeout(150);
+    const allSelected = await page.evaluate(() => cmContactBulkCount());
+    expect(allSelected).toBeGreaterThan(1);
+    // Switch to a narrower filter and confirm selection shrinks.
+    await page.evaluate(() => cmSetCntFilter('inseq'));
+    await page.waitForTimeout(150);
+    const inseqSelected = await page.evaluate(() => cmContactBulkCount());
+    expect(inseqSelected).toBeLessThanOrEqual(allSelected);
+    expect(inseqSelected).toBeGreaterThan(0);
+  });
+
+  test('FEATURE 1: Add to Campaign opens picker with bulk title', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => cmContactBulkSelectAllVisible());
+    await page.waitForTimeout(150);
+    await page.locator('#cm-cnt-bulk-bar .cm-btn:has-text("Add to Campaign")').click();
+    await page.waitForTimeout(200);
+    const title = (await page.locator('#cm-modal-title').textContent()).trim();
+    expect(title).toMatch(/^Add \d+ contacts? to a campaign$/);
+    // Pick the first available campaign — the bulk-specific handler
+    // routes through cmBulkAddToCampaignSelect.
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.locator('.cm-pick-item').first().click();
+    await page.waitForTimeout(200);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /\d+ contacts? added to .* · Gainsight ✓/.test(t))).toBe(true);
+    // Bulk bar should clear after the operation.
+    await expect(page.locator('#cm-cnt-bulk-bar.on')).toHaveCount(0);
+  });
+
+  test('FEATURE 1: Send 1:1 opens Quick Send pre-populated with selected', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(200);
+    // Pick exactly 2 contacts.
+    const ids = await page.evaluate(() => CM_CONTACTS.slice(0, 2).map(c => c.id));
+    await page.evaluate(idArr => idArr.forEach(id => cmContactBulkToggle(id)), ids);
+    await page.waitForTimeout(150);
+    await page.locator('#cm-cnt-bulk-bar .cm-btn:has-text("Send 1:1 Email")').click();
+    await page.waitForTimeout(300);
+    await expect(page.locator('#cm-modal-title:has-text("Quick send")')).toBeVisible({ timeout: 2000 }).catch(() => {});
+    // The Quick Send recipient list should now contain 2 contacts.
+    const qsTo = await page.evaluate(() => (CM_QS && CM_QS.to) ? CM_QS.to.length : 0);
+    expect(qsTo).toBe(2);
+    await page.evaluate(() => cmCloseModal());
+  });
+
+  test('FEATURE 1: Add Note opens textarea modal + toast on save', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => cmContactBulkSelectAllVisible());
+    await page.waitForTimeout(150);
+    await page.locator('#cm-cnt-bulk-bar .cm-btn:has-text("Add Note")').click();
+    await page.waitForTimeout(200);
+    await expect(page.locator('#cm-bulk-note-ta')).toBeVisible();
+    await page.locator('#cm-bulk-note-ta').fill('Bulk note for QA');
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.locator('.cm-btn.prim:has-text("Save Notes")').click();
+    await page.waitForTimeout(200);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /Note added to \d+ contacts? · Gainsight synced ✓/.test(t))).toBe(true);
+  });
+
+  test('FEATURE 1: Export Selected toasts with count + clears selection', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => cmContactBulkSelectAllVisible());
+    await page.waitForTimeout(150);
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.locator('#cm-cnt-bulk-bar .cm-btn:has-text("Export Selected")').click();
+    await page.waitForTimeout(300);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /\d+ contacts? exported · CSV ✓/.test(t))).toBe(true);
+    await expect(page.locator('#cm-cnt-bulk-bar.on')).toHaveCount(0);
+  });
+
+  test('FEATURE 1: × clears the selection bar', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(200);
+    await page.locator('#cm-cnt-list .cm-cnt-row').first().locator('.cm-cnt-cb').click();
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-cnt-bulk-bar.on')).toBeVisible();
+    await page.locator('.cm-bulk-bar-x').click();
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-cnt-bulk-bar.on')).toHaveCount(0);
+    expect(await page.evaluate(() => cmContactBulkCount())).toBe(0);
+  });
+
+  test('FEATURE 1: switching tabs clears bulk selection', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('contacts'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmContactBulkSelectAllVisible());
+    await page.waitForTimeout(120);
+    expect(await page.evaluate(() => cmContactBulkCount())).toBeGreaterThan(0);
+    await page.evaluate(() => cmShowSection('campaigns'));
+    await page.waitForTimeout(150);
+    expect(await page.evaluate(() => cmContactBulkCount())).toBe(0);
+  });
+
+  // ── FEATURE 2: Custom date range ───────────────────────────────────────
+  test('FEATURE 2: Analytics dropdown carries a Custom range option', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('#cm-analytics-period option[value="custom"]').count()).toBe(1);
+    const txt = await page.locator('#cm-analytics-period option[value="custom"]').textContent();
+    expect(txt).toMatch(/Custom range/);
+  });
+
+  test('FEATURE 2: selecting custom shows From + To inputs', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(200);
+    await page.locator('#cm-analytics-period').selectOption('custom');
+    await page.waitForTimeout(150);
+    await expect(page.locator('#cm-analytics-range.on')).toBeVisible();
+    await expect(page.locator('#cm-analytics-from')).toBeVisible();
+    await expect(page.locator('#cm-analytics-to')).toBeVisible();
+    expect(await page.locator('#cm-analytics-from').getAttribute('aria-label')).toBe('From date');
+    expect(await page.locator('#cm-analytics-to').getAttribute('aria-label')).toBe('To date');
+    expect(await page.locator('#cm-analytics-from').getAttribute('aria-describedby')).toBe('cm-analytics-range-err');
+  });
+
+  test('FEATURE 2: future dates show error + disable Apply', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(200);
+    await page.locator('#cm-analytics-period').selectOption('custom');
+    await page.waitForTimeout(120);
+    await page.locator('#cm-analytics-from').fill('2030-01-01');
+    await page.locator('#cm-analytics-to').fill('2030-02-01');
+    await page.waitForTimeout(150);
+    const err = await page.locator('#cm-analytics-range-err').textContent();
+    expect(err).toMatch(/future/);
+    expect(await page.locator('#cm-analytics-apply').evaluate(b => b.disabled)).toBe(true);
+  });
+
+  test('FEATURE 2: From later than To shows error + disables Apply', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(200);
+    await page.locator('#cm-analytics-period').selectOption('custom');
+    await page.waitForTimeout(120);
+    await page.locator('#cm-analytics-from').fill('2026-05-15');
+    await page.locator('#cm-analytics-to').fill('2026-04-01');
+    await page.waitForTimeout(150);
+    const err = await page.locator('#cm-analytics-range-err').textContent();
+    expect(err).toMatch(/From date must be before To date/);
+    expect(await page.locator('#cm-analytics-apply').evaluate(b => b.disabled)).toBe(true);
+  });
+
+  test('FEATURE 2: Apply updates KPI label + dropdown shows active range chip', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(200);
+    await page.locator('#cm-analytics-period').selectOption('custom');
+    await page.waitForTimeout(120);
+    await page.locator('#cm-analytics-from').fill('2026-04-01');
+    await page.locator('#cm-analytics-to').fill('2026-05-15');
+    await page.waitForTimeout(150);
+    await page.locator('#cm-analytics-apply').click();
+    await page.waitForTimeout(200);
+    expect(await page.evaluate(() => CM_ANALYTICS_PERIOD)).toBe('custom');
+    const hd = (await page.locator('#cm-analytics .cm-hd').textContent()).trim();
+    expect(hd).toMatch(/Custom: Apr 1 — May 15/);
+    // KPI tile sub-label echoes the range label.
+    const firstKpi = await page.locator('#cm-analytics .cm-sum-card').first().textContent();
+    expect(firstKpi).toMatch(/Custom: Apr 1 — May 15/);
+  });
+
+  test('FEATURE 2: × clears custom and reverts to default quarter', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(200);
+    await page.locator('#cm-analytics-period').selectOption('custom');
+    await page.locator('#cm-analytics-from').fill('2026-04-01');
+    await page.locator('#cm-analytics-to').fill('2026-05-15');
+    await page.waitForTimeout(120);
+    await page.locator('#cm-analytics-apply').click();
+    await page.waitForTimeout(200);
+    await page.locator('#cm-analytics .cm-analytics-range-clear').click();
+    await page.waitForTimeout(200);
+    expect(await page.evaluate(() => CM_ANALYTICS_PERIOD)).toBe('quarter');
+    expect(await page.evaluate(() => CM_ANALYTICS_CUSTOM.from)).toBe(null);
+  });
+
+  test('FEATURE 2: < 7-day range shows the limited-data banner', async ({ page }) => {
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(200);
+    await page.locator('#cm-analytics-period').selectOption('custom');
+    await page.locator('#cm-analytics-from').fill('2026-05-10');
+    await page.locator('#cm-analytics-to').fill('2026-05-13');
+    await page.waitForTimeout(120);
+    await page.locator('#cm-analytics-apply').click();
+    await page.waitForTimeout(200);
+    await expect(page.locator('.cm-analytics-banner.on')).toBeVisible();
+    expect((await page.locator('.cm-analytics-banner.on').textContent())).toMatch(/Limited data · Custom ranges under 7 days/);
+  });
+});

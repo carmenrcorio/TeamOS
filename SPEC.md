@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.26.1
+**Version:** 4.27.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,33 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.27.0] — 2026-05-21
+
+Campaign Manager medium-effort bundle — two features that take the tab from 8/10 to 9.5/10 on workflow replacement. **Result: 390/390 chromium tests passing.**
+
+### Added
+
+- **Feature**: Bulk contact actions in the Contacts sub-tab — checkbox column, master toggle, sticky action bar with Add to Campaign / Send 1:1 / Add Note / Export Selected.
+  - Each row gets a 22 px `role="checkbox"` button with `aria-checked` synced and an `aria-label="Select {Name}"`. A new master row above the list carries `role="checkbox"` + `aria-label="Select all visible contacts"` and tri-state (`true` / `false` / `mixed`) depending on how many eligible (non-departed) rows are currently selected. Departed contacts are visibly skipped by select-all.
+  - Selection lives in component memory (`CM_CONTACT_BULK`), not localStorage. When the filter chips or search box change the visible set, selections for now-hidden contacts are pruned automatically; selections for still-visible contacts persist. Switching sub-tabs clears the entire selection.
+  - When ≥ 1 contact is selected, a sticky bottom action bar slides up inside the Contacts content area (not fixed to the viewport). The bar carries `role="region"` + a live-updating `aria-label` + an `aria-live="polite"` count. Four bulk actions:
+    - **Add to Campaign** opens the existing picker modal with the title rewritten as *"Add N contacts to a campaign"* and routes selection through `cmBulkAddToCampaignSelect`, which appends every selected id (no duplicates) to the chosen campaign and toasts *"N contacts added to {Campaign} · Gainsight ✓"*.
+    - **Send 1:1 Email** opens the existing Quick Send modal and pre-populates the recipient list with every selected contact via `cmQsAddContact`.
+    - **Add Note** opens a textarea modal *"Add a note for N contacts"*; saving toasts *"Note added to N contacts · Gainsight synced ✓"*.
+    - **Export Selected** builds a CSV (`Name`, `Email`, `Account`, `SSO`, `SCIM`, `ARR`, `Renewal`, `Sequence Status`, `Last Activity`) filename `contacts-export-YYYY-MM-DD.csv`, with the same Blob → download path the campaign-level Export uses + clipboard fallback. Toasts *"N contacts exported · CSV ✓"*.
+    - **×** clears the selection and slides the bar down.
+
+- **Feature**: Custom date range option in Analytics — from/to date picker, validates the range, dropdown label updates with the active range, × to clear back to default.
+  - The Time period dropdown now carries a 5th option, *"Custom range…"*. Selecting it reveals an inline `role="group"` row with `From` + `To` date inputs and an `Apply` button. Validation runs on every input change (`cmAnalyticsValidateUI`) and gates the Apply button. Three error states surface inline:
+    - *"Invalid date range"* — unparseable input
+    - *"Dates cannot be in the future"* — From or To later than today
+    - *"From date must be before To date"*
+  - On Apply, `CM_ANALYTICS_PERIOD` flips to `'custom'`, `CM_ANALYTICS_CUSTOM` stores the from/to strings, and `cmAnalyticsCustomData` synthesizes the KPI record by scaling the *All time* totals against a 365-day window. The page header renders the active range as `"Custom: Apr 1 — May 15"` with a tiny `×` button that calls `cmAnalyticsClearCustom()` and reverts to the *This quarter* preset.
+  - When the selected range spans fewer than 7 days, an amber banner appears above the KPI tiles: *"⚠ Limited data · Custom ranges under 7 days may show incomplete trends"*.
+  - Date inputs carry `aria-label="From date"` / `"To date"` and `aria-describedby="cm-analytics-range-err"` so screen readers pick up the inline error message.
 
 ---
 

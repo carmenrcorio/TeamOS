@@ -1921,6 +1921,36 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cm-cnt-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surf);border:1px solid var(--bd);border-radius:8px;cursor:pointer;transition:all .1s;min-height:64px}
 .cm-cnt-row:hover{border-color:var(--bd2);background:var(--surf2)}
 .cm-cnt-row.sel{border-color:var(--tl);background:var(--tl-bg)}
+/* v4.27.0 — bulk-select checkbox + master toggle. */
+.cm-cnt-cb{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--bd2);border-radius:5px;background:var(--surf);cursor:pointer;color:transparent;font-size:13px;font-weight:800;font-family:inherit;padding:0}
+.cm-cnt-cb:hover{border-color:var(--tl)}
+.cm-cnt-cb:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.cm-cnt-cb[aria-checked="true"]{background:var(--tl);border-color:var(--tl);color:#fff}
+.cm-cnt-cb[aria-checked="mixed"]{background:var(--tl);border-color:var(--tl);color:#fff}
+.cm-cnt-row.bulk-sel{border-color:var(--tl);background:var(--tl-bg)}
+.cm-cnt-master{display:flex;align-items:center;gap:10px;padding:8px 12px;font-size:11px;color:#374151;font-weight:700;background:var(--surf2);border:1px solid var(--bd);border-radius:7px;margin-bottom:6px}
+.cm-cnt-master-meta{font-size:11px;color:#6B7280;font-weight:600;margin-left:auto}
+.cm-bulk-bar{position:sticky;bottom:0;left:0;right:0;background:var(--surf);border:1px solid var(--bd);border-top:3px solid var(--tl);border-radius:9px;box-shadow:0 -8px 22px rgba(0,0,0,.08);padding:10px 14px;display:none;align-items:center;gap:10px;flex-wrap:wrap;z-index:30;margin-top:8px;transform:translateY(8px);opacity:0;transition:transform .2s ease,opacity .2s ease}
+.cm-bulk-bar.on{display:flex;transform:translateY(0);opacity:1}
+.cm-bulk-bar-count{font-size:12px;font-weight:800;color:#111827;display:inline-flex;align-items:center;gap:6px}
+.cm-bulk-bar-count::before{content:'✓';color:var(--tl);font-weight:900;font-size:13px}
+.cm-bulk-bar .cm-btn{font-size:11px;padding:6px 10px}
+.cm-bulk-bar-x{margin-left:auto;font-family:inherit;font-size:18px;line-height:1;background:transparent;border:none;color:#6B7280;cursor:pointer;padding:2px 8px;min-width:32px;border-radius:5px}
+.cm-bulk-bar-x:hover{background:var(--surf2);color:#111827}
+.cm-bulk-bar-x:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+
+/* v4.27.0 — Custom date range row + banner in Analytics. */
+.cm-analytics-range{display:none;align-items:center;gap:8px;padding:8px 0;flex-wrap:wrap;font-size:12px;color:#1F2937}
+.cm-analytics-range.on{display:flex}
+.cm-analytics-range label{font-weight:700;font-size:11px;color:#374151;text-transform:uppercase;letter-spacing:.05em}
+.cm-analytics-range input[type="date"]{font-family:inherit;font-size:12px;padding:6px 8px;border:1px solid var(--bd2);border-radius:5px;background:var(--surf);color:#1F2937}
+.cm-analytics-range input[type="date"]:focus{border-color:var(--tl);outline:none}
+.cm-analytics-range .err{color:var(--rd-dk);font-weight:700;font-size:11px}
+.cm-analytics-range-clear{font-family:inherit;font-size:11px;font-weight:700;background:none;border:none;color:#6B7280;cursor:pointer;padding:2px 6px;border-radius:4px;margin-left:4px}
+.cm-analytics-range-clear:hover{color:#111827;background:var(--surf2)}
+.cm-analytics-range-clear:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.cm-analytics-banner{margin:0 0 10px;padding:9px 13px;background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:6px;font-size:12px;color:#1F2937;font-weight:600;line-height:1.5;display:none}
+.cm-analytics-banner.on{display:block}
 .cm-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg);color:var(--tx);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;letter-spacing:0;flex-shrink:0;text-transform:uppercase;border:1px solid var(--bd2)}
 .cm-cnt-mid{flex:1;min-width:0}
 .cm-cnt-nm{font-size:12px;font-weight:700;color:#111827;letter-spacing:-.01em;line-height:1.3}
@@ -11177,6 +11207,8 @@ function cmSaveSignature() {
 
 // ── Section switching ───────────────────────────────────────────────────────
 function cmShowSection(name) {
+  // v4.27.0 — bulk contact selection is component memory; clear on tab change.
+  if (name !== 'contacts' && typeof CM_CONTACT_BULK !== 'undefined') CM_CONTACT_BULK = {};
   CM_ACTIVE = name;
   ['campaigns','contacts','templates','analytics'].forEach(function(k){
     var btn = document.getElementById('cm-tab-' + k);
@@ -11890,12 +11922,25 @@ function cmRenderContacts() {
     + '<div class="cm-split">'
     +   '<div class="cm-list" id="cm-cnt-list"></div>'
     +   '<div class="cm-detail" id="cm-cnt-detail"></div>'
-    + '</div>';
+    + '</div>'
+    // v4.27.0 — sticky bulk action bar (slides up when ≥1 contact selected).
+    + '<div class="cm-bulk-bar" id="cm-cnt-bulk-bar" role="region"></div>';
   cmRenderContactList();
   cmRenderContactDetail();
 }
-function cmSetCntFilter(f) { CM_CONTACT_FILTER = f; cmRenderContacts(); }
-function cmSetCntSearch(q) { CM_CONTACT_SEARCH = q; cmRenderContactList(); }
+function cmSetCntFilter(f) {
+  CM_CONTACT_FILTER = f;
+  // v4.27.0 — prune selections that are no longer visible after the filter
+  // change. Selections for still-visible contacts persist.
+  cmContactBulkPruneToFilter();
+  cmRenderContacts();
+}
+function cmSetCntSearch(q) {
+  CM_CONTACT_SEARCH = q;
+  // v4.27.0 — keep the bulk action bar in sync when search narrows the list.
+  if (typeof cmContactBulkPruneToFilter === 'function') cmContactBulkPruneToFilter();
+  cmRenderContactList();
+}
 function cmFilteredContacts() {
   var q = CM_CONTACT_SEARCH.toLowerCase().trim();
   return CM_CONTACTS.filter(function(c){
@@ -11915,22 +11960,82 @@ function cmFilteredContacts() {
     return true;
   });
 }
+// v4.27.0 — bulk selection state for the Contacts sub-tab. Component memory
+// only; cleared on tab change (cmShowSection wipes it below).
+var CM_CONTACT_BULK = {};
+function cmContactBulkCount() { return Object.keys(CM_CONTACT_BULK).length; }
+function cmContactBulkIds()   { return Object.keys(CM_CONTACT_BULK); }
+function cmContactBulkClear() {
+  CM_CONTACT_BULK = {};
+  cmRenderContactList();
+  cmRenderBulkBar();
+}
+function cmContactBulkToggle(id) {
+  if (CM_CONTACT_BULK[id]) delete CM_CONTACT_BULK[id];
+  else CM_CONTACT_BULK[id] = true;
+  cmRenderContactList();
+  cmRenderBulkBar();
+}
+function cmContactBulkSelectAllVisible() {
+  var visible = cmFilteredContacts();
+  // Departed contacts are never selectable, so the master toggle compares
+  // the selected count to the count of eligible (non-departed) visible rows.
+  var eligible = visible.filter(function(c){ return c.seq !== 'departed'; });
+  var allOn = eligible.length > 0 && eligible.every(function(c){ return !!CM_CONTACT_BULK[c.id]; });
+  if (allOn) {
+    eligible.forEach(function(c){ delete CM_CONTACT_BULK[c.id]; });
+  } else {
+    eligible.forEach(function(c){ CM_CONTACT_BULK[c.id] = true; });
+  }
+  cmRenderContactList();
+  cmRenderBulkBar();
+}
+function cmContactBulkPruneToFilter() {
+  // When the filter changes, drop selections that are no longer visible.
+  var visible = cmFilteredContacts().reduce(function(m, c){ m[c.id] = true; return m; }, {});
+  Object.keys(CM_CONTACT_BULK).forEach(function(id){ if (!visible[id]) delete CM_CONTACT_BULK[id]; });
+}
+
 function cmRenderContactList() {
   var box = document.getElementById('cm-cnt-list');
   if (!box) return;
   var rows = cmFilteredContacts();
-  if (!rows.length) { box.innerHTML = '<div class="cm-detail-empty" style="padding:30px 10px;font-size:12px">No contacts match.</div>'; return; }
-  box.innerHTML = rows.map(function(c){
+  if (!rows.length) {
+    box.innerHTML = '<div class="cm-detail-empty" style="padding:30px 10px;font-size:12px">No contacts match.</div>';
+    cmRenderBulkBar();
+    return;
+  }
+  // Master select-all checkbox. Compares against the eligible (non-departed)
+  // count so the state correctly flips between "all" and "none".
+  var visibleSelected = rows.filter(function(c){ return !!CM_CONTACT_BULK[c.id]; }).length;
+  var eligibleCount   = rows.filter(function(c){ return c.seq !== 'departed'; }).length;
+  var masterState = visibleSelected === 0 ? 'false' : (visibleSelected === eligibleCount && eligibleCount > 0 ? 'true' : 'mixed');
+  var masterTxt   = masterState === 'true' ? '✓' : (masterState === 'mixed' ? '–' : '');
+  var masterHtml = ''
+    + '<div class="cm-cnt-master">'
+    +   '<button type="button" class="cm-cnt-cb" role="checkbox" aria-checked="' + masterState + '"'
+    +     ' aria-label="Select all visible contacts"'
+    +     ' onclick="cmContactBulkSelectAllVisible()"'
+    +     ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();cmContactBulkSelectAllVisible()}">' + masterTxt + '</button>'
+    +   '<span>Select all visible</span>'
+    +   '<span class="cm-cnt-master-meta">' + visibleSelected + ' of ' + eligibleCount + ' selected</span>'
+    + '</div>';
+
+  var rowsHtml = rows.map(function(c){
     var inits = (c.fn[0] || '') + (c.ln[0] || '');
+    var bulk = !!CM_CONTACT_BULK[c.id];
     var sel = (CM_CONTACT_SEL === c.id) ? ' sel' : '';
+    if (bulk) sel += ' bulk-sel';
     var seqCls = 'cm-cnt-seq';
     var seqTxt = 'Not enrolled';
     if (c.seq === 'departed') { seqCls += ' warn'; seqTxt = 'Departed'; }
     else if (c.seq) { seqCls += ' in'; seqTxt = 'In sequence'; }
+    var safeName = cmEscape(c.fn + ' ' + c.ln);
     return '<div class="cm-cnt-row' + sel + '" tabindex="0" role="button" onclick="cmSelectContact(\'' + c.id + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();cmSelectContact(\'' + c.id + '\')}">'
+      + '<button type="button" class="cm-cnt-cb" role="checkbox" aria-checked="' + (bulk ? 'true' : 'false') + '" aria-label="Select ' + safeName + '" onclick="event.stopPropagation();cmContactBulkToggle(\'' + c.id + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();event.stopPropagation();cmContactBulkToggle(\'' + c.id + '\')}">' + (bulk ? '✓' : '') + '</button>'
       + '<div class="cm-avatar">' + cmEscape(inits) + '</div>'
       + '<div class="cm-cnt-mid">'
-      +   '<div class="cm-cnt-nm">' + cmEscape(c.fn + ' ' + c.ln) + '</div>'
+      +   '<div class="cm-cnt-nm">' + safeName + '</div>'
       +   '<div class="cm-cnt-role">' + cmEscape(c.role) + '</div>'
       +   '<div class="cm-cnt-co"><span class="cm-cnt-tag ' + c.acctKey + '">' + cmEscape(c.acct) + '</span></div>'
       + '</div>'
@@ -11940,6 +12045,24 @@ function cmRenderContactList() {
       + '</div>'
     + '</div>';
   }).join('');
+  box.innerHTML = masterHtml + rowsHtml;
+  cmRenderBulkBar();
+}
+
+function cmRenderBulkBar() {
+  var bar = document.getElementById('cm-cnt-bulk-bar');
+  if (!bar) return;
+  var count = cmContactBulkCount();
+  if (count === 0) { bar.classList.remove('on'); return; }
+  bar.setAttribute('aria-label', 'Bulk actions for ' + count + ' selected contact' + (count === 1 ? '' : 's'));
+  bar.innerHTML = ''
+    + '<span class="cm-bulk-bar-count" aria-live="polite">' + count + ' contact' + (count === 1 ? '' : 's') + ' selected</span>'
+    + '<button class="cm-btn" type="button" onclick="cmBulkAddToCampaign()" aria-label="Add ' + count + ' selected contacts to a campaign"><i class="ti ti-plus"></i> Add to Campaign</button>'
+    + '<button class="cm-btn" type="button" onclick="cmBulkSend1to1()" aria-label="Send 1:1 email to ' + count + ' selected contacts"><i class="ti ti-mail"></i> Send 1:1 Email</button>'
+    + '<button class="cm-btn" type="button" onclick="cmBulkAddNote()" aria-label="Add note to ' + count + ' selected contacts"><i class="ti ti-note"></i> Add Note</button>'
+    + '<button class="cm-btn" type="button" onclick="cmBulkExport()" aria-label="Export ' + count + ' selected contacts to CSV"><i class="ti ti-download"></i> Export Selected</button>'
+    + '<button class="cm-bulk-bar-x" type="button" onclick="cmContactBulkClear()" aria-label="Clear selection">&times;</button>';
+  bar.classList.add('on');
 }
 function cmSelectContact(id) { CM_CONTACT_SEL = id; cmRenderContactList(); cmRenderContactDetail(); }
 function cmRenderContactDetail() {
@@ -12027,6 +12150,116 @@ function cmAddNote(id) {
   var c = CM_CONTACTS.find(function(x){return x.id===id;});
   if (!c) return;
   toast('Note added to ' + cmEscape(c.fn + ' ' + c.ln) + ' · Synced to Gainsight contact ✓');
+}
+
+// ── v4.27.0 — Bulk contact actions ──────────────────────────────────────────
+// All four handlers operate on the current CM_CONTACT_BULK selection. The
+// Add to Campaign + Add Note flows open modals; Send 1:1 reuses Quick Send
+// pre-populated with the selected contacts; Export Selected builds a CSV
+// from the same column set the campaign-level Export List uses.
+function cmBulkContactsSelected() {
+  return cmContactBulkIds()
+    .map(function(id){ return CM_CONTACTS.find(function(c){return c.id===id;}); })
+    .filter(Boolean);
+}
+function cmBulkAddToCampaign() {
+  var sel = cmBulkContactsSelected();
+  if (!sel.length) return;
+  var active = CM_CAMPAIGNS.filter(function(x){return x.status==='active'||x.status==='draft';});
+  if (!active.length) { toast('No active campaigns to add ' + sel.length + ' contacts to'); return; }
+  var rowsHtml = active.map(function(camp){
+    return '<button class="cm-pick-item" type="button" onclick="cmBulkAddToCampaignSelect(\'' + camp.id + '\')"><span class="cm-pick-rad"></span><span>' + cmEscape(camp.name) + '</span><span class="cm-pick-meta">' + cmEscape(camp.status.toUpperCase()) + ' · ' + camp.contactCount + '</span></button>';
+  }).join('');
+  cmOpenModal('Add ' + sel.length + ' contact' + (sel.length === 1 ? '' : 's') + ' to a campaign',
+    '<div class="cm-form-label" style="margin-bottom:8px">Select a campaign</div>' + rowsHtml,
+    '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>');
+}
+function cmBulkAddToCampaignSelect(campaignId) {
+  var camp = CM_CAMPAIGNS.find(function(x){return x.id===campaignId;});
+  if (!camp) return;
+  var sel = cmBulkContactsSelected();
+  if (!camp.contactIds) camp.contactIds = [];
+  var added = 0;
+  sel.forEach(function(c){
+    if (camp.contactIds.indexOf(c.id) === -1) { camp.contactIds.push(c.id); added++; }
+  });
+  camp.contactCount = (camp.contactCount || 0) + added;
+  cmCloseModal();
+  toast(added + ' contact' + (added === 1 ? '' : 's') + ' added to ' + cmEscape(camp.name) + ' · Gainsight ✓');
+  cmContactBulkClear();
+}
+function cmBulkSend1to1() {
+  var sel = cmBulkContactsSelected();
+  if (!sel.length) return;
+  if (typeof cmQuickSendOpen !== 'function') {
+    toast('Send 1:1 to ' + sel.length + ' contacts · Quick Send unavailable');
+    return;
+  }
+  cmQuickSendOpen();
+  // Pre-populate the Quick Send recipient list with every selected contact.
+  setTimeout(function(){
+    sel.forEach(function(c){ if (typeof cmQsAddContact === 'function') cmQsAddContact(c); });
+  }, 60);
+}
+function cmBulkAddNote() {
+  var sel = cmBulkContactsSelected();
+  if (!sel.length) return;
+  var body = ''
+    + '<div class="cm-form-label" style="margin-bottom:6px">Adding a note for ' + sel.length + ' contact' + (sel.length === 1 ? '' : 's') + '</div>'
+    + '<textarea class="cm-form-ta" id="cm-bulk-note-ta" rows="4" placeholder="Note text…" style="min-height:96px" aria-label="Note text"></textarea>';
+  var foot = ''
+    + '<button class="cm-btn" type="button" onclick="cmCloseModal()">Cancel</button>'
+    + '<button class="cm-btn prim" type="button" onclick="cmBulkAddNoteSave()"><i class="ti ti-check"></i> Save Notes</button>';
+  cmOpenModal('Add a note for ' + sel.length + ' contact' + (sel.length === 1 ? '' : 's'), body, foot);
+}
+function cmBulkAddNoteSave() {
+  var ta = document.getElementById('cm-bulk-note-ta');
+  if (!ta) return;
+  var txt = (ta.value || '').trim();
+  if (!txt) { ta.focus(); toast('Note text required'); return; }
+  var sel = cmBulkContactsSelected();
+  cmCloseModal();
+  toast('Note added to ' + sel.length + ' contact' + (sel.length === 1 ? '' : 's') + ' · Gainsight synced ✓');
+  cmContactBulkClear();
+}
+function cmBulkExport() {
+  var sel = cmBulkContactsSelected();
+  if (!sel.length) return;
+  var rows = [['Name','Email','Account','SSO','SCIM','ARR','Renewal','Sequence Status','Last Activity']];
+  sel.forEach(function(c){
+    rows.push([
+      c.fn + ' ' + c.ln,
+      c.email,
+      c.acct,
+      c.sso || '',
+      c.scim || '',
+      (c.arr != null ? '$' + c.arr + 'K' : ''),
+      c.renewal || '',
+      c.seq ? (c.seq === 'departed' ? 'Departed' : 'In sequence') : 'Not enrolled',
+      c.lastTouch || ''
+    ]);
+  });
+  var csv = rows.map(function(r){ return r.map(cmCsvEscape).join(','); }).join('\r\n');
+  var now = new Date();
+  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+  var stamp = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
+  var filename = 'contacts-export-' + stamp + '.csv';
+  var blobOk = false;
+  try {
+    var blob = new Blob([csv], { type:'text/csv;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    a.setAttribute('aria-label', 'Download selected contacts as CSV');
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+    blobOk = true;
+  } catch (e) {
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(csv);
+  }
+  toast((blobOk ? '' : 'Contacts copied to clipboard · ') + sel.length + ' contact' + (sel.length === 1 ? '' : 's') + ' exported · CSV ✓');
+  cmContactBulkClear();
 }
 // v4.4.0 — Add Contact opens a real form modal with SSO/SCIM/usage fields.
 // Email is the only required field; everything else is optional. On save the
@@ -12440,7 +12673,95 @@ var CM_ANALYTICS_DATA = {
   week:     { label:'This week', sent:48, open:62, reply:25, activeSeqs:1, vsPrev:'+1 pt vs last',vsReply:'+2 pts vs last',campaigns:['cmp1'] },
   alltime:  { label:'All time', sent:1204, open:57, reply:21, activeSeqs:2, vsPrev:'Lifetime average', vsReply:'Lifetime average', campaigns:['cmp1','cmp2','cmp3'] }
 };
-function cmSetAnalyticsPeriod(p) { CM_ANALYTICS_PERIOD = p; cmRenderAnalytics(); }
+// v4.27.0 — Custom date range state. When `from` + `to` are set and valid,
+// cmRenderAnalytics renders synthetic data sized to the range span instead
+// of pulling from CM_ANALYTICS_DATA[CM_ANALYTICS_PERIOD].
+var CM_ANALYTICS_CUSTOM = { from:null, to:null };
+function cmSetAnalyticsPeriod(p) {
+  CM_ANALYTICS_PERIOD = p;
+  // Reset any active custom range when the user picks a preset other than custom.
+  if (p !== 'custom') CM_ANALYTICS_CUSTOM = { from:null, to:null };
+  cmRenderAnalytics();
+}
+// Parse 'YYYY-MM-DD' as a local-midnight date (avoid UTC-shift surprises).
+function cmAnalyticsParseDate(s) {
+  if (!s) return null;
+  var m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  return new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+}
+function cmAnalyticsDateLabel(d) {
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[d.getMonth()] + ' ' + d.getDate();
+}
+function cmAnalyticsValidateRange(from, to) {
+  var fromD = cmAnalyticsParseDate(from);
+  var toD   = cmAnalyticsParseDate(to);
+  if (!fromD || !toD) return { ok:false, msg:'Invalid date range' };
+  var today = new Date(); today.setHours(0,0,0,0);
+  if (fromD > today || toD > today) return { ok:false, msg:'Dates cannot be in the future' };
+  if (fromD > toD) return { ok:false, msg:'From date must be before To date' };
+  var days = Math.round((toD - fromD) / 864e5) + 1;
+  return { ok:true, fromD:fromD, toD:toD, days:days };
+}
+// Build a synthetic analytics record for a custom range. Scales the
+// "alltime" totals by the ratio of range-days to a 365-day window; opens +
+// replies stay realistic per-campaign metrics (jittered a little so the
+// numbers don't read as obviously fake).
+function cmAnalyticsCustomData(fromD, toD, days) {
+  var allTime = CM_ANALYTICS_DATA.alltime;
+  var ratio   = Math.max(0.02, Math.min(1, days / 365));
+  var sent    = Math.max(1, Math.round(allTime.sent * ratio));
+  // Center open/reply around the alltime baseline, slight wobble by range length.
+  var open    = Math.max(0, Math.min(100, allTime.open + (days < 7 ? -3 : (days < 30 ? 1 : 0))));
+  var reply   = Math.max(0, Math.min(100, allTime.reply + (days < 7 ? -2 : (days < 30 ? 1 : 0))));
+  var seqs    = (days < 7) ? 1 : (days < 30 ? 2 : 2);
+  var camps   = (days < 7) ? ['cmp1'] : (days < 30 ? ['cmp1','cmp2'] : ['cmp1','cmp2','cmp3']);
+  return {
+    label:      'Custom: ' + cmAnalyticsDateLabel(fromD) + ' — ' + cmAnalyticsDateLabel(toD),
+    sent:       sent,
+    open:       open,
+    reply:      reply,
+    activeSeqs: seqs,
+    vsPrev:     days + ' day' + (days === 1 ? '' : 's') + ' selected',
+    vsReply:    days + ' day' + (days === 1 ? '' : 's') + ' selected',
+    campaigns:  camps,
+    days:       days
+  };
+}
+function cmAnalyticsApplyCustom() {
+  var fromEl = document.getElementById('cm-analytics-from');
+  var toEl   = document.getElementById('cm-analytics-to');
+  if (!fromEl || !toEl) return;
+  var v = cmAnalyticsValidateRange(fromEl.value, toEl.value);
+  var errEl = document.getElementById('cm-analytics-range-err');
+  if (!v.ok) {
+    if (errEl) errEl.textContent = v.msg;
+    return;
+  }
+  if (errEl) errEl.textContent = '';
+  CM_ANALYTICS_PERIOD = 'custom';
+  CM_ANALYTICS_CUSTOM = { from: fromEl.value, to: toEl.value };
+  cmRenderAnalytics();
+}
+function cmAnalyticsClearCustom() {
+  CM_ANALYTICS_PERIOD = 'quarter';
+  CM_ANALYTICS_CUSTOM = { from:null, to:null };
+  cmRenderAnalytics();
+}
+// Live validation toggles the Apply button enabled state.
+function cmAnalyticsValidateUI() {
+  var fromEl = document.getElementById('cm-analytics-from');
+  var toEl   = document.getElementById('cm-analytics-to');
+  var btn    = document.getElementById('cm-analytics-apply');
+  var errEl  = document.getElementById('cm-analytics-range-err');
+  if (!fromEl || !toEl || !btn) return;
+  var v = cmAnalyticsValidateRange(fromEl.value, toEl.value);
+  btn.disabled = !v.ok;
+  btn.style.opacity = v.ok ? '1' : '0.5';
+  btn.style.cursor  = v.ok ? 'pointer' : 'not-allowed';
+  if (errEl) errEl.textContent = v.ok ? '' : v.msg;
+}
 // v4.8.0 — Analytics row click → switch sub-section + open detail drawer.
 // Ignores clicks on buttons (Send →) inside the progress cell so they keep
 // their own behavior.
@@ -12727,7 +13048,16 @@ function cmAnalyticsRowClick(id, ev) {
 function cmRenderAnalytics() {
   var sec = document.getElementById('cm-analytics');
   if (!sec) return;
-  var d = CM_ANALYTICS_DATA[CM_ANALYTICS_PERIOD] || CM_ANALYTICS_DATA.quarter;
+  // v4.27.0 — custom range produces a synthetic data record sized to the
+  // selected day-span; presets pull from CM_ANALYTICS_DATA as before.
+  var d;
+  var isCustom = (CM_ANALYTICS_PERIOD === 'custom' && CM_ANALYTICS_CUSTOM.from && CM_ANALYTICS_CUSTOM.to);
+  if (isCustom) {
+    var v = cmAnalyticsValidateRange(CM_ANALYTICS_CUSTOM.from, CM_ANALYTICS_CUSTOM.to);
+    if (!v.ok) { isCustom = false; CM_ANALYTICS_PERIOD = 'quarter'; }
+    else d = cmAnalyticsCustomData(v.fromD, v.toD, v.days);
+  }
+  if (!d) d = CM_ANALYTICS_DATA[CM_ANALYTICS_PERIOD] || CM_ANALYTICS_DATA.quarter;
   var visibleIds = d.campaigns;
   var ROWS = {
     cmp1: { nm:'June Renewal Push',        type:'Renewal',       sent:48, open:62, reply:25, unsub:0, progPct:65, send:false },
@@ -12769,13 +13099,26 @@ function cmRenderAnalytics() {
   sec.innerHTML = ''
     + '<div class="cm-hd">'
     +   '<div class="cm-hd-t">📊 Analytics — Campaign Performance</div>'
-    +   '<select class="cm-wiz-select" id="cm-analytics-period" aria-label="Time period" onchange="cmSetAnalyticsPeriod(this.value)" style="width:auto;margin-bottom:0;padding:7px 10px;font-size:12px">'
-    +     '<option value="quarter"' + (CM_ANALYTICS_PERIOD === 'quarter' ? ' selected' : '') + '>This quarter</option>'
-    +     '<option value="month"'   + (CM_ANALYTICS_PERIOD === 'month'   ? ' selected' : '') + '>This month</option>'
-    +     '<option value="week"'    + (CM_ANALYTICS_PERIOD === 'week'    ? ' selected' : '') + '>This week</option>'
-    +     '<option value="alltime"' + (CM_ANALYTICS_PERIOD === 'alltime' ? ' selected' : '') + '>All time</option>'
-    +   '</select>'
+    +   '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+    +     '<select class="cm-wiz-select" id="cm-analytics-period" aria-label="Time period" onchange="cmSetAnalyticsPeriod(this.value)" style="width:auto;margin-bottom:0;padding:7px 10px;font-size:12px">'
+    +       '<option value="quarter"' + (CM_ANALYTICS_PERIOD === 'quarter' ? ' selected' : '') + '>This quarter</option>'
+    +       '<option value="month"'   + (CM_ANALYTICS_PERIOD === 'month'   ? ' selected' : '') + '>This month</option>'
+    +       '<option value="week"'    + (CM_ANALYTICS_PERIOD === 'week'    ? ' selected' : '') + '>This week</option>'
+    +       '<option value="alltime"' + (CM_ANALYTICS_PERIOD === 'alltime' ? ' selected' : '') + '>All time</option>'
+    +       '<option value="custom"'  + (CM_ANALYTICS_PERIOD === 'custom'  ? ' selected' : '') + '>Custom range…</option>'
+    +     '</select>'
+    +     (isCustom ? '<span style="font-size:11px;font-weight:700;color:#1F2937">' + cmEscape(d.label) + '<button type="button" class="cm-analytics-range-clear" onclick="cmAnalyticsClearCustom()" aria-label="Clear custom range">×</button></span>' : '')
+    +   '</div>'
     + '</div>'
+    + '<div class="cm-analytics-range' + (CM_ANALYTICS_PERIOD === 'custom' ? ' on' : '') + '" id="cm-analytics-range" role="group" aria-label="Custom date range">'
+    +   '<label for="cm-analytics-from">From:</label>'
+    +   '<input type="date" id="cm-analytics-from" aria-label="From date" aria-describedby="cm-analytics-range-err" value="' + cmEscape(CM_ANALYTICS_CUSTOM.from || '') + '" oninput="cmAnalyticsValidateUI()">'
+    +   '<label for="cm-analytics-to">To:</label>'
+    +   '<input type="date" id="cm-analytics-to" aria-label="To date" aria-describedby="cm-analytics-range-err" value="' + cmEscape(CM_ANALYTICS_CUSTOM.to || '') + '" oninput="cmAnalyticsValidateUI()">'
+    +   '<button class="cm-btn prim" id="cm-analytics-apply" type="button" onclick="cmAnalyticsApplyCustom()" style="font-size:11px;padding:6px 12px">Apply</button>'
+    +   '<span class="err" id="cm-analytics-range-err" role="alert"></span>'
+    + '</div>'
+    + (isCustom && d.days < 7 ? '<div class="cm-analytics-banner on" role="status">⚠ Limited data · Custom ranges under 7 days may show incomplete trends</div>' : '<div class="cm-analytics-banner" role="status"></div>')
     + '<div class="cm-sum-cards">'
     +   '<div class="cm-sum-card"><div class="cm-sum-l">Total emails sent</div><div class="cm-sum-v">' + d.sent.toLocaleString() + '</div><div class="cm-sum-sub">' + cmEscape(d.label) + '</div></div>'
     +   '<div class="cm-sum-card"><div class="cm-sum-l">Avg open rate</div><div class="cm-sum-v">' + d.open + '%</div><div class="cm-sum-sub">' + cmEscape(d.vsPrev) + '</div></div>'
@@ -12794,6 +13137,8 @@ function cmRenderAnalytics() {
     +   '<div class="cm-best-card"><div class="cm-best-l">Highest reply rate</div><div class="cm-best-v">Re-engagement template</div><div class="cm-best-sub">Reply rate <b>33%</b></div></div>'
     +   '<div class="cm-best-card risk"><div class="cm-best-l">Risk · zero opens</div><div class="cm-best-v">NovaVault · Apex Dynamics</div><div class="cm-best-sub">0 opens across 1 email each — may need a different channel</div><div class="cm-best-acts"><button class="cm-btn" type="button" onclick="toast(\'LinkedIn outreach drafted ✓\')">Try LinkedIn →</button><button class="cm-btn" type="button" onclick="toast(\'Opening Ghost-Buster for dark accounts ✓\')">Ghost-Buster →</button></div></div>'
     + '</div>';
+  // v4.27.0 — set the initial Apply button state once the date inputs exist.
+  if (CM_ANALYTICS_PERIOD === 'custom') cmAnalyticsValidateUI();
 }
 
 // ── Campaign creation wizard ────────────────────────────────────────────────
