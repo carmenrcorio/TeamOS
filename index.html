@@ -2799,6 +2799,85 @@ body.offline .rs-mx-snap{top:124px}
 .th-ai-risk{padding:11px 13px;background:#FEF2F2;border:1px solid #FECACA;border-left:3px solid #DC2626;border-radius:6px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55}
 .th-ai-risk b{color:#7F1D1D;font-weight:800;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px}
 
+/* ─── v4.25.0 — Team View Phase 3 sections ─────────────────────────────── */
+.tv-wl{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:780px){.tv-wl{grid-template-columns:1fr}}
+.tv-wl-col{border:1px solid var(--bd);border-radius:var(--rlg);padding:14px;display:flex;flex-direction:column;gap:10px}
+.tv-wl-col.wins{background:#ECFDF5;border-color:#A7F3D0}
+.tv-wl-col.losses{background:#FEF2F2;border-color:#FECACA}
+.tv-wl-hd{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:baseline;gap:8px}
+.tv-wl-col.wins .tv-wl-hd{color:#065F46}
+.tv-wl-col.losses .tv-wl-hd{color:#7F1D1D}
+.tv-wl-hd-meta{font-size:11px;color:#374151;font-weight:600;text-transform:none;letter-spacing:0}
+.tv-wl-card{background:var(--surf);border:1px solid var(--bd);border-radius:7px;padding:10px 12px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.5;display:flex;flex-direction:column;gap:3px}
+.tv-wl-card-nm{font-size:13px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.tv-wl-card-nm .amt{color:#065F46;margin-left:8px;font-weight:700}
+.tv-wl-col.losses .tv-wl-card-nm .amt{color:#B91C1C}
+.tv-wl-card-meta{font-size:11px;color:#374151;font-weight:600}
+.tv-wl-card-extra{font-size:11px;color:#4B5563;font-weight:500;font-style:italic;line-height:1.5}
+.tv-wl-card-extra b{color:#111827;font-weight:800;font-style:normal}
+.tv-wl-foot{margin-top:8px;padding:11px 13px;background:#EEF2FF;border:1px solid #C7D2FE;border-left:3px solid #4F46E5;border-radius:6px;font-size:11px;color:#1F2937;font-weight:600;line-height:1.55}
+.tv-wl-foot b{color:#312E81;font-weight:800}
+
+.tv-une{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.tv-une-card{background:var(--surf);border:1px solid var(--bd);border-left:3px solid #9CA3AF;border-radius:var(--rlg);padding:13px 15px;display:flex;flex-direction:column;gap:7px}
+.tv-une-hd{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tv-une-nm{font-size:13px;font-weight:800;color:#111827;letter-spacing:-.01em}
+.tv-une-arr{font-size:11px;color:#374151;font-weight:700}
+.tv-une-meta{font-size:11px;color:#6B7280;font-weight:600}
+.tv-une-meta b{color:#B45309;font-weight:800}
+.tv-une-rec{font-size:11px;color:#1F2937;font-weight:500;line-height:1.5;padding:8px 10px;background:var(--surf2);border:1px solid var(--bd);border-left:3px solid var(--tl);border-radius:5px;margin-top:3px}
+.tv-une-rec b{color:#111827;font-weight:800}
+.tv-une-act{display:flex;justify-content:flex-end;margin-top:5px}
+
+.tv-pipe-table{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow-x:auto}
+.tv-pipe-table table{width:100%;border-collapse:collapse;font-size:12px;min-width:880px}
+.tv-pipe-table th,.tv-pipe-table td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap;vertical-align:middle}
+.tv-pipe-table th{font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em;background:var(--surf2);border-bottom:1px solid var(--bd2)}
+.tv-pipe-acct{font-weight:800;color:#111827;letter-spacing:-.01em}
+.tv-pipe-pill{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:800;color:#fff;letter-spacing:-.02em;cursor:default}
+.tv-pipe-pills{display:inline-flex;gap:3px;align-items:center}
+.tv-pipe-stage{font-size:9px;font-weight:800;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;display:inline-block}
+.tv-pipe-stage.won{background:#D1FAE5;color:#065F46}
+.tv-pipe-stage.discovery{background:#DBEAFE;color:#1D4ED8}
+.tv-pipe-stage.save{background:var(--rd-bg);color:var(--rd-dk)}
+.tv-pipe-stage.risk{background:#FEF3C7;color:#78350F}
+.tv-pipe-stage.dark{background:#E5E7EB;color:#374151}
+.tv-pipe-stage.champ{background:#EDE9FE;color:#5B21B6}
+.tv-pipe-foot{display:flex;align-items:center;justify-content:flex-end;gap:18px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:#374151;font-weight:700;padding:0 4px}
+.tv-pipe-foot b{color:#111827;font-weight:800}
+.tv-pipe-foot .sep{color:#9CA3AF;font-weight:500}
+
+.tv-hub-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center}
+.tv-hub-chip{font-family:inherit;font-size:11px;font-weight:700;padding:5px 10px;border-radius:99px;border:1px solid var(--bd2);background:var(--surf);color:#374151;cursor:pointer}
+.tv-hub-chip:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.tv-hub-chip.on{background:var(--tx);color:#fff;border-color:var(--tx)}
+.tv-hub-chip:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.tv-hub-sep{color:#9CA3AF;font-size:11px;font-weight:600;padding:0 4px}
+.tv-hub-acts{display:flex;align-items:center;gap:10px;margin-left:auto}
+.tv-hub-list{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow:hidden}
+.tv-hub-row{display:grid;grid-template-columns:30px minmax(140px,1fr) 1fr 80px 70px 90px auto;gap:10px;align-items:center;padding:9px 14px;border-bottom:1px solid var(--bd);font-size:12px;color:#1F2937}
+.tv-hub-row:last-child{border-bottom:none}
+.tv-hub-row.done{opacity:.55}
+.tv-hub-row.done .tv-hub-title{text-decoration:line-through}
+.tv-hub-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.tv-hub-owner{font-weight:800;color:#111827;font-size:12px}
+.tv-hub-title{font-weight:500;color:#1F2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tv-hub-due{font-size:11px;color:#374151;font-weight:600}
+.tv-hub-acct{font-size:11px;color:#6B7280;font-weight:600;font-style:italic}
+.tv-hub-empty{padding:18px;text-align:center;font-size:12px;color:#6B7280;font-style:italic}
+@media (max-width:780px){.tv-hub-row{grid-template-columns:30px 1fr auto;row-gap:4px}.tv-hub-row > :nth-child(n+4):nth-child(-n+6){grid-column:2 / 3;font-size:11px}}
+
+.tv-cm{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.tv-cm-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tv-cm-threads{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.tv-cm-thread{padding:8px 11px;border:1px solid var(--bd);border-radius:6px;font-size:12px;color:#1F2937;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:10px;background:var(--surf2);transition:border-color .1s,background .1s}
+.tv-cm-thread:hover{border-color:var(--tl);background:var(--tl-bg);color:var(--tl-dk)}
+.tv-cm-thread:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.tv-cm-thread-from{font-weight:800;color:#111827;white-space:nowrap}
+.tv-cm-thread-tt{font-weight:500;color:#1F2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.tv-cm-thread-meta{font-size:11px;color:#6B7280;font-weight:600;white-space:nowrap}
+
 .rs-mx-detail{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;min-height:340px}
 .rs-mx-detail-empty{font-size:13px;color:#6B7280;font-style:italic;padding:40px 10px;text-align:center}
 .rs-mx-detail-hd{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;gap:10px}
@@ -4489,6 +4568,29 @@ body.offline .int-panel{top:124px}
       <div class="tv-sec-hd"><div class="tv-sec-hd-t">Shared Account Book</div><div id="tv-book-meta" class="tv-sec-hd-meta"></div></div>
       <div class="tv-book-hd" id="tv-book-hd"></div>
       <div class="tv-book" id="tv-book"></div>
+    </div>
+    <div class="tv-section" id="tv-wl-sec">
+      <div class="tv-sec-hd"><div class="tv-sec-hd-t">Pod Wins &amp; Losses · Q2 2026</div></div>
+      <div class="tv-wl" id="tv-wl"></div>
+    </div>
+    <div class="tv-section" id="tv-une-sec">
+      <div class="tv-sec-hd"><div class="tv-sec-hd-t">⚠ Pod Unengaged Accounts · 3 accounts with no pod touch in 30+ days</div></div>
+      <div class="tv-sec-hd-meta" style="margin-top:-4px">Criteria: no Gainsight CTA touch, no Outreach send, no Gong call, no email reply, no support ticket activity in 30 days.</div>
+      <div class="tv-une" id="tv-une"></div>
+    </div>
+    <div class="tv-section" id="tv-pipe-sec">
+      <div class="tv-sec-hd"><div class="tv-sec-hd-t">Pod Pipeline · Q2–Q3</div><div class="tv-sec-hd-meta">Open opportunities · renewal forecasts · expansion signals</div></div>
+      <div class="tv-pipe-table" id="tv-pipe"></div>
+      <div class="tv-pipe-foot" id="tv-pipe-foot"></div>
+    </div>
+    <div class="tv-section" id="tv-hub-sec">
+      <div class="tv-sec-hd"><div class="tv-sec-hd-t">Pod Task Hub · <span id="tv-hub-count">12 open tasks</span> across pod</div></div>
+      <div id="tv-hub-filters" class="tv-hub-filters" role="toolbar" aria-label="Pod Task Hub filters"></div>
+      <div class="tv-hub-list" id="tv-hub-list" role="list"></div>
+    </div>
+    <div class="tv-section" id="tv-cm-sec">
+      <div class="tv-sec-hd"><div class="tv-sec-hd-t">Pod Comms · Last 5 threads</div></div>
+      <div class="tv-cm" id="tv-cm" role="region" aria-label="Pod communication threads"></div>
     </div>
   </div>
 </div>
@@ -16323,10 +16425,322 @@ document.addEventListener('click', function(e){
   }
 });
 
+// ═══════════════════════════════════════════════════════════════════════════
+// v4.25.0 — Team View Phase 3 sections (Wins/Losses · Unengaged · Pipeline ·
+// Task Hub · Comm Strip). All data hardcoded for demo; Task Hub state lives
+// in the same teamos_pod_tasks namespace as the Strategy Huddle drawer so
+// "Mark Done" stays consistent across surfaces.
+// ═══════════════════════════════════════════════════════════════════════════
+var TV_WINS = [
+  { id:'bertram', nm:'Bertram Industries', amount:'$42K', kind:'New logo · Closed by David Kim',           extra:'CSM handoff: Carmen · Onboarding May 20' },
+  { id:'logan',   nm:'Logan Foods',        amount:'$32K', kind:'Expansion · Closed by Liam Chen',           extra:'CSM credit: Carmen (champion intro)' },
+  { id:'acme',    nm:'Acme Corp',          amount:'$18K (early)', kind:'Expansion in motion · David Kim leading', extra:"AI Note: Carmen's May 10 Gong context unlocked this" },
+  { id:'vortex',  nm:'Vortex Labs',        amount:'$36K', kind:'Renewal + uplift · Sarah Mitchell led',     extra:'+12% uplift secured' }
+];
+var TV_LOSSES = [
+  { id:'henlow', nm:'Henlow Co',   amount:'$28K', kind:'Churned to Okta · No save attempted', reason:'Champion left in Q1, no replacement', learning:'Champion change protocol not triggered' },
+  { id:'mira',   nm:'Mira Health', amount:'$16K', kind:'Downsell −45% · Sarah Mitchell',      reason:'Budget cut, accepted reduced seats', learning:'Earlier expansion play might have anchored value' }
+];
+
+var TV_UNENGAGED = [
+  { acct:'meridian', nm:'Meridian Health',  arr:'$22K ARR', days:73, lastTouch:'Jennifer · 42d ago', rec:"Carmen should reach out today — Jennifer's inbound from yesterday is a warm signal.", assignTo:'carmen' },
+  { acct:'creston',  nm:'Creston Software', arr:'$18K',     days:67, lastTouch:'David · 67d ago',    rec:'Marco (BDR) cold qualification touch. Carmen should not Ghost-Buster yet — test BDR re-engagement first.', assignTo:'marco' },
+  { acct:'apex',     nm:'Apex Dynamics',    arr:'$15K',     days:45, lastTouch:'Liam · May 14',       rec:'Liam should request warm intro from AE network. Champion change in progress — wait for new contact before Carmen outreach.', assignTo:'liam' }
+];
+
+var TV_PIPELINE = [
+  { acct:'acme',     nm:'Acme Corp',         type:'Expansion',       val:'$12–18K', owner:'david',  support:['carmen'],          stage:'discovery', stageLabel:'Discovery',     close:'Aug 12' },
+  { acct:'bertram',  nm:'Bertram Industries',type:'New Logo',        val:'$42K',    owner:'david',  support:[],                  stage:'won',       stageLabel:'Closed Won',    close:'May 17' },
+  { acct:'nova',     nm:'NovaVault',         type:'Renewal',         val:'$31K',    owner:'carmen', support:['sarah'],           stage:'save',      stageLabel:'Save Active',   close:'Jun 1'  },
+  { acct:'brightex', nm:'Brightex',          type:'Renewal',         val:'$36K',    owner:'carmen', support:['liam','sarah'],    stage:'risk',      stageLabel:'At Risk',       close:'Jun 15' },
+  { acct:'vortex',   nm:'Vortex Labs',       type:'Renewal + Uplift',val:'$36K',    owner:'sarah',  support:['carmen'],          stage:'won',       stageLabel:'Closed Won',    close:'May 12' },
+  { acct:'meridian', nm:'Meridian',          type:'Renewal',         val:'$22K',    owner:'carmen', support:[],                  stage:'dark',      stageLabel:'Dark',          close:'Jun 30' },
+  { acct:'apex',     nm:'Apex Dynamics',     type:'Renewal',         val:'$15K',    owner:'carmen', support:['liam'],            stage:'champ',     stageLabel:'Champion Change',close:'Aug 1' },
+  { acct:'logan',    nm:'Logan Foods',       type:'Expansion',       val:'$32K',    owner:'liam',   support:['carmen'],          stage:'won',       stageLabel:'Closed Won',    close:'May 16' }
+];
+
+var TV_HUB_TASKS = [
+  { id:'h1',  owner:'sarah',    title:'Finalize NovaVault extension terms',           due:'May 19', priority:'crit',  acct:'NovaVault', done:false },
+  { id:'h2',  owner:'david',    title:'Hold expansion outreach until July',           due:'July 15',priority:'watch', acct:'NovaVault', done:false },
+  { id:'h3',  owner:'liam',     title:'Surface Okta differentiation in Brightex call',due:'May 22', priority:'high',  acct:'Brightex',  done:false },
+  { id:'h4',  owner:'carmen',   title:'Reply to Jennifer Ramos inbound',              due:'May 19', priority:'high',  acct:'Meridian',  done:false },
+  { id:'h5',  owner:'marco',    title:'Cold qualification touch on Creston',          due:'May 23', priority:'watch', acct:'Creston',   done:false },
+  { id:'h6',  owner:'jennifer', title:'Q3 prospect list build',                       due:'May 30', priority:'watch', acct:null,         done:false },
+  { id:'h7',  owner:'carmen',   title:'Confirm Michael Torres availability May 22',   due:'May 20', priority:'high',  acct:'NovaVault', done:false },
+  { id:'h8',  owner:'david',    title:'Send Acme expansion SSO deck',                 due:'May 21', priority:'high',  acct:'Acme',      done:false },
+  { id:'h9',  owner:'liam',     title:'Request warm intro to Apex new champion',      due:'May 22', priority:'high',  acct:'Apex',      done:false },
+  { id:'h10', owner:'sarah',    title:'Draft Vortex uplift retro for pod',            due:'May 24', priority:'watch', acct:'Vortex',    done:false },
+  { id:'h11', owner:'jennifer', title:'Follow-up Logan champion thank-you',           due:'May 21', priority:'watch', acct:'Logan',     done:false },
+  { id:'h12', owner:'marco',    title:'Build Q3 outbound segment list',               due:'May 28', priority:'watch', acct:null,         done:false }
+];
+var TV_HUB_KEY = 'teamos_hub_tasks';
+var TV_HUB_FILTER = { member:'all', priority:'all' };
+
+function tvHubLoad() {
+  try {
+    var state = JSON.parse(localStorage.getItem(TV_HUB_KEY) || 'null');
+    if (state && typeof state === 'object') {
+      TV_HUB_TASKS.forEach(function(t){ if (state[t.id]) t.done = !!state[t.id].done; });
+    }
+  } catch (e) {}
+}
+function tvHubPersist() {
+  try {
+    var state = {};
+    TV_HUB_TASKS.forEach(function(t){ state[t.id] = { done: !!t.done }; });
+    localStorage.setItem(TV_HUB_KEY, JSON.stringify(state));
+  } catch (e) {}
+}
+
+var TV_COMM_THREADS = [
+  { id:'t1', from:'carmen',          to:'david',           title:'Brightex Okta convo',                 count:23, when:'2h ago' },
+  { id:'t2', from:'liam',            to:'sarah',           title:'Vortex renewal uplift Q',             count:8,  when:'yesterday' },
+  { id:'t3', from:'marco',           to:'carmen',          title:'Acme BDR qualification',              count:4,  when:'yesterday' },
+  { id:'t4', from:'david',           to:'pod',             title:'NovaVault save status check',         count:12, when:'2 days ago' },
+  { id:'t5', from:'sarah',           to:'carmen + liam',   title:'Mira Health learning thread',         count:6,  when:'3 days ago' }
+];
+
+// ── Wins & Losses ────────────────────────────────────────────────────────
+function tvBuildWinsLosses() {
+  var el = document.getElementById('tv-wl');
+  if (!el) return;
+  var winsHtml = TV_WINS.map(function(w){
+    return '<article class="tv-wl-card" role="article">'
+      + '<div class="tv-wl-card-nm">' + tvEscape(w.nm) + '<span class="amt">· ' + tvEscape(w.amount) + '</span></div>'
+      + '<div class="tv-wl-card-meta">' + tvEscape(w.kind) + '</div>'
+      + '<div class="tv-wl-card-extra">' + tvEscape(w.extra) + '</div>'
+      + '</article>';
+  }).join('');
+  var lossHtml = TV_LOSSES.map(function(l){
+    return '<article class="tv-wl-card" role="article">'
+      + '<div class="tv-wl-card-nm">' + tvEscape(l.nm) + '<span class="amt">· ' + tvEscape(l.amount) + '</span></div>'
+      + '<div class="tv-wl-card-meta">' + tvEscape(l.kind) + '</div>'
+      + '<div class="tv-wl-card-extra"><b>Lost reason:</b> ' + tvEscape(l.reason) + '</div>'
+      + '<div class="tv-wl-card-extra"><b>Learning:</b> ' + tvEscape(l.learning) + '</div>'
+      + '</article>';
+  }).join('');
+  el.innerHTML = ''
+    + '<div class="tv-wl-col wins">'
+    +   '<div class="tv-wl-hd">Wins <span class="tv-wl-hd-meta">· 4 wins · $128K closed</span></div>'
+    +   winsHtml
+    + '</div>'
+    + '<div class="tv-wl-col losses">'
+    +   '<div class="tv-wl-hd">Losses <span class="tv-wl-hd-meta">· 2 losses · $44K churned</span></div>'
+    +   lossHtml
+    + '</div>';
+
+  // AI Insight footer attaches outside the grid so it spans full width.
+  var foot = document.getElementById('tv-wl-foot');
+  if (!foot) {
+    foot = document.createElement('div');
+    foot.id = 'tv-wl-foot';
+    foot.className = 'tv-wl-foot';
+    foot.setAttribute('role', 'status');
+    el.parentNode.insertBefore(foot, el.nextSibling);
+  }
+  foot.innerHTML = '<b>AI Insight:</b> Pod close rate: 67% · Save rate: 50% · Average uplift: 8.4% · Best performer: David (2 wins, $60K)';
+}
+
+// ── Unengaged Accounts ───────────────────────────────────────────────────
+function tvBuildUnengaged() {
+  var el = document.getElementById('tv-une');
+  if (!el) return;
+  el.innerHTML = TV_UNENGAGED.map(function(u){
+    var m = tvMember(u.assignTo);
+    var label = m ? m.name.split(' ')[0] : u.assignTo;
+    return '<article class="tv-une-card" role="article" aria-label="Unengaged account: ' + tvEscape(u.nm) + '">'
+      + '<div class="tv-une-hd"><div class="tv-une-nm">' + tvEscape(u.nm) + '</div><div class="tv-une-arr">' + tvEscape(u.arr) + '</div></div>'
+      + '<div class="tv-une-meta"><b>' + u.days + ' days dark</b> · Last pod touch: ' + tvEscape(u.lastTouch) + '</div>'
+      + '<div class="tv-une-rec"><b>AI Recommendation:</b> ' + tvEscape(u.rec) + '</div>'
+      + '<div class="tv-une-act"><button class="th-btn prim" type="button" onclick="tvUneAssign(\'' + u.acct + '\')" aria-label="Assign re-engagement task to ' + tvEscape(label) + ' for ' + tvEscape(u.nm) + '">Assign to ' + tvEscape(label) + '</button></div>'
+      + '</article>';
+  }).join('');
+}
+
+function tvUneAssign(acct) {
+  var u = TV_UNENGAGED.find(function(x){return x.acct===acct;});
+  if (!u) return;
+  var m = tvMember(u.assignTo);
+  if (!m) return;
+  // Persist into the same teamos_pod_tasks store the Strategy Huddle uses so
+  // the task shows up in the Pod Tasks tab for that account.
+  var store = thReadStore(TH_TASKS_KEY);
+  if (!store[acct]) store[acct] = (TH_SEED_TASKS[acct] || []).slice();
+  store[acct].push({
+    id:       'une' + Date.now(),
+    assignee: u.assignTo,
+    title:    'Re-engage ' + u.nm + ' (' + u.days + ' days dark)',
+    due:      'today',
+    priority: 'high',
+    done:     false
+  });
+  thWriteStore(TH_TASKS_KEY, store);
+  toast("Re-engagement task assigned to " + m.name + " · Added to their Today's Tasks ✓");
+}
+
+// ── Pipeline View ────────────────────────────────────────────────────────
+function tvPipeOwnerCell(id) {
+  var m = tvMember(id);
+  if (!m) return '—';
+  return '<span class="tv-pipe-pill" style="background:' + tvEscape(m.avatarColor) + '" title="' + tvEscape(m.name + ' · ' + m.role) + '" aria-label="' + tvEscape(m.name + ' · ' + m.role) + '">' + tvEscape(m.avatar) + '</span>';
+}
+function tvPipeSupportCell(ids) {
+  if (!ids || !ids.length) return '<span style="color:#9CA3AF">—</span>';
+  return '<span class="tv-pipe-pills">' + ids.map(tvPipeOwnerCell).join('') + '</span>';
+}
+function tvBuildPipeline() {
+  var el = document.getElementById('tv-pipe');
+  var foot = document.getElementById('tv-pipe-foot');
+  if (!el) return;
+  var rowsHtml = TV_PIPELINE.map(function(r){
+    return '<tr>'
+      + '<td><span class="tv-pipe-acct">' + tvEscape(r.nm) + '</span></td>'
+      + '<td>' + tvEscape(r.type) + '</td>'
+      + '<td>' + tvEscape(r.val) + '</td>'
+      + '<td>' + tvPipeOwnerCell(r.owner) + '</td>'
+      + '<td>' + tvPipeSupportCell(r.support) + '</td>'
+      + '<td><span class="tv-pipe-stage ' + tvEscape(r.stage) + '">' + tvEscape(r.stageLabel) + '</span></td>'
+      + '<td>' + tvEscape(r.close) + '</td>'
+      + '</tr>';
+  }).join('');
+  el.innerHTML = '<table role="table"><thead><tr>'
+    + '<th scope="col">Account</th><th scope="col">Type</th><th scope="col">$ Value</th><th scope="col">Owner</th><th scope="col">Support</th><th scope="col">Stage</th><th scope="col">Close Date</th>'
+    + '</tr></thead><tbody>' + rowsHtml + '</tbody></table>';
+  if (foot) foot.innerHTML = ''
+    + '<span>Commit: <b>$128K</b></span><span class="sep">·</span>'
+    + '<span>Best Case: <b>$217K</b></span><span class="sep">·</span>'
+    + '<span>Pipeline: <b>$89K</b></span><span class="sep">·</span>'
+    + '<span>Closed Won Q2: <b>$110K</b></span>';
+}
+
+// ── Task Hub ─────────────────────────────────────────────────────────────
+var TV_HUB_PRIO_LABEL = { crit:'Critical', high:'High', watch:'Watch' };
+
+function tvHubFilter(kind, value) {
+  TV_HUB_FILTER[kind] = value;
+  tvBuildTaskHub();
+}
+
+function tvHubDone(id) {
+  var t = TV_HUB_TASKS.find(function(x){return x.id===id;});
+  if (!t) return;
+  t.done = !t.done;
+  tvHubPersist();
+  var m = tvMember(t.owner);
+  toast(t.done ? 'Task marked done · ' + (m ? m.name : t.owner) + ' ✓' : 'Task reopened · ' + (m ? m.name : t.owner));
+  tvBuildTaskHub();
+}
+
+function tvBuildTaskHub() {
+  var hubFilters = document.getElementById('tv-hub-filters');
+  var hubList    = document.getElementById('tv-hub-list');
+  var hubCount   = document.getElementById('tv-hub-count');
+  if (!hubFilters || !hubList) return;
+
+  var memberChips = [{ id:'all', label:'All' }].concat(POD_ROSTER.map(function(m){ return { id:m.id, label:m.name.split(' ')[0] }; }));
+  var prioChips   = [{ id:'all', label:'All priority' }, { id:'crit', label:'Critical' }, { id:'high', label:'High' }, { id:'watch', label:'Watch' }];
+
+  var memberChipsHtml = memberChips.map(function(c){
+    var on = (TV_HUB_FILTER.member === c.id) ? ' on' : '';
+    return '<button class="tv-hub-chip' + on + '" type="button" data-mem="' + tvEscape(c.id) + '" onclick="tvHubFilter(\'member\',\'' + tvEscape(c.id) + '\')" aria-pressed="' + (on ? 'true':'false') + '">' + tvEscape(c.label) + '</button>';
+  }).join('');
+  var prioChipsHtml = prioChips.map(function(c){
+    var on = (TV_HUB_FILTER.priority === c.id) ? ' on' : '';
+    return '<button class="tv-hub-chip' + on + '" type="button" data-prio="' + tvEscape(c.id) + '" onclick="tvHubFilter(\'priority\',\'' + tvEscape(c.id) + '\')" aria-pressed="' + (on ? 'true':'false') + '">' + tvEscape(c.label) + '</button>';
+  }).join('');
+
+  hubFilters.innerHTML = memberChipsHtml
+    + '<span class="tv-hub-sep">·</span>'
+    + prioChipsHtml
+    + '<div class="tv-hub-acts"><button class="th-btn prim" type="button" onclick="tvHubAssign()">+ Assign Task</button></div>';
+
+  var filtered = TV_HUB_TASKS.filter(function(t){
+    if (TV_HUB_FILTER.member !== 'all' && t.owner !== TV_HUB_FILTER.member) return false;
+    if (TV_HUB_FILTER.priority !== 'all' && t.priority !== TV_HUB_FILTER.priority) return false;
+    return true;
+  });
+
+  if (hubCount) {
+    var openCount = TV_HUB_TASKS.filter(function(t){return !t.done;}).length;
+    hubCount.textContent = openCount + ' open task' + (openCount === 1 ? '' : 's');
+  }
+
+  if (!filtered.length) {
+    hubList.innerHTML = '<div class="tv-hub-empty">No tasks match the current filter.</div>';
+    return;
+  }
+  hubList.innerHTML = filtered.map(function(t){
+    var m = tvMember(t.owner);
+    var av = m
+      ? '<div class="tv-hub-av" style="background:' + tvEscape(m.avatarColor) + '" aria-hidden="true">' + tvEscape(m.avatar) + '</div>'
+      : '<div class="tv-hub-av" style="background:#9CA3AF"></div>';
+    var ownerName = m ? m.name.split(' ')[0] : t.owner;
+    return '<div class="tv-hub-row' + (t.done ? ' done' : '') + '" role="listitem" data-tid="' + tvEscape(t.id) + '">'
+      + av
+      + '<div class="tv-hub-owner">' + tvEscape(ownerName) + '</div>'
+      + '<div class="tv-hub-title">' + tvEscape(t.title) + '</div>'
+      + '<div class="tv-hub-due">' + tvEscape(t.due) + '</div>'
+      + '<div><span class="th-task-prio ' + tvEscape(t.priority) + '">' + tvEscape(TV_HUB_PRIO_LABEL[t.priority] || t.priority) + '</span></div>'
+      + '<div class="tv-hub-acct">' + tvEscape(t.acct || '—') + '</div>'
+      + '<div><button class="th-btn" type="button" onclick="tvHubDone(\'' + tvEscape(t.id) + '\')" aria-pressed="' + (t.done ? 'true':'false') + '">' + (t.done ? 'Reopen' : 'Mark Done') + '</button></div>'
+      + '</div>';
+  }).join('');
+}
+
+function tvHubAssign() {
+  // Phase 3: route to the Strategy Huddle Pod Tasks form for the first
+  // account in the book, so the existing form UX is reused. A dedicated
+  // hub-level assignment form is Phase 4.
+  if (typeof thOpen !== 'function') { toast('Task assignment · Phase 4 stub'); return; }
+  thOpen(TV_BOOK[0].key);
+  setTimeout(function(){ thShow('tasks'); thOpenTaskForm(); }, 250);
+}
+
+// ── Comm Strip ───────────────────────────────────────────────────────────
+function tvCommOpen(id) {
+  var t = TV_COMM_THREADS.find(function(x){return x.id===id;});
+  var label = t ? (t.from + ' → ' + t.to + ' · ' + t.title) : id;
+  toast('Opens Slack thread · ' + label + ' · Phase 2');
+}
+function tvScheduleHuddle() {
+  toast('Pod huddle invite sent to 6 members · 30 min · Calendar API · Phase 2');
+}
+function tvBuildCommStrip() {
+  var el = document.getElementById('tv-cm');
+  if (!el) return;
+  var threadsHtml = TV_COMM_THREADS.map(function(t){
+    var from = tvMember(t.from);
+    var fromLabel = from ? from.name.split(' ')[0] : t.from;
+    var toName = t.to;
+    var toMember = tvMember(t.to);
+    if (toMember) toName = toMember.name.split(' ')[0];
+    return '<div class="tv-cm-thread" role="button" tabindex="0"'
+      + ' aria-label="Open Slack thread: ' + tvEscape(fromLabel + ' to ' + toName + ', ' + t.title + ', ' + t.count + ' messages, ' + t.when) + '"'
+      + ' onclick="tvCommOpen(\'' + tvEscape(t.id) + '\')"'
+      + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();tvCommOpen(\'' + tvEscape(t.id) + '\')}">'
+      +   '<span class="tv-cm-thread-from">' + tvEscape(fromLabel) + ' → ' + tvEscape(toName) + '</span>'
+      +   '<span class="tv-cm-thread-tt">' + tvEscape(t.title) + '</span>'
+      +   '<span class="tv-cm-thread-meta">' + t.count + ' messages · ' + tvEscape(t.when) + '</span>'
+      + '</div>';
+  }).join('');
+  el.innerHTML = ''
+    + '<div class="tv-cm-row">'
+    +   '<div class="tv-cm-threads">' + threadsHtml + '</div>'
+    +   '<div><button class="th-btn prim" type="button" onclick="tvScheduleHuddle()" aria-label="Schedule pod huddle">📅 Schedule Pod Huddle</button></div>'
+    + '</div>';
+}
+
+// ── tvBuild wraps all sections ──────────────────────────────────────────
+tvHubLoad();
 function tvBuild() {
   tvBuildPulse();
   tvBuildRoster();
   tvBuildBook();
+  tvBuildWinsLosses();
+  tvBuildUnengaged();
+  tvBuildPipeline();
+  tvBuildTaskHub();
+  tvBuildCommStrip();
 }
 tvBuild();
 
