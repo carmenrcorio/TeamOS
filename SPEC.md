@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.23.0
+**Version:** 4.24.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,23 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.24.0] — 2026-05-20
+
+Team View Phase 2 — Strategy Huddle drawer replaces the Phase 1 toast stub. **Result: 339/339 chromium tests passing.**
+
+### Added
+
+- **Feature**: Team View Phase 2 — Strategy Huddle drawer with 5 tabs (Overview / Pod Notes / Pod Tasks / Smart Sheet / AI Strategy), threaded notes with @mentions, cross-role task assignment with Urgent Inbox auto-flag, collaborative smart sheet, AI pod strategy with member-specific recommendations.
+- **Drawer mechanics**: body-level right-side dialog, 520 px wide, `role="dialog"` + `aria-modal="true"`. Registered with the v4.16.0 single drawer manager so opening it closes any other open drawer. Header surfaces account name + the colour-coded pod-status badge; subhead reads *"Strategy Huddle · 6 pod members have access"*. Escape closes the drawer and restores focus to the row that opened it. Each tab is its own pane that retains its own scroll position when you switch tabs.
+- **Tab 1 — Overview**: unified snapshot — Health (Gainsight), ARR, Renewal + days remaining, Open Opp, CSM/AE/BDR/RS avatar pills, Last Gong, Open CTAs, Champion, Outreach Sequence Status, Contract Status. Footer reinforces cross-role visibility: *"This view is visible to all 6 pod members. AEs can now see Gainsight health. CSMs can now see Outreach sequences."*
+- **Tab 2 — Pod Notes**: threaded note feed seeded with the NovaVault demo (3 notes incl. 1 reply nested under its parent). Compose area with `@`-mention autocomplete (dropdown lists all 6 pod members; selecting one inserts `@firstname.lastname` at the caret). Posting a note prepends to the feed, persists to `teamos_pod_notes[acct]`, and toasts *"Note posted · Pod notified ✓"*.
+- **Tab 3 — Pod Tasks**: per-account task list (NovaVault seeded with 3 tasks across Sarah / David / Carmen). Each row carries assignee, title, due date, and Critical / High / Watch priority badge. Mark Done toggles state and persists to `teamos_pod_tasks[acct]`. *+ Assign New Task* opens an inline form (assignee / title / due date / priority radio); submitting toasts *"Task assigned to {Name} · Added to their Today's Tasks ✓"* and — when Priority is Critical AND the due date is within 48 hours — fires an additional *"Critical task added to {Name}'s Urgent Inbox ⚠"* toast.
+- **Tab 4 — Smart Sheet**: editable stakeholder-map table seeded with NovaVault's 4 known/unknown contacts (Michael Torres / departed James Wu / CFO unknown / CISO unknown). Inline-editable cells, *+ Add Row* + *💾 Save Sheet* persist to `teamos_pod_sheets[acct]`. *🧠 Ask AI to suggest* toasts a Phase 2 stub. A standing AI Insight card below the table flags the champion gap.
+- **Tab 5 — AI Strategy**: 3 numbered, member-tagged recommendations (Sarah / Carmen / David for NovaVault), each with a *Why* explanation. HIGH risk assessment card with the full reasoning copy. *Schedule Pod Huddle* and *Mark Strategy Reviewed* buttons toast Phase 2 stubs. Accounts other than NovaVault inherit a default scaffold so the pane still renders.
+- **Accessibility**: drawer carries `role="dialog"` + `aria-modal="true"` + `aria-labelledby`; each tab button has `role="tab"` + `aria-selected` and Escape closes the drawer at a Strategy-Huddle-specific level in the Escape chain. Status badges in the header carry `aria-label="Pod status: …"`.
 
 ---
 

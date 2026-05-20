@@ -3834,11 +3834,13 @@ test.describe('v4.23.0 Team View Phase 1', () => {
     expect(t).toMatch(/Liam: warm intro from AE network/);
   });
 
-  test('Account row click opens Strategy Huddle stub', async ({ page }) => {
+  test('Account row click opens the Strategy Huddle drawer (Phase 2)', async ({ page }) => {
     await page.locator('#tv-book tbody tr').first().click();
     await page.waitForTimeout(200);
-    const body = await page.locator('body').textContent();
-    expect(body).toMatch(/Strategy Huddle · Acme Corp · Coming in Phase 2/);
+    await expect(page.locator('#th-drawer.on')).toBeVisible();
+    const title = await page.locator('#th-drawer-title').textContent();
+    expect(title).toMatch(/Acme Corp/);
+    await page.evaluate(() => thClose());
   });
 
   test('Row carries role=button + aria-label', async ({ page }) => {
@@ -3859,5 +3861,200 @@ test.describe('v4.23.0 Team View Phase 1', () => {
     await page.waitForTimeout(120);
     headers = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-book thead th')).map(h => h.textContent.trim()));
     expect(headers).toContain('Last Pod Touch');
+  });
+});
+
+test.describe('v4.24.0 Strategy Huddle drawer (Team View Phase 2)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => { try { localStorage.removeItem('teamos_pod_notes'); localStorage.removeItem('teamos_pod_tasks'); localStorage.removeItem('teamos_pod_sheets'); } catch(_){} });
+    await page.evaluate(() => goTab('team', document.querySelector('[onclick*="goTab(\'team\'"]')));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => thOpen('nova'));
+    await page.waitForTimeout(200);
+  });
+
+  // ── Drawer mechanics ────────────────────────────────────────────────────
+  test('Clicking a Book row opens Strategy Huddle (no longer a toast stub)', async ({ page }) => {
+    await page.evaluate(() => thClose());
+    await page.waitForTimeout(150);
+    await page.locator('#tv-book tbody tr').first().click();
+    await page.waitForTimeout(200);
+    await expect(page.locator('#th-drawer.on')).toBeVisible();
+    expect(await page.locator('#th-drawer').getAttribute('role')).toBe('dialog');
+    expect(await page.locator('#th-drawer').getAttribute('aria-modal')).toBe('true');
+  });
+
+  test('Drawer header shows account name + pod status badge + subline', async ({ page }) => {
+    const title = await page.locator('#th-drawer-title').textContent();
+    expect(title).toMatch(/NovaVault/);
+    expect(title).toMatch(/CRITICAL SAVE/);
+    const sub = await page.locator('#th-drawer-sub').textContent();
+    expect(sub).toMatch(/Strategy Huddle · 6 pod members have access/);
+  });
+
+  test('5 tabs render and switch independently', async ({ page }) => {
+    const tabs = await page.evaluate(() => Array.from(document.querySelectorAll('#th-drawer .th-tab')).map(t => t.textContent.trim()));
+    expect(tabs).toEqual(['Overview','Pod Notes','Pod Tasks','Smart Sheet','AI Strategy']);
+    for (const k of ['overview','notes','tasks','sheet','strategy']) {
+      await page.evaluate(t => thShow(t), k);
+      await page.waitForTimeout(80);
+      await expect(page.locator('#th-pane-' + k)).toBeVisible();
+      // Only one pane is .on at a time.
+      const onCount = await page.locator('#th-drawer .th-pane.on').count();
+      expect(onCount).toBe(1);
+    }
+  });
+
+  test('Escape closes drawer + restores focus to the opener', async ({ page }) => {
+    await page.evaluate(() => thClose());
+    await page.waitForTimeout(120);
+    const row = page.locator('#tv-book tbody tr').first();
+    await row.focus();
+    await row.press('Enter');
+    await page.waitForTimeout(200);
+    await expect(page.locator('#th-drawer.on')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(200);
+    await expect(page.locator('#th-drawer.on')).toHaveCount(0);
+  });
+
+  // ── Tab 1: Overview ─────────────────────────────────────────────────────
+  test('Overview pane shows full unified snapshot for NovaVault', async ({ page }) => {
+    await page.evaluate(() => thShow('overview'));
+    const t = await page.locator('#th-pane-overview').textContent();
+    expect(t).toMatch(/Health \(Gainsight\)/);
+    expect(t).toMatch(/23/);
+    expect(t).toMatch(/\$31K/);
+    expect(t).toMatch(/Jun 1 · 17d/);
+    expect(t).toMatch(/Michael Torres/);
+    expect(t).toMatch(/May 10 · SLA question/);
+    expect(t).toMatch(/Sent May 11, 0 views \(Ironclad\)/);
+    expect(t).toMatch(/Touch 1 sent May 15, no reply/);
+    expect(t).toMatch(/visible to all 6 pod members/);
+  });
+
+  // ── Tab 2: Pod Notes ────────────────────────────────────────────────────
+  test('Pod Notes pane seeds 3 NovaVault notes with reply nesting', async ({ page }) => {
+    await page.evaluate(() => thShow('notes'));
+    expect(await page.locator('#th-notes-feed .th-note').count()).toBe(3);
+    expect(await page.locator('#th-notes-feed .th-note.reply').count()).toBe(1);
+    const t = await page.locator('#th-notes-feed').textContent();
+    expect(t).toMatch(/Michael Torres/);
+    expect(t).toMatch(/Carmen Corio/);
+    expect(t).toMatch(/David Kim/);
+    expect(t).toMatch(/Sarah Mitchell/);
+  });
+
+  test('Posting a note prepends it to the feed + persists to localStorage', async ({ page }) => {
+    await page.evaluate(() => thShow('notes'));
+    await page.locator('#th-note-input').fill('Smoke note for the pod');
+    await page.locator('#th-pane-notes .th-btn.prim').click();
+    await page.waitForTimeout(200);
+    const first = await page.locator('#th-notes-feed .th-note').first().textContent();
+    expect(first).toMatch(/Smoke note for the pod/);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_pod_notes') || '{}'));
+    expect(stored.nova && stored.nova[0].body).toMatch(/Smoke note for the pod/);
+  });
+
+  test('@-mention dropdown lists 6 pod members and inserts firstname.lastname', async ({ page }) => {
+    await page.evaluate(() => thShow('notes'));
+    await page.locator('#th-note-input').click();
+    await page.keyboard.type('@');
+    await page.waitForTimeout(120);
+    await expect(page.locator('#th-mention-pop.on')).toBeVisible();
+    expect(await page.locator('#th-mention-pop .th-mention-item').count()).toBe(6);
+    await page.locator('#th-mention-pop .th-mention-item').first().click();
+    const val = await page.locator('#th-note-input').inputValue();
+    expect(val).toMatch(/@carmen\.corio /);
+  });
+
+  // ── Tab 3: Pod Tasks ────────────────────────────────────────────────────
+  test('Pod Tasks pane seeds 3 NovaVault tasks with priority badges', async ({ page }) => {
+    await page.evaluate(() => thShow('tasks'));
+    expect(await page.locator('#th-task-list .th-task').count()).toBe(3);
+    const t = await page.locator('#th-pane-tasks').textContent();
+    expect(t).toMatch(/Sarah:.*Finalize extension terms by EOD/);
+    expect(t).toMatch(/David:.*Hold on expansion outreach/);
+    expect(t).toMatch(/Carmen:.*Confirm Michael Torres availability/);
+    expect(await page.locator('#th-task-list .th-task-prio.crit').count()).toBe(1);
+    expect(await page.locator('#th-task-list .th-task-prio.high').count()).toBe(1);
+    expect(await page.locator('#th-task-list .th-task-prio.watch').count()).toBe(1);
+  });
+
+  test('Mark Done toggles the task state + persists', async ({ page }) => {
+    await page.evaluate(() => thShow('tasks'));
+    await page.locator('#th-task-list .th-task').first().locator('.th-task-act .th-btn').click();
+    await page.waitForTimeout(150);
+    expect(await page.locator('#th-task-list .th-task.done').count()).toBe(1);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_pod_tasks') || '{}'));
+    const doneCount = (stored.nova || []).filter(t => t.done).length;
+    expect(doneCount).toBe(1);
+  });
+
+  test('Assign New Task adds the task + critical+48h fires Urgent Inbox toast', async ({ page }) => {
+    // Capture every toast text the page emits so we don't race the 700ms
+    // delayed Urgent Inbox toast against the toast element re-rendering.
+    await page.evaluate(() => {
+      window._toasts = [];
+      var orig = window.toast;
+      window.toast = function(msg){ window._toasts.push(String(msg)); return orig.apply(this, arguments); };
+    });
+    await page.evaluate(() => thShow('tasks'));
+    await page.locator('#th-pane-tasks .th-btn.prim:has-text("+ Assign New Task")').click();
+    await page.waitForTimeout(120);
+    await expect(page.locator('#th-task-form.on')).toBeVisible();
+    await page.locator('#th-task-assignee').selectOption('liam');
+    await page.locator('#th-task-title').fill('Confirm Brightex saves play');
+    const tomorrow = new Date(Date.now() + 24*36e5).toISOString().slice(0, 10);
+    await page.locator('#th-task-due').fill(tomorrow);
+    await page.locator('input[name="th-task-prio"][value="crit"]').check();
+    await page.locator('#th-task-form button[type="submit"]').click();
+    await page.waitForTimeout(1000);
+    expect(await page.locator('#th-task-list .th-task').count()).toBe(4);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /Task assigned to Liam Chen.*Added to their Today's Tasks/.test(t))).toBe(true);
+    expect(toasts.some(t => /Critical task added to Liam Chen's Urgent Inbox/.test(t))).toBe(true);
+  });
+
+  // ── Tab 4: Smart Sheet ──────────────────────────────────────────────────
+  test('Smart Sheet seeds 4 stakeholder rows + AI insight + actions', async ({ page }) => {
+    await page.evaluate(() => thShow('sheet'));
+    expect(await page.locator('#th-pane-sheet .th-sheet tbody tr').count()).toBe(4);
+    // Editable inputs hold the data — read their values, not textContent.
+    const vals = await page.evaluate(() => Array.from(document.querySelectorAll('#th-pane-sheet .th-sheet tbody input')).map(i => i.value));
+    expect(vals).toContain('Michael Torres');
+    expect(vals).toContain('IT Director');
+    const t = await page.locator('#th-pane-sheet').textContent();
+    expect(t).toMatch(/AI Insight:.*no identified champion/);
+  });
+
+  test('Add Row + Save persists; Ask AI toasts Phase 2 suggestion', async ({ page }) => {
+    await page.evaluate(() => thShow('sheet'));
+    await page.locator('#th-pane-sheet .th-btn:has-text("+ Add Row")').click();
+    await page.waitForTimeout(120);
+    expect(await page.locator('#th-pane-sheet .th-sheet tbody tr').count()).toBe(5);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_pod_sheets') || '{}'));
+    expect((stored.nova || []).length).toBe(5);
+    await page.locator('#th-pane-sheet .th-btn:has-text("🧠 Ask AI to suggest")').click();
+    await page.waitForTimeout(200);
+    const body = await page.locator('body').textContent();
+    expect(body).toMatch(/AI suggests: Identify CFO and CISO before extension call/);
+  });
+
+  // ── Tab 5: AI Strategy ──────────────────────────────────────────────────
+  test('AI Strategy pane shows 3 member-tagged recs + HIGH risk + 2 actions', async ({ page }) => {
+    await page.evaluate(() => thShow('strategy'));
+    expect(await page.locator('#th-pane-strategy .th-ai-rec').count()).toBe(3);
+    const t = await page.locator('#th-pane-strategy').textContent();
+    expect(t).toMatch(/AI POD STRATEGY · NovaVault/);
+    expect(t).toMatch(/SARAH/);
+    expect(t).toMatch(/CARMEN/);
+    expect(t).toMatch(/DAVID/);
+    expect(t).toMatch(/HIGH/);
+    expect(t).toMatch(/Champion is cold/);
+    await page.locator('#th-pane-strategy .th-btn.prim:has-text("Schedule Pod Huddle")').click();
+    await page.waitForTimeout(200);
+    const body = await page.locator('body').textContent();
+    expect(body).toMatch(/Pod huddle calendar invite sent to 6 members/);
   });
 });
