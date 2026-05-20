@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.22.0
+**Version:** 4.23.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,21 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.23.0] — 2026-05-20
+
+Team View Phase 1 — pod-level shared workspace replaces the Coming Soon placeholder. **Result: 325/325 chromium tests passing.**
+
+### Added
+
+- **Feature**: Team View Phase 1 — Pod Pulse Strip (7 chips), Pod Roster (6 member cards), Shared Account Book grid with bidirectional role visibility (CSM + AE + BDR + RS columns) and an AI Pod Recommendation per row.
+- **Pod Pulse Strip**: 7 sticky chips styled like the Dashboard pulse strip — `👥 Pod Members 6`, `💰 Pod ARR $2.4M`, `📈 Pipeline Open $340K`, `✨ Wins Q2 4 · $128K`, `💥 Losses Q2 2 · $44K`, `⚠️ Pod Unengaged 3`, `✅ Open Pod Tasks 12`. Clicking Pod Members / Pod ARR / Pipeline Open / Pod Unengaged scrolls to the Roster or Book section. Wins / Losses / Tasks toast as Phase 2 stubs.
+- **Pod Roster**: 6 member cards (180 × 120) with avatar + role-tinted circle, name, role label, presence status, and "Focused on: …" line. Each card carries `role="button"`, an `aria-label`, and Enter/Space keyboard support. Per-card `💬 Slack` / `📅 Cal` buttons toast Phase 2 stubs and use `stopPropagation` so they don't trigger the parent card's Phase 3 profile stub.
+- **Shared Account Book**: 12-column table — Account / Health / ARR / Renewal / Open Opp / Pod Status / CSM / AE / BDR / RS / Last Pod Touch / AI Pod Rec — with a column picker matching the Forecasting Pipeline pattern. Pod Status badges use six colour-coded classes (`EXPANSION`/teal, `CRITICAL SAVE`/red, `AT RISK`/amber, `STABLE`/green, `DARK`/gray, `CHAMPION CHANGE`/purple). CSM / AE / BDR / RS columns render 24 px avatar pills with `title` and `aria-label` showing the full name + role. Row click + Enter/Space open the Strategy Huddle stub (Phase 2).
+- **AI Pod Recommendation**: each account row carries a recommendation string tagged to a specific pod member (e.g. *"Sarah: prep extension terms with Carmen. David: hold outreach."*).
+- **Accessibility**: roster cards and book rows are keyboard-navigable buttons, status badges expose `aria-label="Pod status: …"`, the pulse strip is a `nav` region with `aria-label="Pod pulse"`, and avatar pills carry both `title` and `aria-label`.
 
 ---
 
