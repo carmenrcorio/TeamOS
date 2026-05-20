@@ -2643,6 +2643,58 @@ body.offline .rs-mx-snap{top:124px}
 .rs-mx-legend-i{display:inline-flex;align-items:center;gap:5px;color:#374151;font-weight:600}
 .rs-mx-legend-i b{font-weight:800;color:#111827}
 
+/* ─── v4.23.0 — Team View (Phase 1) ─────────────────────────────────────── */
+.tv-pg{padding:18px 24px 32px;display:flex;flex-direction:column;gap:20px}
+.tv-pulse{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:0 18px;display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;min-height:54px}
+.tv-pulse::-webkit-scrollbar{display:none}
+.tv-pulse-chip{font-family:inherit;font-size:12px;font-weight:600;color:#1F2937;background:none;border:none;padding:0 16px;height:54px;display:inline-flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap;border-right:1px solid var(--bd);transition:background .12s,color .12s}
+.tv-pulse-chip:last-child{border-right:none}
+.tv-pulse-chip:hover{background:var(--tl-bg);color:var(--tl-dk)}
+.tv-pulse-chip:focus-visible{outline:2px solid var(--tl);outline-offset:-2px}
+.tv-pulse-chip .tv-pulse-em{font-size:14px;line-height:1}
+.tv-pulse-chip b{font-weight:800;color:#111827;letter-spacing:-.01em}
+.tv-pulse-chip .tv-pulse-sub{color:#6B7280;font-weight:500;font-size:11px;margin-left:3px}
+
+.tv-section{display:flex;flex-direction:column;gap:10px}
+.tv-sec-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tv-sec-hd-t{font-size:13px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em}
+.tv-sec-hd-meta{font-size:11px;color:#6B7280;font-weight:600}
+
+.tv-roster{display:grid;grid-template-columns:repeat(auto-fill,180px);gap:12px}
+.tv-roster-card{width:180px;height:120px;background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:12px;display:grid;grid-template-columns:36px 1fr;grid-template-rows:auto auto auto;gap:3px 10px;cursor:pointer;transition:border-color .1s,box-shadow .1s;box-sizing:border-box;align-content:start}
+.tv-roster-card:hover{border-color:var(--tl);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.tv-roster-card:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.tv-roster-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;letter-spacing:-.02em;grid-row:1/3;grid-column:1}
+.tv-roster-nm{font-size:14px;font-weight:800;color:#111827;letter-spacing:-.01em;grid-row:1;grid-column:2;line-height:1.2}
+.tv-roster-rl{font-size:11px;color:#6B7280;font-weight:600;grid-row:2;grid-column:2;line-height:1.2}
+.tv-roster-st{font-size:11px;color:#111827;font-weight:500;grid-row:3;grid-column:1/3;margin-top:4px;line-height:1.3}
+.tv-roster-fc{font-size:11px;color:#6B7280;font-weight:500;grid-row:4;grid-column:1/3;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tv-roster-acts{grid-row:5;grid-column:1/3;display:flex;gap:5px;margin-top:4px}
+.tv-roster-btn{font-family:inherit;font-size:10px;font-weight:600;padding:3px 7px;border-radius:4px;border:1px solid var(--bd2);background:var(--surf2);color:#374151;cursor:pointer;display:inline-flex;align-items:center;gap:3px;transition:all .1s}
+.tv-roster-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.tv-roster-btn:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+
+.tv-book-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.tv-book{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);overflow-x:auto}
+.tv-book table{width:100%;border-collapse:collapse;font-size:12px;min-width:1100px}
+.tv-book th,.tv-book td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--bd);vertical-align:middle;white-space:nowrap}
+.tv-book th{font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em;background:var(--surf2);border-bottom:1px solid var(--bd2)}
+.tv-book tr.tv-book-row{cursor:pointer;transition:background .1s}
+.tv-book tr.tv-book-row:hover{background:var(--surf2)}
+.tv-book tr.tv-book-row:focus-visible{outline:2px solid var(--tl);outline-offset:-2px}
+.tv-book-nm{font-weight:800;color:#111827;letter-spacing:-.01em}
+.tv-book-status{font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;display:inline-block}
+.tv-book-status.exp{background:#CCFBF1;color:#0F766E}
+.tv-book-status.crit{background:var(--rd-bg);color:var(--rd-dk)}
+.tv-book-status.risk{background:#FEF3C7;color:#78350F}
+.tv-book-status.stable{background:#D1FAE5;color:#065F46}
+.tv-book-status.dark{background:#F3F4F6;color:#4B5563}
+.tv-book-status.champ{background:#EDE9FE;color:#5B21B6}
+.tv-book-pill{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:800;color:#fff;letter-spacing:-.02em;cursor:default}
+.tv-book-rec{font-size:11px;color:#1F2937;font-weight:500;line-height:1.45;white-space:normal;max-width:340px}
+.tv-book-rec b{font-weight:800;color:#111827}
+.tv-book-touch{font-size:11px;color:#6B7280;font-weight:600}
+
 .rs-mx-detail{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;min-height:340px}
 .rs-mx-detail-empty{font-size:13px;color:#6B7280;font-style:italic;padding:40px 10px;text-align:center}
 .rs-mx-detail-hd{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;gap:10px}
@@ -4323,17 +4375,17 @@ body.offline .int-panel{top:124px}
 </div>
 
 <div class="tc" id="tab-team">
-  <div class="cs-pg">
-    <div class="cs-ic">👥</div>
-    <h1 class="cs-h">Team View</h1>
-    <div class="cs-vision">AE, BDR, CSM, and Onboarding all working the same account &mdash; without a single Slack thread.</div>
-    <div class="cs-divider"></div>
-    <div class="cs-sec-t">What this tab does</div>
-    <p class="cs-body">Team View is the shared account collaboration layer. When a renewal is at risk or an expansion is in play, everyone who touches the account &mdash; Account Executive, Business Development Rep, Customer Success Manager, and Onboarding Specialist &mdash; sees the same account snapshot, the same signals, and the same next steps in one shared surface. Collaborative notes are attributed by role and timestamp. Task assignment works across roles: the CSM assigns the AE a warm intro, the AE requests the CSM join a call, OB flags a technical blocker for CS to resolve. The same admin task broadcast feature that CS leadership uses to push priorities to CSMs extends here &mdash; CS Ops can push account-specific tasks to the AE and BDR simultaneously. No more coordination overhead. One account, one view, every stakeholder aligned.</p>
-    <div class="cs-sec-t">What it connects to</div>
-    <div class="cs-conn">Gainsight &middot; Salesforce &middot; Slack &middot; Gmail &middot; Gong &middot; Google Drive</div>
-    <div class="cs-divider"></div>
-    <div class="cs-badge"><i class="ti ti-plug-connected"></i> Phase 2 feature &middot; API connections required</div>
+  <div class="tv-pg">
+    <div class="tv-pulse" id="tv-pulse" role="navigation" aria-label="Pod pulse"></div>
+    <div class="tv-section" id="tv-roster-sec">
+      <div class="tv-sec-hd"><div class="tv-sec-hd-t">Pod Roster</div><div class="tv-sec-hd-meta">6 members · 1 CSM · 2 AE · 2 BDR · 1 RS</div></div>
+      <div class="tv-roster" id="tv-roster" role="list" aria-label="Pod members"></div>
+    </div>
+    <div class="tv-section" id="tv-book-sec">
+      <div class="tv-sec-hd"><div class="tv-sec-hd-t">Shared Account Book</div><div id="tv-book-meta" class="tv-sec-hd-meta"></div></div>
+      <div class="tv-book-hd" id="tv-book-hd"></div>
+      <div class="tv-book" id="tv-book"></div>
+    </div>
   </div>
 </div>
 
@@ -15401,6 +15453,217 @@ function fcReplyMarkSent(acct) {
 
 // Pre-render default section so opening the tab is instant.
 fcRenderPipeline();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// v4.23.0 — Team View Phase 1: Pod Pulse + Roster + Shared Account Book.
+// All cross-role data is hardcoded demo state. Slack DM, Calendar, Strategy
+// Huddle, and the member profile modal are Phase 2/3 stubs that toast for now.
+// ═══════════════════════════════════════════════════════════════════════════
+var POD_ROSTER = [
+  { id:'carmen',   name:'Carmen Corio',    role:'CSM · Lead',         avatar:'CC', avatarColor:'#10b981', status:'🟢 Active now', focus:'NovaVault save' },
+  { id:'david',    name:'David Kim',       role:'AE',                 avatar:'DK', avatarColor:'#3b82f6', status:'🟢 Active',     focus:'Acme expansion' },
+  { id:'liam',     name:'Liam Chen',       role:'AE',                 avatar:'LC', avatarColor:'#3b82f6', status:'🟡 In meeting', focus:'Brightex risk review' },
+  { id:'marco',    name:'Marco Webb',      role:'BDR',                avatar:'MW', avatarColor:'#8b5cf6', status:'🟢 Active',     focus:'Q3 prospecting' },
+  { id:'jennifer', name:'Jennifer Park',   role:'BDR',                avatar:'JP', avatarColor:'#8b5cf6', status:'🟢 Active',     focus:'New logo outreach' },
+  { id:'sarah',    name:'Sarah Mitchell',  role:'Renewal Specialist', avatar:'SM', avatarColor:'#f59e0b', status:'🟢 Active',     focus:'NovaVault extension terms' }
+];
+function tvMember(id) { return POD_ROSTER.find(function(m){return m.id===id;}) || null; }
+
+var TV_BOOK = [
+  { key:'acme',     nm:'Acme Corp',       health:'82', healthCls:'g',  arr:48, arrLabel:'$48K', renewal:'Aug 12', openOpp:'Expansion $12K–$18K', podStatus:'EXPANSION',       csm:'carmen', ae:'david', bdr:'marco',    rs:'sarah', lastPodTouch:'David · May 17',     aiPodRec:'David: reach out re: SSO enterprise tier. Carmen has May 10 Gong context.' },
+  { key:'nova',     nm:'NovaVault',       health:'23', healthCls:'r',  arr:31, arrLabel:'$31K', renewal:'Jun 1',  openOpp:'Save — 17d to renewal', podStatus:'CRITICAL SAVE',  csm:'carmen', ae:'david', bdr:'marco',    rs:'sarah', lastPodTouch:'Carmen · May 18',    aiPodRec:'Sarah: prep extension terms with Carmen. David: hold outreach.' },
+  { key:'brightex', nm:'Brightex Inc',    health:'48', healthCls:'a',  arr:36, arrLabel:'$36K', renewal:'Jun 15', openOpp:'Save play active',      podStatus:'AT RISK',         csm:'carmen', ae:'liam',  bdr:'jennifer', rs:'sarah', lastPodTouch:'Liam · May 16',      aiPodRec:'Liam: surface Okta differentiation. Carmen: provide save play context.' },
+  { key:'meridian', nm:'Meridian Health', health:'?',  healthCls:'gy', arr:22, arrLabel:'$22K', renewal:'Jun 30', openOpp:'—',                     podStatus:'DARK',            csm:'carmen', ae:'liam',  bdr:'jennifer', rs:'sarah', lastPodTouch:'Jennifer · 42d ago', aiPodRec:"Carmen: reply to Jennifer's email today." },
+  { key:'creston',  nm:'Creston Software',health:'?',  healthCls:'gy', arr:18, arrLabel:'$18K', renewal:'Jul 15', openOpp:'—',                     podStatus:'DARK',            csm:'carmen', ae:'david', bdr:'marco',    rs:'sarah', lastPodTouch:'David · 67d ago',    aiPodRec:'Marco: cold qualification touch. Carmen: Ghost-Buster ready.' },
+  { key:'apex',     nm:'Apex Dynamics',   health:'?',  healthCls:'gy', arr:15, arrLabel:'$15K', renewal:'Aug 1',  openOpp:'Champion change',       podStatus:'CHAMPION CHANGE', csm:'carmen', ae:'liam',  bdr:'jennifer', rs:'sarah', lastPodTouch:'Liam · May 14',      aiPodRec:'Liam: warm intro from AE network. Carmen: stand by for handoff.' }
+];
+var TV_STATUS_CLS = { 'EXPANSION':'exp', 'CRITICAL SAVE':'crit', 'AT RISK':'risk', 'STABLE':'stable', 'DARK':'dark', 'CHAMPION CHANGE':'champ' };
+
+var TV_COL_DEF = [
+  { key:'account',    lbl:'Account',         required:true, visible:true },
+  { key:'health',     lbl:'Health',          visible:true },
+  { key:'arr',        lbl:'ARR',             visible:true },
+  { key:'renewal',    lbl:'Renewal',         visible:true },
+  { key:'openOpp',    lbl:'Open Opp',        visible:true },
+  { key:'podStatus',  lbl:'Pod Status',      visible:true },
+  { key:'csm',        lbl:'CSM',             visible:true },
+  { key:'ae',         lbl:'AE',              visible:true },
+  { key:'bdr',        lbl:'BDR',             visible:true },
+  { key:'rs',         lbl:'RS',              visible:true },
+  { key:'lastTouch',  lbl:'Last Pod Touch',  visible:true },
+  { key:'aiRec',      lbl:'AI Pod Rec',      visible:true }
+];
+var TV_COLS_OPEN = false;
+
+function tvEscape(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
+
+var TV_PULSE_CHIPS = [
+  { id:'members', em:'👥', lbl:'Pod Members',   v:'6',     target:'roster' },
+  { id:'arr',     em:'💰', lbl:'Pod ARR',       v:'$2.4M', target:'book' },
+  { id:'pipe',    em:'📈', lbl:'Pipeline Open', v:'$340K', target:'book' },
+  { id:'wins',    em:'✨', lbl:'Wins Q2',       v:'4',     sub:'$128K', target:'wins' },
+  { id:'losses',  em:'💥', lbl:'Losses Q2',     v:'2',     sub:'$44K',  target:'losses' },
+  { id:'unengaged',em:'⚠️',lbl:'Pod Unengaged', v:'3',     target:'book' },
+  { id:'tasks',   em:'✅', lbl:'Open Pod Tasks',v:'12',    target:'tasks' }
+];
+
+function tvBuildPulse() {
+  var el = document.getElementById('tv-pulse');
+  if (!el) return;
+  el.innerHTML = TV_PULSE_CHIPS.map(function(c){
+    var sub = c.sub ? '<span class="tv-pulse-sub">· ' + tvEscape(c.sub) + '</span>' : '';
+    return '<button class="tv-pulse-chip" type="button" data-target="' + tvEscape(c.target) + '" onclick="tvPulseJump(\'' + c.id + '\')" aria-label="' + tvEscape(c.lbl + ' · ' + c.v + (c.sub ? ' · ' + c.sub : '')) + '">'
+      + '<span class="tv-pulse-em" aria-hidden="true">' + c.em + '</span>'
+      + tvEscape(c.lbl) + ' <b>' + tvEscape(c.v) + '</b>' + sub
+      + '</button>';
+  }).join('');
+}
+
+function tvPulseJump(id) {
+  var chip = TV_PULSE_CHIPS.find(function(c){return c.id===id;});
+  if (!chip) return;
+  if (chip.target === 'roster') {
+    var r = document.getElementById('tv-roster-sec');
+    if (r) r.scrollIntoView({ behavior:'smooth', block:'start' });
+  } else if (chip.target === 'book') {
+    var b = document.getElementById('tv-book-sec');
+    if (b) b.scrollIntoView({ behavior:'smooth', block:'start' });
+  } else if (chip.target === 'wins') {
+    toast('Wins section · Coming in Phase 2');
+  } else if (chip.target === 'losses') {
+    toast('Losses section · Coming in Phase 2');
+  } else if (chip.target === 'tasks') {
+    toast('Pod Tasks · Coming in Phase 2');
+  }
+}
+
+function tvBuildRoster() {
+  var el = document.getElementById('tv-roster');
+  if (!el) return;
+  el.innerHTML = POD_ROSTER.map(function(m){
+    return '<div class="tv-roster-card" role="button" tabindex="0"'
+      + ' aria-label="View ' + tvEscape(m.name) + ' profile"'
+      + ' onclick="tvMemberClick(\'' + m.id + '\')"'
+      + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();tvMemberClick(\'' + m.id + '\')}">'
+      +   '<div class="tv-roster-av" style="background:' + tvEscape(m.avatarColor) + '" aria-hidden="true">' + tvEscape(m.avatar) + '</div>'
+      +   '<div class="tv-roster-nm">' + tvEscape(m.name) + '</div>'
+      +   '<div class="tv-roster-rl">' + tvEscape(m.role) + '</div>'
+      +   '<div class="tv-roster-st">' + tvEscape(m.status) + '</div>'
+      +   '<div class="tv-roster-fc" title="Focused on: ' + tvEscape(m.focus) + '">Focused on: ' + tvEscape(m.focus) + '</div>'
+      +   '<div class="tv-roster-acts">'
+      +     '<button class="tv-roster-btn" type="button" onclick="event.stopPropagation();tvSlackDm(\'' + m.id + '\')" aria-label="Open Slack DM with ' + tvEscape(m.name) + '">💬 Slack</button>'
+      +     '<button class="tv-roster-btn" type="button" onclick="event.stopPropagation();tvCalOpen(\'' + m.id + '\')" aria-label="Open calendar with ' + tvEscape(m.name) + '">📅 Cal</button>'
+      +   '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function tvMemberClick(id) {
+  var m = tvMember(id);
+  toast('Member profile · ' + (m ? m.name : id) + ' · Coming in Phase 3');
+}
+function tvSlackDm(id) {
+  var m = tvMember(id);
+  toast('Opens Slack DM with ' + (m ? m.name : id) + ' · Phase 2');
+}
+function tvCalOpen(id) {
+  var m = tvMember(id);
+  toast('Opens calendar with ' + (m ? m.name : id) + ' · Phase 2');
+}
+
+function tvMemberPill(id) {
+  var m = tvMember(id);
+  if (!m) return '<span class="tv-book-pill" style="background:#9CA3AF" aria-hidden="true">·</span>';
+  return '<span class="tv-book-pill" style="background:' + tvEscape(m.avatarColor) + '" title="' + tvEscape(m.name + ' · ' + m.role) + '" aria-label="' + tvEscape(m.name + ' · ' + m.role) + '">' + tvEscape(m.avatar) + '</span>';
+}
+
+function tvBookCell(col, r) {
+  switch (col) {
+    case 'account':   return '<td><span class="tv-book-nm">' + tvEscape(r.nm) + '</span></td>';
+    case 'health':    return '<td><span class="hp-badge ' + tvEscape(r.healthCls) + '">' + tvEscape(r.health) + '</span></td>';
+    case 'arr':       return '<td>' + tvEscape(r.arrLabel) + '</td>';
+    case 'renewal':   return '<td>' + tvEscape(r.renewal) + '</td>';
+    case 'openOpp':   return '<td>' + tvEscape(r.openOpp) + '</td>';
+    case 'podStatus': return '<td><span class="tv-book-status ' + (TV_STATUS_CLS[r.podStatus] || 'stable') + '" aria-label="Pod status: ' + tvEscape(r.podStatus) + '">' + tvEscape(r.podStatus) + '</span></td>';
+    case 'csm':       return '<td>' + tvMemberPill(r.csm) + '</td>';
+    case 'ae':        return '<td>' + tvMemberPill(r.ae) + '</td>';
+    case 'bdr':       return '<td>' + tvMemberPill(r.bdr) + '</td>';
+    case 'rs':        return '<td>' + tvMemberPill(r.rs) + '</td>';
+    case 'lastTouch': return '<td><span class="tv-book-touch">' + tvEscape(r.lastPodTouch) + '</span></td>';
+    case 'aiRec':     return '<td><div class="tv-book-rec">' + tvEscape(r.aiPodRec) + '</div></td>';
+    default:          return '<td></td>';
+  }
+}
+
+function tvBuildBook() {
+  var hd  = document.getElementById('tv-book-hd');
+  var el  = document.getElementById('tv-book');
+  var mt  = document.getElementById('tv-book-meta');
+  if (!el || !hd) return;
+  if (mt) mt.textContent = TV_BOOK.length + ' accounts · click row to open Strategy Huddle';
+
+  var visibleCols = TV_COL_DEF.filter(function(c){return c.visible;});
+  var visibleColsHtml = TV_COL_DEF.filter(function(c){return c.visible;}).map(function(c){
+    var rm = c.required ? '' : ' onclick="tvColsToggle(\'' + c.key + '\')"';
+    return '<button class="fc-cols-item" type="button"' + rm + (c.required ? ' disabled style="opacity:.5;cursor:default"' : '') + '><i class="ti ti-check fc-cols-item-ic"></i> ' + tvEscape(c.lbl) + '</button>';
+  }).join('');
+  var hiddenColsHtml = TV_COL_DEF.filter(function(c){return !c.visible;}).map(function(c){
+    return '<button class="fc-cols-item" type="button" onclick="tvColsToggle(\'' + c.key + '\')"><i class="ti ti-circle fc-cols-item-ic off"></i> ' + tvEscape(c.lbl) + '</button>';
+  }).join('');
+  var colsPop = TV_COLS_OPEN ? ' on' : '';
+  hd.innerHTML = ''
+    + '<div></div>'
+    + '<div class="fc-cols-wrap"><button class="fc-btn" type="button" onclick="tvColsTogglePop(event)"><i class="ti ti-columns"></i> Columns <i class="ti ti-chevron-down"></i></button>'
+    +   '<div class="fc-cols-pop' + colsPop + '" id="tv-cols-pop">'
+    +     '<div class="fc-cols-sec-t">Visible columns ✓</div>' + visibleColsHtml
+    +     (hiddenColsHtml ? '<div class="fc-cols-sec-t">Hidden columns (click to show)</div>' + hiddenColsHtml : '')
+    +   '</div>'
+    + '</div>';
+
+  var headHtml = visibleCols.map(function(c){ return '<th scope="col">' + tvEscape(c.lbl) + '</th>'; }).join('');
+  var rowsHtml = TV_BOOK.map(function(r){
+    var cells = visibleCols.map(function(c){ return tvBookCell(c.key, r); }).join('');
+    return '<tr class="tv-book-row" role="button" tabindex="0"'
+      + ' aria-label="Open Strategy Huddle for ' + tvEscape(r.nm) + '"'
+      + ' onclick="tvHuddle(\'' + r.key + '\')"'
+      + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();tvHuddle(\'' + r.key + '\')}">'
+      + cells + '</tr>';
+  }).join('');
+  el.innerHTML = '<table><thead><tr>' + headHtml + '</tr></thead><tbody>' + rowsHtml + '</tbody></table>';
+}
+
+function tvColsTogglePop(e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  TV_COLS_OPEN = !TV_COLS_OPEN;
+  tvBuildBook();
+}
+function tvColsToggle(key) {
+  var col = TV_COL_DEF.find(function(c){return c.key===key;});
+  if (!col || col.required) return;
+  col.visible = !col.visible;
+  tvBuildBook();
+}
+function tvHuddle(acct) {
+  var r = TV_BOOK.find(function(x){return x.key===acct;});
+  toast('Strategy Huddle · ' + (r ? r.nm : acct) + ' · Coming in Phase 2');
+}
+
+document.addEventListener('click', function(e){
+  if (!TV_COLS_OPEN) return;
+  var pop = document.getElementById('tv-cols-pop');
+  if (!pop) return;
+  if (!pop.contains(e.target) && !e.target.closest('.fc-cols-wrap')) {
+    TV_COLS_OPEN = false;
+    tvBuildBook();
+  }
+});
+
+function tvBuild() {
+  tvBuildPulse();
+  tvBuildRoster();
+  tvBuildBook();
+}
+tvBuild();
 
 </script>
 

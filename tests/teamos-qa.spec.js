@@ -571,7 +571,7 @@ test.describe('Forecasting', () => {
   test('Pipeline column picker has 15 items', async ({ page }) => {
     await page.evaluate(() => fcColsTogglePop());
     await page.waitForTimeout(120);
-    expect(await page.locator('.fc-cols-pop .fc-cols-item').count()).toBe(15);
+    expect(await page.locator('#fc-cols-pop .fc-cols-item').count()).toBe(15);
   });
 
   test('toggling a hidden column adds it to the table', async ({ page }) => {
@@ -3714,5 +3714,150 @@ test.describe('v4.22.0 Risk Matrix overflow + clarity', () => {
       expect(l).toMatch(/days to renewal/);
       expect(l).toMatch(/ARR/);
     });
+  });
+});
+
+test.describe('v4.23.0 Team View Phase 1', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => goTab('team', document.querySelector('[onclick*="goTab(\'team\'"]')));
+    await page.waitForTimeout(200);
+  });
+
+  // ── Pod Pulse ───────────────────────────────────────────────────────────
+  test('Pod Pulse Strip renders 7 chips with correct values', async ({ page }) => {
+    const chips = await page.locator('#tv-pulse .tv-pulse-chip').count();
+    expect(chips).toBe(7);
+    const txt = await page.locator('#tv-pulse').textContent();
+    expect(txt).toMatch(/Pod Members[\s\S]*6/);
+    expect(txt).toMatch(/Pod ARR[\s\S]*\$2\.4M/);
+    expect(txt).toMatch(/Pipeline Open[\s\S]*\$340K/);
+    expect(txt).toMatch(/Wins Q2[\s\S]*4/);
+    expect(txt).toMatch(/\$128K/);
+    expect(txt).toMatch(/Losses Q2[\s\S]*2/);
+    expect(txt).toMatch(/\$44K/);
+    expect(txt).toMatch(/Pod Unengaged[\s\S]*3/);
+    expect(txt).toMatch(/Open Pod Tasks[\s\S]*12/);
+    expect(await page.locator('#tv-pulse').getAttribute('aria-label')).toBe('Pod pulse');
+  });
+
+  test('Pulse chip Pod Members scrolls to Roster section', async ({ page }) => {
+    await page.evaluate(() => tvPulseJump('members'));
+    await page.waitForTimeout(100);
+    // The section comes into view; verify it exists at least.
+    await expect(page.locator('#tv-roster-sec')).toBeVisible();
+  });
+
+  test('Pulse chip Wins Q2 toasts Phase 2 stub', async ({ page }) => {
+    const t = [];
+    page.on('console', m => t.push(m.text()));
+    await page.evaluate(() => tvPulseJump('wins'));
+    await page.waitForTimeout(150);
+    const toast = await page.locator('.toast, #toast, .toast-on, [role="status"]').last().textContent().catch(()=>null);
+    // Toast text appears somewhere on the page after the jump.
+    const body = await page.locator('body').textContent();
+    expect(body).toMatch(/Wins section · Coming in Phase 2/);
+  });
+
+  // ── Pod Roster ──────────────────────────────────────────────────────────
+  test('Pod Roster renders 6 member cards', async ({ page }) => {
+    expect(await page.locator('#tv-roster .tv-roster-card').count()).toBe(6);
+    const names = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-roster .tv-roster-nm')).map(n => n.textContent.trim()));
+    expect(names).toEqual(['Carmen Corio','David Kim','Liam Chen','Marco Webb','Jennifer Park','Sarah Mitchell']);
+  });
+
+  test('Pod Roster cards carry role=button + aria-label + tabindex=0', async ({ page }) => {
+    const carmen = page.locator('#tv-roster .tv-roster-card').first();
+    expect(await carmen.getAttribute('role')).toBe('button');
+    expect(await carmen.getAttribute('aria-label')).toBe('View Carmen Corio profile');
+    expect(await carmen.getAttribute('tabindex')).toBe('0');
+  });
+
+  test('Clicking a roster card toasts Phase 3 stub', async ({ page }) => {
+    await page.locator('#tv-roster .tv-roster-card').first().click();
+    await page.waitForTimeout(200);
+    const body = await page.locator('body').textContent();
+    expect(body).toMatch(/Member profile · Carmen Corio · Coming in Phase 3/);
+  });
+
+  test('Slack + Cal buttons toast Phase 2 stubs without bubbling', async ({ page }) => {
+    const carmen = page.locator('#tv-roster .tv-roster-card').first();
+    await carmen.locator('.tv-roster-btn').nth(0).click();
+    await page.waitForTimeout(200);
+    let body = await page.locator('body').textContent();
+    expect(body).toMatch(/Opens Slack DM with Carmen Corio · Phase 2/);
+    // Confirm the Phase 3 toast did NOT also fire (stopPropagation worked).
+    expect(body).not.toMatch(/Member profile · Carmen Corio · Coming in Phase 3/);
+
+    await carmen.locator('.tv-roster-btn').nth(1).click();
+    await page.waitForTimeout(200);
+    body = await page.locator('body').textContent();
+    expect(body).toMatch(/Opens calendar with Carmen Corio · Phase 2/);
+  });
+
+  // ── Shared Account Book ─────────────────────────────────────────────────
+  test('Account Book renders 6 rows with all default columns', async ({ page }) => {
+    expect(await page.locator('#tv-book tbody tr').count()).toBe(6);
+    const headers = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-book thead th')).map(h => h.textContent.trim()));
+    expect(headers).toEqual(['Account','Health','ARR','Renewal','Open Opp','Pod Status','CSM','AE','BDR','RS','Last Pod Touch','AI Pod Rec']);
+  });
+
+  test('Pod Status badges carry color class + aria-label', async ({ page }) => {
+    const data = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-book .tv-book-status')).map(s => ({ cls:s.className, txt:s.textContent.trim(), aria:s.getAttribute('aria-label') })));
+    const find = t => data.find(d => d.txt === t);
+    expect(find('EXPANSION').cls).toMatch(/exp/);
+    expect(find('CRITICAL SAVE').cls).toMatch(/crit/);
+    expect(find('AT RISK').cls).toMatch(/risk/);
+    expect(find('DARK').cls).toMatch(/dark/);
+    expect(find('CHAMPION CHANGE').cls).toMatch(/champ/);
+    data.forEach(d => expect(d.aria).toMatch(/^Pod status: /));
+  });
+
+  test('Avatar pills render for CSM/AE/BDR/RS with hover full name', async ({ page }) => {
+    // First row (Acme) — verify pills + their titles.
+    const row = page.locator('#tv-book tbody tr').first();
+    const pills = await row.locator('.tv-book-pill').count();
+    expect(pills).toBe(4);
+    const titles = await row.evaluate(r => Array.from(r.querySelectorAll('.tv-book-pill')).map(p => p.getAttribute('title')));
+    expect(titles[0]).toMatch(/Carmen Corio · CSM/);
+    expect(titles[1]).toMatch(/David Kim · AE/);
+    expect(titles[2]).toMatch(/Marco Webb · BDR/);
+    expect(titles[3]).toMatch(/Sarah Mitchell · Renewal Specialist/);
+  });
+
+  test('AI Pod Rec column shows recommendations tagged to pod member', async ({ page }) => {
+    const t = await page.locator('#tv-book tbody').textContent();
+    expect(t).toMatch(/David: reach out re: SSO enterprise tier/);
+    expect(t).toMatch(/Sarah: prep extension terms/);
+    expect(t).toMatch(/Liam: surface Okta differentiation/);
+    expect(t).toMatch(/Carmen: reply to Jennifer/);
+    expect(t).toMatch(/Marco: cold qualification touch/);
+    expect(t).toMatch(/Liam: warm intro from AE network/);
+  });
+
+  test('Account row click opens Strategy Huddle stub', async ({ page }) => {
+    await page.locator('#tv-book tbody tr').first().click();
+    await page.waitForTimeout(200);
+    const body = await page.locator('body').textContent();
+    expect(body).toMatch(/Strategy Huddle · Acme Corp · Coming in Phase 2/);
+  });
+
+  test('Row carries role=button + aria-label', async ({ page }) => {
+    const row = page.locator('#tv-book tbody tr').first();
+    expect(await row.getAttribute('role')).toBe('button');
+    expect(await row.getAttribute('aria-label')).toBe('Open Strategy Huddle for Acme Corp');
+  });
+
+  test('Column picker hides + restores Last Pod Touch column', async ({ page }) => {
+    await page.locator('#tv-book-hd .fc-cols-wrap .fc-btn').click();
+    await page.waitForTimeout(120);
+    // Click Last Pod Touch in the visible-cols section.
+    await page.evaluate(() => tvColsToggle('lastTouch'));
+    await page.waitForTimeout(120);
+    let headers = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-book thead th')).map(h => h.textContent.trim()));
+    expect(headers).not.toContain('Last Pod Touch');
+    await page.evaluate(() => tvColsToggle('lastTouch'));
+    await page.waitForTimeout(120);
+    headers = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-book thead th')).map(h => h.textContent.trim()));
+    expect(headers).toContain('Last Pod Touch');
   });
 });
