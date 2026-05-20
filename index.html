@@ -2878,6 +2878,101 @@ body.offline .rs-mx-snap{top:124px}
 .tv-cm-thread-tt{font-weight:500;color:#1F2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 .tv-cm-thread-meta{font-size:11px;color:#6B7280;font-weight:600;white-space:nowrap}
 
+/* ─── v4.26.0 — CSM Dashboard bug-fix + improvement bundle ─────────────── */
+/* FIX 1 — teal flash for the Next Up / Today's Calls header after a Pulse
+   Strip "3 calls today" click. */
+.mb-flash{animation:mb-calls-flash 1.4s ease-out 1}
+@keyframes mb-calls-flash{
+  0%   {box-shadow:0 0 0 0 rgba(20,184,166,.55), inset 0 0 0 0 rgba(20,184,166,0);background:transparent}
+  20%  {box-shadow:0 0 0 8px rgba(20,184,166,.22);background:rgba(20,184,166,.10)}
+  100% {box-shadow:0 0 0 0 rgba(20,184,166,0);background:transparent}
+}
+/* FIX 2 — teal flash for Forecasting Pipeline rows tagged as expansion. */
+.fc-pipe-tbl tr.fc-exp-flash{animation:fc-exp-flash 1.4s ease-out 1}
+@keyframes fc-exp-flash{
+  0%   {background:transparent;box-shadow:inset 3px 0 0 transparent}
+  25%  {background:rgba(20,184,166,.12);box-shadow:inset 3px 0 0 var(--tl)}
+  100% {background:transparent;box-shadow:inset 3px 0 0 transparent}
+}
+/* FIX 6 — Pulse Strip horizontal scroll + edge gradients. The global pulse
+   strip is sticky at the top of the app; force overflow-x:auto at every
+   viewport so the leftmost chip never clips at narrow widths. */
+.pulse-strip{overflow-x:auto;overflow-y:visible;scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.pulse-strip::-webkit-scrollbar{display:none}
+.pulse-strip > .ps-wrap,.pulse-strip > .ps-btn{scroll-snap-align:start;flex-shrink:0}
+.pulse-strip::before,.pulse-strip::after{content:'';position:absolute;top:0;bottom:0;width:24px;pointer-events:none;z-index:1}
+.pulse-strip::before{left:0;background:linear-gradient(to right, var(--surf) 0%, transparent 100%)}
+.pulse-strip::after{right:0;background:linear-gradient(to left, var(--surf) 0%, transparent 100%)}
+
+/* IMP 1 — AI ranking ⓘ tooltip on Priority Stack subtitle. */
+.bf-sub{position:relative}
+.bf-rank-i{font-family:inherit;font-size:11px;font-weight:800;width:16px;height:16px;border-radius:50%;border:1px solid var(--bd2);background:var(--surf);color:#6B7280;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-left:6px;padding:0;line-height:1}
+.bf-rank-i:hover,.bf-rank-i[aria-expanded="true"]{background:var(--tl);color:#fff;border-color:var(--tl)}
+.bf-rank-i:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.bf-rank-pop{position:absolute;top:calc(100% + 8px);left:0;width:300px;background:var(--surf);border:1px solid var(--bd);border-radius:7px;box-shadow:0 12px 28px rgba(0,0,0,.14);padding:13px 14px;z-index:200;font-size:11px;color:#1F2937;font-weight:500;line-height:1.55;display:none}
+.bf-rank-pop.on{display:block}
+.bf-rank-pop-t{font-size:12px;font-weight:800;color:#111827;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between}
+.bf-rank-pop-t .x{font-family:inherit;font-size:18px;line-height:1;background:none;border:none;color:#6B7280;cursor:pointer;padding:0;min-width:24px}
+.bf-rank-pop ul{margin:6px 0 8px;padding-left:14px}
+.bf-rank-pop li{margin-bottom:3px}
+.bf-rank-pop .why{margin:8px 0;padding:8px 10px;background:var(--surf2);border-left:3px solid var(--tl);border-radius:5px;font-size:11px;color:#1F2937}
+.bf-rank-pop .why b{color:#111827;font-weight:800}
+.bf-rank-pop .ph4{font-size:10px;color:#9CA3AF;font-weight:600;display:inline-block;margin-top:4px}
+
+/* IMP 2 — Signal chip clickable popovers. */
+.bf-next-chip{cursor:pointer}
+.bf-next-chip:hover{background:var(--tl-bg);color:var(--tl-dk)}
+.bf-next-chip:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.bf-next-chip[aria-haspopup="dialog"]::after{content:' ›';color:#6B7280;font-weight:700;margin-left:2px}
+.bf-sig-pop-ov{position:fixed;inset:0;background:rgba(17,24,39,.32);z-index:9200;display:none}
+.bf-sig-pop-ov.on{display:block}
+.bf-sig-pop{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:360px;max-width:calc(100vw - 28px);background:var(--surf);border:1px solid var(--bd);border-radius:10px;box-shadow:0 24px 48px rgba(0,0,0,.22);padding:16px 18px;z-index:9201;display:none}
+.bf-sig-pop.on{display:block}
+.bf-sig-pop-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.bf-sig-pop-t{font-size:12px;font-weight:800;color:#111827;letter-spacing:.04em;text-transform:uppercase}
+.bf-sig-pop-x{font-family:inherit;font-size:22px;line-height:1;background:none;border:none;color:#6B7280;cursor:pointer;padding:2px 6px;min-width:32px;border-radius:5px}
+.bf-sig-pop-x:hover{background:var(--surf2)}
+.bf-sig-pop-body{font-size:13px;color:#1F2937;font-weight:500;line-height:1.6}
+.bf-sig-pop-meta{font-size:11px;color:#6B7280;font-weight:600;margin-bottom:6px}
+.bf-sig-pop-quote{padding:10px 12px;background:var(--surf2);border-left:3px solid var(--tl);border-radius:5px;font-style:italic;font-size:13px;color:#1F2937;line-height:1.55;margin:7px 0 10px}
+.bf-sig-pop-quote.no-italic{font-style:normal}
+.bf-sig-pop-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+
+/* IMP 3 — Quick Reply / Dismiss on Urgent Inbox rows. */
+.ii{position:relative}
+.ii-quick{display:none;position:absolute;right:14px;top:50%;transform:translateY(-50%);gap:5px;align-items:center;background:linear-gradient(to left, var(--surf) 75%, transparent);padding-left:18px;padding-right:2px;pointer-events:none}
+.ii-quick > *{pointer-events:auto}
+.ii:hover .ii-quick,.ii:focus-within .ii-quick{display:inline-flex}
+.ii-quick-btn{font-family:inherit;font-size:10px;font-weight:700;padding:4px 8px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf2);color:#1F2937;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+.ii-quick-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.ii-quick-btn.prim:hover{background:#2a2a28}
+.ii-quick-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.ii-quick-btn:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.ii.dismissing{animation:ii-fade .35s ease-in forwards}
+@keyframes ii-fade{ 0%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(-6px);max-height:0;padding:0;margin:0;overflow:hidden} }
+
+/* IMP 4 — Mark Prepped button per Today's Calls card. */
+.du-card-acts{margin-top:8px;display:flex;justify-content:flex-end}
+.du-prep-btn{font-family:inherit;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:#1F2937;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.du-prep-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.du-prep-btn:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.du-card.prepped{opacity:.55}
+.du-card.prepped .du-card-t,.du-card.prepped .du-card-s{text-decoration:line-through}
+.du-card.prepped .du-prep-btn{background:var(--tl);color:#fff;border-color:var(--tl);pointer-events:none}
+
+/* IMP 5 — Session-aware Dust Agent contextual badge + label. */
+.bf-qa-chip.ctx{background:var(--tl-bg);border-color:var(--tl)}
+.bf-qa-badge{display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;background:var(--tl);color:#fff;padding:2px 6px;border-radius:99px;margin-left:5px;letter-spacing:.04em;vertical-align:middle}
+.bf-qa-ctx-lbl{font-size:10px;color:#6B7280;font-weight:600;margin-top:6px;font-style:italic;display:flex;align-items:center;gap:5px}
+
+/* FIX 5 — Unfilled placeholder warning for the Priority Stack compose drawer. */
+.ps-compose-ph-warn{margin:8px 0 0;padding:10px 12px;background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:6px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.5;display:none}
+.ps-compose-ph-warn.on{display:block}
+.ps-compose-ph-warn-hd{font-size:11px;font-weight:800;color:#92400E;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.ps-compose-ph-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.ps-compose-ph-chip{font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;background:#FEF3C7;color:#78350F;display:inline-flex;align-items:center;gap:3px}
+.ps-compose-ph-chip::before{content:'✏️ ';font-size:10px}
+
 .rs-mx-detail{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;min-height:340px}
 .rs-mx-detail-empty{font-size:13px;color:#6B7280;font-style:italic;padding:40px 10px;text-align:center}
 .rs-mx-detail-hd{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;gap:10px}
@@ -3494,7 +3589,7 @@ body.offline .int-panel{top:124px}
      so it remains visible across every tab (Dashboard / Recipe / Enablement). -->
 <div class="pulse-strip" role="navigation" aria-label="Portfolio pulse">
     <div class="ps-wrap">
-      <button class="ps-btn" id="pb-calls" onclick="rsKpiCalls()" type="button" aria-label="3 calls today — open CSM Dashboard Next Up"><i class="ti ti-calendar-event"></i><span class="ps-n">3</span>&nbsp;calls today</button>
+      <button class="ps-btn" id="pb-calls" onclick="psPulseScrollToCalls()" type="button" aria-label="3 calls today — scroll to Today's Calls"><i class="ti ti-calendar-event"></i><span class="ps-n">3</span>&nbsp;calls today</button>
       <div class="pop" id="pop-calls">
         <div class="pop-hd"><i class="ti ti-calendar-event"></i> Today &middot; 3 customer calls</div>
         <div class="pop-row">
@@ -3693,7 +3788,7 @@ body.offline .int-panel{top:124px}
       <!-- v4.10.0 — SPEC §9: "Training" replaced with "Expansion Pipeline".
            Surfaces the Acme enterprise-tier signal ($12K–$18K potential).
            Click routes to Forecasting → Pipeline. -->
-      <button class="ps-btn" id="pb-exp" onclick="psKpiExpansion()" type="button" aria-label="Expansion pipeline $12K to $18K — open Forecasting"><i class="ti ti-trending-up" style="color:var(--tl)"></i><span class="ps-n">$12K–$18K</span>&nbsp;expansion pipeline</button>
+      <button class="ps-btn" id="pb-exp" onclick="psPulseOpenExpansion()" type="button" aria-label="Expansion pipeline $12K to $18K — open Forecasting Pipeline and highlight expansion rows"><i class="ti ti-trending-up" style="color:var(--tl)"></i><span class="ps-n">$12K–$18K</span>&nbsp;expansion pipeline</button>
     </div>
     <div class="ps-wrap" style="display:none">
       <button class="ps-btn" id="pb-train" onclick="togglePop('train',event)" type="button"><i class="ti ti-school"></i><span class="ps-n a" id="pn-train">2</span>&nbsp;Training</button>
@@ -3753,7 +3848,7 @@ body.offline .int-panel{top:124px}
     <!-- Left: Priority Stack -->
     <div class="bf bf-priority">
       <div class="bf-hd"><div class="bf-ic tl"><i class="ti ti-flag-3"></i></div><div class="bf-t">Today&rsquo;s Priority Stack</div></div>
-      <div class="bf-sub">AI-ranked by health, renewal, CTAs, Gong silence</div>
+      <div class="bf-sub">AI-ranked by health, renewal, CTAs, Gong silence<button class="bf-rank-i" type="button" id="bf-rank-i" onclick="psRankPopToggle(event)" aria-label="How AI ranking works" aria-expanded="false" aria-controls="bf-rank-pop">i</button><div class="bf-rank-pop" id="bf-rank-pop" role="dialog" aria-label="How AI ranking works" aria-hidden="true"><div class="bf-rank-pop-t"><span>How accounts are ranked</span><button class="x" type="button" onclick="psRankPopClose()" aria-label="Close">&times;</button></div><div>Each account is scored on 4 signals:</div><ul><li><b>Health Score (40%)</b> — inverse of Gainsight health</li><li><b>Days to Renewal (30%)</b> — closer is higher priority</li><li><b>Open CTAs (15%)</b> — overdue weighted 2&times;</li><li><b>Gong Silence (15%)</b> — days since last call</li></ul><div class="why"><b>NovaVault scored highest today because:</b> Health 23 (critical) + 17d to renewal + champion lost + 45d Gong silence.</div><div class="ph4">[Adjust weights] · Phase 4</div></div></div>
 
       <!-- v4.10.0 — SPEC §2: Priority Stack buttons use one unified outlined
            base style. The row TAG carries the urgency color (taxonomy from
@@ -3810,7 +3905,7 @@ body.offline .int-panel{top:124px}
 
     <!-- Center: Next Up -->
     <div class="bf bf-next" id="bf-next">
-      <div class="bf-hd"><div class="bf-ic bl"><i class="ti ti-clock-hour-9"></i></div><div class="bf-t">Next Up</div></div>
+      <div class="bf-hd" id="mb-calls-header"><div class="bf-ic bl"><i class="ti ti-clock-hour-9"></i></div><div class="bf-t">Next Up &middot; Today&rsquo;s Calls (3)</div></div>
       <div class="bf-sub">Immediately next customer-facing meeting</div>
 
       <div class="bf-next-hdr">
@@ -3833,9 +3928,9 @@ body.offline .int-panel{top:124px}
       </div>
       <!-- v4.10.0 — SPEC §3: prose summary replaced with up to 3 signal chips. -->
       <div class="bf-next-sum" id="bf-next-chips">
-        <span class="bf-next-chip">SSO rollout active</span>
-        <span class="bf-next-chip">Expansion signal</span>
-        <span class="bf-next-chip">Champion: David Kim</span>
+        <button class="bf-next-chip" type="button" role="button" aria-haspopup="dialog" onclick="psSignalChip('sso')">SSO rollout active</button>
+        <button class="bf-next-chip" type="button" role="button" aria-haspopup="dialog" onclick="psSignalChip('expansion')">Expansion signal</button>
+        <button class="bf-next-chip" type="button" role="button" aria-haspopup="dialog" onclick="psSignalChip('champion')">Champion: David Kim</button>
       </div>
 
       <div class="bf-btns">
@@ -3918,37 +4013,41 @@ body.offline .int-panel{top:124px}
         <!-- v4.16.0 — FIX 2: Each row reads like a triage card. Line 1 = full
              first name + account (no truncation to initials). Line 2 =
              specific status chip + source chip + relative time. -->
-        <div class="ii" role="button" tabindex="0" aria-label="Michael Torres, NovaVault, Critical Save, 2h ago" onclick="acctClick('nova',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('nova',event)}">
+        <div class="ii" role="button" tabindex="0" data-iid="nova-torres" data-nm="Michael Torres" aria-label="Michael Torres, NovaVault, Critical Save, 2h ago" onclick="acctClick('nova',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('nova',event)}">
           <div class="ii-av crit" aria-label="Michael Torres at NovaVault">M</div>
           <div class="ii-mid">
             <div class="ii-row1"><span class="ii-nm">Michael Torres</span><span class="ii-acct">NovaVault</span></div>
             <div class="ii-row2"><span class="tb tb-crit" aria-label="Status: Critical Save">CRITICAL SAVE</span><span class="tb-src gainsight" aria-label="Source: Gainsight">GAINSIGHT</span><span class="ii-time">2h ago</span></div>
           </div>
+          <div class="ii-quick"><button type="button" class="ii-quick-btn prim" onclick="event.stopPropagation();psQuickReply('nova-torres')" aria-label="Quick reply to Michael Torres">💬 Quick Reply</button><button type="button" class="ii-quick-btn" onclick="event.stopPropagation();psInboxDismiss('nova-torres')" aria-label="Dismiss Michael Torres from inbox">✓ Dismiss</button></div>
         </div>
         <!-- v4.20.0 — FIX 1: internal-message rows (data-type="internal")
              route to the dedicated internal panel rather than the customer
              account briefing. The Maggie Spry DM is the only internal item
              in the seed data today. -->
-        <div class="ii" role="button" tabindex="0" data-type="internal" data-inbox-id="maggie-spry" aria-label="Internal message from Maggie Spry, CS Leadership, DM, 1h ago" onclick="psInternalOpen('maggie-spry')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();psInternalOpen('maggie-spry')}">
+        <div class="ii" role="button" tabindex="0" data-type="internal" data-inbox-id="maggie-spry" data-iid="maggie-spry" data-nm="Maggie Spry" aria-label="Internal message from Maggie Spry, CS Leadership, DM, 1h ago" onclick="psInternalOpen('maggie-spry')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();psInternalOpen('maggie-spry')}">
           <div class="ii-av high" aria-label="Maggie Spry at CS Leadership">M</div>
           <div class="ii-mid">
             <div class="ii-row1"><span class="ii-nm">Maggie Spry</span><span class="ii-acct">CS Leadership</span></div>
             <div class="ii-row2"><span class="tb tb-watch" aria-label="Status: Direct Message">DM</span><span class="tb-src slack" aria-label="Source: Slack">SLACK</span><span class="ii-time">1h ago</span></div>
           </div>
+          <div class="ii-quick"><button type="button" class="ii-quick-btn prim" onclick="event.stopPropagation();psQuickReply('maggie-spry')" aria-label="Quick reply to Maggie Spry">💬 Quick Reply</button><button type="button" class="ii-quick-btn" onclick="event.stopPropagation();psInboxDismiss('maggie-spry')" aria-label="Dismiss Maggie Spry from inbox">✓ Dismiss</button></div>
         </div>
-        <div class="ii" role="button" tabindex="0" aria-label="Sarah Chen, Brightex, SLA Open, 3h ago" onclick="acctClick('brightex',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('brightex',event)}">
+        <div class="ii" role="button" tabindex="0" data-iid="brightex-chen" data-nm="Sarah Chen" aria-label="Sarah Chen, Brightex, SLA Open, 3h ago" onclick="acctClick('brightex',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('brightex',event)}">
           <div class="ii-av high" aria-label="Sarah Chen at Brightex">S</div>
           <div class="ii-mid">
             <div class="ii-row1"><span class="ii-nm">Sarah Chen</span><span class="ii-acct">Brightex</span></div>
             <div class="ii-row2"><span class="tb tb-high" aria-label="Status: SLA Open">SLA OPEN</span><span class="tb-src gmail" aria-label="Source: Gmail">GMAIL</span><span class="ii-time">3h ago</span></div>
           </div>
+          <div class="ii-quick"><button type="button" class="ii-quick-btn prim" onclick="event.stopPropagation();psQuickReply('brightex-chen')" aria-label="Quick reply to Sarah Chen">💬 Quick Reply</button><button type="button" class="ii-quick-btn" onclick="event.stopPropagation();psInboxDismiss('brightex-chen')" aria-label="Dismiss Sarah Chen from inbox">✓ Dismiss</button></div>
         </div>
-        <div class="ii" role="button" tabindex="0" aria-label="Jennifer Ramos, Meridian, Inbound, 5h ago" onclick="acctClick('meridian',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('meridian',event)}">
+        <div class="ii" role="button" tabindex="0" data-iid="meridian-ramos" data-nm="Jennifer Ramos" aria-label="Jennifer Ramos, Meridian, Inbound, 5h ago" onclick="acctClick('meridian',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('meridian',event)}">
           <div class="ii-av opp" aria-label="Jennifer Ramos at Meridian">J</div>
           <div class="ii-mid">
             <div class="ii-row1"><span class="ii-nm">Jennifer Ramos</span><span class="ii-acct">Meridian</span></div>
             <div class="ii-row2"><span class="tb tb-opp" aria-label="Status: Inbound">INBOUND</span><span class="tb-src gmail" aria-label="Source: Gmail">GMAIL</span><span class="ii-time">5h ago</span></div>
           </div>
+          <div class="ii-quick"><button type="button" class="ii-quick-btn prim" onclick="event.stopPropagation();psQuickReply('meridian-ramos')" aria-label="Quick reply to Jennifer Ramos">💬 Quick Reply</button><button type="button" class="ii-quick-btn" onclick="event.stopPropagation();psInboxDismiss('meridian-ramos')" aria-label="Dismiss Jennifer Ramos from inbox">✓ Dismiss</button></div>
         </div>
       </div>
 
@@ -3998,13 +4097,13 @@ body.offline .int-panel{top:124px}
         </div>
         <div class="ac" id="ac6">
           <span class="ac-n">6.</span><span class="src-dot admin" aria-label="Admin"></span>
-          <span class="ac-title">Schedule EBR for accounts renewing in next 60 days</span>
-          <button class="ac-btn" data-label="Schedule EBRs" onclick="adminTask('ebr');doneTask(this,'ac6')">Open</button>
+          <span class="ac-title" title="Schedule EBR for accounts renewing in next 60 days">Schedule EBR for accounts renewing in next 60 days</span>
+          <button class="ac-btn" data-label="Schedule EBRs" onclick="adminTask('ebr');doneTask(this,'ac6')">Schedule</button>
         </div>
         <div class="ac" id="ac7">
           <span class="ac-n">7.</span><span class="src-dot admin" aria-label="Admin"></span>
-          <span class="ac-title">Update champion contacts for dark-zone accounts in Gainsight</span>
-          <button class="ac-btn" data-label="Update in Gainsight" onclick="adminTask('champion');doneTask(this,'ac7')">Open</button>
+          <span class="ac-title" title="Update champion contacts for dark-zone accounts in Gainsight">Update champion contacts for dark-zone accounts in Gainsight</span>
+          <button class="ac-btn" data-label="Update in Gainsight" onclick="adminTask('champion');doneTask(this,'ac7')">Update</button>
         </div>
       </div>
     </div>
@@ -4714,6 +4813,16 @@ body.offline .int-panel{top:124px}
     <button class="gb-drawer-x" type="button" onclick="gbDrawerClose()" aria-label="Close Ghost-Buster drawer">&times;</button>
   </div>
   <div class="gb-drawer-body" id="gb-drawer-body"></div>
+</aside>
+
+<!-- v4.26.0 — Signal chip popover used by the Next Up signal chips. -->
+<div class="bf-sig-pop-ov" id="bf-sig-pop-ov" onclick="psSignalClose()" aria-hidden="true"></div>
+<aside class="bf-sig-pop" id="bf-sig-pop" role="dialog" aria-modal="true" aria-labelledby="bf-sig-pop-t" aria-hidden="true">
+  <div class="bf-sig-pop-hd">
+    <div class="bf-sig-pop-t" id="bf-sig-pop-t">Signal</div>
+    <button class="bf-sig-pop-x" type="button" onclick="psSignalClose()" aria-label="Close signal popover">&times;</button>
+  </div>
+  <div class="bf-sig-pop-body" id="bf-sig-pop-body"></div>
 </aside>
 
 <!-- v4.24.0 — Team View Phase 2: Strategy Huddle drawer. Body-level so it
@@ -5548,9 +5657,9 @@ var DUST_RESP = {
       + '</details>'
       + '<div class="du-sec">'
         + '<div class="du-sec-t"><i class="ti ti-sun"></i> Today&rsquo;s calls (3)</div>'
-        + '<div class="du-card g"><div class="du-card-t">9:00 AM &middot; Acme Corp QBR <span class="du-card-tag g">Expansion</span></div><div class="du-card-s">Health 82 &middot; Renewal in 89 days<br><strong style="color:var(--tx)">Coaching:</strong> Expansion-ready. Test enterprise tier interest. Confirm SSO pilot commitment.</div></div>'
-        + '<div class="du-card a"><div class="du-card-t">11:00 AM &middot; Brightex Inc Risk Review <span class="du-card-tag a">At risk</span></div><div class="du-card-s">Health 48 &middot; Renewal in 31 days<br><strong style="color:var(--tx)">Coaching:</strong> Competitor evaluation in progress. Lead with value, not pricing. Get to the real objection.</div></div>'
-        + '<div class="du-card r"><div class="du-card-t">3:30 PM &middot; NovaVault Exec Check-in <span class="du-card-tag r">Critical</span></div><div class="du-card-s">Health 23 &middot; Renewal in 17 days<br><strong style="color:var(--tx)">Coaching:</strong> Cold intro to new champion. Don&rsquo;t mention renewal first. Propose 60-day extension.</div></div>'
+        + duCallCard('acme', 'g', '9:00 AM &middot; Acme Corp QBR', 'Expansion', 'Health 82 &middot; Renewal in 89 days', 'Expansion-ready. Test enterprise tier interest. Confirm SSO pilot commitment.')
+        + duCallCard('brightex', 'a', '11:00 AM &middot; Brightex Inc Risk Review', 'At risk', 'Health 48 &middot; Renewal in 31 days', 'Competitor evaluation in progress. Lead with value, not pricing. Get to the real objection.')
+        + duCallCard('nova', 'r', '3:30 PM &middot; NovaVault Exec Check-in', 'Critical', 'Health 23 &middot; Renewal in 17 days', "Cold intro to new champion. Don’t mention renewal first. Propose 60-day extension.")
       + '</div>'
       + '<div class="du-sec">'
         + '<div class="du-sec-t"><i class="ti ti-alert-circle"></i> Urgent actions (4)</div>'
@@ -9896,16 +10005,16 @@ var PS_COMPOSE_PAYLOADS = {
       professional: ''
         + 'Hi Sarah,\n\n'
         + 'Following up on your SLA question from our May 10 call. I want to make sure we get this resolved before your June 15 renewal.\n\n'
-        + 'Can we connect this week? {meeting_link}\n\n'
+        + 'Can we connect this week? https://calendly.com/carmen-1password\n\n'
         + 'Carmen',
       direct: ''
         + 'Hi Sarah,\n\n'
-        + 'Your SLA question still needs an answer and your renewal is 31 days out. Let’s grab 15 minutes this week — {meeting_link}.\n\n'
+        + 'Your SLA question still needs an answer and your renewal is 31 days out. Let’s grab 15 minutes this week — https://calendly.com/carmen-1password.\n\n'
         + 'Carmen',
       empathetic: ''
         + 'Hi Sarah,\n\n'
         + 'I know we left the SLA question open longer than either of us wanted, and that has to be frustrating with the renewal close. I take responsibility for that.\n\n'
-        + 'Can we put 20 minutes on the calendar this week so I can close the loop properly and walk you through what we’ve been seeing in your account over the past 90 days? {meeting_link}\n\n'
+        + 'Can we put 20 minutes on the calendar this week so I can close the loop properly and walk you through what we’ve been seeing in your account over the past 90 days? https://calendly.com/carmen-1password\n\n'
         + 'Carmen'
     }
   }
@@ -9951,7 +10060,16 @@ function psComposeOpen(acct) {
     + '<div class="ps-compose-field"><label>From</label><span>' + cmEscape(data.from) + '</span></div>'
     + '<div class="ps-compose-field"><label>To</label><span>' + cmEscape(data.to) + '</span></div>'
     + '<div class="ps-compose-field"><label for="ps-compose-subj">Subject</label><input class="cm-form-input" id="ps-compose-subj" type="text" value="' + cmEscape(data.subject) + '" style="font-size:13px;padding:8px 10px"></div>'
-    + '<textarea class="ps-compose-ta" id="ps-compose-ta" aria-label="Email body">' + cmEscape(data.tones[PS_COMPOSE_STATE.tone]) + '</textarea>';
+    + '<textarea class="ps-compose-ta" id="ps-compose-ta" aria-label="Email body">' + cmEscape(data.tones[PS_COMPOSE_STATE.tone]) + '</textarea>'
+    + '<div class="ps-compose-ph-warn" id="ps-compose-ph-warn" role="status" aria-live="polite"><div class="ps-compose-ph-warn-hd"><i class="ti ti-alert-triangle"></i> Unfilled placeholder detected</div><div>Replace before sending.</div><div class="ps-compose-ph-chips" id="ps-compose-ph-chips"></div></div>';
+
+  // v4.26.0 — FIX 5: Live scan for {bracket} or [bracket] placeholders. The
+  // body chip stays open until the CSM fills them in.
+  setTimeout(psComposeRefreshPlaceholders, 0);
+  var taLive = document.getElementById('ps-compose-ta');
+  if (taLive) {
+    taLive.addEventListener('input', psComposeRefreshPlaceholders);
+  }
 
   foot.innerHTML = ''
     + '<button class="cm-btn" type="button" onclick="psComposeClose()">Cancel</button>'
@@ -9996,6 +10114,35 @@ function psComposeSetTone(tone) {
   // Replace body — the CSM can re-edit after switching.
   var ta = document.getElementById('ps-compose-ta');
   if (ta) ta.value = data.tones[tone];
+  psComposeRefreshPlaceholders();
+}
+
+// v4.26.0 — FIX 5: shared placeholder scan. Returns an array of unique
+// unfilled placeholder tokens (e.g. ['{meeting_link}']) and updates the warn
+// chip area + the Mark as Sent button label.
+function psComposeFindPlaceholders() {
+  var ta = document.getElementById('ps-compose-ta');
+  if (!ta) return [];
+  var seen = {}, out = [];
+  var re = /(\{[A-Za-z0-9_.\- ]+\})|(\[[A-Za-z0-9_.\- ]+\])/g;
+  var m; while ((m = re.exec(ta.value)) !== null) {
+    var t = m[0];
+    if (!seen[t]) { seen[t] = true; out.push(t); }
+  }
+  return out;
+}
+function psComposeRefreshPlaceholders() {
+  var warn   = document.getElementById('ps-compose-ph-warn');
+  var chips  = document.getElementById('ps-compose-ph-chips');
+  if (!warn || !chips) return;
+  var phs = psComposeFindPlaceholders();
+  if (!phs.length) {
+    warn.classList.remove('on');
+    chips.innerHTML = '';
+    return;
+  }
+  warn.classList.add('on');
+  chips.innerHTML = phs.map(function(p){ return '<span class="ps-compose-ph-chip">' + cmEscape(p) + '</span>'; }).join('');
 }
 
 function psComposeCopy() {
@@ -10014,6 +10161,15 @@ function psComposeMarkSent() {
   var st = PS_COMPOSE_STATE;
   var data = st && PS_COMPOSE_PAYLOADS[st.acct];
   var company = data ? data.company : '?';
+  // v4.26.0 — FIX 5: block the send if unfilled placeholders remain.
+  var phs = psComposeFindPlaceholders();
+  if (phs.length) {
+    psComposeRefreshPlaceholders();
+    var warn = document.getElementById('ps-compose-ph-warn');
+    if (warn && warn.scrollIntoView) warn.scrollIntoView({ behavior:'smooth', block:'center' });
+    toast('⚠ Unfilled placeholder detected: ' + phs.join(' ') + '. Replace before sending.');
+    return;
+  }
   psComposeClose();
   toast('Reply logged · ' + company + ' · Gainsight timeline ✓');
 }
@@ -12909,7 +13065,7 @@ function cmFillVars(text, c) {
     .replace(/{{renewal_date}}/g, (renewal.split(' · ')[0] || renewal))
     .replace(/{{days_out}}/g, daysOut)
     .replace(/{{csm_name}}/g, 'Carmen Corio')
-    .replace(/{{meeting_link}}/g, 'calendly.com/carmen-corio')
+    .replace(/\{meeting_link\}/g, 'calendly.com/carmen-corio')
     .replace(/{{quarter}}/g, 'Q2 2026')
     .replace(/{{value_delivered}}/g, '[Account-specific value summary]')
     .replace(/{{feature_name}}/g, '[Feature name]')
@@ -13017,7 +13173,7 @@ function cmFillTemplate(t, c) {
     .replace(/{{renewal_date}}/g, (renewal.split(' · ')[0] || renewal))
     .replace(/{{days_out}}/g, daysOut)
     .replace(/{{csm_name}}/g, 'Carmen Corio')
-    .replace(/{{meeting_link}}/g, 'calendly.com/carmen-corio')
+    .replace(/\{meeting_link\}/g, 'calendly.com/carmen-corio')
     .replace(/{{quarter}}/g, 'Q2 2026')
     .replace(/{{value_delivered}}/g, '[Account-specific value summary]')
     .replace(/{{feature_name}}/g, '[Feature name]')
@@ -16743,6 +16899,268 @@ function tvBuild() {
   tvBuildCommStrip();
 }
 tvBuild();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// v4.26.0 — CSM Dashboard bug-fix + improvement bundle.
+// ═══════════════════════════════════════════════════════════════════════════
+
+// FIX 1 — Pulse Strip "3 calls today" routes to the Mission Briefing
+// Next Up / Today's Calls header and flashes the bar teal for ~1.4s.
+function psPulseScrollToCalls() {
+  if (typeof _rsClearPops === 'function') _rsClearPops();
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'dash\'"]');
+    if (tab) goTab('dash', tab);
+  }
+  setTimeout(function(){
+    var hdr = document.getElementById('mb-calls-header');
+    if (hdr && hdr.scrollIntoView) hdr.scrollIntoView({ behavior:'smooth', block:'start' });
+    if (hdr) {
+      hdr.classList.remove('mb-flash');
+      // Force reflow so the animation restarts on repeat clicks.
+      void hdr.offsetWidth;
+      hdr.classList.add('mb-flash');
+      setTimeout(function(){ hdr.classList.remove('mb-flash'); }, 1500);
+    }
+    toast("Dashboard · Today's Calls (3)");
+  }, 80);
+}
+
+// FIX 2 — Pulse Strip expansion pipeline chip routes to Forecasting Pipeline
+// + flashes the Acme Corp expansion row(s) teal.
+function fcHighlightExpansionRows() {
+  var rows = document.querySelectorAll('#fc-pipeline .fc-pipe-tbl tbody tr');
+  rows.forEach(function(tr){
+    var txt = tr.textContent || '';
+    if (/Expansion Likely/i.test(txt) || /Acme Corp/i.test(txt) && /\$48K/.test(txt)) {
+      tr.classList.remove('fc-exp-flash');
+      void tr.offsetWidth;
+      tr.classList.add('fc-exp-flash');
+      setTimeout(function(){ tr.classList.remove('fc-exp-flash'); }, 1500);
+    }
+  });
+}
+function psPulseOpenExpansion() {
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="goTab(\'forecast\'"]');
+    if (tab) goTab('forecast', tab);
+  }
+  setTimeout(function(){
+    if (typeof fcShow === 'function') fcShow('pipeline');
+    setTimeout(fcHighlightExpansionRows, 120);
+  }, 80);
+  toast('Forecasting · Pipeline · $12K–$18K expansion potential');
+}
+
+// IMP 1 — AI ranking ⓘ tooltip toggle.
+function psRankPopToggle(e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  var pop = document.getElementById('bf-rank-pop');
+  var btn = document.getElementById('bf-rank-i');
+  if (!pop || !btn) return;
+  var on = pop.classList.toggle('on');
+  btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+  pop.setAttribute('aria-hidden', on ? 'false' : 'true');
+}
+function psRankPopClose() {
+  var pop = document.getElementById('bf-rank-pop');
+  var btn = document.getElementById('bf-rank-i');
+  if (pop) { pop.classList.remove('on'); pop.setAttribute('aria-hidden', 'true'); }
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', function(e){
+  var pop = document.getElementById('bf-rank-pop');
+  if (!pop || !pop.classList.contains('on')) return;
+  if (pop.contains(e.target) || e.target.closest('.bf-rank-i')) return;
+  psRankPopClose();
+});
+
+// IMP 2 — Signal chip popovers.
+var BF_SIGNAL_CONTENT = {
+  sso: {
+    title: 'Signal · SSO rollout active',
+    meta:  'David Kim · May 10 call · 0:23:14',
+    quote: "We've got SSO rolling out to engineering this quarter, looking to expand to ops next.",
+    btn:   { label:'Open full call in Gong', fn:"toast('Opens Gong call · Phase 2 API')" }
+  },
+  expansion: {
+    title: 'Signal · Expansion (unprompted)',
+    meta:  'David Kim · May 10 call · 0:31:48',
+    quote: 'Have you guys done enterprise tier rollouts at scale? We might need that.',
+    btn:   { label:'Open full call in Gong', fn:"toast('Opens Gong call · Phase 2 API')" }
+  },
+  champion: {
+    title: 'Champion · David Kim',
+    meta:  '1Password champion since Jan 2024 · Last 1Password touch: May 10',
+    quote: 'David Kim · IT Director\nRelationship strength: 9/10',
+    italic: false,
+    btn:   { label:'View full contact profile', fn:"toast('Opens David Kim contact profile · Phase 2')" }
+  }
+};
+var _bfSigTrigger = null;
+function psSignalChip(id) {
+  var c = BF_SIGNAL_CONTENT[id];
+  if (!c) return;
+  try { _bfSigTrigger = document.activeElement; } catch (_) {}
+  var ov = document.getElementById('bf-sig-pop-ov');
+  var pop = document.getElementById('bf-sig-pop');
+  var tt  = document.getElementById('bf-sig-pop-t');
+  var bd  = document.getElementById('bf-sig-pop-body');
+  if (!pop || !bd) return;
+  if (tt) tt.textContent = c.title;
+  pop.setAttribute('aria-label', 'Signal context: ' + c.title);
+  bd.innerHTML = '<div class="bf-sig-pop-meta">' + cmEscape(c.meta) + '</div>'
+    + '<div class="bf-sig-pop-quote' + (c.italic === false ? ' no-italic' : '') + '">' + cmEscape(c.quote).replace(/\n/g, '<br>') + '</div>'
+    + '<div class="bf-sig-pop-actions"><button class="th-btn prim" type="button" onclick="' + c.btn.fn + '">' + cmEscape(c.btn.label) + '</button></div>';
+  if (ov)  ov.classList.add('on');
+  pop.classList.add('on');
+  pop.setAttribute('aria-hidden', 'false');
+  setTimeout(function(){
+    var x = pop.querySelector('.bf-sig-pop-x');
+    if (x) try { x.focus(); } catch (_) {}
+  }, 60);
+}
+function psSignalClose() {
+  var ov = document.getElementById('bf-sig-pop-ov');
+  var pop = document.getElementById('bf-sig-pop');
+  if (ov) ov.classList.remove('on');
+  if (pop) { pop.classList.remove('on'); pop.setAttribute('aria-hidden', 'true'); }
+  if (_bfSigTrigger && typeof _bfSigTrigger.focus === 'function') {
+    try { _bfSigTrigger.focus(); } catch (_) {}
+  }
+  _bfSigTrigger = null;
+}
+// Hook Escape — runs before the global drawer escape chain (the signal pop
+// is the topmost overlay when open).
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Escape') return;
+  var pop = document.getElementById('bf-sig-pop');
+  if (pop && pop.classList.contains('on')) { psSignalClose(); e.stopPropagation(); }
+});
+
+// IMP 3 — Urgent Inbox quick reply + dismiss.
+var PS_INBOX_DISMISS_KEY = 'teamos_inbox_dismissed';
+function psInboxLoadDismissed() {
+  try { return JSON.parse(localStorage.getItem(PS_INBOX_DISMISS_KEY) || '{}') || {}; } catch (_) { return {}; }
+}
+function psInboxApplyDismissed() {
+  var dismissed = psInboxLoadDismissed();
+  document.querySelectorAll('.ii[data-iid]').forEach(function(row){
+    var iid = row.getAttribute('data-iid');
+    if (dismissed[iid]) row.style.display = 'none';
+  });
+}
+function psInboxDismiss(iid) {
+  var row = document.querySelector('.ii[data-iid="' + iid + '"]');
+  if (!row) return;
+  var nm = row.getAttribute('data-nm') || 'Inbox item';
+  var dismissed = psInboxLoadDismissed();
+  dismissed[iid] = { ts: Date.now() };
+  try { localStorage.setItem(PS_INBOX_DISMISS_KEY, JSON.stringify(dismissed)); } catch (_) {}
+  row.classList.add('dismissing');
+  setTimeout(function(){ row.style.display = 'none'; }, 340);
+  toast(nm + ' marked as handled · Inbox updated ✓');
+}
+var PS_QUICK_REPLY_ROUTES = {
+  'nova-torres':    function(){ if (typeof openAgentDrawer === 'function') openAgentDrawer('save', 'nova'); else toast('Quick reply · Michael Torres'); },
+  'brightex-chen':  function(){ if (typeof psComposeOpen === 'function') psComposeOpen('brightex'); else toast('Quick reply · Sarah Chen'); },
+  'meridian-ramos': function(){ toast('Quick reply · Jennifer Ramos · compose drawer · Phase 2'); },
+  'maggie-spry':    function(){ toast('Quick reply · Slack DM to Maggie Spry · Phase 2'); }
+};
+function psQuickReply(iid) {
+  var fn = PS_QUICK_REPLY_ROUTES[iid];
+  if (typeof fn === 'function') fn();
+  else toast('Quick reply · Phase 2');
+}
+psInboxApplyDismissed();
+
+// IMP 4 — Mark Prepped per Today's Calls card. Used by the duCallCard
+// helper that the Prepare My Day agent renders.
+var PS_PREPPED_KEY = 'teamos_calls_prepped';
+function psLoadPrepped() {
+  try { return JSON.parse(localStorage.getItem(PS_PREPPED_KEY) || '{}') || {}; } catch (_) { return {}; }
+}
+function psSavePrepped(state) {
+  try { localStorage.setItem(PS_PREPPED_KEY, JSON.stringify(state)); } catch (_) {}
+}
+function duCallCard(acct, cls, title, tag, kv, coaching) {
+  var prepped = psLoadPrepped();
+  var on = !!prepped[acct];
+  var lbl = title.replace(/&middot;/g, '·').replace(/&[a-z]+;/gi, ' ').trim();
+  return '<div class="du-card ' + cls + (on ? ' prepped' : '') + '" data-prep-acct="' + acct + '">'
+    +    '<div class="du-card-t">' + title + ' <span class="du-card-tag ' + cls + '">' + tag + '</span></div>'
+    +    '<div class="du-card-s">' + kv + '<br><strong style="color:var(--tx)">Coaching:</strong> ' + coaching + '</div>'
+    +    '<div class="du-card-acts"><button class="du-prep-btn" type="button" onclick="psMarkPrepped(\'' + acct + '\')" aria-label="Mark ' + cmEscape(lbl) + ' as prepped" aria-pressed="' + (on ? 'true' : 'false') + '">' + (on ? '✓ Prepped' : '✓ Mark Prepped') + '</button></div>'
+    +  '</div>';
+}
+function psMarkPrepped(acct) {
+  var prepped = psLoadPrepped();
+  prepped[acct] = { ts: Date.now() };
+  psSavePrepped(prepped);
+  var card = document.querySelector('[data-prep-acct="' + acct + '"]');
+  if (card) {
+    card.classList.add('prepped');
+    var btn = card.querySelector('.du-prep-btn');
+    if (btn) { btn.textContent = '✓ Prepped'; btn.setAttribute('aria-pressed', 'true'); }
+  }
+  var label = { acme:'Acme Corp QBR', brightex:'Brightex Risk Review', nova:'NovaVault Exec Check-in' }[acct] || acct;
+  toast(label + ' marked prepped · Logged to Gainsight ✓');
+}
+
+// IMP 5 — Session-aware Dust Agents. Looks at the Next Up "In NN min" badge
+// — when ≤ 90 min, prepend two contextual chips (Prep Me + Risk Analyst)
+// scoped to the next event's account, and surface a tiny "Context: next event"
+// label below the row. Above 90 min, revert.
+function psDustContextMinutes() {
+  var el = document.querySelector('.bf-next .when-mins');
+  if (!el) return null;
+  var txt = el.textContent || '';
+  var m = txt.match(/(\d+)\s*min/i);
+  if (m) return parseInt(m[1], 10);
+  // "In 1h 5m" etc.
+  var h = txt.match(/(\d+)\s*h/i);
+  if (h) return parseInt(h[1], 10) * 60;
+  return null;
+}
+function psDustContextAccount() {
+  var el = document.querySelector('.bf-next .bf-next-acct');
+  if (!el) return { key:'acme', name:'Acme Corp' };
+  var nm = (el.textContent || '').trim();
+  var key = nm.toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 8);
+  if (/acme/i.test(nm))     key = 'acme';
+  if (/brightex/i.test(nm)) key = 'brightex';
+  if (/nova/i.test(nm))     key = 'nova';
+  return { key:key, name:nm };
+}
+function psDustApplyContext() {
+  var bar = document.getElementById('bf-qa');
+  if (!bar) return;
+  // Remove any prior contextual chips/label so this is idempotent.
+  Array.prototype.forEach.call(bar.querySelectorAll('.bf-qa-btn.ctx, .bf-qa-ctx-lbl'), function(n){ n.parentNode.removeChild(n); });
+  var mins = psDustContextMinutes();
+  if (mins == null || mins > 90) return;
+  var ctx = psDustContextAccount();
+  var firstBtn = bar.querySelector('.bf-qa-btn');
+  if (!firstBtn) return;
+  var prepBtn = document.createElement('button');
+  prepBtn.className = 'bf-qa-btn ctx';
+  prepBtn.type = 'button';
+  prepBtn.setAttribute('onclick', "agentBtn('prep','" + ctx.key + "', this)");
+  prepBtn.innerHTML = '<i class="ti ti-bolt"></i>Prep Me · ' + cmEscape(ctx.name) + ' <span class="bf-qa-badge">⏰ ' + mins + ' MIN</span>';
+  var riskBtn = document.createElement('button');
+  riskBtn.className = 'bf-qa-btn ctx';
+  riskBtn.type = 'button';
+  riskBtn.setAttribute('onclick', "agentBtn('risk','" + ctx.key + "', this)");
+  riskBtn.innerHTML = '<i class="ti ti-shield-check"></i>Risk Analyst · ' + cmEscape(ctx.name);
+  bar.insertBefore(riskBtn, firstBtn);
+  bar.insertBefore(prepBtn, riskBtn);
+  // Insert the contextual label below the grid.
+  var lbl = document.createElement('div');
+  lbl.className = 'bf-qa-ctx-lbl';
+  lbl.innerHTML = '<i class="ti ti-clock"></i> Context: next event · ' + cmEscape(ctx.name) + ' in ' + mins + ' min';
+  bar.parentNode.insertBefore(lbl, bar.nextSibling);
+}
+psDustApplyContext();
 
 </script>
 

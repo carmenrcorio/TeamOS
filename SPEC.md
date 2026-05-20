@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.25.0
+**Version:** 4.26.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,33 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.26.0] — 2026-05-20
+
+CSM Dashboard workflow QA — 6 bug fixes + 5 improvements (the requested label was [4.22.0], but that's already used; this entry covers the same fix bundle under 4.26.0 since v4.22.0–4.25.0 already shipped). **Result: 370/370 chromium tests passing.**
+
+### Fixed
+
+- **Fix**: Pulse Strip *3 calls today* chip is no longer dead — it now calls `psPulseScrollToCalls()`, switches to the Dashboard, scrolls to a new `#mb-calls-header` (the "Next Up · Today's Calls (3)" header), and runs a 1.4s teal flash on the bar.
+- **Fix**: Pulse Strip *$12K–$18K expansion pipeline* chip is no longer dead — it now calls `psPulseOpenExpansion()`, switches to Forecasting → Pipeline, and runs `fcHighlightExpansionRows()` to flash the Acme Corp expansion row(s) teal.
+- **Fix**: Priority Stack row 5 *Open Task* button verified — it was already wired to `psBtnAction(this, 'Open Task', () => openTaskBrief('brightex-proj'))` and `TASK_BRIEFS['brightex-proj']` renders the full Task Brief panel. Locked under test to prevent regression.
+- **Fix**: Next Up *Risk Analyst* button verified — `agentBtn('risk','acme', this)` opens the Risk Analysis drawer for Acme via the existing 1.5s loading-state wrapper. Locked under test.
+- **Fix**: Draft Reply compose drawer replaces `{meeting_link}` with `https://calendly.com/carmen-1password` across all three tone variants (professional / direct / empathetic). Added an `.ps-compose-ph-warn` strip beneath the body textarea that scans live for any `{token}` or `[token]` placeholder and renders each as an amber `✏️` chip. *Mark as Sent* refuses to fire the *Reply logged* toast when placeholders remain unfilled and emits *"⚠ Unfilled placeholder detected: {token}. Replace before sending."* instead.
+- **Fix**: `.pulse-strip` no longer clips the leftmost chip at narrow viewports. `overflow-x:auto` + `scroll-snap-type:x mandatory` are now applied unconditionally, edge gradients (`::before` / `::after`) fade the leftmost and rightmost 24 px so scrollability is visually obvious, and each chip carries `scroll-snap-align:start; flex-shrink:0`.
+
+### Added
+
+- **Feature**: AI ranking ⓘ tooltip on the Priority Stack subtitle. A 16 px `i` button (`#bf-rank-i`) toggles a popover (`role="dialog"`) explaining the 4-signal score model (Health 40% · Renewal 30% · CTAs 15% · Gong Silence 15%) plus the *"NovaVault scored highest today because…"* reason line, with a Phase 4 *Adjust weights* placeholder. `aria-expanded` flips on each click; outside-click closes the popover.
+- **Feature**: Next Up signal chips are now clickable. SSO, Expansion, and Champion chips each open `#bf-sig-pop` — a body-level `role="dialog"` popover seeded with the exact Gong quote + timestamp (e.g. *"David Kim · May 10 call · 0:23:14"*) for SSO/Expansion, or a champion card for David Kim. Each carries an *Open full call in Gong* / *View full contact profile* button (Phase 2 stubs). Escape closes the popover; the trigger chip regains focus.
+- **Feature**: Urgent Inbox rows expose hover-only inline `💬 Quick Reply` + `✓ Dismiss` buttons. Quick Reply routes per inbox item — Brightex → `psComposeOpen('brightex')`, NovaVault → `openAgentDrawer('save','nova')`, Meridian and Maggie Spry → Phase 2 toasts. Dismiss fades the row, hides it, and persists to `teamos_inbox_dismissed` so dismissed rows stay hidden across sessions. `event.stopPropagation()` keeps the row's primary click handler from firing.
+- **Feature**: Mark Prepped per Today's Calls card. The Prepare My Day Dust output now routes each call card through a new `duCallCard()` helper that appends a `.du-prep-btn`. Clicking sets `teamos_calls_prepped[acct]`, adds the `.prepped` class (strikethrough + dimmed), and toasts *"{Account} {Type} marked prepped · Logged to Gainsight ✓"*.
+- **Feature**: Session-aware Dust Agents. On script load, `psDustApplyContext()` reads the Next Up *In NN min* badge — when ≤ 90 min, it prepends two contextual chips to `#bf-qa` (`Prep Me · {Account}` with a `⏰ NN MIN` badge, then `Risk Analyst · {Account}`) and surfaces a *"Context: next event · {Account} in NN min"* label below the row. Outside 90 min, no chips are inserted.
+
+### Changed (UX)
+
+- Today's Tasks 6 + 7 buttons now use specific verbs (*Schedule* / *Update*) instead of the generic *Open*. Task labels carry a `title` attribute so the full task text shows on hover when truncated.
 
 ---
 

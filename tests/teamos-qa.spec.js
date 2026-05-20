@@ -3235,7 +3235,10 @@ test.describe('v4.20.0 CSM Dashboard workflow fixes', () => {
     // Capture _activeAccount before click — if the customer briefing
     // accidentally fired, it would update _activeAccount to 'nova'.
     await page.evaluate(() => { window._activeAccount = '__unchanged__'; });
-    await page.locator('#tab-dash .ii[data-inbox-id="maggie-spry"]').click();
+    // v4.26.0 — quick-action overlay appears on hover and can intercept
+    // center-clicks. Click the name span (top-left of row), which is always
+    // safe from the absolute-positioned .ii-quick overlay.
+    await page.locator('#tab-dash .ii[data-inbox-id="maggie-spry"] .ii-nm').click();
     await page.waitForTimeout(200);
     await expect(page.locator('#int-panel.on')).toBeVisible();
     const acct = await page.evaluate(() => window._activeAccount);
@@ -3290,7 +3293,8 @@ test.describe('v4.20.0 CSM Dashboard workflow fixes', () => {
 
   test('FIX 1: Escape closes the internal panel + returns focus to the inbox row', async ({ page }) => {
     await page.locator('#tab-dash .ii[data-inbox-id="maggie-spry"]').focus();
-    await page.locator('#tab-dash .ii[data-inbox-id="maggie-spry"]').click();
+    // v4.26.0 — click the name span; see comment in prior test.
+    await page.locator('#tab-dash .ii[data-inbox-id="maggie-spry"] .ii-nm').click();
     await page.waitForTimeout(200);
     await page.keyboard.press('Escape');
     await page.waitForTimeout(180);
@@ -3303,7 +3307,8 @@ test.describe('v4.20.0 CSM Dashboard workflow fixes', () => {
   });
 
   test('FIX 1: customer-row clicks (Michael Torres) still route to acctClick(nova)', async ({ page }) => {
-    await page.locator('#tab-dash .ii').first().click();
+    // v4.26.0 — click the name span; see comment in prior test.
+    await page.locator('#tab-dash .ii').first().locator('.ii-nm').click();
     await page.waitForTimeout(180);
     const acct = await page.evaluate(() => window._activeAccount);
     expect(acct).toBe('nova');
@@ -4230,5 +4235,224 @@ test.describe('v4.25.0 Team View Phase 3 sections', () => {
     const toasts = await page.evaluate(() => window._toasts);
     expect(toasts.some(t => /Opens Slack thread/.test(t))).toBe(true);
     expect(toasts.some(t => /Pod huddle invite sent to 6 members/.test(t))).toBe(true);
+  });
+});
+
+test.describe('v4.26.0 CSM Dashboard bug-fix + improvement bundle', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => { try { localStorage.removeItem('teamos_inbox_dismissed'); localStorage.removeItem('teamos_calls_prepped'); } catch(_){} });
+    // Ensure Dashboard tab is active.
+    await page.evaluate(() => { const t = document.querySelector('.n-tab[onclick*="dash"]'); if (t) goTab('dash', t); });
+    await page.waitForTimeout(150);
+  });
+
+  // ── FIX 1: Pulse Strip "3 calls today" routes to Mission Briefing calls.
+  test('FIX 1: pb-calls scrolls to mb-calls-header + flashes teal', async ({ page }) => {
+    const hdr = page.locator('#mb-calls-header');
+    await expect(hdr).toBeVisible();
+    expect(await hdr.textContent()).toMatch(/Today’s Calls \(3\)/);
+    await page.locator('#pb-calls').click();
+    await page.waitForTimeout(200);
+    // Flash class is added by JS.
+    expect(await hdr.evaluate(h => h.classList.contains('mb-flash'))).toBe(true);
+  });
+
+  // ── FIX 2: Expansion chip routes to Forecasting Pipeline + flashes rows.
+  test('FIX 2: pb-exp opens Forecasting Pipeline + adds fc-exp-flash to expansion rows', async ({ page }) => {
+    await page.locator('#pb-exp').click();
+    await page.waitForTimeout(400);
+    await expect(page.locator('#fc-pipeline.on')).toBeVisible();
+    // Acme Corp row should have the flash class.
+    const flashed = await page.locator('#fc-pipeline .fc-pipe-tbl tbody tr.fc-exp-flash').count();
+    expect(flashed).toBeGreaterThan(0);
+  });
+
+  // ── FIX 3: Priority Stack Brightex Open Task button opens Task Brief.
+  test('FIX 3: Brightex Open Task button opens taskbrief panel', async ({ page }) => {
+    await page.locator('button.bf-act:has-text("Open Task")').first().click();
+    await page.waitForTimeout(1500);
+    await expect(page.locator('#view-taskbrief.on')).toBeVisible();
+    const t = await page.locator('#taskbrief-out').textContent();
+    expect(t).toMatch(/Brightex/i);
+  });
+
+  // ── FIX 4: Risk Analyst button opens risk drawer for Acme.
+  test('FIX 4: Next Up Risk Analyst opens Risk Analysis drawer for Acme', async ({ page }) => {
+    await page.locator('button.bf-btn:has-text("Risk Analyst")').click();
+    await page.waitForTimeout(1700);
+    await expect(page.locator('#drawer.on')).toBeVisible();
+    expect((await page.locator('#drawer-title').textContent()).trim()).toMatch(/Risk Analysis/);
+    await page.evaluate(() => closeDrawer());
+  });
+
+  // ── FIX 5: Draft Reply Calendly + unfilled-placeholder warning.
+  test('FIX 5: compose drawer body uses Calendly + warns on unfilled placeholders', async ({ page }) => {
+    await page.evaluate(() => psComposeOpen('brightex'));
+    await page.waitForTimeout(200);
+    const body = await page.locator('#ps-compose-ta').inputValue();
+    expect(body).toMatch(/calendly\.com\/carmen-1password/);
+    expect(body).not.toMatch(/\{meeting_link\}/);
+    // No warning when clean.
+    await expect(page.locator('#ps-compose-ph-warn.on')).toHaveCount(0);
+    // Inject placeholder and verify warning shows.
+    await page.evaluate(() => { const ta = document.getElementById('ps-compose-ta'); ta.value = 'Hi {customer_name}, the link is [calendar].'; ta.dispatchEvent(new Event('input')); });
+    await page.waitForTimeout(120);
+    await expect(page.locator('#ps-compose-ph-warn.on')).toBeVisible();
+    expect(await page.locator('#ps-compose-ph-chips .ps-compose-ph-chip').count()).toBe(2);
+    // Mark as Sent blocked.
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.evaluate(() => psComposeMarkSent());
+    await page.waitForTimeout(150);
+    const t = await page.evaluate(() => window._toasts);
+    expect(t.some(x => /Unfilled placeholder/.test(x))).toBe(true);
+    expect(t.some(x => /Reply logged/.test(x))).toBe(false);
+    await expect(page.locator('#ps-compose.on')).toBeVisible(); // still open
+    await page.evaluate(() => psComposeClose());
+  });
+
+  // ── FIX 6: Pulse Strip overflow-x:auto + edge gradients.
+  test('FIX 6: pulse strip has overflow-x:auto + ::before / ::after gradients', async ({ page }) => {
+    const cs = await page.evaluate(() => {
+      const el = document.querySelector('.pulse-strip');
+      return { overflowX: getComputedStyle(el).overflowX };
+    });
+    expect(cs.overflowX).toMatch(/auto|scroll/);
+    // Render check — the gradient pseudo-elements aren't directly queryable but
+    // we can check that scroll-snap-type is set.
+    const snap = await page.evaluate(() => getComputedStyle(document.querySelector('.pulse-strip')).scrollSnapType);
+    expect(snap).toMatch(/x mandatory/);
+    // Edge-fade visuals are render-only; verify they're declared in CSS.
+    const hasBefore = await page.evaluate(() => {
+      const rules = Array.from(document.styleSheets).flatMap(s => { try { return Array.from(s.cssRules || []); } catch(_) { return []; } });
+      return rules.some(r => r.cssText && /\.pulse-strip::before/.test(r.cssText));
+    });
+    expect(hasBefore).toBe(true);
+  });
+
+  // ── IMP 1: AI ranking ⓘ tooltip.
+  test('IMP 1: bf-rank-i toggles AI ranking popover with weights + reason', async ({ page }) => {
+    const btn = page.locator('#bf-rank-i');
+    await expect(btn).toBeVisible();
+    expect(await btn.getAttribute('aria-label')).toBe('How AI ranking works');
+    expect(await btn.getAttribute('aria-expanded')).toBe('false');
+    await btn.click();
+    await page.waitForTimeout(120);
+    await expect(page.locator('#bf-rank-pop.on')).toBeVisible();
+    expect(await btn.getAttribute('aria-expanded')).toBe('true');
+    const t = await page.locator('#bf-rank-pop').textContent();
+    expect(t).toMatch(/Health Score \(40%\)/);
+    expect(t).toMatch(/Days to Renewal \(30%\)/);
+    expect(t).toMatch(/Open CTAs \(15%\)/);
+    expect(t).toMatch(/Gong Silence \(15%\)/);
+    expect(t).toMatch(/NovaVault scored highest today/);
+    expect(t).toMatch(/Phase 4/);
+  });
+
+  // ── IMP 2: Signal chip popovers.
+  test('IMP 2: SSO chip opens dialog with Gong quote + open-call stub', async ({ page }) => {
+    await page.locator('.bf-next-chip:has-text("SSO rollout active")').click();
+    await page.waitForTimeout(150);
+    await expect(page.locator('#bf-sig-pop.on')).toBeVisible();
+    expect(await page.locator('#bf-sig-pop').getAttribute('role')).toBe('dialog');
+    const t = await page.locator('#bf-sig-pop').textContent();
+    expect(t).toMatch(/SSO rollout active/);
+    expect(t).toMatch(/David Kim.*May 10 call.*0:23:14/);
+    expect(t).toMatch(/SSO rolling out to engineering/);
+    expect(t).toMatch(/Open full call in Gong/);
+    // Escape closes it.
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(150);
+    await expect(page.locator('#bf-sig-pop.on')).toHaveCount(0);
+  });
+
+  test('IMP 2: Expansion chip + Champion chip open with correct content', async ({ page }) => {
+    await page.locator('.bf-next-chip:has-text("Expansion signal")').click();
+    await page.waitForTimeout(150);
+    let t = await page.locator('#bf-sig-pop').textContent();
+    expect(t).toMatch(/0:31:48/);
+    expect(t).toMatch(/enterprise tier rollouts at scale/);
+    await page.evaluate(() => psSignalClose());
+    await page.waitForTimeout(120);
+    await page.locator('.bf-next-chip:has-text("Champion: David Kim")').click();
+    await page.waitForTimeout(150);
+    t = await page.locator('#bf-sig-pop').textContent();
+    expect(t).toMatch(/Champion · David Kim/);
+    expect(t).toMatch(/Relationship strength: 9\/10/);
+    expect(t).toMatch(/View full contact profile/);
+  });
+
+  // ── IMP 3: Urgent Inbox quick reply + dismiss.
+  test('IMP 3: Urgent Inbox rows expose Quick Reply + Dismiss buttons', async ({ page }) => {
+    // 4 rows × 2 buttons = 8 buttons.
+    expect(await page.locator('.ii .ii-quick .ii-quick-btn').count()).toBe(8);
+    expect(await page.locator('.ii[data-iid="brightex-chen"] .ii-quick-btn[aria-label*="Quick reply"]').count()).toBe(1);
+    expect(await page.locator('.ii[data-iid="brightex-chen"] .ii-quick-btn[aria-label*="Dismiss"]').count()).toBe(1);
+  });
+
+  test('IMP 3: Quick Reply opens compose drawer without bubbling to row click', async ({ page }) => {
+    // Buttons are hover-only by CSS — hover the row first so the button is visible.
+    await page.locator('.ii[data-iid="brightex-chen"]').hover();
+    await page.waitForTimeout(120);
+    await page.locator('.ii[data-iid="brightex-chen"] .ii-quick-btn[aria-label*="Quick reply"]').click();
+    await page.waitForTimeout(250);
+    await expect(page.locator('#ps-compose.on')).toBeVisible();
+    await page.evaluate(() => psComposeClose());
+  });
+
+  test('IMP 3: Dismiss persists to teamos_inbox_dismissed + hides row', async ({ page }) => {
+    await page.evaluate(() => psInboxDismiss('meridian-ramos'));
+    await page.waitForTimeout(500);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_inbox_dismissed') || '{}'));
+    expect(!!stored['meridian-ramos']).toBe(true);
+    const row = page.locator('.ii[data-iid="meridian-ramos"]');
+    expect(await row.evaluate(r => r.style.display === 'none' || r.classList.contains('dismissing'))).toBe(true);
+  });
+
+  // ── IMP 4: Mark Prepped per Today's Calls card.
+  test('IMP 4: psMarkPrepped persists + toasts + marks card', async ({ page }) => {
+    await page.evaluate(() => { if (typeof dustQuick === 'function') dustQuick('Prepare My Day'); });
+    await page.waitForTimeout(800);
+    expect(await page.locator('[data-prep-acct="acme"] .du-prep-btn').count()).toBe(1);
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.evaluate(() => psMarkPrepped('acme'));
+    await page.waitForTimeout(200);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_calls_prepped') || '{}'));
+    expect(!!stored['acme']).toBe(true);
+    const t = await page.evaluate(() => window._toasts);
+    expect(t.some(x => /Acme Corp QBR marked prepped/.test(x))).toBe(true);
+    // Card flips to prepped state.
+    const card = page.locator('[data-prep-acct="acme"]');
+    expect(await card.evaluate(c => c.classList.contains('prepped'))).toBe(true);
+  });
+
+  // ── IMP 5: Session-aware Dust Agents.
+  test('IMP 5: Dust agents prepend 2 contextual chips when event within 90 min', async ({ page }) => {
+    // Demo data: "In 38 min", so contextual chips should be present.
+    expect(await page.locator('#bf-qa .bf-qa-btn.ctx').count()).toBe(2);
+    const ctxTxt = await page.locator('#bf-qa .bf-qa-btn.ctx').first().textContent();
+    expect(ctxTxt).toMatch(/Prep Me/);
+    expect(ctxTxt).toMatch(/Acme Corp/);
+    expect(ctxTxt).toMatch(/⏰.*MIN/);
+    // Context label.
+    expect(await page.locator('.bf-qa-ctx-lbl').count()).toBe(1);
+  });
+
+  // ── Today's Tasks button verbs.
+  test('UX: Tasks 6 + 7 buttons use specific verbs (Schedule / Update)', async ({ page }) => {
+    const t6 = (await page.locator('button.ac-btn[onclick*="adminTask(\'ebr\')"]').textContent()).trim();
+    const t7 = (await page.locator('button.ac-btn[onclick*="adminTask(\'champion\')"]').textContent()).trim();
+    expect(t6).toBe('Schedule');
+    expect(t7).toBe('Update');
+    // Tooltip on hover (title attribute on the label) for the full text.
+    const t6title = await page.locator('button.ac-btn[onclick*="adminTask(\'ebr\')"]').locator('..').locator('.ac-title').getAttribute('title');
+    expect(t6title).toMatch(/Schedule EBR for accounts/);
   });
 });
