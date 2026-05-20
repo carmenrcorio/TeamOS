@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.24.0
+**Version:** 4.25.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,22 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.25.0] — 2026-05-20
+
+Team View Phase 3 — completes the pod-level workspace. **Result: 355/355 chromium tests passing.**
+
+### Added
+
+- **Feature**: Team View Phase 3 — Wins & Losses board with AI insight bar, Pod Unengaged accounts with AI member recommendations, Pod Pipeline View (combined opps + renewals + expansions), Pod Task Hub with filter chips, Pod Comm Strip with Slack thread previews.
+- **Wins & Losses board** (Section D): two-column grid under the Shared Account Book. Left column tinted teal — 4 wins (Bertram Industries $42K · Logan Foods $32K · Acme Corp $18K early · Vortex Labs $36K). Right column tinted red — 2 losses (Henlow Co $28K · Mira Health $16K) with explicit *Lost reason* + *Learning* lines. A standing AI Insight footer spans both columns: *"Pod close rate: 67% · Save rate: 50% · Average uplift: 8.4% · Best performer: David (2 wins, $60K)"*.
+- **Pod Unengaged Accounts** (Section E): 3 cards (Meridian / Creston / Apex) showing days-dark, last pod touch, an AI recommendation tagged to a specific pod member, and an "Assign to {Name}" button. The button creates a real task in `teamos_pod_tasks[acct]` (the same store the Strategy Huddle Pod Tasks tab reads), so re-engagement assignments show up inside the account's huddle automatically.
+- **Pod Pipeline View** (Section F): combined 8-row table (Account / Type / $ Value / Owner / Support / Stage / Close Date). Owner + Support render as avatar pills with hover full names. Stage badges use 6 colour-coded classes (Closed Won / Discovery / Save Active / At Risk / Dark / Champion Change). Footer carries Commit $128K · Best Case $217K · Pipeline $89K · Closed Won Q2 $110K.
+- **Pod Task Hub** (Section G): 12 aggregated tasks across all 6 pod members. Member filter chips (`All / Carmen / David / Liam / Marco / Jennifer / Sarah`) and priority chips (`All priority / Critical / High / Watch`). Each row shows an avatar pill, owner name, task title, due date, priority badge, account tag, and a Mark Done toggle. Done state persists to `teamos_hub_tasks`. *+ Assign Task* routes into the existing Strategy Huddle Pod Tasks form (reuses Phase 2 UX).
+- **Pod Comm Strip** (Section H): 5 Slack thread previews — `from → to · title · count · when` — plus a right-aligned *📅 Schedule Pod Huddle* button. Thread click and Schedule button both toast Phase 2 stubs.
+- **Accessibility**: Win/Loss cards carry `role="article"`; Unengaged cards carry `role="article"` + `aria-label="Unengaged account: {Name}"`; Pipeline `<table>` carries `role="table"`; Task Hub list carries `role="list"` with each row as `listitem`; Comm Strip carries `role="region"` + `aria-label="Pod communication threads"`. Filter chips expose `aria-pressed` state; thread cards are keyboard-activatable buttons with Enter/Space handlers.
 
 ---
 

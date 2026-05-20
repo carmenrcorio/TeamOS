@@ -4058,3 +4058,177 @@ test.describe('v4.24.0 Strategy Huddle drawer (Team View Phase 2)', () => {
     expect(body).toMatch(/Pod huddle calendar invite sent to 6 members/);
   });
 });
+
+test.describe('v4.25.0 Team View Phase 3 sections', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => { try { localStorage.removeItem('teamos_pod_notes'); localStorage.removeItem('teamos_pod_tasks'); localStorage.removeItem('teamos_pod_sheets'); localStorage.removeItem('teamos_hub_tasks'); } catch(_){} });
+    await page.evaluate(() => goTab('team', document.querySelector('[onclick*="goTab(\'team\'"]')));
+    await page.waitForTimeout(200);
+    // Force a rebuild after the clear so seeded task hub state shows.
+    await page.evaluate(() => { tvHubLoad(); tvBuild(); });
+    await page.waitForTimeout(150);
+  });
+
+  // ── Section D: Wins & Losses ────────────────────────────────────────────
+  test('Wins column renders 4 wins with header meta', async ({ page }) => {
+    const wins = page.locator('#tv-wl .tv-wl-col.wins');
+    expect(await wins.locator('.tv-wl-card').count()).toBe(4);
+    const hd = await wins.locator('.tv-wl-hd').textContent();
+    expect(hd).toMatch(/Wins/);
+    expect(hd).toMatch(/4 wins · \$128K closed/);
+    const cards = await wins.locator('.tv-wl-card').allTextContents();
+    const joined = cards.join('|');
+    expect(joined).toMatch(/Bertram Industries[\s\S]*\$42K/);
+    expect(joined).toMatch(/Logan Foods[\s\S]*\$32K/);
+    expect(joined).toMatch(/Acme Corp[\s\S]*\$18K \(early\)/);
+    expect(joined).toMatch(/Vortex Labs[\s\S]*\$36K/);
+  });
+
+  test('Losses column renders 2 losses with reason + learning', async ({ page }) => {
+    const losses = page.locator('#tv-wl .tv-wl-col.losses');
+    expect(await losses.locator('.tv-wl-card').count()).toBe(2);
+    const t = await losses.textContent();
+    expect(t).toMatch(/Henlow Co[\s\S]*\$28K/);
+    expect(t).toMatch(/Mira Health[\s\S]*\$16K/);
+    expect(t).toMatch(/Lost reason:[\s\S]*Champion left in Q1/);
+    expect(t).toMatch(/Learning:[\s\S]*Champion change protocol not triggered/);
+  });
+
+  test('AI insight bar shows pod close + save rate + best performer', async ({ page }) => {
+    const t = await page.locator('#tv-wl-foot').textContent();
+    expect(t).toMatch(/Pod close rate: 67%/);
+    expect(t).toMatch(/Save rate: 50%/);
+    expect(t).toMatch(/Average uplift: 8\.4%/);
+    expect(t).toMatch(/Best performer: David \(2 wins, \$60K\)/);
+  });
+
+  test('Win + loss cards carry role=article', async ({ page }) => {
+    const roles = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-wl .tv-wl-card')).map(a => a.getAttribute('role')));
+    expect(roles.length).toBe(6);
+    roles.forEach(r => expect(r).toBe('article'));
+  });
+
+  // ── Section E: Unengaged Accounts ───────────────────────────────────────
+  test('Unengaged section renders 3 cards with AI recommendations', async ({ page }) => {
+    expect(await page.locator('#tv-une .tv-une-card').count()).toBe(3);
+    const t = await page.locator('#tv-une').textContent();
+    expect(t).toMatch(/Meridian Health[\s\S]*73 days dark/);
+    expect(t).toMatch(/Creston Software[\s\S]*67 days dark/);
+    expect(t).toMatch(/Apex Dynamics[\s\S]*45 days dark/);
+    expect(t).toMatch(/Carmen should reach out today/);
+    expect(t).toMatch(/Marco \(BDR\) cold qualification touch/);
+    expect(t).toMatch(/Liam should request warm intro/);
+  });
+
+  test('Unengaged cards carry role=article + aria-label', async ({ page }) => {
+    const cards = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-une .tv-une-card')).map(a => ({ role:a.getAttribute('role'), aria:a.getAttribute('aria-label') })));
+    expect(cards.length).toBe(3);
+    cards.forEach(c => { expect(c.role).toBe('article'); expect(c.aria).toMatch(/^Unengaged account: /); });
+  });
+
+  test('Assign-to button creates pod task in teamos_pod_tasks store + toasts', async ({ page }) => {
+    // Capture toasts since the toast element re-renders fast.
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.locator('#tv-une .tv-une-card').first().locator('button').click();
+    await page.waitForTimeout(200);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /Re-engagement task assigned to Carmen Corio/.test(t))).toBe(true);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_pod_tasks') || '{}'));
+    expect(stored.meridian && stored.meridian.some(t => /Re-engage Meridian Health/.test(t.title))).toBeTruthy();
+  });
+
+  // ── Section F: Pipeline ─────────────────────────────────────────────────
+  test('Pipeline table renders 8 rows with type / owner pill / stage', async ({ page }) => {
+    expect(await page.locator('#tv-pipe tbody tr').count()).toBe(8);
+    expect(await page.locator('#tv-pipe table').getAttribute('role')).toBe('table');
+    const t = await page.locator('#tv-pipe').textContent();
+    expect(t).toMatch(/Acme Corp[\s\S]*Expansion[\s\S]*\$12–18K/);
+    expect(t).toMatch(/Bertram Industries[\s\S]*New Logo[\s\S]*\$42K[\s\S]*Closed Won/);
+    expect(t).toMatch(/NovaVault[\s\S]*Renewal[\s\S]*Save Active/);
+    expect(t).toMatch(/Brightex[\s\S]*At Risk/);
+    expect(t).toMatch(/Meridian[\s\S]*Dark/);
+    expect(t).toMatch(/Apex Dynamics[\s\S]*Champion Change/);
+  });
+
+  test('Pipeline footer carries Commit / Best Case / Pipeline / Closed Won totals', async ({ page }) => {
+    const t = await page.locator('#tv-pipe-foot').textContent();
+    expect(t).toMatch(/Commit:.*\$128K/);
+    expect(t).toMatch(/Best Case:.*\$217K/);
+    expect(t).toMatch(/Pipeline:.*\$89K/);
+    expect(t).toMatch(/Closed Won Q2:.*\$110K/);
+  });
+
+  // ── Section G: Task Hub ─────────────────────────────────────────────────
+  test('Task Hub renders 12 tasks + filter chips for 6 members + 3 priorities', async ({ page }) => {
+    expect(await page.locator('#tv-hub-list .tv-hub-row').count()).toBe(12);
+    // 1 "All" + 6 members = 7 member chips; 1 "All priority" + 3 priorities = 4 prio chips; 11 total.
+    expect(await page.locator('#tv-hub-filters .tv-hub-chip').count()).toBe(11);
+    const t = await page.locator('#tv-hub-list').textContent();
+    expect(t).toMatch(/Finalize NovaVault extension terms/);
+    expect(t).toMatch(/Surface Okta differentiation/);
+  });
+
+  test('Member chip filters the list to that member only', async ({ page }) => {
+    await page.locator('#tv-hub-filters .tv-hub-chip[data-mem="carmen"]').click();
+    await page.waitForTimeout(120);
+    const owners = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-hub-list .tv-hub-row .tv-hub-owner')).map(o => o.textContent.trim()));
+    expect(owners.length).toBeGreaterThan(0);
+    owners.forEach(o => expect(o).toBe('Carmen'));
+  });
+
+  test('Priority chip filters by Critical', async ({ page }) => {
+    await page.locator('#tv-hub-filters .tv-hub-chip[data-prio="crit"]').click();
+    await page.waitForTimeout(120);
+    const titles = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-hub-list .tv-hub-row .tv-hub-title')).map(t => t.textContent.trim()));
+    expect(titles).toContain('Finalize NovaVault extension terms');
+    // Other priorities shouldn't show.
+    const prios = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-hub-list .tv-hub-row .th-task-prio')).map(p => p.textContent.trim()));
+    prios.forEach(p => expect(p).toBe('Critical'));
+  });
+
+  test('Mark Done toggles + persists across reload', async ({ page }) => {
+    const firstRow = page.locator('#tv-hub-list .tv-hub-row').first();
+    const taskId = await firstRow.getAttribute('data-tid');
+    await firstRow.locator('button.th-btn').click();
+    await page.waitForTimeout(150);
+    expect(await firstRow.evaluate(r => r.classList.contains('done'))).toBe(true);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_hub_tasks') || '{}'));
+    expect(stored[taskId] && stored[taskId].done).toBe(true);
+  });
+
+  test('Task Hub list is role=list with listitem rows', async ({ page }) => {
+    expect(await page.locator('#tv-hub-list').getAttribute('role')).toBe('list');
+    const roles = await page.evaluate(() => Array.from(document.querySelectorAll('#tv-hub-list .tv-hub-row')).map(r => r.getAttribute('role')));
+    roles.forEach(r => expect(r).toBe('listitem'));
+  });
+
+  // ── Section H: Comm Strip ───────────────────────────────────────────────
+  test('Comm strip renders 5 threads + Schedule Pod Huddle button', async ({ page }) => {
+    expect(await page.locator('#tv-cm .tv-cm-thread').count()).toBe(5);
+    expect(await page.locator('#tv-cm').getAttribute('role')).toBe('region');
+    expect(await page.locator('#tv-cm').getAttribute('aria-label')).toBe('Pod communication threads');
+    const t = await page.locator('#tv-cm').textContent();
+    expect(t).toMatch(/Carmen → David/);
+    expect(t).toMatch(/Brightex Okta convo/);
+    expect(t).toMatch(/Schedule Pod Huddle/);
+  });
+
+  test('Thread click toasts Slack stub; Schedule Pod Huddle toasts Phase 2 stub', async ({ page }) => {
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.locator('#tv-cm .tv-cm-thread').first().click();
+    await page.waitForTimeout(150);
+    await page.locator('#tv-cm button:has-text("Schedule Pod Huddle")').click();
+    await page.waitForTimeout(200);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /Opens Slack thread/.test(t))).toBe(true);
+    expect(toasts.some(t => /Pod huddle invite sent to 6 members/.test(t))).toBe(true);
+  });
+});
