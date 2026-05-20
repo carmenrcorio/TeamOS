@@ -300,7 +300,10 @@ test.describe('Campaign Manager actions', () => {
     await page.waitForTimeout(150);
     await expect(page.locator('#cm-modal-ov')).toHaveClass(/on/);
     await expect(page.locator('#cm-tb-nm')).toBeVisible();
-    await expect(page.locator('.cm-tb-vars-wrap')).toBeVisible();
+    // v4.26.1 — the modal now mounts TWO .cm-tb-vars-wrap elements (one on the
+    // subject picker, one on the body toolbar). At least one must be visible.
+    expect(await page.locator('.cm-tb-vars-wrap').count()).toBeGreaterThanOrEqual(1);
+    await expect(page.locator('.cm-tb-vars-wrap').first()).toBeVisible();
   });
 
   test('Add to Campaign requires explicit picker selection', async ({ page }) => {
@@ -4443,6 +4446,82 @@ test.describe('v4.26.0 CSM Dashboard bug-fix + improvement bundle', () => {
     expect(ctxTxt).toMatch(/⏰.*MIN/);
     // Context label.
     expect(await page.locator('.bf-qa-ctx-lbl').count()).toBe(1);
+  });
+
+  // ── v4.26.1 quick wins land here for proximity to the v4.26.0 bundle.
+  test('v4.26.1 FIX 1: Step 2 row is a role=checkbox + Space key toggles selection', async ({ page }) => {
+    await page.evaluate(() => { goTab('campaigns', document.querySelector('.n-tab[onclick*="campaigns"]')); });
+    await page.waitForTimeout(200);
+    // Click the At-Risk Renewal segment chip → wizard at Step 2.
+    await page.locator('.cm-seg-chip').nth(3).click();
+    await page.waitForTimeout(300);
+    await expect(page.locator('#cm-wiz-ov.on')).toBeVisible();
+    expect(await page.evaluate(() => CM_WIZ.step)).toBe(2);
+    const row = page.locator('.cm-wiz-cnt-item').first();
+    expect(await row.getAttribute('role')).toBe('checkbox');
+    expect(await row.getAttribute('tabindex')).toBe('0');
+    const ariaBefore = await row.getAttribute('aria-checked');
+    // Click on the right edge of the row (away from the checkbox) and confirm toggle.
+    const box = await row.boundingBox();
+    await page.mouse.click(box.x + box.width - 50, box.y + box.height / 2);
+    await page.waitForTimeout(120);
+    const ariaAfter = await row.getAttribute('aria-checked');
+    expect(ariaAfter).not.toBe(ariaBefore);
+    // Space key toggles again.
+    await row.focus();
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(120);
+    const ariaAfterSpace = await row.getAttribute('aria-checked');
+    expect(ariaAfterSpace).toBe(ariaBefore);
+    await page.evaluate(() => cmCloseWizard());
+  });
+
+  test('v4.26.1 FIX 2: Export List toast fires with contact count', async ({ page }) => {
+    await page.evaluate(() => { goTab('campaigns', document.querySelector('.n-tab[onclick*="campaigns"]')); });
+    await page.waitForTimeout(200);
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    const cid = await page.evaluate(() => CM_CAMPAIGNS[0].id);
+    await page.evaluate(id => cmCampExport(id), cid);
+    await page.waitForTimeout(200);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /Contact list exported · \d+ contacts · CSV/.test(t))).toBe(true);
+  });
+
+  test('v4.26.1 FIX 3: Edit Template view mounts subject picker + body B/I/U/Link/Variable toolbar', async ({ page }) => {
+    await page.evaluate(() => { goTab('campaigns', document.querySelector('.n-tab[onclick*="campaigns"]')); });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmShowSection('templates'));
+    await page.waitForTimeout(200);
+    const tplId = await page.evaluate(() => CM_TEMPLATES[0].id);
+    await page.evaluate(id => cmTplEdit(id), tplId);
+    await page.waitForTimeout(150);
+    // 2 toolbars: one for the subject (variable picker only), one for the body (full B/I/U/Link/Variable).
+    expect(await page.locator('#cm-tpl-detail .cm-tb-toolbar').count()).toBe(2);
+    expect(await page.locator('#cm-tpl-detail .cm-tb-toolbar-subj').count()).toBe(1);
+    // Body toolbar carries the 5 expected aria-labelled buttons.
+    const bodyTb = page.locator('#cm-tpl-detail .cm-tb-toolbar').nth(1);
+    const labels = await bodyTb.evaluate(t => Array.from(t.querySelectorAll('.cm-tb-btn')).map(b => b.getAttribute('aria-label')));
+    expect(labels).toEqual(expect.arrayContaining(['Bold','Italic','Underline','Insert link','Insert variable']));
+    // Bold wraps selection in the body textarea.
+    await page.evaluate(() => {
+      const ta = document.getElementById('cm-tpl-edit-body');
+      ta.focus(); ta.setSelectionRange(0, 4);
+      cmTbWrap('**', 'cm-tpl-edit-body');
+    });
+    expect((await page.locator('#cm-tpl-edit-body').inputValue()).startsWith('**')).toBe(true);
+    // Variable inserts into body.
+    await page.evaluate(() => cmTbInsertVar('{{first_name}}', 'cm-tpl-edit-body', 'cm-tpl-edit-body-vars-pop'));
+    expect((await page.locator('#cm-tpl-edit-body').inputValue())).toMatch(/\{\{first_name\}\}/);
+    // Variable inserts into subject (subject picker has no formatting buttons).
+    await page.evaluate(() => cmTbInsertVar('{{company}}', 'cm-tpl-edit-subj', 'cm-tpl-edit-subj-vars-pop'));
+    expect((await page.locator('#cm-tpl-edit-subj').inputValue())).toMatch(/\{\{company\}\}/);
+    // Subject toolbar contains only the Variable button.
+    const subjBtns = await page.locator('#cm-tpl-detail .cm-tb-toolbar-subj .cm-tb-btn').count();
+    expect(subjBtns).toBe(1);
   });
 
   // ── Today's Tasks button verbs.
