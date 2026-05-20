@@ -2695,6 +2695,110 @@ body.offline .rs-mx-snap{top:124px}
 .tv-book-rec b{font-weight:800;color:#111827}
 .tv-book-touch{font-size:11px;color:#6B7280;font-weight:600}
 
+/* ─── v4.24.0 — Team View Phase 2: Strategy Huddle drawer ──────────────── */
+.th-drawer-ov{position:fixed;inset:0;background:rgba(17,24,39,.45);z-index:9100;display:none}
+.th-drawer-ov.on{display:block}
+.th-drawer{position:fixed;top:0;right:0;width:520px;max-width:100vw;height:100vh;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;z-index:9101}
+.th-drawer.on{transform:translateX(0)}
+.th-drawer-hd{padding:14px 20px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.th-drawer-hd-l{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.th-drawer-t{font-size:15px;font-weight:800;color:#111827;letter-spacing:-.01em;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.th-drawer-sub{font-size:11px;color:#6B7280;font-weight:600;line-height:1.5}
+.th-drawer-x{font-family:inherit;font-size:22px;line-height:1;background:transparent;border:none;color:#6B7280;cursor:pointer;padding:4px 8px;border-radius:5px;min-width:36px;min-height:36px}
+.th-drawer-x:hover{background:var(--surf2);color:var(--tx)}
+.th-drawer-tabs{display:flex;border-bottom:1px solid var(--bd);background:var(--surf2);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.th-drawer-tabs::-webkit-scrollbar{display:none}
+.th-tab{font-family:inherit;font-size:11px;font-weight:700;color:#6B7280;background:transparent;border:none;padding:11px 14px;cursor:pointer;border-bottom:2px solid transparent;letter-spacing:.02em;white-space:nowrap;transition:color .1s,border-color .1s}
+.th-tab:hover{color:#1F2937}
+.th-tab.on{color:var(--tl-dk);border-bottom-color:var(--tl);background:var(--surf)}
+.th-tab:focus-visible{outline:2px solid var(--tl);outline-offset:-2px}
+.th-drawer-body{flex:1;overflow:hidden;position:relative;background:var(--surf)}
+.th-pane{position:absolute;inset:0;overflow-y:auto;padding:18px 20px;display:none}
+.th-pane.on{display:block}
+
+.th-snap{display:grid;grid-template-columns:130px 1fr;gap:8px 14px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.5}
+.th-snap > div:nth-child(odd){color:#6B7280;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.05em;align-self:center}
+.th-snap-pill{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-right:6px;vertical-align:middle}
+.th-snap b{color:#111827;font-weight:800}
+.th-snap-foot{margin-top:18px;padding:11px 13px;background:var(--surf2);border:1px solid var(--bd);border-left:3px solid var(--tl);border-radius:6px;font-size:11px;color:#374151;font-weight:500;line-height:1.5}
+.th-snap-foot b{color:#111827;font-weight:800}
+
+.th-note{display:grid;grid-template-columns:30px 1fr;gap:10px;padding:12px 0;border-bottom:1px dashed var(--bd)}
+.th-note:last-child{border-bottom:none}
+.th-note.reply{margin-left:36px;border-left:2px solid var(--bd);padding-left:12px}
+.th-note-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.th-note-hd{font-size:11px;color:#111827;font-weight:800;display:flex;gap:8px;align-items:baseline;margin-bottom:3px}
+.th-note-hd .th-note-when{font-size:10px;color:#6B7280;font-weight:600}
+.th-note-bd{font-size:12px;color:#1F2937;font-weight:500;line-height:1.55;white-space:pre-wrap}
+.th-note-bd .at{color:var(--tl-dk);font-weight:700}
+
+.th-compose{margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);position:relative}
+.th-compose ta,.th-compose textarea{width:100%;border:1px solid var(--bd2);border-radius:6px;padding:9px 11px;font-family:inherit;font-size:12px;color:#1F2937;background:var(--surf);outline:none;line-height:1.5;box-sizing:border-box;resize:vertical;min-height:64px}
+.th-compose textarea:focus{border-color:var(--tl)}
+.th-compose-acts{display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap}
+.th-btn{font-family:inherit;font-size:11px;font-weight:700;padding:6px 11px;border-radius:5px;border:1px solid var(--bd2);background:var(--surf);color:#1F2937;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.th-btn:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.th-btn.prim{background:var(--tx);color:#fff;border-color:var(--tx)}
+.th-btn.prim:hover{background:#2a2a28;color:#fff;border-color:#2a2a28}
+.th-btn:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.th-mention-pop{position:absolute;left:0;bottom:calc(100% + 4px);background:var(--surf);border:1px solid var(--bd);border-radius:6px;box-shadow:0 8px 22px rgba(0,0,0,.12);z-index:20;min-width:220px;display:none;max-height:200px;overflow-y:auto}
+.th-mention-pop.on{display:block}
+.th-mention-item{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;font-size:12px;color:#1F2937;font-weight:600}
+.th-mention-item:hover,.th-mention-item.kbsel{background:var(--tl-bg);color:var(--tl-dk)}
+.th-mention-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff}
+
+.th-task{display:grid;grid-template-columns:24px 1fr auto;gap:10px;padding:11px 0;border-bottom:1px dashed var(--bd);align-items:start}
+.th-task:last-child{border-bottom:none}
+.th-task.done .th-task-t{text-decoration:line-through;color:#9CA3AF}
+.th-task-cb{width:18px;height:18px;border:1.5px solid var(--bd2);border-radius:4px;background:var(--surf);cursor:pointer;margin-top:1px;display:flex;align-items:center;justify-content:center;color:transparent;font-size:12px;font-weight:800;padding:0;font-family:inherit}
+.th-task.done .th-task-cb{background:var(--tl);border-color:var(--tl);color:#fff}
+.th-task-mid{display:flex;flex-direction:column;gap:2px;min-width:0}
+.th-task-t{font-size:12px;color:#111827;font-weight:600;line-height:1.45;white-space:normal}
+.th-task-t b{color:var(--tl-dk);font-weight:800;text-transform:capitalize}
+.th-task-meta{font-size:10px;color:#6B7280;font-weight:600;display:flex;gap:8px;flex-wrap:wrap}
+.th-task-prio{font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em}
+.th-task-prio.crit{background:var(--rd-bg);color:var(--rd-dk)}
+.th-task-prio.high{background:#FEF3C7;color:#78350F}
+.th-task-prio.watch{background:#E5E7EB;color:#374151}
+.th-task-act{align-self:start}
+
+.th-form{margin-top:14px;padding:12px;background:var(--surf2);border:1px solid var(--bd);border-radius:7px;display:none;flex-direction:column;gap:8px}
+.th-form.on{display:flex}
+.th-form-row{display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:center}
+.th-form-row.col{grid-template-columns:1fr}
+.th-form-l{font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.05em}
+.th-form-row input,.th-form-row select,.th-form input,.th-form select{border:1px solid var(--bd2);border-radius:5px;padding:6px 9px;font-family:inherit;font-size:12px;color:#1F2937;background:var(--surf);outline:none;box-sizing:border-box;width:100%}
+.th-form-row input:focus,.th-form-row select:focus{border-color:var(--tl)}
+.th-form-radio{display:flex;gap:10px}
+.th-form-radio label{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:#1F2937;cursor:pointer}
+.th-form-acts{display:flex;justify-content:flex-end;gap:6px;margin-top:4px}
+.th-form-err{font-size:11px;color:var(--rd-dk);font-weight:700}
+
+.th-sheet{width:100%;border-collapse:collapse;font-size:12px;background:var(--surf);border:1px solid var(--bd);border-radius:6px;overflow:hidden}
+.th-sheet th,.th-sheet td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--bd);border-right:1px solid var(--bd)}
+.th-sheet th:last-child,.th-sheet td:last-child{border-right:none}
+.th-sheet tr:last-child td{border-bottom:none}
+.th-sheet th{font-size:9px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.06em;background:var(--surf2)}
+.th-sheet input{width:100%;border:1px solid transparent;border-radius:4px;padding:4px 6px;font-family:inherit;font-size:11px;color:#1F2937;background:transparent;box-sizing:border-box}
+.th-sheet input:focus{border-color:var(--tl);background:var(--surf);outline:none}
+.th-sheet .th-sheet-rm{font-family:inherit;font-size:10px;color:var(--rd);background:none;border:none;cursor:pointer;padding:3px 5px}
+.th-sheet .th-sheet-rm:hover{color:var(--rd-dk)}
+.th-ai-insight{margin-top:12px;padding:11px 13px;background:#EEF2FF;border:1px solid #C7D2FE;border-left:3px solid #4F46E5;border-radius:6px;font-size:11px;color:#1F2937;font-weight:500;line-height:1.55}
+.th-ai-insight b{color:#312E81;font-weight:800}
+.th-sheet-acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+.th-ai-hd{font-size:11px;font-weight:800;color:#312E81;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.th-ai-sec{margin-bottom:18px}
+.th-ai-sec-t{font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.th-ai-rec{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:9px 0;border-bottom:1px dashed var(--bd)}
+.th-ai-rec:last-child{border-bottom:none}
+.th-ai-rec-n{width:22px;height:22px;border-radius:50%;background:#4F46E5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.th-ai-rec-bd{font-size:12px;color:#1F2937;font-weight:500;line-height:1.5}
+.th-ai-rec-bd b{color:#111827;font-weight:800}
+.th-ai-rec-bd .why{color:#6B7280;font-weight:600;font-size:11px;margin-top:3px}
+.th-ai-risk{padding:11px 13px;background:#FEF2F2;border:1px solid #FECACA;border-left:3px solid #DC2626;border-radius:6px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55}
+.th-ai-risk b{color:#7F1D1D;font-weight:800;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px}
+
 .rs-mx-detail{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rlg);padding:16px 18px;min-height:340px}
 .rs-mx-detail-empty{font-size:13px;color:#6B7280;font-style:italic;padding:40px 10px;text-align:center}
 .rs-mx-detail-hd{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--bd);margin-bottom:14px;gap:10px}
@@ -4510,6 +4614,36 @@ body.offline .int-panel{top:124px}
   <div class="gb-drawer-body" id="gb-drawer-body"></div>
 </aside>
 
+<!-- v4.24.0 — Team View Phase 2: Strategy Huddle drawer. Body-level so it
+     sits above the Team View tab and stays open while the underlying tab
+     scrolls. 5 tabs (Overview / Pod Notes / Pod Tasks / Smart Sheet / AI
+     Strategy). Single drawer manager (v4.16.0) handles the open/close
+     handshake with other drawers. -->
+<div class="th-drawer-ov" id="th-drawer-ov" onclick="thClose()" aria-hidden="true"></div>
+<aside class="th-drawer" id="th-drawer" role="dialog" aria-modal="true" aria-labelledby="th-drawer-title" aria-hidden="true">
+  <div class="th-drawer-hd">
+    <div class="th-drawer-hd-l">
+      <div class="th-drawer-t" id="th-drawer-title">Strategy Huddle</div>
+      <div class="th-drawer-sub" id="th-drawer-sub">Strategy Huddle · 6 pod members have access</div>
+    </div>
+    <button class="th-drawer-x" type="button" onclick="thClose()" aria-label="Close Strategy Huddle">&times;</button>
+  </div>
+  <div class="th-drawer-tabs" role="tablist" aria-label="Strategy Huddle sections">
+    <button class="th-tab on" role="tab" type="button" data-tab="overview" id="th-tab-overview"   aria-selected="true"  onclick="thShow('overview')">Overview</button>
+    <button class="th-tab"    role="tab" type="button" data-tab="notes"    id="th-tab-notes"      aria-selected="false" onclick="thShow('notes')">Pod Notes</button>
+    <button class="th-tab"    role="tab" type="button" data-tab="tasks"    id="th-tab-tasks"      aria-selected="false" onclick="thShow('tasks')">Pod Tasks</button>
+    <button class="th-tab"    role="tab" type="button" data-tab="sheet"    id="th-tab-sheet"      aria-selected="false" onclick="thShow('sheet')">Smart Sheet</button>
+    <button class="th-tab"    role="tab" type="button" data-tab="strategy" id="th-tab-strategy"   aria-selected="false" onclick="thShow('strategy')">AI Strategy</button>
+  </div>
+  <div class="th-drawer-body" id="th-drawer-body">
+    <div class="th-pane on" id="th-pane-overview" role="tabpanel" aria-labelledby="th-tab-overview"></div>
+    <div class="th-pane"    id="th-pane-notes"    role="tabpanel" aria-labelledby="th-tab-notes"></div>
+    <div class="th-pane"    id="th-pane-tasks"    role="tabpanel" aria-labelledby="th-tab-tasks"></div>
+    <div class="th-pane"    id="th-pane-sheet"    role="tabpanel" aria-labelledby="th-tab-sheet"></div>
+    <div class="th-pane"    id="th-pane-strategy" role="tabpanel" aria-labelledby="th-tab-strategy"></div>
+  </div>
+</aside>
+
 <!-- v4.9.0 — Slide-over panel reused by top-bar KPI buttons (FIX 6).
      role=dialog, aria-modal="false" because this layer is non-blocking
      (the user can still click the underlying tabs). Escape closes via
@@ -5194,6 +5328,10 @@ document.addEventListener('keydown', function(e){
   // Ghost-Buster drawer because it's the most recently-introduced overlay.
   var psCompose = document.getElementById('ps-compose');
   if (psCompose && psCompose.classList.contains('on') && typeof psComposeClose === 'function') { psComposeClose(); e.preventDefault(); return; }
+  // v4.24.0 — Team View Strategy Huddle drawer. Body-level dialog; closes
+  // before falling through to lower-precedence drawers.
+  var thDrawer = document.getElementById('th-drawer');
+  if (thDrawer && thDrawer.classList.contains('on') && typeof thClose === 'function') { thClose(); e.preventDefault(); return; }
   // v4.13.0 — Ghost-Buster drawer has the highest Escape precedence because
   // it's the topmost overlay when open.
   var gbDrawer = document.getElementById('gb-drawer');
@@ -9591,7 +9729,8 @@ var DRAWER_REGISTRY = {
   compose:  { sel:'#ps-compose',      close:function(){ if (typeof psComposeClose     === 'function') psComposeClose();     } },
   'rs-slide-ov': { sel:'#rs-slide-ov',close:function(){ if (typeof rsCloseSlide       === 'function') rsCloseSlide();       } },
   'fc-acct':{ sel:'#fc-acct-drawer',  close:function(){ if (typeof fcCloseAcctDrawer  === 'function') fcCloseAcctDrawer();  } },
-  'cm-cv':  { sel:'#cm-cv-drawer',    close:function(){ if (typeof cmCampViewClose    === 'function') cmCampViewClose();    } }
+  'cm-cv':  { sel:'#cm-cv-drawer',    close:function(){ if (typeof cmCampViewClose    === 'function') cmCampViewClose();    } },
+  'th':     { sel:'#th-drawer',       close:function(){ if (typeof thClose            === 'function') thClose();            } }
 };
 // Sub-panels — closed when any full drawer opens, but not tracked as _openDrawer.
 var DRAWER_SUBPANELS = [
@@ -15644,9 +15783,535 @@ function tvColsToggle(key) {
   tvBuildBook();
 }
 function tvHuddle(acct) {
+  if (typeof thOpen === 'function') {
+    try { window._thTrigger = (document.activeElement && document.activeElement !== document.body) ? document.activeElement : null; } catch (_) {}
+    thOpen(acct);
+    return;
+  }
   var r = TV_BOOK.find(function(x){return x.key===acct;});
   toast('Strategy Huddle · ' + (r ? r.nm : acct) + ' · Coming in Phase 2');
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// v4.24.0 — Strategy Huddle drawer (Team View Phase 2).
+// 5 tabs: Overview / Pod Notes / Pod Tasks / Smart Sheet / AI Strategy.
+// Each tab persists state to localStorage keyed by account.
+// ═══════════════════════════════════════════════════════════════════════════
+var TH_NOTES_KEY  = 'teamos_pod_notes';
+var TH_TASKS_KEY  = 'teamos_pod_tasks';
+var TH_SHEETS_KEY = 'teamos_pod_sheets';
+
+// Per-account overview extras that go beyond TV_BOOK's columns.
+var TH_OVERVIEW = {
+  nova: {
+    lastGong:        'May 10 · SLA question',
+    openCTAs:        '2 · 1 overdue',
+    champion:        'Michael Torres (cold · no prior 1Password contact)',
+    outreachStatus:  'Touch 1 sent May 15, no reply',
+    contractStatus:  'Sent May 11, 0 views (Ironclad)'
+  },
+  acme: {
+    lastGong:        'May 12 · Enterprise tier mentioned',
+    openCTAs:        '1',
+    champion:        'Sarah Chen (warm · 2 calls Q1)',
+    outreachStatus:  '—',
+    contractStatus:  'Active · Renewal Aug 12'
+  },
+  brightex: {
+    lastGong:        'May 10 · Competitor (Okta) flagged',
+    openCTAs:        '3 · 0 overdue',
+    champion:        'Sarah Chen (warm · risk surface)',
+    outreachStatus:  'Touch 2 sent May 16',
+    contractStatus:  'Active · Renewal Jun 15'
+  },
+  meridian: { lastGong:'No call in 42d', openCTAs:'0', champion:'—', outreachStatus:'No reply x3', contractStatus:'Active · Renewal Jun 30' },
+  creston:  { lastGong:'No call in 67d', openCTAs:'0', champion:'—', outreachStatus:'No reply x4', contractStatus:'Active · Renewal Jul 15' },
+  apex:     { lastGong:'May 14 · Champion change',  openCTAs:'1', champion:'New champion (unmapped)', outreachStatus:'Re-mapping', contractStatus:'Active · Renewal Aug 1' }
+};
+
+// Seeded notes / tasks / sheets. NovaVault carries the full demo per spec;
+// other accounts get a minimal default so the tabs still render meaningfully.
+var TH_SEED_NOTES = {
+  nova: [
+    { id:'n1', author:'carmen', body:"Just got off a call with Michael Torres. He's open to a 60-day extension but won't commit on pricing until July 15. @david.kim please hold on expansion outreach until extension lands.", ts:'2h ago', parentId:null },
+    { id:'n2', author:'david',  body:"Got it. Adding July 18 reminder to my outreach queue.", ts:'1h ago', parentId:'n1' },
+    { id:'n3', author:'sarah',  body:"Drafted extension terms. Carmen, I added the give-get structure with champion intro by Jun 8. Review when you can.", ts:'30m ago', parentId:null }
+  ]
+};
+var TH_SEED_TASKS = {
+  nova: [
+    { id:'t1', assignee:'sarah',  title:'Finalize extension terms by EOD',           due:'May 19', priority:'crit',  done:false },
+    { id:'t2', assignee:'david',  title:'Hold on expansion outreach until extension lands', due:'July 15', priority:'watch', done:false },
+    { id:'t3', assignee:'carmen', title:'Confirm Michael Torres availability for May 22 call', due:'May 20', priority:'high',  done:false }
+  ]
+};
+var TH_SEED_SHEETS = {
+  nova: [
+    { name:'Michael Torres',     role:'IT Director',          influence:'High',            relation:'Cold (new)',    owner:'Carmen' },
+    { name:'(departed) James Wu',role:'IT Security Head',     influence:'Was High',        relation:'Departed',      owner:'—' },
+    { name:'Unknown',            role:'CFO',                  influence:'Critical (need to ID)', relation:'Unknown', owner:'David to research' },
+    { name:'Unknown',            role:'CISO',                 influence:'High (target)',   relation:'Unknown',       owner:'Carmen to map' }
+  ]
+};
+
+function thReadStore(key) { try { return JSON.parse(localStorage.getItem(key) || '{}') || {}; } catch (e) { return {}; } }
+function thWriteStore(key, obj) { try { localStorage.setItem(key, JSON.stringify(obj)); } catch (e) {} }
+
+function thNotesFor(acct) {
+  var store = thReadStore(TH_NOTES_KEY);
+  if (store[acct]) return store[acct];
+  return (TH_SEED_NOTES[acct] || []).slice();
+}
+function thWriteNotes(acct, notes) {
+  var store = thReadStore(TH_NOTES_KEY);
+  store[acct] = notes;
+  thWriteStore(TH_NOTES_KEY, store);
+}
+function thTasksFor(acct) {
+  var store = thReadStore(TH_TASKS_KEY);
+  if (store[acct]) return store[acct];
+  return (TH_SEED_TASKS[acct] || []).slice();
+}
+function thWriteTasks(acct, tasks) {
+  var store = thReadStore(TH_TASKS_KEY);
+  store[acct] = tasks;
+  thWriteStore(TH_TASKS_KEY, store);
+}
+function thSheetFor(acct) {
+  var store = thReadStore(TH_SHEETS_KEY);
+  if (store[acct]) return store[acct];
+  return (TH_SEED_SHEETS[acct] || []).slice();
+}
+function thWriteSheet(acct, rows) {
+  var store = thReadStore(TH_SHEETS_KEY);
+  store[acct] = rows;
+  thWriteStore(TH_SHEETS_KEY, store);
+}
+
+var TH_STATE = { acct:null, tab:'overview', taskFormOn:false };
+
+function thOpen(acct) {
+  var r = TV_BOOK.find(function(x){return x.key===acct;});
+  if (!r) return;
+  TH_STATE.acct = acct;
+  TH_STATE.tab  = 'overview';
+  TH_STATE.taskFormOn = false;
+
+  var title = document.getElementById('th-drawer-title');
+  var sub   = document.getElementById('th-drawer-sub');
+  var statusCls = TV_STATUS_CLS[r.podStatus] || 'stable';
+  if (title) title.innerHTML = tvEscape(r.nm) + ' <span class="tv-book-status ' + statusCls + '" aria-label="Pod status: ' + tvEscape(r.podStatus) + '">' + tvEscape(r.podStatus) + '</span>';
+  if (sub)   sub.textContent = 'Strategy Huddle · 6 pod members have access';
+
+  thRenderAll();
+
+  var ov  = document.getElementById('th-drawer-ov');
+  var drw = document.getElementById('th-drawer');
+  if (ov)  ov.classList.add('on');
+  if (drw) { drw.classList.add('on'); drw.setAttribute('aria-hidden', 'false'); }
+  if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('th');
+
+  thShow('overview');
+  // Focus the close button so keyboard users land inside the dialog.
+  setTimeout(function(){
+    var x = document.querySelector('#th-drawer .th-drawer-x');
+    if (x) x.focus();
+  }, 250);
+}
+
+function thClose() {
+  var ov  = document.getElementById('th-drawer-ov');
+  var drw = document.getElementById('th-drawer');
+  if (ov)  ov.classList.remove('on');
+  if (drw) { drw.classList.remove('on'); drw.setAttribute('aria-hidden', 'true'); }
+  if (typeof _drawerManagerClose === 'function') _drawerManagerClose('th');
+  // Restore focus to the row that opened the drawer.
+  try {
+    if (window._thTrigger && typeof window._thTrigger.focus === 'function') window._thTrigger.focus();
+  } catch (_) {}
+  window._thTrigger = null;
+  TH_STATE.acct = null;
+}
+
+function thShow(tab) {
+  TH_STATE.tab = tab;
+  document.querySelectorAll('#th-drawer .th-tab').forEach(function(b){
+    var on = b.getAttribute('data-tab') === tab;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.querySelectorAll('#th-drawer .th-pane').forEach(function(p){
+    p.classList.toggle('on', p.id === 'th-pane-' + tab);
+  });
+}
+
+function thRenderAll() {
+  thRenderOverview();
+  thRenderNotes();
+  thRenderTasks();
+  thRenderSheet();
+  thRenderStrategy();
+}
+
+// ── Tab 1: Overview ───────────────────────────────────────────────────────
+function thRenderOverview() {
+  var pane = document.getElementById('th-pane-overview');
+  if (!pane || !TH_STATE.acct) return;
+  var acct = TH_STATE.acct;
+  var r = TV_BOOK.find(function(x){return x.key===acct;});
+  if (!r) return;
+  var x = TH_OVERVIEW[acct] || { lastGong:'—', openCTAs:'—', champion:'—', outreachStatus:'—', contractStatus:'—' };
+  var renewal = r.renewal;
+  // Build days-to-renewal label if FC_PIPELINE has it.
+  if (typeof FC_PIPELINE !== 'undefined') {
+    var fp = FC_PIPELINE.find(function(p){return p.key===acct;});
+    if (fp) renewal = r.renewal + ' · ' + fp.daysOut + 'd';
+  }
+  var memberCell = function(id, label) {
+    var m = tvMember(id);
+    if (!m) return label + ': —';
+    return label + ': <span class="th-snap-pill" style="background:' + tvEscape(m.avatarColor) + '" aria-hidden="true">' + tvEscape(m.avatar) + '</span><b>' + tvEscape(m.name.split(' ')[0]) + '</b>';
+  };
+  var openOpp = (r.openOpp && r.openOpp !== '—') ? r.openOpp : 'none';
+  pane.innerHTML = ''
+    + '<div class="th-snap">'
+    +   '<div>Health (Gainsight)</div><div><b>' + tvEscape(r.health) + '</b></div>'
+    +   '<div>ARR</div><div>' + tvEscape(r.arrLabel) + '</div>'
+    +   '<div>Renewal</div><div>' + tvEscape(renewal) + '</div>'
+    +   '<div>Open Opp</div><div>' + tvEscape(openOpp) + '</div>'
+    +   '<div>CSM</div><div>' + memberCell(r.csm, 'CSM').replace(/^CSM: /, '') + '</div>'
+    +   '<div>AE</div><div>'  + memberCell(r.ae, 'AE').replace(/^AE: /, '')   + '</div>'
+    +   '<div>BDR</div><div>' + memberCell(r.bdr, 'BDR').replace(/^BDR: /, '') + '</div>'
+    +   '<div>RS</div><div>'  + memberCell(r.rs, 'RS').replace(/^RS: /, '')   + '</div>'
+    +   '<div>Last Gong</div><div>' + tvEscape(x.lastGong) + '</div>'
+    +   '<div>Open CTAs</div><div>' + tvEscape(x.openCTAs) + '</div>'
+    +   '<div>Champion</div><div>' + tvEscape(x.champion) + '</div>'
+    +   '<div>Outreach Sequence</div><div>' + tvEscape(x.outreachStatus) + '</div>'
+    +   '<div>Contract Status</div><div>' + tvEscape(x.contractStatus) + '</div>'
+    + '</div>'
+    + '<div class="th-snap-foot">This view is visible to all <b>6 pod members</b>. AEs can now see Gainsight health. CSMs can now see Outreach sequences.</div>';
+}
+
+// ── Tab 2: Pod Notes ──────────────────────────────────────────────────────
+function thRenderNotes() {
+  var pane = document.getElementById('th-pane-notes');
+  if (!pane || !TH_STATE.acct) return;
+  var notes = thNotesFor(TH_STATE.acct);
+  // Render flat with replies indented by parentId.
+  var topLevel = notes.filter(function(n){return !n.parentId;});
+  var replies  = notes.filter(function(n){return n.parentId;});
+  var renderNote = function(n, isReply) {
+    var m = tvMember(n.author);
+    var av = m ? '<div class="th-note-av" style="background:' + tvEscape(m.avatarColor) + '" aria-hidden="true">' + tvEscape(m.avatar) + '</div>' : '<div class="th-note-av" style="background:#9CA3AF"></div>';
+    var name = m ? m.name : n.author;
+    var bodyHtml = tvEscape(n.body).replace(/(@[a-z._-]+)/gi, '<span class="at">$1</span>');
+    return '<div class="th-note' + (isReply ? ' reply' : '') + '">'
+      + av
+      + '<div>'
+      +   '<div class="th-note-hd"><span>' + tvEscape(name) + '</span><span class="th-note-when">· ' + tvEscape(n.ts) + '</span></div>'
+      +   '<div class="th-note-bd">' + bodyHtml + '</div>'
+      + '</div>'
+      + '</div>';
+  };
+  var feedHtml = topLevel.map(function(n){
+    var threadHtml = renderNote(n, false);
+    var kids = replies.filter(function(r){return r.parentId===n.id;});
+    threadHtml += kids.map(function(k){return renderNote(k, true);}).join('');
+    return threadHtml;
+  }).join('') || '<div style="font-size:12px;color:#6B7280;padding:8px 0;font-style:italic">No pod notes yet. Be the first to leave one.</div>';
+
+  pane.innerHTML = ''
+    + '<div id="th-notes-feed">' + feedHtml + '</div>'
+    + '<div class="th-compose">'
+    +   '<textarea id="th-note-input" rows="3" placeholder="Leave a note for the pod..." aria-label="New pod note"></textarea>'
+    +   '<div class="th-mention-pop" id="th-mention-pop" role="listbox" aria-label="Pod members"></div>'
+    +   '<div class="th-compose-acts">'
+    +     '<button class="th-btn" type="button" onclick="thMentionOpen()" aria-label="Mention a pod member">@ Mention</button>'
+    +     '<button class="th-btn" type="button" onclick="thAttach()" aria-label="Attach a file">📎 Attach</button>'
+    +     '<button class="th-btn prim" type="button" onclick="thPostNote()" style="margin-left:auto">Post Note</button>'
+    +   '</div>'
+    + '</div>';
+
+  // Wire @-mention dropdown on '@' keystroke.
+  var ta = document.getElementById('th-note-input');
+  if (ta) {
+    ta.addEventListener('input', function(e){
+      var v = ta.value;
+      var pos = ta.selectionStart;
+      var at  = v.lastIndexOf('@', pos - 1);
+      if (at >= 0 && (at === 0 || /\s/.test(v[at-1]))) {
+        var q = v.slice(at + 1, pos).toLowerCase();
+        if (q.length <= 12 && !/\s/.test(q)) {
+          thMentionRender(q, at);
+          return;
+        }
+      }
+      thMentionClose();
+    });
+    ta.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') { thMentionClose(); }
+    });
+  }
+}
+
+function thMentionOpen() {
+  var ta = document.getElementById('th-note-input');
+  if (!ta) return;
+  // Insert an '@' at the cursor then show the dropdown.
+  var pos = ta.selectionStart;
+  ta.value = ta.value.slice(0, pos) + '@' + ta.value.slice(pos);
+  ta.selectionStart = ta.selectionEnd = pos + 1;
+  ta.focus();
+  thMentionRender('', pos);
+}
+function thMentionRender(query, atPos) {
+  var pop = document.getElementById('th-mention-pop');
+  if (!pop) return;
+  var q = (query || '').toLowerCase();
+  var matches = POD_ROSTER.filter(function(m){
+    var key = m.name.toLowerCase().replace(/\s+/g, '.');
+    return key.indexOf(q) === 0 || m.name.toLowerCase().indexOf(q) >= 0;
+  });
+  if (!matches.length) { thMentionClose(); return; }
+  pop.innerHTML = matches.map(function(m){
+    var slug = m.name.toLowerCase().replace(/\s+/g, '.');
+    return '<div class="th-mention-item" role="option" data-at="' + atPos + '" data-slug="' + tvEscape(slug) + '" data-q="' + q.length + '" onmousedown="event.preventDefault()" onclick="thMentionPick(\'' + slug + '\',' + atPos + ',' + q.length + ')">'
+      + '<span class="th-mention-av" style="background:' + tvEscape(m.avatarColor) + '">' + tvEscape(m.avatar) + '</span>'
+      + tvEscape(m.name) + ' <span style="color:#6B7280;font-weight:500;margin-left:auto;font-size:10px">' + tvEscape(m.role) + '</span>'
+      + '</div>';
+  }).join('');
+  pop.classList.add('on');
+}
+function thMentionClose() {
+  var pop = document.getElementById('th-mention-pop');
+  if (pop) { pop.classList.remove('on'); pop.innerHTML = ''; }
+}
+function thMentionPick(slug, atPos, qLen) {
+  var ta = document.getElementById('th-note-input');
+  if (!ta) return;
+  var v = ta.value;
+  // Replace '@' + already-typed prefix with '@slug '.
+  var before = v.slice(0, atPos);
+  var after  = v.slice(atPos + 1 + qLen);
+  ta.value = before + '@' + slug + ' ' + after;
+  var newPos = (before + '@' + slug + ' ').length;
+  ta.selectionStart = ta.selectionEnd = newPos;
+  ta.focus();
+  thMentionClose();
+}
+function thAttach() { toast('Attach files · Phase 2 stub ✓'); }
+
+function thPostNote() {
+  var ta = document.getElementById('th-note-input');
+  if (!ta || !ta.value.trim() || !TH_STATE.acct) return;
+  var body = ta.value.trim();
+  var notes = thNotesFor(TH_STATE.acct);
+  // The current viewer is Carmen (lead CSM) for demo purposes.
+  var n = {
+    id:    'n' + Date.now(),
+    author:'carmen',
+    body:  body,
+    ts:    'just now',
+    parentId: null
+  };
+  notes = [n].concat(notes);
+  thWriteNotes(TH_STATE.acct, notes);
+  toast('Note posted · Pod notified ✓');
+  thRenderNotes();
+  thShow('notes');
+}
+
+// ── Tab 3: Pod Tasks ──────────────────────────────────────────────────────
+function thRenderTasks() {
+  var pane = document.getElementById('th-pane-tasks');
+  if (!pane || !TH_STATE.acct) return;
+  var tasks = thTasksFor(TH_STATE.acct);
+  var prioLabel = { crit:'Critical', high:'High', watch:'Watch' };
+  var listHtml = tasks.map(function(t){
+    var m = tvMember(t.assignee);
+    var nm = m ? m.name.split(' ')[0] : t.assignee;
+    return '<div class="th-task ' + (t.done ? 'done' : '') + '" data-tid="' + tvEscape(t.id) + '">'
+      + '<button class="th-task-cb" type="button" onclick="thToggleTask(\'' + tvEscape(t.id) + '\')" aria-label="Mark task ' + (t.done ? 'not done' : 'done') + '" aria-pressed="' + (t.done ? 'true' : 'false') + '">✓</button>'
+      + '<div class="th-task-mid">'
+      +   '<div class="th-task-t"><b>' + tvEscape(nm) + ':</b> ' + tvEscape(t.title) + '</div>'
+      +   '<div class="th-task-meta">'
+      +     '<span>Due: ' + tvEscape(t.due) + '</span>'
+      +     '<span class="th-task-prio ' + tvEscape(t.priority) + '">' + tvEscape(prioLabel[t.priority] || t.priority) + '</span>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="th-task-act"><button class="th-btn" type="button" onclick="thToggleTask(\'' + tvEscape(t.id) + '\')">' + (t.done ? 'Mark Open' : 'Mark Done') + '</button></div>'
+      + '</div>';
+  }).join('') || '<div style="font-size:12px;color:#6B7280;padding:8px 0;font-style:italic">No tasks yet for this account.</div>';
+
+  var formOn = TH_STATE.taskFormOn ? ' on' : '';
+  var assigneeOpts = POD_ROSTER.map(function(m){ return '<option value="' + tvEscape(m.id) + '">' + tvEscape(m.name) + ' (' + tvEscape(m.role) + ')</option>'; }).join('');
+
+  pane.innerHTML = ''
+    + '<div id="th-task-list">' + listHtml + '</div>'
+    + '<div style="margin-top:14px"><button class="th-btn prim" type="button" onclick="thOpenTaskForm()">+ Assign New Task</button></div>'
+    + '<form class="th-form' + formOn + '" id="th-task-form" onsubmit="event.preventDefault();thAssignTask()">'
+    +   '<div class="th-form-row"><div class="th-form-l">Assign to</div><select id="th-task-assignee">' + assigneeOpts + '</select></div>'
+    +   '<div class="th-form-row"><div class="th-form-l">Title</div><input id="th-task-title" type="text" placeholder="Task title" required></div>'
+    +   '<div class="th-form-row"><div class="th-form-l">Due date</div><input id="th-task-due" type="date"></div>'
+    +   '<div class="th-form-row"><div class="th-form-l">Priority</div>'
+    +     '<div class="th-form-radio">'
+    +       '<label><input type="radio" name="th-task-prio" value="crit"> Critical</label>'
+    +       '<label><input type="radio" name="th-task-prio" value="high" checked> High</label>'
+    +       '<label><input type="radio" name="th-task-prio" value="watch"> Watch</label>'
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="th-form-acts">'
+    +     '<button class="th-btn" type="button" onclick="thCloseTaskForm()">Cancel</button>'
+    +     '<button class="th-btn prim" type="submit">Assign Task</button>'
+    +   '</div>'
+    + '</form>';
+}
+
+function thOpenTaskForm() {
+  TH_STATE.taskFormOn = true;
+  thRenderTasks();
+  setTimeout(function(){ var t = document.getElementById('th-task-title'); if (t) t.focus(); }, 60);
+}
+function thCloseTaskForm() {
+  TH_STATE.taskFormOn = false;
+  thRenderTasks();
+}
+function thToggleTask(id) {
+  var tasks = thTasksFor(TH_STATE.acct);
+  var t = tasks.find(function(x){return x.id===id;});
+  if (!t) return;
+  t.done = !t.done;
+  thWriteTasks(TH_STATE.acct, tasks);
+  thRenderTasks();
+}
+
+function thAssignTask() {
+  var assignee = document.getElementById('th-task-assignee').value;
+  var title    = document.getElementById('th-task-title').value.trim();
+  var due      = document.getElementById('th-task-due').value;
+  var prio     = (document.querySelector('input[name="th-task-prio"]:checked') || {}).value || 'high';
+  if (!title) return;
+  var m = tvMember(assignee);
+  var dueLabel = due || '—';
+  if (due) {
+    var d = new Date(due + 'T00:00:00');
+    if (!isNaN(d.getTime())) {
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      dueLabel = months[d.getMonth()] + ' ' + d.getDate();
+    }
+  }
+  var task = { id:'t' + Date.now(), assignee:assignee, title:title, due:dueLabel, priority:prio, done:false };
+  var tasks = thTasksFor(TH_STATE.acct);
+  tasks.push(task);
+  thWriteTasks(TH_STATE.acct, tasks);
+  TH_STATE.taskFormOn = false;
+  thRenderTasks();
+  toast('Task assigned to ' + (m ? m.name : assignee) + " · Added to their Today's Tasks ✓");
+
+  // Critical + due within 48 hours fires the extra Urgent Inbox toast.
+  if (prio === 'crit' && due) {
+    var d2 = new Date(due + 'T00:00:00');
+    var now = new Date();
+    var hours = (d2.getTime() - now.getTime()) / 36e5;
+    if (hours >= -2 && hours <= 48) {
+      setTimeout(function(){
+        toast('Critical task added to ' + (m ? m.name : assignee) + "'s Urgent Inbox ⚠");
+      }, 700);
+    }
+  }
+}
+
+// ── Tab 4: Smart Sheet ────────────────────────────────────────────────────
+function thRenderSheet() {
+  var pane = document.getElementById('th-pane-sheet');
+  if (!pane || !TH_STATE.acct) return;
+  var rows = thSheetFor(TH_STATE.acct);
+  var rowsHtml = rows.map(function(r, i){
+    return '<tr data-rid="' + i + '">'
+      + '<td><input type="text" value="' + tvEscape(r.name)      + '" data-f="name"      onchange="thSheetEdit(' + i + ',\'name\',this.value)"></td>'
+      + '<td><input type="text" value="' + tvEscape(r.role)      + '" data-f="role"      onchange="thSheetEdit(' + i + ',\'role\',this.value)"></td>'
+      + '<td><input type="text" value="' + tvEscape(r.influence) + '" data-f="influence" onchange="thSheetEdit(' + i + ',\'influence\',this.value)"></td>'
+      + '<td><input type="text" value="' + tvEscape(r.relation)  + '" data-f="relation"  onchange="thSheetEdit(' + i + ',\'relation\',this.value)"></td>'
+      + '<td><input type="text" value="' + tvEscape(r.owner)     + '" data-f="owner"     onchange="thSheetEdit(' + i + ',\'owner\',this.value)"></td>'
+      + '<td><button class="th-sheet-rm" type="button" onclick="thSheetRemove(' + i + ')" aria-label="Remove row ' + (i+1) + '">✕</button></td>'
+      + '</tr>';
+  }).join('');
+  pane.innerHTML = ''
+    + '<div style="font-size:11px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Stakeholder Map</div>'
+    + '<div style="overflow-x:auto"><table class="th-sheet"><thead><tr>'
+    +   '<th>Name</th><th>Role</th><th>Influence</th><th>Relation</th><th>Owner</th><th></th>'
+    + '</tr></thead><tbody>' + rowsHtml + '</tbody></table></div>'
+    + '<div class="th-ai-insight"><b>AI Insight:</b> Critical gap — no identified champion in current stakeholder map. David and Carmen should coordinate stakeholder discovery before save call.</div>'
+    + '<div class="th-sheet-acts">'
+    +   '<button class="th-btn" type="button" onclick="thSheetAddRow()">+ Add Row</button>'
+    +   '<button class="th-btn prim" type="button" onclick="thSheetSave()">💾 Save Sheet</button>'
+    +   '<button class="th-btn" type="button" onclick="thSheetAsk()">🧠 Ask AI to suggest</button>'
+    + '</div>';
+}
+function thSheetEdit(i, field, value) {
+  var rows = thSheetFor(TH_STATE.acct);
+  if (!rows[i]) return;
+  rows[i][field] = value;
+  thWriteSheet(TH_STATE.acct, rows);
+}
+function thSheetAddRow() {
+  var rows = thSheetFor(TH_STATE.acct);
+  rows.push({ name:'', role:'', influence:'', relation:'', owner:'' });
+  thWriteSheet(TH_STATE.acct, rows);
+  thRenderSheet();
+}
+function thSheetRemove(i) {
+  var rows = thSheetFor(TH_STATE.acct);
+  rows.splice(i, 1);
+  thWriteSheet(TH_STATE.acct, rows);
+  thRenderSheet();
+}
+function thSheetSave() { toast('Sheet saved · Pod can now see updates ✓'); }
+function thSheetAsk() { toast('AI suggests: Identify CFO and CISO before extension call. Phase 2: Live AI assistance ✓'); }
+
+// ── Tab 5: AI Strategy ────────────────────────────────────────────────────
+function thRenderStrategy() {
+  var pane = document.getElementById('th-pane-strategy');
+  if (!pane || !TH_STATE.acct) return;
+  var acct = TH_STATE.acct;
+  var r = TV_BOOK.find(function(x){return x.key===acct;});
+  if (!r) return;
+  var strategies = {
+    nova: {
+      recs: [
+        { who:'Sarah',  role:'Renewal Specialist', action:'Finalize 60-day extension terms with champion intro requirement', why:'Carmen has verbal interest from Torres but no commitment. Sarah\'s terms anchor the negotiation.' },
+        { who:'Carmen', role:'CSM',                action:'Send extension proposal to Torres by EOD May 20',                  why:'17 days to renewal, need to lock movement before week ends.' },
+        { who:'David',  role:'AE',                 action:'Hold expansion outreach until July 18',                            why:'Premature expansion talk risks the save. Standing by to re-engage post-extension.' }
+      ],
+      risk: {
+        level: 'HIGH',
+        body:  'Champion is cold. No prior relationship. Single stakeholder visibility. Contract unopened in Ironclad. If save fails, $31K ARR loss + potential reference impact.'
+      }
+    }
+  };
+  var s = strategies[acct] || {
+    recs: [
+      { who:'Carmen', role:'CSM', action:'Open Strategy Huddle for ' + r.nm, why:'Phase 2 demo: only NovaVault carries a hand-tuned AI strategy. Other accounts inherit a default scaffold.' }
+    ],
+    risk: { level:'MEDIUM', body:'Default scaffold — strategy is not yet tuned for ' + r.nm + '. Use Pod Notes + Smart Sheet to capture coordination state.' }
+  };
+  var recsHtml = s.recs.map(function(rec, i){
+    return '<div class="th-ai-rec">'
+      + '<div class="th-ai-rec-n">' + (i+1) + '</div>'
+      + '<div class="th-ai-rec-bd"><b>' + tvEscape(rec.who.toUpperCase()) + '</b> (' + tvEscape(rec.role) + ') — ' + tvEscape(rec.action) + '<div class="why">Why: ' + tvEscape(rec.why) + '</div></div>'
+      + '</div>';
+  }).join('');
+  pane.innerHTML = ''
+    + '<div class="th-ai-hd"><i class="ti ti-sparkles" style="color:#4F46E5"></i> AI POD STRATEGY · ' + tvEscape(r.nm) + '</div>'
+    + '<div class="th-ai-sec"><div class="th-ai-sec-t">3 Recommended Actions</div>' + recsHtml + '</div>'
+    + '<div class="th-ai-sec"><div class="th-ai-sec-t">Risk Assessment</div><div class="th-ai-risk"><b>' + tvEscape(s.risk.level) + '</b>' + tvEscape(s.risk.body) + '</div></div>'
+    + '<div class="th-sheet-acts">'
+    +   '<button class="th-btn prim" type="button" onclick="thScheduleHuddle()">Schedule Pod Huddle</button>'
+    +   '<button class="th-btn" type="button" onclick="thMarkStrategy()">Mark Strategy Reviewed</button>'
+    + '</div>';
+}
+function thScheduleHuddle() { toast('Pod huddle calendar invite sent to 6 members · 30 min · Phase 2'); }
+function thMarkStrategy() { toast('Strategy marked as reviewed · Pod notified ✓'); }
 
 document.addEventListener('click', function(e){
   if (!TV_COLS_OPEN) return;
