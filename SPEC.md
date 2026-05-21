@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.28.0
+**Version:** 4.29.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,22 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.29.0] — 2026-05-21
+
+Risk & Signals workflow QA — 6 fixes + 1 bonus. The cross-source synthesis is already best in class; these tighten the rough edges that prevented unqualified daily adoption. **Result: 416/416 chromium tests passing.**
+
+### Fixed
+
+- **Fix**: Champion Change Protocol opens an in-tab drawer instead of tab-jumping to Champions. Body-level `#cc-drawer` mounts at 520 px right, follows the gb-drawer shell pattern, and registers with the v4.16.0 single drawer manager. Drawer carries Previous champion / New contact / Recommended sequence (numbered 1–3) / Re-engagement status (red strip when *NOT STARTED*), plus three actions — *Notify AE* / *Open Save Strategy* / *View in Champions Tab →* (the third is the tertiary tab-jump fallback). Escape closes the drawer and restores focus to the trigger button.
+- **Fix**: Push to Gainsight toast shows specific CTA count + assignee. `rsPlayPush` now reads `p.steps.length` and toasts *"5 CTAs created in Gainsight · NovaVault · Assigned to Carmen ✓"*. When a play carries zero steps, the toast falls back to *"Save play synced to Gainsight · {Account} · No new CTAs created ✓"*.
+- **Fix**: STALE badges get an aggressive visual treatment. `.rs-sig-row.stale-row` dims the entire row to `opacity:.75`, strikes through the *Last updated* timestamp, and reorders the STALE pill so it leads the meta row (via `order:-1` + dark-grey-700 background, 11 px uppercase). The pill carries a `title` tooltip + `role="status"` + `aria-label` reading *"Signal stale: last updated N days ago, verify in Gong/Gainsight/Inbox/Zendesk before acting"*. NEW pills + FRESH (no-badge) signals are unchanged.
+- **Fix**: Apex Dynamics moved from Dark Zone to Champions. The Apex signal pattern is *champion-departed*, not *passive silence*. `RS_DARK` drops to 2 entries (Meridian + Creston); `RS_CHAMPS_CHANGES` carries the Apex entry alongside NovaVault. Dark Zone count drops 3 → 2; champion-change count goes 1 → 2.
+- **Feature**: Stable Champions section enriched. Each row now surfaces `Title`, `Last Gong`, `Last QBR` (overdue text rendered in amber), and `Engagement trend` (📈 Increasing / → Stable / 📉 Declining). When a warning condition triggers (overdue QBR > 1 quarter, Gong silence > 60 days, declining trend), a recommended-action strip appears with an inline action button — *Schedule Q2 EBR* routes to the Campaigns wizard with the EBR Overdue segment chip pre-selected; *Reply to inbound* opens the Compose drawer for Meridian.
+- **Refinement**: Removed redundant *Update Play Status* button on Save Plays (the status badge + per-step toggle handle this) and *Update Champion* button on stable champion rows (nothing to update when a champion hasn't changed). The *Update status* button on champion-change rows stays — there IS an active change to track there.
+- **Refinement**: Brightex competitor flag downgraded from `Open Save Strategy` primary CTA to a three-action layout — primary *📝 Add Counter-Narrative Note* opens an inline `role="form"` textarea pre-filled with *"Okta differentiation points to surface in next call:"*, persists to `teamos_competitor_notes[acct]`, and toasts *"Counter-narrative note saved · brightex · Gainsight timeline ✓"*. Secondary *Watch & Track* adds the signal to a watch list with no save play triggered. Tertiary *Open Save Strategy* stays available but de-emphasized (`opacity:.65`). Removes false urgency on a High (not Critical) signal.
 
 ---
 
