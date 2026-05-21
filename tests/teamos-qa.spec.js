@@ -2590,11 +2590,13 @@ test.describe('v4.16.0 Drawer manager + Urgent Inbox', () => {
   test('FIX 2: every Urgent Inbox row shows full first name + account, no truncation', async ({ page }) => {
     const rows = page.locator('#tab-dash .ii');
     expect(await rows.count()).toBe(4);
+    // v4.30.1 — inbox sorted by data-priority: Michael (100) → Jennifer (85)
+    // → Sarah (70) → Maggie (40).
     const expected = [
       { nm:'Michael Torres', acct:'NovaVault' },
-      { nm:'Maggie Spry',    acct:'CS Leadership' },
+      { nm:'Jennifer Ramos', acct:'Meridian' },
       { nm:'Sarah Chen',     acct:'Brightex' },
-      { nm:'Jennifer Ramos', acct:'Meridian' }
+      { nm:'Maggie Spry',    acct:'CS Leadership' }
     ];
     for (let i = 0; i < 4; i++) {
       const nm   = await rows.nth(i).locator('.ii-nm').textContent();
@@ -2606,11 +2608,12 @@ test.describe('v4.16.0 Drawer manager + Urgent Inbox', () => {
 
   test('FIX 2: every row carries the expected status chip + source chip', async ({ page }) => {
     const rows = page.locator('#tab-dash .ii');
+    // v4.30.1 — order matches the priority sort above.
     const expected = [
       { status:'CRITICAL SAVE', statusCls:'tb-crit',  source:'GAINSIGHT', sourceCls:'gainsight' },
-      { status:'DM',            statusCls:'tb-watch', source:'SLACK',     sourceCls:'slack'     },
+      { status:'INBOUND',       statusCls:'tb-opp',   source:'GMAIL',     sourceCls:'gmail'     },
       { status:'SLA OPEN',      statusCls:'tb-high',  source:'GMAIL',     sourceCls:'gmail'     },
-      { status:'INBOUND',       statusCls:'tb-opp',   source:'GMAIL',     sourceCls:'gmail'     }
+      { status:'DM',            statusCls:'tb-watch', source:'SLACK',     sourceCls:'slack'     }
     ];
     for (let i = 0; i < 4; i++) {
       const row = rows.nth(i);
@@ -5445,5 +5448,182 @@ test.describe('v4.30.0 Forecasting tab refinements', () => {
     expect(sub).toMatch(/From 2 accounts:/);
     expect(sub).toMatch(/NovaVault/);
     expect(sub).toMatch(/Acme Corp/);
+  });
+});
+
+test.describe('v4.30.1 TeamOS polish bundle', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => { try { localStorage.clear(); } catch(_){} });
+  });
+
+  // ── FIX 1: Status tag visual hierarchy ─────────────────────────────────
+  test('FIX 1: CRIT / HIGH / OPP / WATCH tags carry distinct borders + weights', async ({ page }) => {
+    const styles = await page.evaluate(() => {
+      const pick = sel => {
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        const cs = getComputedStyle(el);
+        return { fw: cs.fontWeight, bs: cs.borderStyle, bw: cs.borderTopWidth };
+      };
+      return {
+        crit:  pick('.tb-crit'),
+        high:  pick('.tb-high'),
+        opp:   pick('.tb-opp'),
+        watch: pick('.tb-watch')
+      };
+    });
+    expect(styles.crit.fw).toBe('700');
+    expect(styles.crit.bs).toBe('solid');
+    expect(styles.high.fw).toBe('700');
+    expect(styles.high.bs).toBe('dashed');
+    expect(styles.opp.fw).toBe('500');
+    expect(styles.opp.bs).toBe('solid');
+    expect(styles.watch.fw).toBe('500');
+    expect(styles.watch.bs).toBe('solid');
+  });
+
+  test('FIX 1: OPP tag has a leading 📈 icon via ::before', async ({ page }) => {
+    const content = await page.locator('.tb-opp').first().evaluate(el => getComputedStyle(el, '::before').content);
+    expect(content).toMatch(/📈/);
+  });
+
+  // ── FIX 2: Mission Briefing transparency ───────────────────────────────
+  test('FIX 2: Mission Briefing meta bar shows Generated timestamp + Regenerate', async ({ page }) => {
+    await expect(page.locator('#mb-meta-bar')).toBeVisible();
+    const t = await page.locator('#mb-meta-bar').textContent();
+    expect(t).toMatch(/Generated \d{1,2}:\d{2} (AM|PM)/);
+    expect(t).toMatch(/Synced with Gainsight \+ Gong/);
+    expect(t).toMatch(/Regenerate/);
+    const btn = page.locator('#mb-regen');
+    expect(await btn.getAttribute('aria-label')).toBe('Regenerate mission briefing');
+  });
+
+  test('FIX 2: Regenerate fires toast + briefly flashes the bar teal', async ({ page }) => {
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.locator('#mb-regen').click();
+    await page.waitForTimeout(120);
+    const flashed = await page.locator('#mb-meta-bar.flash').count();
+    expect(flashed).toBe(1);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /Mission briefing refreshed · Latest signals applied/.test(t))).toBe(true);
+  });
+
+  test('FIX 2: 2-hour-old timestamp turns the bar stale (amber)', async ({ page }) => {
+    await page.evaluate(() => { MB_BRIEFING_GEN_AT = Date.now() - 2.5 * 60 * 60 * 1000; mbUpdateStaleness(); });
+    await page.waitForTimeout(150);
+    await expect(page.locator('#mb-meta-bar.stale')).toBeVisible();
+  });
+
+  // ── FIX 3: Urgent Inbox sort by data-priority ──────────────────────────
+  test('FIX 3: Urgent Inbox renders in priority order on page load', async ({ page }) => {
+    const order = await page.evaluate(() => Array.from(document.querySelectorAll('.ii[data-priority]')).map(r => r.getAttribute('data-nm')));
+    expect(order).toEqual(['Michael Torres', 'Jennifer Ramos', 'Sarah Chen', 'Maggie Spry']);
+  });
+
+  test('FIX 3: each ii row aria-label includes "Priority N of 4"', async ({ page }) => {
+    const labels = await page.evaluate(() => Array.from(document.querySelectorAll('.ii[data-priority]')).map(r => r.getAttribute('aria-label')));
+    expect(labels[0]).toMatch(/^Priority 1 of 4: /);
+    expect(labels[1]).toMatch(/^Priority 2 of 4: /);
+    expect(labels[2]).toMatch(/^Priority 3 of 4: /);
+    expect(labels[3]).toMatch(/^Priority 4 of 4: /);
+  });
+
+  // ── FIX 4: Today's Tasks readability ───────────────────────────────────
+  test('FIX 4: every task title carries a title attribute with full text', async ({ page }) => {
+    const titles = await page.evaluate(() => Array.from(document.querySelectorAll('#tab-dash .ac-title')).map(t => t.getAttribute('title')));
+    expect(titles.length).toBe(7);
+    titles.forEach(t => expect(t && t.length).toBeGreaterThan(0));
+  });
+
+  test('FIX 4: clicking a task title toggles expanded state', async ({ page }) => {
+    // Tasks 6/7 have plain text (no inner .acct-lk span) so the click reliably
+    // lands on the .ac-title itself.
+    const t = page.locator('#tab-dash #ac6 .ac-title');
+    expect(await t.evaluate(el => el.classList.contains('expanded'))).toBe(false);
+    await t.click();
+    await page.waitForTimeout(120);
+    expect(await t.evaluate(el => el.classList.contains('expanded'))).toBe(true);
+    await t.click();
+    await page.waitForTimeout(120);
+    expect(await t.evaluate(el => el.classList.contains('expanded'))).toBe(false);
+  });
+
+  // ── FIX 5: Pulse strip chips deep-linked + accessible ──────────────────
+  test('FIX 5: every pulse-strip chip is keyboard-accessible + carries aria-label', async ({ page }) => {
+    const chips = await page.evaluate(() => Array.from(document.querySelectorAll('.pulse-strip .ps-btn')).map(b => ({
+      tag:   b.tagName,
+      label: b.getAttribute('aria-label'),
+      type:  b.getAttribute('type')
+    })));
+    expect(chips.length).toBeGreaterThanOrEqual(6);
+    chips.forEach(c => {
+      expect(c.tag).toBe('BUTTON');
+      expect(c.type).toBe('button');
+      expect(c.label && c.label.length).toBeGreaterThan(0);
+    });
+  });
+
+  // ── FIX 6: dataAttribHtml on dynamic render functions ──────────────────
+  test('FIX 6: Forecasting Dust Forecast renders a data-attrib footer', async ({ page }) => {
+    await page.evaluate(() => { goTab('forecast', document.querySelector('.n-tab[onclick*="forecast"]')); });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('#fc-dustforecast .data-attrib').count()).toBe(1);
+  });
+
+  test('FIX 6: Forecasting ARR Trends renders a data-attrib footer', async ({ page }) => {
+    await page.evaluate(() => { goTab('forecast', document.querySelector('.n-tab[onclick*="forecast"]')); });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => fcShow('trends'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('#fc-arrtrends .data-attrib').count()).toBe(1);
+  });
+
+  test('FIX 6: Risk Dark Zone renders a data-attrib footer', async ({ page }) => {
+    await page.evaluate(() => { goTab('risk', document.querySelector('.n-tab[onclick*="risk"]')); });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => rsShow('dark'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('#rs-sec-dark .data-attrib').count()).toBe(1);
+  });
+
+  test('FIX 6: Templates + Analytics render data-attrib footers', async ({ page }) => {
+    await page.evaluate(() => { goTab('campaigns', document.querySelector('.n-tab[onclick*="campaigns"]')); });
+    await page.waitForTimeout(150);
+    await page.evaluate(() => cmShowSection('templates'));
+    await page.waitForTimeout(150);
+    expect(await page.locator('#cm-templates .data-attrib').count()).toBe(1);
+    await page.evaluate(() => cmShowSection('analytics'));
+    await page.waitForTimeout(150);
+    expect(await page.locator('#cm-analytics .data-attrib').count()).toBe(1);
+  });
+
+  test('FIX 6: Team View Roster + Book each get a data-attrib footer', async ({ page }) => {
+    await page.evaluate(() => { goTab('team', document.querySelector('.n-tab[onclick*="team"]')); });
+    await page.waitForTimeout(250);
+    expect(await page.locator('#tv-roster-sec .data-attrib').count()).toBe(1);
+    expect(await page.locator('#tv-book-sec .data-attrib').count()).toBe(1);
+  });
+
+  // ── FIX 7: Top nav notification icons ──────────────────────────────────
+  test('FIX 7: all 3 notification icons carry aria-label + open popovers', async ({ page }) => {
+    const labels = await page.evaluate(() => ({
+      em: document.getElementById('nb-em').getAttribute('aria-label'),
+      sl: document.getElementById('nb-sl').getAttribute('aria-label'),
+      re: document.getElementById('nb-re').getAttribute('aria-label')
+    }));
+    expect(labels.em).toMatch(/Email notifications/i);
+    expect(labels.sl).toMatch(/Slack notifications/i);
+    expect(labels.re).toMatch(/Renewal activity/i);
+    await page.locator('#nb-em').click();
+    await page.waitForTimeout(120);
+    await expect(page.locator('#npop-em.on')).toBeVisible();
+    await page.locator('#nb-em').click(); // close
+    await page.waitForTimeout(120);
   });
 });
