@@ -4805,3 +4805,170 @@ test.describe('v4.27.0 Campaign Manager medium bundle', () => {
     expect((await page.locator('.cm-analytics-banner.on').textContent())).toMatch(/Limited data · Custom ranges under 7 days/);
   });
 });
+
+test.describe('v4.28.0 Campaign Manager send-time windows', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => { try { localStorage.clear(); } catch(_){} });
+    await page.evaluate(() => { goTab('campaigns', document.querySelector('.n-tab[onclick*="campaigns"]')); });
+    await page.waitForTimeout(150);
+  });
+
+  test('Demo campaigns ship with injected default send windows', async ({ page }) => {
+    const w = await page.evaluate(() => {
+      return {
+        cmp1: CM_CAMPAIGNS.find(c => c.id === 'cmp1').sendWindow,
+        cmp2: CM_CAMPAIGNS.find(c => c.id === 'cmp2').sendWindow,
+        cmp3: CM_CAMPAIGNS.find(c => c.id === 'cmp3').sendWindow
+      };
+    });
+    // cmp1 = default Mon–Fri 9–5, recipient TZ, skip weekends.
+    expect(w.cmp1.businessHoursOnly).toBe(true);
+    expect(w.cmp1.days).toEqual(['mon','tue','wed','thu','fri']);
+    expect(w.cmp1.timezone).toBe('recipient');
+    expect(w.cmp1.skipWeekends).toBe(true);
+    // cmp2 = Tue–Thu only.
+    expect(w.cmp2.days).toEqual(['tue','wed','thu']);
+    // cmp3 = Mon–Wed + skip US holidays.
+    expect(w.cmp3.days).toEqual(['mon','tue','wed']);
+    expect(w.cmp3.skipHolidays).toBe(true);
+  });
+
+  test('Step 4 renders the Send Window section + day buttons + preview', async ({ page }) => {
+    await page.evaluate(() => { cmOpenWizard(); CM_WIZ.step = 4; cmWizRender(); });
+    await page.waitForTimeout(200);
+    const sw = page.locator('.cm-sw[role="group"]');
+    await expect(sw).toBeVisible();
+    expect(await sw.getAttribute('aria-label')).toBe('Send time window configuration');
+    expect(await page.locator('.cm-sw-day').count()).toBe(7);
+    // Mon–Fri start as on.
+    const days = await page.evaluate(() => Array.from(document.querySelectorAll('.cm-sw-day')).map(b => ({ on: b.classList.contains('on'), aria: b.getAttribute('aria-pressed') })));
+    expect(days[0].on).toBe(true);  expect(days[0].aria).toBe('true');  // Mon
+    expect(days[5].on).toBe(false); expect(days[5].aria).toBe('false'); // Sat
+    // Preview region.
+    const pv = page.locator('#cm-sw-preview');
+    await expect(pv).toBeVisible();
+    expect(await pv.getAttribute('role')).toBe('status');
+    expect(await pv.getAttribute('aria-live')).toBe('polite');
+    expect(await page.locator('.cm-sw-preview-line').count()).toBe(3);
+  });
+
+  test('Toggling skip weekends + day buttons updates state + preview', async ({ page }) => {
+    await page.evaluate(() => { cmOpenWizard(); CM_WIZ.step = 4; cmWizRender(); });
+    await page.waitForTimeout(150);
+    // Toggle Mon off.
+    await page.locator('.cm-sw-day').first().click();
+    await page.waitForTimeout(120);
+    expect(await page.evaluate(() => CM_WIZ.sendWindow.days)).toEqual(['tue','wed','thu','fri']);
+    // Toggle skip weekends off via checkbox.
+    await page.evaluate(() => cmWizSendWindowSet('skipWeekends', false));
+    await page.waitForTimeout(120);
+    expect(await page.evaluate(() => CM_WIZ.sendWindow.skipWeekends)).toBe(false);
+  });
+
+  test('Narrow window warning fires when business hours are < 4h wide', async ({ page }) => {
+    await page.evaluate(() => { cmOpenWizard(); CM_WIZ.step = 4; CM_WIZ.sendWindow.startTime = '09:00'; CM_WIZ.sendWindow.endTime = '10:30'; cmWizRender(); });
+    await page.waitForTimeout(150);
+    const warn = await page.locator('.cm-wiz-warn').allTextContents();
+    expect(warn.some(w => /Narrow send window/.test(w))).toBe(true);
+  });
+
+  test('Immediately touch outside window warns with computed queue time', async ({ page }) => {
+    // Pick a window that excludes the current moment regardless of when the
+    // test runs: only Saturday, 02:00–02:30. (Easy to fall outside.)
+    await page.evaluate(() => {
+      cmOpenWizard();
+      CM_WIZ.step = 4;
+      CM_WIZ.sendWindow.days = ['sat'];
+      CM_WIZ.sendWindow.startTime = '02:00';
+      CM_WIZ.sendWindow.endTime   = '02:30';
+      cmWizRender();
+    });
+    await page.waitForTimeout(150);
+    const warns = await page.locator('.cm-wiz-warn').allTextContents();
+    expect(warns.some(w => /Touch 1 is set to Immediately.*queue until/.test(w))).toBe(true);
+  });
+
+  test('Step 5 summary surfaces the Send window row', async ({ page }) => {
+    await page.evaluate(() => { cmOpenWizard(); CM_WIZ.step = 5; cmWizRender(); });
+    await page.waitForTimeout(200);
+    const summary = await page.locator('.cm-wiz-summary').textContent();
+    expect(summary).toMatch(/Send window/);
+    expect(summary).toMatch(/Business hours only/);
+    expect(summary).toMatch(/Mon–Fri/);
+    expect(summary).toMatch(/recipient TZ/);
+    expect(summary).toMatch(/skip weekends/);
+  });
+
+  test('Campaign View drawer shows Send Window section + describe text', async ({ page }) => {
+    await page.evaluate(() => cmCampView('cmp2'));
+    await page.waitForTimeout(300);
+    const drawer = await page.locator('#cm-cv-drawer').textContent();
+    expect(drawer).toMatch(/Send window/);
+    expect(drawer).toMatch(/Tue, Wed, Thu/);
+    expect(drawer).toMatch(/recipient TZ/);
+  });
+
+  test('cmComputeNextSend skips weekend → lands on a weekday at startTime', async ({ page }) => {
+    // Saturday May 23, 2026 noon → expects Monday May 25 at 09:00.
+    const result = await page.evaluate(() => {
+      const sat = new Date(2026, 4, 23, 12, 0, 0);
+      const win = cmDefaultSendWindow();
+      const out = cmComputeNextSend(sat, win);
+      return { day: out.getDay(), hour: out.getHours(), date: out.getDate(), month: out.getMonth() };
+    });
+    expect(result.day).toBe(1);     // Monday
+    expect(result.hour).toBe(9);
+    expect(result.date).toBe(25);
+    expect(result.month).toBe(4);   // May
+  });
+
+  test('cmComputeNextSend skips US federal holiday when skipHolidays=true', async ({ page }) => {
+    // Memorial Day 2026 is Monday May 25 — schedule a Sat noon launch with
+    // skipHolidays=true: next non-holiday weekday is Tue May 26.
+    const out = await page.evaluate(() => {
+      const sat = new Date(2026, 4, 23, 12, 0, 0);
+      const win = cmDefaultSendWindow();
+      win.skipHolidays = true;
+      const r = cmComputeNextSend(sat, win);
+      return { date: r.getDate(), month: r.getMonth(), day: r.getDay() };
+    });
+    expect(out.date).toBe(26);
+    expect(out.month).toBe(4);
+    expect(out.day).toBe(2); // Tuesday
+  });
+
+  test('cmInWindow correctly excludes Sunday + outside business hours', async ({ page }) => {
+    const checks = await page.evaluate(() => {
+      const win = cmDefaultSendWindow();
+      return {
+        sun:   cmInWindow(new Date(2026, 4, 24, 12, 0), win),  // Sun
+        mon8:  cmInWindow(new Date(2026, 4, 25, 8, 0),  win),  // Mon 8am
+        mon10: cmInWindow(new Date(2026, 4, 25, 10, 0), win),  // Mon 10am — Mem Day
+        tue10: cmInWindow(new Date(2026, 4, 26, 10, 0), win)   // Tue 10am
+      };
+    });
+    expect(checks.sun).toBe(false);
+    expect(checks.mon8).toBe(false);
+    expect(checks.mon10).toBe(true);   // skipHolidays defaults false
+    expect(checks.tue10).toBe(true);
+  });
+
+  test('New campaign saved from wizard inherits the configured send window', async ({ page }) => {
+    await page.evaluate(() => {
+      cmOpenWizard();
+      CM_WIZ.name = 'Test send window persistence';
+      CM_WIZ.type = 'custom';
+      CM_WIZ.sendWindow.days = ['mon','wed','fri'];
+      CM_WIZ.sendWindow.skipHolidays = true;
+      cmWizSaveDraft();
+    });
+    await page.waitForTimeout(200);
+    const saved = await page.evaluate(() => {
+      const c = CM_CAMPAIGNS.find(x => x.name === 'Test send window persistence');
+      return c && c.sendWindow;
+    });
+    expect(saved).toBeTruthy();
+    expect(saved.days).toEqual(['mon','wed','fri']);
+    expect(saved.skipHolidays).toBe(true);
+  });
+});

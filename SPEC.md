@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.27.0
+**Version:** 4.28.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,25 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.28.0] — 2026-05-21
+
+Send-time scheduling windows — the final Campaign Manager gap closes Gainsight Journey Orchestrator replacement. **Result: 401/401 chromium tests passing.**
+
+### Added
+
+- **Feature**: Send-time scheduling windows on every campaign — business hours only, day-of-week selection, recipient TZ / my TZ / account TZ, skip weekends, skip US holidays, quiet hours. Each campaign object gains a `sendWindow` property — `{ businessHoursOnly, days[], startTime, endTime, timezone, skipWeekends, skipHolidays, quietHours{ enabled, start, end } }`. The wizard's Step 4 (Sequence Builder) now mounts a new `.cm-sw` section (`role="group"` + `aria-label="Send time window configuration"`) directly below the touches list with controls for every field. Day buttons are tri-aria (`aria-pressed`) toggles.
+- **Feature**: Live touch send-time preview in Step 4 that recalculates as window settings change. A `cm-sw-preview` block (`role="status"` + `aria-live="polite"`) renders one line per touch — *"Touch 1: Today · 9:00 AM (business hours)"*, *"Touch 2: May 26 · 9:00 AM (Day 5 · skipped Sat May 23)"* — using a new `cmComputeNextSend(baseDate, window)` walker that advances minute-by-day until the date lands inside the window. Helpers added: `cmInWindow`, `cmDefaultSendWindow`, `cmSendWindowDescribe`, `cmFormatSendTime`, `cmTouchAbsoluteSend`, `cmIsUSHoliday`, `cmFormatTimeShort`, `cmParseHHMM`, `cmDayName`. `CM_US_HOLIDAYS` carries the 2026 + 2027 federal-holiday subset.
+- **Feature**: View panel shows active send window + any queued touches awaiting next window. A new `cm-drawer-sec` block titled *"Send window"* renders below the Sequence Progress section. When the current moment falls outside the campaign's window, a queue line appears: *"📅 N touches queued for next window: Mon May 26 · 9:00 AM"*.
+- **Feature**: All 3 demo campaigns get sensible default windows injected. `cmp1` (June Renewal Push) ships with the default Mon–Fri 9–5, recipient TZ, skip weekends. `cmp2` (Dark Zone Re-engagement) restricts to Tue–Thu only. `cmp3` (Q2 EBR Invitations) restricts to Mon–Wed + skip US holidays. Injection runs once at script load via `CM_SEND_WINDOW_OVERRIDES`.
+- **Validation**: warns when window is too narrow (< 4h wide) OR when "Immediately" touches fall outside the current window. Both warnings render as `role="alert"` `.cm-wiz-warn` strips at the top of Step 4; the queue warning shows the computed time *"It will queue until Mon 9:00 AM."* from `cmComputeNextSend`.
+- **Wizard persistence**: `cmWizBuild` (the wizard → campaign serializer) deep-clones `CM_WIZ.sendWindow` onto the new campaign so configured windows survive save/send/draft.
+
+### Changed (UX)
+
+- Step 5 review summary gains a *"Send window"* row, between Templates and Sending from, with the human-readable description (e.g. *"Business hours only (Mon–Fri 9 AM–5 PM) · recipient TZ · skip weekends"*).
 
 ---
 
