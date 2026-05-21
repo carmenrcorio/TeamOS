@@ -2027,6 +2027,53 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .rs-sig-actions.multi .rs-btn{justify-content:center;font-size:10px;padding:5px 9px}
 .rs-sig-actions.multi .rs-btn.tertiary{opacity:.65;font-weight:600}
 .rs-sig-actions.multi .rs-btn.tertiary:hover{opacity:1}
+
+/* ─── v4.30.0 — Forecasting tab refinements ────────────────────────────── */
+/* FIX 4 — sharper pipeline row highlight (pulse → fade) on Timeline / ARR
+   Trends navigation. Existing .fc-row-highlight stays, plus a new
+   .pipeline-row-pulse class per spec. */
+.fc-pipe-tbl tbody tr.pipeline-row-pulse{animation:pipelinePulse 2s ease-out forwards}
+@keyframes pipelinePulse{
+  0%   {background:rgba(20,184,166,.18);box-shadow:inset 0 0 0 2px var(--tl)}
+  100% {background:transparent;box-shadow:inset 0 0 0 0 transparent}
+}
+
+/* FIX 8 — Forecast delta column header tooltip cue. */
+.fc-pipe-tbl thead th .fc-delta-tip{font-size:9px;color:#9CA3AF;font-weight:600;margin-left:6px;letter-spacing:.04em;cursor:help}
+.fc-fc-delta[title]{cursor:help}
+
+/* FIX 9 — Committed ARR tile multi-source list. */
+.fc-pipe-sum .fc-pipe-sum-sub.multi{font-size:11px;line-height:1.45}
+
+/* FIX 5 — Expansion Play drawer (body-level, mirrors gb-drawer / cc-drawer). */
+.xp-drawer-ov{position:fixed;inset:0;background:rgba(17,24,39,.45);z-index:9100;display:none}
+.xp-drawer-ov.on{display:block}
+.xp-drawer{position:fixed;top:0;right:0;width:520px;max-width:100vw;height:100vh;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;z-index:9101}
+.xp-drawer.on{transform:translateX(0)}
+.xp-drawer-hd{padding:14px 22px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.xp-drawer-t{font-size:15px;font-weight:800;color:#111827;letter-spacing:-.01em;display:flex;align-items:center;gap:7px}
+.xp-drawer-sub{font-size:11px;color:#374151;font-weight:600;line-height:1.5}
+.xp-drawer-x{font-family:inherit;font-size:22px;line-height:1;background:transparent;border:none;color:#6B7280;cursor:pointer;padding:4px 8px;border-radius:5px;min-width:36px}
+.xp-drawer-x:hover{background:var(--surf2);color:var(--tx)}
+.xp-drawer-body{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.xp-sec-t{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.xp-sec-bd{font-size:12px;color:#1F2937;font-weight:500;line-height:1.55}
+.xp-sec-bd b{color:#111827;font-weight:800}
+.xp-sec-list{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.xp-sec-list li{font-size:12px;color:#1F2937;font-weight:500;line-height:1.5}
+.xp-play{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.xp-play-step{padding:9px 12px 9px 38px;background:var(--surf2);border:1px solid var(--bd);border-radius:6px;position:relative;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55}
+.xp-play-step::before{content:counter(xp-step);position:absolute;left:10px;top:9px;width:22px;height:22px;border-radius:50%;background:var(--tl);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.xp-play{counter-reset:xp-step}
+.xp-play-step{counter-increment:xp-step}
+.xp-play-step b{color:#111827;font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:10px;display:block;margin-bottom:3px}
+.xp-obj{margin-top:4px;display:flex;flex-direction:column;gap:6px}
+.xp-obj-row{padding:8px 11px;background:#EEF2FF;border-left:3px solid #4F46E5;border-radius:5px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55}
+.xp-obj-row b{color:#312E81;font-weight:800;display:block;margin-bottom:3px}
+.xp-acts{display:flex;gap:7px;flex-wrap:wrap;padding-top:6px;border-top:1px dashed var(--bd);margin-top:4px}
+.xp-notes{margin-top:8px}
+.xp-notes textarea{width:100%;border:1px solid var(--bd2);border-radius:6px;padding:8px 11px;font-family:inherit;font-size:12px;color:#1F2937;background:var(--surf);outline:none;min-height:72px;resize:vertical;box-sizing:border-box}
+.xp-notes textarea:focus{border-color:var(--tl)}
 .cm-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg);color:var(--tx);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;letter-spacing:0;flex-shrink:0;text-transform:uppercase;border:1px solid var(--bd2)}
 .cm-cnt-mid{flex:1;min-width:0}
 .cm-cnt-nm{font-size:12px;font-weight:700;color:#111827;letter-spacing:-.01em;line-height:1.3}
@@ -3416,12 +3463,14 @@ body.offline .int-panel{top:124px}
 .fc-pipe-sum-sub{font-size:11px;color:#6B7280;font-weight:600;margin-top:2px}
 
 /* ─── Timeline ──────────────────────────────────────────────────────────── */
-.fc-tl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.fc-tl{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+@media (max-width:1080px){.fc-tl{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:900px){.fc-tl{grid-template-columns:1fr}}
 .fc-tl-col{border:1px solid var(--bd);border-radius:var(--rlg);padding:16px;background:var(--surf)}
 .fc-tl-col.m1{background:#FEF2F2;border-color:#FECACA}
 .fc-tl-col.m2{background:#FFFBEB;border-color:#FDE68A}
 .fc-tl-col.m3{background:#F0FDF4;border-color:#BBF7D0}
+.fc-tl-col.m4{background:#F0F9FF;border-color:#BAE6FD}
 .fc-tl-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,.07);flex-wrap:wrap;gap:6px}
 .fc-tl-hd-t{font-size:11px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em}
 .fc-tl-hd-meta{font-size:12px;color:#1F2937;font-weight:700}
@@ -4931,6 +4980,21 @@ body.offline .int-panel{top:124px}
   <div class="bf-sig-pop-body" id="bf-sig-pop-body"></div>
 </aside>
 
+<!-- v4.30.0 — Expansion Play drawer. Body-level shell mirroring the Champion
+     Change drawer pattern. Opened from "Open Expansion Play" on the Dust
+     Forecast Recovery Path; separate drawer type from the Pre-Call Brief. -->
+<div class="xp-drawer-ov" id="xp-drawer-ov" onclick="xpDrawerClose()" aria-hidden="true"></div>
+<aside class="xp-drawer" id="xp-drawer" role="dialog" aria-modal="true" aria-labelledby="xp-drawer-title" aria-hidden="true">
+  <div class="xp-drawer-hd">
+    <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:0">
+      <div class="xp-drawer-t" id="xp-drawer-title"><i class="ti ti-rocket" style="color:#0F766E"></i> Expansion Play</div>
+      <div class="xp-drawer-sub" id="xp-drawer-sub">—</div>
+    </div>
+    <button class="xp-drawer-x" type="button" onclick="xpDrawerClose()" aria-label="Close Expansion Play drawer">&times;</button>
+  </div>
+  <div class="xp-drawer-body" id="xp-drawer-body"></div>
+</aside>
+
 <!-- v4.29.0 — Champion Change Protocol drawer. Body-level so it can be opened
      from the All Signals row without tab-jumping. Same shell pattern as the
      gb-drawer. Registered with the single drawer manager. -->
@@ -5668,6 +5732,9 @@ document.addEventListener('keydown', function(e){
   // Escape precedence because it's a more focused R&S overlay).
   var ccDrawer = document.getElementById('cc-drawer');
   if (ccDrawer && ccDrawer.classList.contains('on') && typeof ccDrawerClose === 'function') { ccDrawerClose(); e.preventDefault(); return; }
+  // v4.30.0 — Expansion Play drawer (Forecasting recovery path).
+  var xpDrawer = document.getElementById('xp-drawer');
+  if (xpDrawer && xpDrawer.classList.contains('on') && typeof xpDrawerClose === 'function') { xpDrawerClose(); e.preventDefault(); return; }
   // v4.13.0 — Ghost-Buster drawer has the highest Escape precedence because
   // it's the topmost overlay when open.
   var gbDrawer = document.getElementById('gb-drawer');
@@ -10067,7 +10134,8 @@ var DRAWER_REGISTRY = {
   'fc-acct':{ sel:'#fc-acct-drawer',  close:function(){ if (typeof fcCloseAcctDrawer  === 'function') fcCloseAcctDrawer();  } },
   'cm-cv':  { sel:'#cm-cv-drawer',    close:function(){ if (typeof cmCampViewClose    === 'function') cmCampViewClose();    } },
   'th':     { sel:'#th-drawer',       close:function(){ if (typeof thClose            === 'function') thClose();            } },
-  'cc':     { sel:'#cc-drawer',       close:function(){ if (typeof ccDrawerClose      === 'function') ccDrawerClose();      } }
+  'cc':     { sel:'#cc-drawer',       close:function(){ if (typeof ccDrawerClose      === 'function') ccDrawerClose();      } },
+  'xp':     { sel:'#xp-drawer',       close:function(){ if (typeof xpDrawerClose      === 'function') xpDrawerClose();      } }
 };
 // Sub-panels — closed when any full drawer opens, but not tracked as _openDrawer.
 var DRAWER_SUBPANELS = [
@@ -16167,6 +16235,25 @@ function fcOverrideAmount(key) {
   return rec.forecast_amount != null ? rec.forecast_amount : null;
 }
 var FC_OVERRIDES = fcReadOverrides();
+// v4.30.0 — FIX 1: replay persisted status overrides back onto FC_PIPELINE
+// so a reload preserves the last selection from the dropdown.
+(function fcRestoreStatusFromOverrides(){
+  if (!FC_OVERRIDES || typeof FC_PIPELINE === 'undefined') return;
+  var labelToKey = {};
+  FC_STATUS_OPTS.forEach(function(o){ labelToKey[o[1]] = o[0]; });
+  Object.keys(FC_OVERRIDES).forEach(function(k){
+    var rec = FC_OVERRIDES[k];
+    if (!rec || typeof rec !== 'object') return;
+    var label = rec.forecast_status;
+    if (!label) return;
+    var statusKey = labelToKey[label];
+    var row = FC_PIPELINE.find(function(r){return r.key===k;});
+    if (row && statusKey) {
+      row.status = statusKey;
+      row.statusLabel = label;
+    }
+  });
+})();
 
 // v4.4.0 — Status update timestamps (per row, in-memory only).
 var FC_STATUS_TS = {};
@@ -16206,12 +16293,28 @@ function fcRenderPipeline() {
   var totalARR  = FC_PIPELINE.reduce(function(s,r){ return s + r.arr; }, 0);
   var atRiskARR = FC_PIPELINE.filter(function(r){return r.status==='churn'||r.status==='atrisk';}).reduce(function(s,r){return s+r.arr;}, 0);
   var atRiskCount = FC_PIPELINE.filter(function(r){return r.status==='churn'||r.status==='atrisk';}).length;
-  var committedARR = FC_PIPELINE.filter(function(r){return r.status==='ontrack'||r.status==='committed';}).reduce(function(s,r){return s+r.arr;}, 0);
+  // v4.30.0 — FIX 9: aggregate every committed/on-track account so the tile
+  // reflects the real total and lists its sources.
+  var committedRows = FC_PIPELINE.filter(function(r){return r.status==='ontrack'||r.status==='committed';});
+  var committedARR  = committedRows.reduce(function(s,r){return s+r.arr;}, 0);
+  var committedSub;
+  if (!committedRows.length) {
+    committedSub = '<span style="color:#9CA3AF">No committed accounts yet</span>';
+  } else if (committedRows.length <= 3) {
+    committedSub = 'From ' + committedRows.length + ' account' + (committedRows.length === 1 ? '' : 's') + ': ' + committedRows.map(function(r){ return fcEscape(r.nm); }).join(', ');
+  } else {
+    var first3 = committedRows.slice(0, 3).map(function(r){ return fcEscape(r.nm); }).join(', ');
+    committedSub = 'From ' + committedRows.length + ' accounts: ' + first3 + ', +' + (committedRows.length - 3) + ' more';
+  }
   var unknownARR = FC_PIPELINE.filter(function(r){return r.status==='unknown';}).reduce(function(s,r){return s+r.arr;}, 0);
   var unknownCount = FC_PIPELINE.filter(function(r){return r.status==='unknown';}).length;
   var rowsHtml = FC_PIPELINE.map(fcPipeRowHTML).join('');
   // Build the header from the column picker definition.
-  var headHtml = FC_COL_DEF.filter(function(c){return c.visible;}).map(function(c){ return '<th scope="col">' + fcEscape(c.lbl) + '</th>'; }).join('');
+  // v4.30.0 — FIX 8: Forecast ($) column header carries a Δ legend.
+  var headHtml = FC_COL_DEF.filter(function(c){return c.visible;}).map(function(c){
+    var legend = (c.key === 'forecast') ? '<span class="fc-delta-tip" title="Δ = forecast vs current ARR">Δ vs ARR</span>' : '';
+    return '<th scope="col">' + fcEscape(c.lbl) + legend + '</th>';
+  }).join('');
   // Column picker dropdown content.
   var visibleColsHtml = FC_COL_DEF.filter(function(c){return c.visible;}).map(function(c){
     var rm = c.required ? '' : ' onclick="fcColsToggle(\'' + c.key + '\')"';
@@ -16236,7 +16339,7 @@ function fcRenderPipeline() {
     + '</div>'
     + '<div class="fc-pipe"><table class="fc-pipe-tbl"><thead><tr>' + headHtml + '</tr></thead><tbody>' + rowsHtml + '</tbody></table></div>'
     + '<div class="fc-pipe-sum">'
-    +   '<div><div class="fc-pipe-sum-l">Committed ARR</div><div class="fc-pipe-sum-v g">$' + committedARR + 'K</div><div class="fc-pipe-sum-sub">Acme Corp · Healthy</div></div>'
+    +   '<div><div class="fc-pipe-sum-l">Committed ARR</div><div class="fc-pipe-sum-v g">$' + committedARR + 'K</div><div class="fc-pipe-sum-sub multi">' + committedSub + '</div></div>'
     +   '<div><div class="fc-pipe-sum-l">At Risk ARR</div><div class="fc-pipe-sum-v r">$' + atRiskARR + 'K</div><div class="fc-pipe-sum-sub">Nova + Brightex</div></div>'
     +   '<div><div class="fc-pipe-sum-l">Unknown ARR</div><div class="fc-pipe-sum-v gy">$' + unknownARR + 'K</div><div class="fc-pipe-sum-sub">' + unknownCount + ' dark accounts</div></div>'
     +   '<div><div class="fc-pipe-sum-l">Total pipeline</div><div class="fc-pipe-sum-v">$' + totalARR + 'K</div><div class="fc-pipe-sum-sub">' + FC_PIPELINE.length + ' accounts · Q2–Q3</div></div>'
@@ -16250,7 +16353,8 @@ function fcRenderPipeline() {
 function fcPipeRowHTML(r) {
   var statusPop = (FC_STATUS_OPEN === r.key) ? ' on' : '';
   var optsHtml = FC_STATUS_OPTS.map(function(o){
-    return '<button class="fc-pipe-status-opt" type="button" onclick="fcSetStatus(\'' + r.key + '\',\'' + o[0] + '\')">' + fcEscape(o[1]) + '</button>';
+    var sel = (r.status === o[0]) ? ' aria-selected="true"' : ' aria-selected="false"';
+    return '<button class="fc-pipe-status-opt" type="button" role="option"' + sel + ' onclick="fcSetStatus(\'' + r.key + '\',\'' + o[0] + '\')">' + fcEscape(o[1]) + '</button>';
   }).join('');
   var ts = FC_STATUS_TS[r.key];
   var pending = FC_STATUS_PENDING[r.key];
@@ -16264,7 +16368,15 @@ function fcPipeRowHTML(r) {
   if (raw != null && raw !== '') {
     var contractDollars = r.arr * 1000;
     var diff = Math.round((raw - contractDollars) / 1000);
-    if (diff !== 0) deltaHtml = '<span class="fc-fc-delta ' + (diff < 0 ? 'r' : 'g') + '">' + (diff < 0 ? '−' : '+') + '$' + Math.abs(diff) + 'K</span>';
+    if (diff !== 0) {
+      // v4.30.0 — FIX 8: hover tooltip + accessible label clarify what the
+      // delta means (forecast vs current ARR).
+      var sign = diff < 0 ? '−' : '+';
+      var dir  = diff < 0 ? 'below' : 'above';
+      var newAmt = Math.round(raw / 1000);
+      var tip = sign + '$' + Math.abs(diff) + 'K ' + dir + ' ARR ($' + r.arr + 'K → $' + newAmt + 'K)';
+      deltaHtml = '<span class="fc-fc-delta ' + (diff < 0 ? 'r' : 'g') + '" title="' + fcEscape(tip) + '" aria-label="Forecast delta: ' + fcEscape(tip) + '">' + sign + '$' + Math.abs(diff) + 'K</span>';
+    }
   }
   var emptyCls = (raw == null || raw === '') ? ' empty' : '';
   var cd = FC_COL_DATA[r.key] || {};
@@ -16277,7 +16389,7 @@ function fcPipeRowHTML(r) {
       case 'renewal':  return '<td>' + r.renewal + '</td>';
       case 'daysOut':  return '<td class="fc-pipe-days ' + r.daysCls + '">' + r.daysOut + 'd</td>';
       case 'forecast': return '<td><input class="fc-fc-input' + emptyCls + '" type="text" value="' + fcEscape(fcVal) + '" placeholder="' + fcEscape(contractLabel) + '" aria-label="Forecast amount for ' + fcEscape(r.nm) + '" onblur="fcSaveOverride(\'' + r.key + '\',this.value)" onkeydown="if(event.key===\'Enter\'){this.blur()}">' + deltaHtml + '</td>';
-      case 'status':   return '<td><span class="fc-pipe-status-wrap"><button class="fc-pipe-status ' + r.status + '" type="button" onclick="fcToggleStatus(\'' + r.key + '\',event)">' + fcEscape(r.statusLabel) + '</button><div class="fc-pipe-status-pop' + statusPop + '">' + optsHtml + '</div></span>' + tsHtml + '</td>';
+      case 'status':   return '<td><span class="fc-pipe-status-wrap"><button class="fc-pipe-status ' + r.status + '" type="button" role="combobox" aria-expanded="' + (statusPop ? 'true' : 'false') + '" aria-haspopup="listbox" aria-label="Forecast status for ' + fcEscape(r.nm) + ': currently ' + fcEscape(r.statusLabel) + '" onclick="fcToggleStatus(\'' + r.key + '\',event)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();fcToggleStatus(\'' + r.key + '\',event)}else if(event.key===\'Escape\'){FC_STATUS_OPEN=null;fcRenderPipeline()}">' + fcEscape(r.statusLabel) + '</button><div class="fc-pipe-status-pop' + statusPop + '" role="listbox" aria-label="Forecast status options">' + optsHtml + '</div></span>' + tsHtml + '</td>';
       case 'weight':   return '<td><span class="fc-pipe-weight ' + r.weight + '">' + fcEscape(r.weightLabel) + '</span></td>';
       case 'action':   return '<td><button class="fc-btn" type="button" onclick="fcAction(\'' + r.action + '\',\'' + r.actionAcct + '\')">' + fcEscape(r.actionLabel) + '</button></td>';
       case 'tier':     return '<td>' + fcEscape(cd.tier || '—') + '</td>';
@@ -16352,6 +16464,20 @@ function fcSetStatus(key, status) {
   r.status = status;
   r.statusLabel = o[1];
   FC_STATUS_OPEN = null;
+  // v4.30.0 — FIX 1: persist status changes into teamos_forecast_overrides
+  // so the choice survives a reload. The existing override record shape
+  // already carries forecast_status + gainsight_status; if no record exists
+  // for this account yet, seed one with the current amount (or null).
+  try {
+    if (!FC_OVERRIDES[key] || typeof FC_OVERRIDES[key] !== 'object') {
+      FC_OVERRIDES[key] = fcBuildOverrideRecord(key, fcOverrideAmount(key), o[1]);
+    } else {
+      FC_OVERRIDES[key].forecast_status  = o[1];
+      FC_OVERRIDES[key].gainsight_status = FORECAST_STATUS_CROSSWALK[o[1]] || 'Pipeline';
+      FC_OVERRIDES[key].updated_at       = new Date().toISOString();
+    }
+    fcWriteOverrides(FC_OVERRIDES);
+  } catch (_) {}
   // Compose a "Today HH:MM AM" timestamp for the inline meta line.
   var now = new Date();
   var hr = now.getHours();
@@ -16380,12 +16506,14 @@ document.addEventListener('click', function(){
 function fcRenderTimeline() {
   var sec = document.getElementById('fc-timeline');
   if (!sec) return;
-  // Bucket by calendar month of the renewal date — matches the spec labels
-  // (Jun 1–Jun 30 / Jul 1–Jul 31 / Aug 1–Aug 31). Brightex (31d) and
-  // Meridian (45d) both land in Jun even though their daysOut > 30.
+  // Bucket by calendar month of the renewal date — matches the spec labels.
+  // v4.30.0 — FIX 7: 4th bucket for "90+ days" so accounts beyond the
+  // current quarter (Acme at 89d → moves to 90+ when threshold crosses)
+  // surface in their own column instead of being grouped with mid-quarter.
   var m1 = FC_PIPELINE.filter(function(r){return r.renewal.indexOf('Jun') === 0;});
   var m2 = FC_PIPELINE.filter(function(r){return r.renewal.indexOf('Jul') === 0;});
-  var m3 = FC_PIPELINE.filter(function(r){return r.renewal.indexOf('Aug') === 0;});
+  var m3 = FC_PIPELINE.filter(function(r){return r.renewal.indexOf('Aug') === 0 && r.daysOut < 90;});
+  var m4 = FC_PIPELINE.filter(function(r){return r.daysOut >= 90 || (r.renewal.indexOf('Aug') !== 0 && r.renewal.indexOf('Jul') !== 0 && r.renewal.indexOf('Jun') !== 0);});
   var badges = {
     nova:     ['crit',    'Critical Save Active'],
     brightex: ['atrisk',  'At Risk · Save play active'],
@@ -16427,6 +16555,11 @@ function fcRenderTimeline() {
     +     bucketHTML(m3)
     +     '<div class="fc-tl-foot">Total: <b>$' + sumARR(m3) + 'K</b> · ' + m3.length + ' account' + (m3.length === 1 ? '' : 's') + '</div>'
     +   '</div>'
+    +   '<div class="fc-tl-col m4">'
+    +     '<div class="fc-tl-hd"><div class="fc-tl-hd-t">90+ days</div><div class="fc-tl-hd-meta">Beyond Q2 · <b>$' + sumARR(m4) + 'K</b></div></div>'
+    +     (m4.length ? bucketHTML(m4) : '<div style="font-size:11px;color:#6B7280;font-style:italic;padding:10px 4px">No renewals beyond 90 days · Time for expansion plays</div>')
+    +     '<div class="fc-tl-foot">Total: <b>$' + sumARR(m4) + 'K</b> · ' + m4.length + ' account' + (m4.length === 1 ? '' : 's') + '</div>'
+    +   '</div>'
     + '</div>';
 }
 
@@ -16434,6 +16567,20 @@ function fcRenderTimeline() {
 // v4.4.0 — Forecast commit rollup persists between sessions via FC_OVERRIDES
 // (per-account dollar amounts). Quota is a user-set target saved to its own
 // localStorage key. Both surface above the Dust summary card.
+// v4.30.0 — FIX 6: narrative variants for Dust Forecast. Regenerate cycles
+// through these so the text actually changes; auto-regen on override write
+// advances the index too. Index lives in memory; resets on reload.
+var FC_DUST_NARRATIVES = [
+  'Based on current signals across your 6-account book, you are tracking to close <strong>$48K</strong> of your <strong>$170K</strong> pipeline cleanly (Acme Corp). Two accounts totaling <strong>$67K</strong> are at active risk — NovaVault’s renewal is in 17 days with no champion contact made and the contract unopened, and Brightex has a competitor evaluation in progress with an unanswered SLA question.\n\nThree dark accounts (<strong>$55K</strong>) have unknown renewal intent. Meridian Health has an inbound signal today that, if acted on within the next 4 hours, significantly improves re-engagement probability.\n\nYour attainment risk this quarter: <strong>$122K of $170K (72%)</strong> is uncertain or at risk. The three actions below would materially change this outcome.',
+  'Critical situation: <strong>NovaVault renewal in 17 days</strong> with cold champion. <strong>Brightex Okta evaluation accelerating</strong> — competitor mentions in two consecutive Gong calls. <strong>Pipeline integrity below threshold</strong> with $67K (39%) of the book actively at risk.\n\nNova is the highest-leverage save play right now — Michael Torres has not been contacted, the contract is sitting unopened in Ironclad, and every day without movement compounds the churn probability. Brightex needs the SLA question answered today; Sarah Chen’s email is four hours overdue and your renewal is 31 days out.\n\nIf both saves succeed, the book closes at $115K (68% attainment). If Nova churns, the floor drops to $84K (49%).',
+  'Recoverable position: <strong>Acme expansion signal materializing</strong> ahead of timeline — David Kim flagged enterprise tier interest unprompted in the May 10 Gong call, which gives you $12–18K of upside on top of the $48K base renewal. <strong>Meridian inbound resets the re-engagement window</strong> — Jennifer Ramos emailed yesterday, the first inbound in 73 days. Two save plays in motion.\n\nThe headline number — <strong>$122K of $170K at risk</strong> — understates the recoverability. If you close Acme expansion ($12–18K) and bank the Meridian re-engagement ($22K), the at-risk pile drops to $45K. NovaVault is the only true churn risk; everything else has a viable path.',
+  'Progress this week: <strong>NovaVault touch 1 sent</strong>, awaiting reply. <strong>Brightex SLA response drafted</strong>, ready to go. <strong>Meridian inbound triggers warm re-engagement</strong> — first opening in 73 days. Acme QBR in 38 minutes carries the expansion signal forward.\n\nNo accounts have moved into Likely Churn this week; one (Meridian) moved out of Dark. Save play execution is on schedule but the window on NovaVault is tightening — 17 days to renewal with the champion still cold.\n\nThree actions below capture the highest-leverage moves for the next 4 hours.'
+];
+var FC_DUST_NARRATIVE_IDX = 0;
+function fcCurrentNarrative() {
+  return FC_DUST_NARRATIVES[FC_DUST_NARRATIVE_IDX % FC_DUST_NARRATIVES.length];
+}
+
 var FC_QUOTA_KEY = 'teamos_forecast_quota';
 function fcReadQuota() { try { var v = parseInt(localStorage.getItem(FC_QUOTA_KEY), 10); return isNaN(v) ? null : v; } catch (e) { return null; } }
 function fcWriteQuota(v) { try { localStorage.setItem(FC_QUOTA_KEY, String(v)); } catch (e) {} }
@@ -16474,7 +16621,7 @@ function fcRenderRollup() {
         +     '<div class="fc-recovery-t">Acme Corp expansion signal</div>'
         +     '<div class="fc-recovery-amt">+$12K–$18K potential</div>'
         +     '<div class="fc-recovery-s">SSO enterprise upgrade · David Kim flagged interest unprompted</div>'
-        +     '<button class="fc-recovery-act" type="button" onclick="fcAction(\'prep\',\'acme\')"><i class="ti ti-rocket"></i> Open Expansion Play →</button>'
+        +     '<button class="fc-recovery-act" type="button" onclick="fcAction(\'expansion\',\'acme\')"><i class="ti ti-rocket"></i> Open Expansion Play →</button>'
         +   '</div>'
         + '</div>'
         + '</div>';
@@ -16485,12 +16632,32 @@ function fcRenderRollup() {
         + '</div>';
     }
   }
+  // v4.30.0 — FIX 3: Safe Commit tile. Commit minus At Risk = the figure
+  // a CSM can verbally commit to without exposing risk. Colour-coded
+  // against quota when one is set; otherwise rendered neutral.
+  var safe = Math.max(0, commit - atRisk);
+  var safeK = Math.round(safe / 1000);
+  var safeCls = '';
+  var safePctAria = '';
+  if (quota != null && quota > 0) {
+    var safeRatio = safe / quota;
+    if (safeRatio >= 0.5)      safeCls = ' g';
+    else if (safeRatio >= 0.25) safeCls = ' a';
+    else                        safeCls = ' r';
+    safePctAria = ' (' + Math.round(safeRatio * 100) + '% of quota)';
+  }
+  var safeTile = '<div class="fc-rollup-cell" aria-label="Safe commit: $' + safeK + 'K' + safePctAria + '">'
+    + '<div class="fc-rollup-cell-l">Safe Commit</div>'
+    + '<div class="fc-rollup-cell-v' + safeCls + '">$' + safeK + 'K</div>'
+    + '<div class="fc-rollup-cell-sub" style="font-size:11px;color:#6B7280">What you can verbally commit to your manager without risk</div>'
+    + '</div>';
   return '<div class="fc-rollup">'
     + '<div class="fc-rollup-hd">'
     +   '<div><div class="fc-rollup-l">My forecast commit · Q2 2026</div><div class="fc-rollup-ts">Updated: ' + fcEscape(FC_DUST_GEN) + '</div></div>'
     + '</div>'
     + '<div class="fc-rollup-cells">'
     +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">Commit total</div><div class="fc-rollup-cell-v">$' + Math.round(commit / 1000) + 'K</div></div>'
+    +   safeTile
     +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">At Risk</div><div class="fc-rollup-cell-v r">$' + Math.round(atRisk / 1000) + 'K</div></div>'
     +   '<div class="fc-rollup-cell"><div class="fc-rollup-cell-l">Gap to Quota</div>' + gapHtml + '</div>'
     + '</div>'
@@ -16583,7 +16750,7 @@ function fcRenderDust() {
     + '</div>'
     + '<div class="fc-dust-summary">'
     +   '<div class="fc-dust-summary-l"><i class="ti ti-sparkles"></i> Forecast summary</div>'
-    +   '<div class="fc-dust-summary-b">Based on current signals across your 6-account book, you are tracking to close <strong>$48K</strong> of your <strong>$170K</strong> pipeline cleanly (Acme Corp). Two accounts totaling <strong>$67K</strong> are at active risk — NovaVault’s renewal is in 17 days with no champion contact made and the contract unopened, and Brightex has a competitor evaluation in progress with an unanswered SLA question.\n\nThree dark accounts (<strong>$55K</strong>) have unknown renewal intent. Meridian Health has an inbound signal today that, if acted on within the next 4 hours, significantly improves re-engagement probability.\n\nYour attainment risk this quarter: <strong>$122K of $170K (72%)</strong> is uncertain or at risk. The three actions below would materially change this outcome.</div>'
+    +   '<div class="fc-dust-summary-b" id="fc-dust-summary-b">' + fcCurrentNarrative() + '</div>'
     + '</div>'
     + '<div class="fc-dust-cards">'
     +   '<div class="fc-dust-card actnow">'
@@ -16609,6 +16776,9 @@ function fcRenderDust() {
 function fcRegenerate() {
   var btn = document.getElementById('fc-regen-btn');
   if (btn) btn.innerHTML = '<span class="fc-loading"><span class="cm-spinner"></span> Regenerating…</span>';
+  // v4.30.0 — FIX 6: advance the narrative index so the body text actually
+  // changes between regenerations instead of refreshing identical copy.
+  FC_DUST_NARRATIVE_IDX = (FC_DUST_NARRATIVE_IDX + 1) % FC_DUST_NARRATIVES.length;
   setTimeout(function(){
     var now = new Date();
     var hr = now.getHours();
@@ -16618,7 +16788,7 @@ function fcRegenerate() {
     var pad = function(n){ return n < 10 ? '0' + n : '' + n; };
     FC_DUST_GEN = 'Today · ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()] + ' ' + now.getDate() + ' · ' + hr12 + ':' + pad(min) + ' ' + ampm;
     fcRenderDust();
-    toast('Forecast regenerated · Dust analysis complete ✓');
+    toast('Narrative regenerated from latest signals ✓');
   }, 1500);
 }
 
@@ -16628,6 +16798,10 @@ function fcRegenerate() {
 // in the existing #fc-dust-gen span (aria-live="polite") so screen readers
 // announce the refresh without a toast.
 function fcRegenerateDust() {
+  // v4.30.0 — FIX 6 (B): auto-regen on override change also advances the
+  // narrative index so the body text actually changes, not just the
+  // timestamp.
+  FC_DUST_NARRATIVE_IDX = (FC_DUST_NARRATIVE_IDX + 1) % FC_DUST_NARRATIVES.length;
   // Show the "Updating…" indicator on the existing generated-at span. The
   // span carries aria-live so the announcement happens naturally.
   var indicator = document.getElementById('fc-dust-gen');
@@ -16766,13 +16940,136 @@ function fcTrendBarTipHide() {
 }
 
 // ── Action helpers ──────────────────────────────────────────────────────────
+// ── v4.30.0 — Expansion Play drawer (FIX 5) ────────────────────────────────
+// Body-level drawer that replaces the Pre-Call Brief misroute on the
+// Recovery Path. Carries SIGNAL / OPPORTUNITY / THE PLAY (4 numbered steps)
+// / PRICING PACKAGING / OBJECTION HANDLERS / notes.
+var FC_XP_NOTES_KEY = 'teamos_expansion_notes';
+var FC_XP_CONTENT = {
+  acme: {
+    name: 'Acme Corp',
+    sub:  '$48K → $60–66K target · +$12–18K expansion',
+    signal: [
+      'David Kim mentioned enterprise tier unprompted in the May 10 Gong call',
+      '142 seats current, growing +12/mo',
+      'SSO rollout active in engineering'
+    ],
+    opp: 'Standard tier → Enterprise tier · $48K current ARR → $60–66K target · +$12–18K expansion ($25–37% uplift)',
+    play: [
+      { when:'AT QBR (in 38 min)',           body:'Ask: "What would make the SSO rollout easier?" Listen for admin pain. Position: Enterprise tier includes advanced admin controls.' },
+      { when:'POST-QBR (within 2 hours)',    body:"Send enterprise tier overview doc. Reference David's specific mentions." },
+      { when:'WEEK 1',                       body:'Schedule technical pilot discovery call. Get 1 engineering manager + 1 IT stakeholder.' },
+      { when:'WEEK 2–3',                     body:'Pricing proposal with the SSO pilot timeline baked in.' }
+    ],
+    pricing: [
+      'Advanced SSO admin controls',
+      'SCIM automation',
+      'Audit log API access',
+      'Dedicated CSM hours (you already are)'
+    ],
+    objections: [
+      { obj:'"We need to evaluate budget"', frame:'Enterprise tier saves IT team time. ROI in admin hours.' },
+      { obj:'"Not ready for procurement"', frame:'30-day pilot with no commitment.' }
+    ]
+  }
+};
+var _xpDrawerTrigger = null;
+function xpDrawerOpen(acct) {
+  var c = FC_XP_CONTENT[acct];
+  if (!c) { toast('Expansion Play unavailable for ' + fcEscape(acct)); return; }
+  try { _xpDrawerTrigger = document.activeElement; } catch (_) {}
+  var drw   = document.getElementById('xp-drawer');
+  var ov    = document.getElementById('xp-drawer-ov');
+  var title = document.getElementById('xp-drawer-title');
+  var sub   = document.getElementById('xp-drawer-sub');
+  var body  = document.getElementById('xp-drawer-body');
+  if (!drw || !body) return;
+
+  if (title) title.innerHTML = '<i class="ti ti-rocket" style="color:#0F766E"></i> Expansion Play · ' + fcEscape(c.name);
+  if (sub)   sub.textContent = c.sub;
+  drw.setAttribute('aria-label', 'Expansion play for ' + c.name);
+  drw.setAttribute('data-acct', acct);
+
+  var signalHtml = '<ul class="xp-sec-list">' + c.signal.map(function(s){ return '<li>' + fcEscape(s) + '</li>'; }).join('') + '</ul>';
+  var playHtml = '<div class="xp-play">' + c.play.map(function(p){
+    return '<div class="xp-play-step"><b>' + fcEscape(p.when) + '</b>' + fcEscape(p.body) + '</div>';
+  }).join('') + '</div>';
+  var priceHtml = '<ul class="xp-sec-list">' + c.pricing.map(function(p){ return '<li>' + fcEscape(p) + '</li>'; }).join('') + '</ul>';
+  var objHtml = '<div class="xp-obj">' + c.objections.map(function(o){
+    return '<div class="xp-obj-row"><b>' + fcEscape(o.obj) + '</b>→ ' + fcEscape(o.frame) + '</div>';
+  }).join('') + '</div>';
+
+  var savedNote = (function(){
+    try { var s = JSON.parse(localStorage.getItem(FC_XP_NOTES_KEY) || '{}'); return (s[acct] && s[acct].note) || ''; } catch (_) { return ''; }
+  })();
+
+  body.innerHTML = ''
+    + '<div><div class="xp-sec-t">Signal</div>' + signalHtml + '</div>'
+    + '<div><div class="xp-sec-t">Opportunity</div><div class="xp-sec-bd">' + fcEscape(c.opp) + '</div></div>'
+    + '<div><div class="xp-sec-t">The play</div>' + playHtml + '</div>'
+    + '<div><div class="xp-sec-t">Pricing packaging</div><div class="xp-sec-bd"><b>Enterprise tier benefits to lead with:</b></div>' + priceHtml + '</div>'
+    + '<div><div class="xp-sec-t">Objection handlers</div>' + objHtml + '</div>'
+    + '<div class="xp-notes"><div class="xp-sec-t">Notes</div><textarea id="xp-notes-' + acct + '" aria-label="Expansion play notes for ' + fcEscape(c.name) + '" placeholder="Add notes for this expansion play…">' + fcEscape(savedNote) + '</textarea></div>'
+    + '<div class="xp-acts">'
+    +   '<button class="rs-btn prim" type="button" onclick="xpGenerateDeck()"><i class="ti ti-layout-board"></i> Generate Expansion Deck</button>'
+    +   '<button class="rs-btn" type="button" onclick="xpSchedulePilot()"><i class="ti ti-calendar-event"></i> Schedule Pilot Discovery</button>'
+    +   '<button class="rs-btn" type="button" onclick="xpPush()"><i class="ti ti-cloud-upload"></i> Push to Gainsight</button>'
+    +   '<button class="rs-btn" type="button" onclick="xpSaveNotes()"><i class="ti ti-note"></i> Save Notes</button>'
+    + '</div>';
+
+  if (ov)  ov.classList.add('on');
+  drw.classList.add('on');
+  drw.setAttribute('aria-hidden', 'false');
+  if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('xp');
+  setTimeout(function(){
+    var x = drw.querySelector('.xp-drawer-x');
+    if (x) try { x.focus(); } catch (_) {}
+  }, 60);
+}
+function xpDrawerClose() {
+  var drw = document.getElementById('xp-drawer');
+  var ov  = document.getElementById('xp-drawer-ov');
+  if (drw) { drw.classList.remove('on'); drw.setAttribute('aria-hidden', 'true'); }
+  if (ov)  ov.classList.remove('on');
+  if (typeof _drawerManagerClose === 'function') _drawerManagerClose('xp');
+  if (_xpDrawerTrigger && typeof _xpDrawerTrigger.focus === 'function') {
+    try { _xpDrawerTrigger.focus(); } catch (_) {}
+  }
+  _xpDrawerTrigger = null;
+}
+function xpCurrentAcct() {
+  var drw = document.getElementById('xp-drawer');
+  return drw ? drw.getAttribute('data-acct') : null;
+}
+function xpSaveNotes() {
+  var acct = xpCurrentAcct();
+  if (!acct) return;
+  var ta = document.getElementById('xp-notes-' + acct);
+  if (!ta) return;
+  try {
+    var store = JSON.parse(localStorage.getItem(FC_XP_NOTES_KEY) || '{}');
+    store[acct] = { note: ta.value || '', ts: Date.now() };
+    localStorage.setItem(FC_XP_NOTES_KEY, JSON.stringify(store));
+    toast('Expansion play notes saved · ' + fcEscape(acct) + ' ✓');
+  } catch (_) {}
+}
+function xpGenerateDeck()   { toast('Expansion deck drafted · Acme Corp · Phase 2 PDF export ✓'); }
+function xpSchedulePilot()  { toast('Pilot discovery call scheduled · Phase 2 calendar API ✓'); }
+function xpPush()           { toast('Expansion play pushed to Gainsight · Acme Corp · Assigned to David Kim ✓'); }
+
 function fcAction(kind, acct) {
   switch (kind) {
     case 'save':     if (typeof openAgentDrawer === 'function') openAgentDrawer('save', acct); else toast('Save Strategy · ' + fcEscape(acct) + ' ✓'); break;
     case 'risk':     if (typeof openAgentDrawer === 'function') openAgentDrawer('risk', acct); else toast('Risk Analyst · ' + fcEscape(acct) + ' ✓'); break;
     case 'prep':     if (typeof openAgentDrawer === 'function') openAgentDrawer('prep', acct); else toast('Prep Me · ' + fcEscape(acct) + ' ✓'); break;
     case 'gb':       openGhostBuster(acct); break;
-    case 'champion': if (typeof openAgentDrawer === 'function') openAgentDrawer('save', acct); else toast('Champion Protocol · ' + fcEscape(acct) + ' ✓'); break;
+    // v4.30.0 — FIX 2: Apex Pipeline action now routes to the Champion
+    // Change drawer (v4.29.0) instead of an empty Save Strategy.
+    case 'champion': if (typeof ccDrawerOpen === 'function') ccDrawerOpen(acct); else toast('Champion Protocol · ' + fcEscape(acct) + ' ✓'); break;
+    // v4.30.0 — FIX 5: Expansion play opens its own drawer with the play
+    // sequence, pricing packaging, and objection handlers. Pre-Call Brief
+    // stays available via 'prep'.
+    case 'expansion': if (typeof xpDrawerOpen === 'function') xpDrawerOpen(acct); else toast('Expansion Play · ' + fcEscape(acct) + ' ✓'); break;
     case 'draft':    fcOpenReply(acct); break;
     default: toast('Action: ' + kind + ' · ' + fcEscape(acct) + ' ✓');
   }
@@ -16828,8 +17125,25 @@ function fcJumpToPipelineRow(key) {
     }
     if (!target) return;
     target.classList.add('fc-row-highlight');
+    // v4.30.0 — FIX 4: also apply the new .pipeline-row-pulse animation so
+    // the navigation feels alive (background flash → fade) on top of the
+    // existing outline.
+    target.classList.remove('pipeline-row-pulse');
+    void target.offsetWidth;
+    target.classList.add('pipeline-row-pulse');
     if (typeof target.scrollIntoView === 'function') target.scrollIntoView({ behavior:'smooth', block:'center' });
-    setTimeout(function(){ target.classList.remove('fc-row-highlight'); }, 2000);
+    setTimeout(function(){ target.classList.remove('fc-row-highlight'); target.classList.remove('pipeline-row-pulse'); }, 2000);
+    // Polite ARIA announcement so SR users hear that they navigated.
+    var live = document.getElementById('fc-nav-live');
+    if (!live) {
+      live = document.createElement('div');
+      live.id = 'fc-nav-live';
+      live.setAttribute('role', 'status');
+      live.setAttribute('aria-live', 'polite');
+      live.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)';
+      document.body.appendChild(live);
+    }
+    live.textContent = 'Navigated to ' + r.nm + ' row';
   }, 80);
 }
 var FC_ACCT_DRAWER_KEY = null;
