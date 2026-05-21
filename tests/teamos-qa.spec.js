@@ -520,10 +520,12 @@ test.describe('Forecasting', () => {
   });
 
   test('Champion Protocol Apex passes own account key (not Brightex)', async ({ page }) => {
-    await page.evaluate(() => { window._captured = null; window.openAgentDrawer = (a,b) => { window._captured = [a,b]; }; });
+    // v4.30.0 — Apex Champion Protocol now routes to ccDrawerOpen (v4.29.0
+    // Champion Change drawer) instead of the empty Save Strategy.
+    await page.evaluate(() => { window._captured = null; window.ccDrawerOpen = (acct) => { window._captured = acct; }; });
     await page.evaluate(() => fcAction('champion', 'apex'));
     const captured = await page.evaluate(() => window._captured);
-    expect(captured).toEqual(['save', 'apex']);
+    expect(captured).toBe('apex');
   });
 
   test('all 6 pipeline action buttons pass their own row key', async ({ page }) => {
@@ -563,7 +565,8 @@ test.describe('Forecasting', () => {
     await page.evaluate(() => fcShowSection('dust'));
     await page.waitForTimeout(200);
     await expect(page.locator('.fc-rollup')).toBeVisible();
-    expect(await page.locator('.fc-rollup-cell').count()).toBe(3);
+    // v4.30.0 — Safe Commit tile added between Commit Total and At Risk → 4 cells.
+    expect(await page.locator('.fc-rollup-cell').count()).toBe(4);
     await page.evaluate(() => fcOpenQuotaForm());
     await page.waitForTimeout(100);
     await page.fill('#fc-quota-input', '150');
@@ -2206,15 +2209,18 @@ test.describe('v4.14.0 Forecasting audit fixes', () => {
     expect(txt).toMatch(/David Kim/);
   });
 
-  test('FIX 4: Recovery Path "Open Expansion Play" fires Prep Me for Acme', async ({ page }) => {
+  test('FIX 4: Recovery Path "Open Expansion Play" opens the Expansion Play drawer for Acme', async ({ page }) => {
+    // v4.30.0 — the button now opens the dedicated Expansion Play drawer
+    // (xpDrawerOpen) instead of the Pre-Call Brief (openAgentDrawer 'prep').
     await page.evaluate(() => fcWriteQuota(500000));
     await page.evaluate(() => fcShow('dust'));
     await page.waitForTimeout(200);
-    await page.evaluate(() => { window._captured = null; const orig = window.openAgentDrawer; window.openAgentDrawer = (t,a) => { window._captured = [t,a]; return orig.apply(this, arguments); }; });
+    await page.evaluate(() => { window._captured = null; const orig = window.xpDrawerOpen; window.xpDrawerOpen = (acct) => { window._captured = acct; return orig.apply(this, [acct]); }; });
     await page.locator('#fc-recovery .fc-recovery-act').click();
-    await page.waitForTimeout(120);
+    await page.waitForTimeout(200);
     const cap = await page.evaluate(() => window._captured);
-    expect(cap).toEqual(['prep', 'acme']);
+    expect(cap).toBe('acme');
+    await page.evaluate(() => xpDrawerClose());
   });
 
   test('FIX 4: positive-gap state shows above-quota message + upside reminder', async ({ page }) => {
@@ -5205,5 +5211,239 @@ test.describe('v4.29.0 Risk & Signals workflow fixes', () => {
     await page.waitForTimeout(150);
     const toasts = await page.evaluate(() => window._toasts);
     expect(toasts.some(t => /Brightex competitor signal added to watch list · No save play triggered/.test(t))).toBe(true);
+  });
+});
+
+test.describe('v4.30.0 Forecasting tab refinements', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => { try { localStorage.clear(); } catch(_){} });
+    await page.evaluate(() => { goTab('forecast', document.querySelector('.n-tab[onclick*="forecast"]')); });
+    await page.waitForTimeout(200);
+  });
+
+  // ── FIX 1: Forecast Status badge dropdown + persistence ────────────────
+  test('FIX 1: status badge is role=combobox with aria-label + aria-haspopup', async ({ page }) => {
+    await page.evaluate(() => fcShow('pipeline'));
+    await page.waitForTimeout(200);
+    const badge = page.locator('.fc-pipe-status').first();
+    expect(await badge.getAttribute('role')).toBe('combobox');
+    expect(await badge.getAttribute('aria-haspopup')).toBe('listbox');
+    expect(await badge.getAttribute('aria-expanded')).toBe('false');
+    expect(await badge.getAttribute('aria-label')).toMatch(/Forecast status for .+: currently /);
+  });
+
+  test('FIX 1: status change persists to teamos_forecast_overrides + survives reload', async ({ page }) => {
+    await page.evaluate(() => fcShow('pipeline'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => fcSetStatus('nova', 'committed'));
+    await page.waitForTimeout(150);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_forecast_overrides') || '{}'));
+    expect(stored.nova && stored.nova.forecast_status).toBe('Committed');
+    // Reload and confirm the row's status restored from override.
+    await page.reload();
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(400);
+    const reloaded = await page.evaluate(() => {
+      const r = FC_PIPELINE.find(x => x.key === 'nova');
+      return { status: r.status, label: r.statusLabel };
+    });
+    expect(reloaded.status).toBe('committed');
+    expect(reloaded.label).toBe('Committed');
+  });
+
+  test('FIX 1: fcSetStatus toasts the Gainsight write + advances narrative', async ({ page }) => {
+    await page.evaluate(() => fcShow('pipeline'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.evaluate(() => fcSetStatus('brightex', 'churn'));
+    await page.waitForTimeout(150);
+    const t = await page.evaluate(() => window._toasts);
+    expect(t.some(x => /Forecast updated · Brightex Inc · Likely Churn · Logged to Gainsight/.test(x))).toBe(true);
+  });
+
+  // ── FIX 2: Apex Champion Protocol opens ccDrawer ───────────────────────
+  test('FIX 2: fcAction champion routes to ccDrawerOpen (not Save Strategy)', async ({ page }) => {
+    await page.evaluate(() => fcAction('champion', 'apex'));
+    await page.waitForTimeout(250);
+    await expect(page.locator('#cc-drawer.on')).toBeVisible();
+    const t = await page.locator('#cc-drawer').textContent();
+    expect(t).toMatch(/Champion Change Protocol · Apex Dynamics/);
+    expect(t).toMatch(/James Wu/);
+    expect(t).toMatch(/Ryan Patel/);
+    await page.evaluate(() => ccDrawerClose());
+  });
+
+  // ── FIX 3: Safe Commit tile ─────────────────────────────────────────────
+  test('FIX 3: Dust Forecast rollup now shows 4 tiles incl. Safe Commit', async ({ page }) => {
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    const tiles = await page.locator('.fc-rollup-cell-l').allTextContents();
+    expect(tiles).toEqual(['Commit total','Safe Commit','At Risk','Gap to Quota']);
+    // Safe Commit value = commit - at risk, with the aria-label populated.
+    const safe = page.locator('.fc-rollup-cell').nth(1);
+    const aria = await safe.getAttribute('aria-label');
+    expect(aria).toMatch(/^Safe commit: \$\d+K/);
+    const t = await safe.textContent();
+    expect(t).toMatch(/What you can verbally commit to your manager without risk/);
+  });
+
+  // ── FIX 4: Pipeline row pulse on Timeline / ARR Trends click ───────────
+  test('FIX 4: Timeline card click applies .pipeline-row-pulse to the target row', async ({ page }) => {
+    await page.evaluate(() => fcShow('timeline'));
+    await page.waitForTimeout(200);
+    await page.locator('.fc-tl-acct[aria-label*="NovaVault"]').click();
+    await page.waitForTimeout(250);
+    expect(await page.locator('.pipeline-row-pulse').count()).toBe(1);
+    // After the 2s animation the class is removed.
+    await page.waitForTimeout(2100);
+    expect(await page.locator('.pipeline-row-pulse').count()).toBe(0);
+  });
+
+  test('FIX 4: navigation announces "Navigated to X row" via aria-live', async ({ page }) => {
+    await page.evaluate(() => fcShow('timeline'));
+    await page.waitForTimeout(200);
+    await page.locator('.fc-tl-acct[aria-label*="Acme Corp"]').click();
+    await page.waitForTimeout(250);
+    const live = await page.locator('#fc-nav-live').textContent();
+    expect(live).toBe('Navigated to Acme Corp row');
+  });
+
+  // ── FIX 5: Expansion Play drawer ───────────────────────────────────────
+  test('FIX 5: Open Expansion Play opens its own drawer (not Prep Me)', async ({ page }) => {
+    // Set a quota that produces a gap so Recovery Path renders.
+    await page.evaluate(() => { localStorage.setItem('teamos_forecast_quota', '170000'); });
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    await page.locator('.fc-recovery-act:has-text("Open Expansion Play")').click();
+    await page.waitForTimeout(250);
+    await expect(page.locator('#xp-drawer.on')).toBeVisible();
+    expect(await page.locator('#xp-drawer').getAttribute('aria-label')).toBe('Expansion play for Acme Corp');
+    const t = await page.locator('#xp-drawer').textContent();
+    expect(t).toMatch(/Expansion Play · Acme Corp/);
+    expect(t).toMatch(/Signal/);
+    expect(t).toMatch(/Opportunity/);
+    expect(t).toMatch(/The play/);
+    expect(t).toMatch(/Pricing packaging/);
+    expect(t).toMatch(/Objection handlers/);
+  });
+
+  test('FIX 5: Expansion Play renders 4 numbered play steps + 2 objections', async ({ page }) => {
+    await page.evaluate(() => xpDrawerOpen('acme'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('#xp-drawer .xp-play-step').count()).toBe(4);
+    expect(await page.locator('#xp-drawer .xp-obj-row').count()).toBe(2);
+  });
+
+  test('FIX 5: Save Notes persists to teamos_expansion_notes', async ({ page }) => {
+    await page.evaluate(() => xpDrawerOpen('acme'));
+    await page.waitForTimeout(200);
+    await page.locator('#xp-notes-acme').fill('Test expansion note');
+    await page.locator('#xp-drawer .xp-acts button:has-text("Save Notes")').click();
+    await page.waitForTimeout(200);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_expansion_notes') || '{}'));
+    expect(stored.acme && stored.acme.note).toBe('Test expansion note');
+  });
+
+  test('FIX 5: Escape closes the Expansion Play drawer', async ({ page }) => {
+    await page.evaluate(() => xpDrawerOpen('acme'));
+    await page.waitForTimeout(200);
+    await expect(page.locator('#xp-drawer.on')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(200);
+    await expect(page.locator('#xp-drawer.on')).toHaveCount(0);
+  });
+
+  // ── FIX 6: Regenerate cycles narrative variants ────────────────────────
+  test('FIX 6: Regenerate cycles through 4 narrative variants', async ({ page }) => {
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    const n1 = await page.locator('#fc-dust-summary-b').textContent();
+    // Cycle through 3 more regenerations and confirm each text differs.
+    var seen = [n1];
+    for (var i = 0; i < 3; i++) {
+      await page.evaluate(() => fcRegenerate());
+      await page.waitForTimeout(1700);
+      seen.push(await page.locator('#fc-dust-summary-b').textContent());
+    }
+    // All 4 visible narratives are distinct.
+    const uniq = new Set(seen);
+    expect(uniq.size).toBe(4);
+  });
+
+  test('FIX 6: Regenerate toast reads "Narrative regenerated"', async ({ page }) => {
+    await page.evaluate(() => fcShow('dust'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.evaluate(() => fcRegenerate());
+    await page.waitForTimeout(1700);
+    const t = await page.evaluate(() => window._toasts);
+    expect(t.some(x => /Narrative regenerated from latest signals/.test(x))).toBe(true);
+  });
+
+  // ── FIX 7: 4th Timeline column ─────────────────────────────────────────
+  test('FIX 7: Timeline renders 4 columns including 90+ days', async ({ page }) => {
+    await page.evaluate(() => fcShow('timeline'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('#fc-timeline .fc-tl-col').count()).toBe(4);
+    const headers = await page.evaluate(() => Array.from(document.querySelectorAll('#fc-timeline .fc-tl-hd-t')).map(h => h.textContent.trim()));
+    expect(headers).toEqual(['This month','Next month','61–90 days','90+ days']);
+  });
+
+  test('FIX 7: empty 90+ column shows the "Time for expansion plays" hint', async ({ page }) => {
+    // Demo data has no accounts with daysOut ≥ 90, so the 4th column is empty.
+    await page.evaluate(() => fcShow('timeline'));
+    await page.waitForTimeout(200);
+    const fourth = await page.locator('#fc-timeline .fc-tl-col').last().textContent();
+    expect(fourth).toMatch(/No renewals beyond 90 days · Time for expansion plays/);
+  });
+
+  // ── FIX 8: Delta badge tooltip + column header tip ─────────────────────
+  test('FIX 8: Forecast delta badges carry hover tooltip + aria-label', async ({ page }) => {
+    await page.evaluate(() => fcShow('pipeline'));
+    await page.waitForTimeout(200);
+    const delta = page.locator('.fc-fc-delta').first();
+    const tip = await delta.getAttribute('title');
+    const aria = await delta.getAttribute('aria-label');
+    expect(tip).toMatch(/(below|above) ARR \(\$\d+K → \$\d+K\)/);
+    expect(aria).toMatch(/^Forecast delta: /);
+  });
+
+  test('FIX 8: Forecast column header shows the Δ vs ARR legend', async ({ page }) => {
+    await page.evaluate(() => fcShow('pipeline'));
+    await page.waitForTimeout(200);
+    const legend = page.locator('.fc-pipe-tbl thead .fc-delta-tip');
+    await expect(legend).toBeVisible();
+    expect(await legend.textContent()).toMatch(/Δ vs ARR/);
+    expect(await legend.getAttribute('title')).toMatch(/Δ = forecast vs current ARR/);
+  });
+
+  // ── FIX 9: Committed ARR tile sums + lists accounts ────────────────────
+  test('FIX 9: Committed ARR tile sums Acme + lists 1 account by name', async ({ page }) => {
+    await page.evaluate(() => fcShow('pipeline'));
+    await page.waitForTimeout(200);
+    const sub = await page.locator('.fc-pipe-sum > div').first().textContent();
+    expect(sub).toMatch(/\$48K/);
+    expect(sub).toMatch(/From 1 account: Acme Corp/);
+  });
+
+  test('FIX 9: setting Nova to committed updates total + lists 2 accounts', async ({ page }) => {
+    await page.evaluate(() => fcShow('pipeline'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => fcSetStatus('nova', 'committed'));
+    await page.waitForTimeout(200);
+    const sub = await page.locator('.fc-pipe-sum > div').first().textContent();
+    // Order is by FC_PIPELINE iteration: Nova comes first → Acme.
+    expect(sub).toMatch(/\$79K/);
+    expect(sub).toMatch(/From 2 accounts:/);
+    expect(sub).toMatch(/NovaVault/);
+    expect(sub).toMatch(/Acme Corp/);
   });
 });

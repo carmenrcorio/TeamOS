@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.29.0
+**Version:** 4.30.0
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,24 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.30.0] — 2026-05-21
+
+Forecasting tab refinements — 9 fixes ordered by impact. The first three close the "still need Gainsight" gap. **Result: 435/435 chromium tests passing.**
+
+### Fixed / Added
+
+- **Fix (CRITICAL)**: Forecast Status badges are now `role="combobox"` buttons with `aria-haspopup="listbox"` + `aria-expanded` synced, opening a 7-option dropdown. Selecting a status writes back through `fcSetStatus` — flips `r.status` + `r.statusLabel`, fires the existing Gainsight-write toast, shows the "Syncing…" pulse for 2s, calls `fcScheduleRegen` to auto-update the Dust narrative, **and now persists to `teamos_forecast_overrides`** (`forecast_status` + `gainsight_status` crosswalk). On script load a new `fcRestoreStatusFromOverrides` IIFE replays saved statuses back onto `FC_PIPELINE` so reloads preserve the selection. Each option carries `role="option"` + `aria-selected`; Enter/Space toggle the popover; Escape closes it.
+- **Fix (HIGH)**: Pipeline *Champion Protocol* button on Apex Dynamics opens the v4.29.0 Champion Change drawer instead of the empty Save Strategy. `fcAction('champion', acct)` now routes to `ccDrawerOpen(acct)`. A new `'expansion'` action case opens the new Expansion Play drawer.
+- **Feature (HIGH)**: Safe Commit tile in Dust Forecast — sits between *Commit Total* and *At Risk*. Value = `commit − atRisk`. Colour-coded against quota: teal when ≥ 50%, amber 25–50%, red < 25%. Sub-label: *"What you can verbally commit to your manager without risk"*. Tile carries an `aria-label` with the percent-of-quota when a quota is set.
+- **Feature**: Pipeline row highlight animation on Timeline / ARR Trends click. Adds a new `.pipeline-row-pulse` 2 s keyframe animation (teal background fade) on top of the existing `.fc-row-highlight` outline. Navigation fires a `role="status"` aria-live announcement (`#fc-nav-live`) reading *"Navigated to {Account} row"*.
+- **Feature**: Expansion Play drawer (`#xp-drawer`, body-level, 520 px). Replaces the Pre-Call Brief misroute when the Recovery Path's *Open Expansion Play* is clicked. Sections: **Signal** (3-bullet list) · **Opportunity** (current ARR → target + uplift %) · **The play** (4 numbered steps — At QBR / Post-QBR / Week 1 / Week 2–3) · **Pricing packaging** (4 enterprise-tier value bullets) · **Objection handlers** (2 obj/frame pairs) · **Notes** textarea persisting to `teamos_expansion_notes[acct]`. Four action buttons — *Generate Expansion Deck* / *Schedule Pilot Discovery* / *Push to Gainsight* / *Save Notes* — all Phase-2 stubs except Save Notes. Registered with the v4.16.0 drawer manager + Escape closes + restores focus to the trigger. Acme Corp is the only fully-authored play; other accounts toast a graceful unavailable message.
+- **Feature**: Regenerate cycles through 4 narrative variants instead of refreshing identical text. `FC_DUST_NARRATIVES` carries the original + 3 alternates (urgent / opportunity-led / status update). `FC_DUST_NARRATIVE_IDX` advances on every `fcRegenerate` AND on every silent `fcRegenerateDust` (the override auto-regen path). Toast wording updated to *"Narrative regenerated from latest signals ✓"*.
+- **Feature**: 4th Timeline column for *90+ days*. New `.fc-tl-col.m4` bucket renders accounts whose `daysOut ≥ 90` (or whose renewal falls outside Jun–Aug). Grid auto-collapses to 2 columns under 1080 px. Empty 90+ column shows *"No renewals beyond 90 days · Time for expansion plays"*.
+- **UX**: Delta badges labeled with hover tooltip *"−$3K below ARR ($31K → $28K)"* (and the symmetric *above* / + variant), plus a column-header legend chip *"Δ vs ARR"* with its own tooltip *"Δ = forecast vs current ARR"*. Both badge + chip carry `aria-label` for screen readers.
+- **Fix**: Committed ARR tile sums all `ontrack`/`committed` accounts and lists their names (up to 3, then *"+N more"*). Live updates as `fcSetStatus` writes through. Default state lists *"From 1 account: Acme Corp"*; promoting Nova to *Committed* re-renders to *"From 2 accounts: NovaVault, Acme Corp"* with the summed $79K.
 
 ---
 
