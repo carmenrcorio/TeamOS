@@ -1,5 +1,5 @@
 # TeamOS — Product Specification
-**Version:** 4.30.0
+**Version:** 4.30.1
 **Owner:** Carmen Corio
 **Status:** Active Development
 **Last Updated:** May 17, 2026
@@ -624,6 +624,22 @@ Buttons:   8px radius, 600-700 weight, family: inherit always
 ## 11. Changelog
 
 All changes logged here. Format: `## [version] — YYYY-MM-DD`
+
+---
+
+## [4.30.1] — 2026-05-21
+
+Quick-wins polish bundle from a TeamOS evaluation. 7 fixes touching multiple tabs. The requested label was [4.30.0], but that's already used; this entry covers the same bundle under 4.30.1 since v4.30.0 already shipped. **Result: 451/451 chromium tests passing.**
+
+### Fixed / Added
+
+- **UX**: Status-tag visual hierarchy across Priority Stack rows (and any other surface using `.tb-*` tags). Risk gets a solid red border + bold 700 text (`.tb-crit`); pending gets a dashed amber border + bold 700 (`.tb-high`); opportunity gets a solid green border + a leading 📈 icon via `::before` + calmer 500 weight (`.tb-opp`); dark / watch gets a neutral gray border + 500 weight (`.tb-watch`). Doubled-class selectors (`.tb.tb-X, .bf-tag.tb-X`) bump specificity over the legacy `.bf-tag` rule.
+- **Feature**: Mission Briefing shows a generation transparency subheader — `Generated 9:14 AM · Synced with Gainsight + Gong [🔄 Regenerate]`. Regenerate fires *"Mission briefing refreshed · Latest signals applied ✓"*, briefly flashes the bar teal, and updates `MB_BRIEFING_GEN_AT`. A minute-interval `mbUpdateStaleness` flips the bar amber + appends *"· Stale · regenerate to refresh"* when the timestamp is more than 2 hours old.
+- **Fix**: Urgent Inbox sorts by `data-priority` on script load. Customer-signal scores: CRITICAL = 100, INBOUND from dark = 85, SLA OPEN = 70; internal DM = 40. Demo data renders Michael Torres → Jennifer Ramos → Sarah Chen → Maggie Spry. Each row's `aria-label` is rewritten as *"Priority N of 4: …"* so screen-reader users hear the order.
+- **Fix**: Today's Tasks panel readability. `.ac-title` now wraps to 2 lines (CSS line-clamp) instead of truncating with ellipsis. All 7 task titles carry a `title` attribute so the full string also shows on hover. Clicking the title toggles `.expanded` (capture-phase listener — works even when the inner `.acct-lk` link calls `stopPropagation`). Tasks 6/7 already use specific verbs (*Schedule* / *Update*) from v4.26.0.
+- **Audit**: Every pulse-strip chip is a `<button type="button">` with an `aria-label` describing its destination. v4.30.1 added `aria-label`s to the previously-bare `#pb-cft` (Drive Docs) and `#pb-train` (Training) chips so the audit is complete across all 10 chips.
+- **Feature**: Data-source attribution added to 7 dynamic-render functions for global consistency — `fcRenderDust`, `fcRenderTrends`, `rsRenderDark`, `cmRenderTemplates`, `cmRenderAnalytics`, `tvBuildRoster`, `tvBuildBook`. Each appends the existing `dataAttribHtml()` footer (*"Data: Demo data · Live sync available in Phase 2"*) at the bottom of the section. Phase 2 swap remains a single-line change in `DATA_ATTRIB_TEXT`.
+- **Feature**: Notification icons in top nav (Mail / Slack / Renewal Activity) confirmed wired to in-app popovers via `toggleNotifPop`. All 3 carry `aria-label`, are keyboard-activatable, and surface the underlying email / Slack / Ironclad data instead of being dead external indicators.
 
 ---
 

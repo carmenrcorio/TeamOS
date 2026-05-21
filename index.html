@@ -120,11 +120,28 @@ body.offline .main > div:nth-child(3){
    font-weight 600, padding 2px 8px, border-radius 4px, uppercase.
    ═════════════════════════════════════════════════════════════════════════ */
 .tb{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px;line-height:1.4;white-space:nowrap}
-.tb-crit{background:#FEE2E2;color:#DC2626;border:none}
-.tb-high{background:#FEF3C7;color:#B45309;border:none}
-.tb-watch{background:#F3F4F6;color:#4B5563;border:none}
-.tb-opp{background:#CCFBF1;color:#0F766E;border:none}
-.tb-admin{background:#EEF2FF;color:#4338CA;border:none}
+/* v4.30.1 — FIX 1: status-tag visual hierarchy. Risk gets a solid red border
+   + bold text; pending gets a dashed amber border (the dashed line conveys
+   "waiting"); opportunity gets a leading 📈 icon + a calmer green; dark /
+   change tags get a neutral gray border so they don't compete for attention.
+   Doubled-class selector (.tb.tb-X) bumps specificity over the legacy
+   .bf-tag rule so the new styling wins on Priority Stack rows. */
+.tb.tb-crit,.bf-tag.tb-crit{background:#FEE2E2;color:#991B1B;border:1px solid #DC2626;font-weight:700}
+.tb.tb-high,.bf-tag.tb-high{background:#FEF3C7;color:#92400E;border:1px dashed #D97706;font-weight:700}
+.tb.tb-watch,.bf-tag.tb-watch{background:#F3F4F6;color:#1F2937;border:1px solid #6B7280;font-weight:500}
+.tb.tb-opp,.bf-tag.tb-opp{background:#D1FAE5;color:#065F46;border:1px solid #059669;font-weight:500}
+.tb.tb-opp::before,.bf-tag.tb-opp::before{content:'📈 ';font-size:11px;margin-right:1px}
+.tb.tb-admin,.bf-tag.tb-admin{background:#EEF2FF;color:#3730A3;border:1px solid #6366F1;font-weight:500}
+
+/* v4.30.1 — FIX 2: Mission Briefing generation transparency subheader. */
+.mb-meta-bar{padding:7px 14px;border-bottom:1px solid var(--bd);background:var(--surf2);font-size:11px;color:#6B7280;font-weight:500;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;line-height:1.5}
+.mb-meta-bar.stale{background:#FFFBEB;color:#92400E}
+.mb-meta-bar.stale .mb-meta-l::after{content:' · Stale · regenerate to refresh';color:#B45309;font-weight:600}
+.mb-meta-bar.flash{background:var(--tl-bg);box-shadow:inset 0 0 0 1px var(--tl);transition:background .2s,box-shadow .2s}
+.mb-meta-l{flex:1;min-width:0}
+.mb-regen{font-family:inherit;font-size:11px;font-weight:700;padding:4px 9px;border:1px solid var(--bd2);border-radius:5px;background:var(--surf);color:#1F2937;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.mb-regen:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
+.mb-regen:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
 /* Source chips: outlined, transparent fill, system-color border + text. */
 .tb-src{background:transparent;border:1px solid currentColor;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px;line-height:1.4;white-space:nowrap}
 .tb-src.gainsight{color:#0F766E}
@@ -177,7 +194,8 @@ body.offline .main > div:nth-child(3){
 
 /* v4.10.0 — Today's Tasks simplified to a numbered list with source dot only
    (SPEC §1). No sender attribution, no admin cards. */
-.ac{padding:8px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;transition:background .1s;min-height:38px}
+.ac{padding:8px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:10px;transition:background .1s;min-height:38px}
+.ac .ac-n,.ac .src-dot,.ac .ac-btn{margin-top:2px}
 .ac:last-child{border-bottom:none}
 .ac:hover{background:var(--surf2)}
 .ac.done{opacity:.45}
@@ -188,7 +206,8 @@ body.offline .main > div:nth-child(3){
 .src-dot.gm{background:#DC2626}        /* Gmail → red */
 .src-dot.sl{background:#7C3AED}        /* Slack → purple */
 .src-dot.admin{background:#4338CA}     /* Admin → indigo */
-.ac-title{font-size:12px;font-weight:500;color:var(--tx);line-height:1.35;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-title{font-size:12px;font-weight:500;color:var(--tx);line-height:1.35;flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:default}
+.ac-title.expanded{-webkit-line-clamp:unset;display:block;white-space:normal;overflow:visible}
 .ac.done .ac-title{text-decoration:line-through;color:var(--tx3)}
 .ac-btn{font-size:11px;font-weight:600;padding:4px 9px;border:1px solid var(--bd2);border-radius:5px;cursor:pointer;background:var(--surf);color:var(--tx2);font-family:inherit;transition:all .1s;white-space:nowrap;flex-shrink:0}
 .ac-btn:hover{background:var(--tl);color:#fff;border-color:var(--tl)}
@@ -3923,7 +3942,7 @@ body.offline .int-panel{top:124px}
       <button class="ps-btn" id="pb-renew" onclick="psKpiRenew()" type="button" aria-label="$89K renewing in next 30 days — open Forecasting Timeline"><i class="ti ti-calendar-check" style="color:var(--tl)"></i><span class="ps-n">$89K</span>&nbsp;renews this month</button>
     </div>
     <div class="ps-wrap" style="display:none">
-      <button class="ps-btn" id="pb-cft" onclick="togglePop('cft',event)" type="button"><i class="ti ti-folder"></i>&nbsp;Drive Docs</button>
+      <button class="ps-btn" id="pb-cft" onclick="togglePop('cft',event)" type="button" aria-label="Drive Docs — open document picker"><i class="ti ti-folder"></i>&nbsp;Drive Docs</button>
       <div class="pop pop-right cft-pop" id="pop-cft" role="dialog" aria-label="Drive Docs" aria-modal="false">
         <div class="cft-hd">
           <div class="cft-hd-t"><i class="ti ti-folder" style="color:var(--bl)"></i> Drive Docs <span class="cft-hd-src">&middot; Google Drive</span></div>
@@ -3946,7 +3965,7 @@ body.offline .int-panel{top:124px}
       <button class="ps-btn" id="pb-exp" onclick="psPulseOpenExpansion()" type="button" aria-label="Expansion pipeline $12K to $18K — open Forecasting Pipeline and highlight expansion rows"><i class="ti ti-trending-up" style="color:var(--tl)"></i><span class="ps-n">$12K–$18K</span>&nbsp;expansion pipeline</button>
     </div>
     <div class="ps-wrap" style="display:none">
-      <button class="ps-btn" id="pb-train" onclick="togglePop('train',event)" type="button"><i class="ti ti-school"></i><span class="ps-n a" id="pn-train">2</span>&nbsp;Training</button>
+      <button class="ps-btn" id="pb-train" onclick="togglePop('train',event)" type="button" aria-label="2 training reminders — open training panel"><i class="ti ti-school"></i><span class="ps-n a" id="pn-train">2</span>&nbsp;Training</button>
       <div class="pop pop-right tr-pop" id="pop-train" role="dialog" aria-label="Training" aria-modal="false">
         <div class="tr-hd">
           <div class="tr-hd-t"><i class="ti ti-school" style="color:var(--bl)"></i> Training <span class="tr-hd-src">&middot; Seismic LMS</span></div>
@@ -4167,8 +4186,11 @@ body.offline .int-panel{top:124px}
         </div>
         <!-- v4.16.0 — FIX 2: Each row reads like a triage card. Line 1 = full
              first name + account (no truncation to initials). Line 2 =
-             specific status chip + source chip + relative time. -->
-        <div class="ii" role="button" tabindex="0" data-iid="nova-torres" data-nm="Michael Torres" aria-label="Michael Torres, NovaVault, Critical Save, 2h ago" onclick="acctClick('nova',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('nova',event)}">
+             specific status chip + source chip + relative time.
+             v4.30.1 — FIX 3: rows sorted by data-priority on script load so
+             a high-value inbound from a dark account ranks above an
+             internal DM. -->
+        <div class="ii" role="button" tabindex="0" data-iid="nova-torres" data-nm="Michael Torres" data-priority="100" aria-label="Michael Torres, NovaVault, Critical Save, 2h ago" onclick="acctClick('nova',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('nova',event)}">
           <div class="ii-av crit" aria-label="Michael Torres at NovaVault">M</div>
           <div class="ii-mid">
             <div class="ii-row1"><span class="ii-nm">Michael Torres</span><span class="ii-acct">NovaVault</span></div>
@@ -4180,7 +4202,7 @@ body.offline .int-panel{top:124px}
              route to the dedicated internal panel rather than the customer
              account briefing. The Maggie Spry DM is the only internal item
              in the seed data today. -->
-        <div class="ii" role="button" tabindex="0" data-type="internal" data-inbox-id="maggie-spry" data-iid="maggie-spry" data-nm="Maggie Spry" aria-label="Internal message from Maggie Spry, CS Leadership, DM, 1h ago" onclick="psInternalOpen('maggie-spry')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();psInternalOpen('maggie-spry')}">
+        <div class="ii" role="button" tabindex="0" data-type="internal" data-inbox-id="maggie-spry" data-iid="maggie-spry" data-nm="Maggie Spry" data-priority="40" aria-label="Internal message from Maggie Spry, CS Leadership, DM, 1h ago" onclick="psInternalOpen('maggie-spry')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();psInternalOpen('maggie-spry')}">
           <div class="ii-av high" aria-label="Maggie Spry at CS Leadership">M</div>
           <div class="ii-mid">
             <div class="ii-row1"><span class="ii-nm">Maggie Spry</span><span class="ii-acct">CS Leadership</span></div>
@@ -4188,7 +4210,7 @@ body.offline .int-panel{top:124px}
           </div>
           <div class="ii-quick"><button type="button" class="ii-quick-btn prim" onclick="event.stopPropagation();psQuickReply('maggie-spry')" aria-label="Quick reply to Maggie Spry">💬 Quick Reply</button><button type="button" class="ii-quick-btn" onclick="event.stopPropagation();psInboxDismiss('maggie-spry')" aria-label="Dismiss Maggie Spry from inbox">✓ Dismiss</button></div>
         </div>
-        <div class="ii" role="button" tabindex="0" data-iid="brightex-chen" data-nm="Sarah Chen" aria-label="Sarah Chen, Brightex, SLA Open, 3h ago" onclick="acctClick('brightex',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('brightex',event)}">
+        <div class="ii" role="button" tabindex="0" data-iid="brightex-chen" data-nm="Sarah Chen" data-priority="70" aria-label="Sarah Chen, Brightex, SLA Open, 3h ago" onclick="acctClick('brightex',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('brightex',event)}">
           <div class="ii-av high" aria-label="Sarah Chen at Brightex">S</div>
           <div class="ii-mid">
             <div class="ii-row1"><span class="ii-nm">Sarah Chen</span><span class="ii-acct">Brightex</span></div>
@@ -4196,7 +4218,7 @@ body.offline .int-panel{top:124px}
           </div>
           <div class="ii-quick"><button type="button" class="ii-quick-btn prim" onclick="event.stopPropagation();psQuickReply('brightex-chen')" aria-label="Quick reply to Sarah Chen">💬 Quick Reply</button><button type="button" class="ii-quick-btn" onclick="event.stopPropagation();psInboxDismiss('brightex-chen')" aria-label="Dismiss Sarah Chen from inbox">✓ Dismiss</button></div>
         </div>
-        <div class="ii" role="button" tabindex="0" data-iid="meridian-ramos" data-nm="Jennifer Ramos" aria-label="Jennifer Ramos, Meridian, Inbound, 5h ago" onclick="acctClick('meridian',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('meridian',event)}">
+        <div class="ii" role="button" tabindex="0" data-iid="meridian-ramos" data-nm="Jennifer Ramos" data-priority="85" aria-label="Jennifer Ramos, Meridian, Inbound, 5h ago" onclick="acctClick('meridian',event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();acctClick('meridian',event)}">
           <div class="ii-av opp" aria-label="Jennifer Ramos at Meridian">J</div>
           <div class="ii-mid">
             <div class="ii-row1"><span class="ii-nm">Jennifer Ramos</span><span class="ii-acct">Meridian</span></div>
@@ -4227,27 +4249,27 @@ body.offline .int-panel{top:124px}
              Source filter row + Admin broadcast cards removed entirely. -->
         <div class="ac" id="ac1">
           <span class="ac-n">1.</span><span class="src-dot gs" aria-label="Gainsight CTA"></span>
-          <span class="ac-title">Update <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span> renewal forecast status</span>
+          <span class="ac-title" title="Update NovaVault renewal forecast status">Update <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span> renewal forecast status</span>
           <button class="ac-btn" data-label="Update forecast" onclick="dustQuick('Update NovaVault forecast');doneTask(this,'ac1')">Update</button>
         </div>
         <div class="ac" id="ac2">
           <span class="ac-n">2.</span><span class="src-dot ca" aria-label="Calendar"></span>
-          <span class="ac-title">Finalize <span class="acct-lk" onclick="event.stopPropagation();acctClick('acme',event)">Acme Corp</span> QBR slides — send to David Kim</span>
+          <span class="ac-title" title="Finalize Acme Corp QBR slides — send to David Kim">Finalize <span class="acct-lk" onclick="event.stopPropagation();acctClick('acme',event)">Acme Corp</span> QBR slides — send to David Kim</span>
           <button class="ac-btn" data-label="Generate prep" onclick="openAgentDrawer('prep','acme');doneTask(this,'ac2')">Prep</button>
         </div>
         <div class="ac" id="ac3">
           <span class="ac-n">3.</span><span class="src-dot gs" aria-label="Gainsight CTA"></span>
-          <span class="ac-title">Schedule exec sponsor save call for <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span></span>
+          <span class="ac-title" title="Schedule exec sponsor save call for NovaVault">Schedule exec sponsor save call for <span class="acct-lk" onclick="event.stopPropagation();acctClick('nova',event)">NovaVault</span></span>
           <button class="ac-btn" data-label="Draft outreach" onclick="openAgentDrawer('save','nova');doneTask(this,'ac3')">Draft</button>
         </div>
         <div class="ac" id="ac4">
           <span class="ac-n">4.</span><span class="src-dot gm" aria-label="Gmail"></span>
-          <span class="ac-title">Reply to Sarah Chen re: <span class="acct-lk" onclick="event.stopPropagation();acctClick('brightex',event)">Brightex</span> renewal options</span>
+          <span class="ac-title" title="Reply to Sarah Chen re: Brightex renewal options">Reply to Sarah Chen re: <span class="acct-lk" onclick="event.stopPropagation();acctClick('brightex',event)">Brightex</span> renewal options</span>
           <button class="ac-btn" data-label="Draft reply" onclick="openAgentDrawer('risk','brightex');doneTask(this,'ac4')">Reply</button>
         </div>
         <div class="ac" id="ac5">
           <span class="ac-n">5.</span><span class="src-dot sl" aria-label="Slack"></span>
-          <span class="ac-title">Log Klaxton Labs call notes from yesterday</span>
+          <span class="ac-title" title="Log Klaxton Labs call notes from yesterday">Log Klaxton Labs call notes from yesterday</span>
           <button class="ac-btn" data-label="Log notes" onclick="dustQuick('Log Klaxton call notes');doneTask(this,'ac5')">Log</button>
         </div>
         <div class="ac" id="ac6">
@@ -4267,6 +4289,10 @@ body.offline .int-panel{top:124px}
       <div class="rp" role="region" aria-label="Mission Briefing" aria-live="polite">
         <div class="rp-view on" id="view-default">
           <div class="rp-hd pl"><div class="rp-t">Mission Briefing</div><span class="pl-tag"><span class="pl-dot"></span>Prepare My Day &middot; Auto-loaded</span><button class="mb-fc-btn" type="button" role="link" aria-label="View Forecasting tab" onclick="psOpenForecastTab()"><i class="ti ti-chart-bar"></i> Forecast</button><button class="mb-tl-btn" type="button" onclick="openTeamOSLive('acme')"><i class="ti ti-bolt"></i> Live</button></div>
+          <!-- v4.30.1 — FIX 2: generation transparency subheader. Shows when
+               the briefing was last refreshed + a manual Regenerate control.
+               Timestamp updates every 60 min; turns amber after 2 h. -->
+          <div class="mb-meta-bar" id="mb-meta-bar"><span class="mb-meta-l"><span id="mb-gen-ts" aria-live="polite">Generated 9:14 AM</span> · Synced with Gainsight + Gong</span><button class="mb-regen" type="button" id="mb-regen" onclick="mbRegenerate()" aria-label="Regenerate mission briefing"><i class="ti ti-refresh"></i> Regenerate</button></div>
           <div class="rp-scroll">
             <div class="mb-nm">Acme Corp</div>
             <div class="mb-meta"><span>$48K ARR</span><span>&middot;</span><span style="color:var(--tl)">Aug 12 &middot; 89 days</span><span>&middot;</span><span>QBR &middot; 9:00 AM</span></div>
@@ -12770,7 +12796,8 @@ function cmRenderTemplates() {
     + '<div class="cm-split">'
     +   '<div class="cm-grid" id="cm-tpl-grid"></div>'
     +   '<div class="cm-detail" id="cm-tpl-detail"></div>'
-    + '</div>';
+    + '</div>'
+    + (typeof dataAttribHtml === 'function' ? dataAttribHtml() : '');
   cmRenderTplGrid();
   cmRenderTplDetail();
 }
@@ -13471,7 +13498,8 @@ function cmRenderAnalytics() {
     +   '<div class="cm-best-card"><div class="cm-best-l">Best subject line</div><div class="cm-best-v">&ldquo;Your Brightex renewal — let&rsquo;s connect&rdquo;</div><div class="cm-best-sub">Open rate <b>71%</b></div></div>'
     +   '<div class="cm-best-card"><div class="cm-best-l">Highest reply rate</div><div class="cm-best-v">Re-engagement template</div><div class="cm-best-sub">Reply rate <b>33%</b></div></div>'
     +   '<div class="cm-best-card risk"><div class="cm-best-l">Risk · zero opens</div><div class="cm-best-v">NovaVault · Apex Dynamics</div><div class="cm-best-sub">0 opens across 1 email each — may need a different channel</div><div class="cm-best-acts"><button class="cm-btn" type="button" onclick="toast(\'LinkedIn outreach drafted ✓\')">Try LinkedIn →</button><button class="cm-btn" type="button" onclick="toast(\'Opening Ghost-Buster for dark accounts ✓\')">Ghost-Buster →</button></div></div>'
-    + '</div>';
+    + '</div>'
+    + (typeof dataAttribHtml === 'function' ? dataAttribHtml() : '');
   // v4.27.0 — set the initial Apply button state once the date inputs exist.
   if (CM_ANALYTICS_PERIOD === 'custom') cmAnalyticsValidateUI();
 }
@@ -15609,7 +15637,8 @@ function rsRenderDark() {
   }).join('');
   sec.innerHTML = ''
     + '<div class="rs-hd"><div class="rs-hd-t">👻 Dark Zone · ' + RS_DARK.length + ' accounts · $' + totalARR + 'K ARR</div></div>'
-    + cards;
+    + cards
+    + (typeof dataAttribHtml === 'function' ? dataAttribHtml() : '');
 }
 function rsLogTouch(acct) { toast('Touch logged · ' + rsEscape(acct) + ' · Gainsight ✓'); }
 function rsDarkStatusUpdate(acct, status) {
@@ -16771,7 +16800,9 @@ function fcRenderDust() {
     +     '<div class="fc-dust-card-b">An unanswered question 10 days before a renewal is a stall signal or a churn signal — treat it as urgent either way.</div>'
     +     '<button class="fc-dust-card-act" type="button" onclick="fcAction(\'draft\',\'brightex\')"><i class="ti ti-mail"></i> Draft Reply to Sarah &rarr;</button>'
     +   '</div>'
-    + '</div>';
+    + '</div>'
+    // v4.30.1 — FIX 6: global data-source attribution.
+    + (typeof dataAttribHtml === 'function' ? dataAttribHtml() : '');
 }
 function fcRegenerate() {
   var btn = document.getElementById('fc-regen-btn');
@@ -16908,7 +16939,8 @@ function fcRenderTrends() {
     +     '<div>Signal</div><div>David Kim flagged enterprise tier + SSO unprompted · May 10 Gong</div>'
     +   '</div>'
     +   '<button class="fc-btn prim" type="button" onclick="fcAction(\'prep\',\'acme\')"><i class="ti ti-rocket"></i> Open Expansion Play — Acme &rarr;</button>'
-    + '</div>';
+    + '</div>'
+    + (typeof dataAttribHtml === 'function' ? dataAttribHtml() : '');
 }
 // v4.7.0 — Chart bar hover tooltip. Single shared tooltip div positioned
 // over the hovered column. Hidden on mouseleave / blur.
@@ -17243,6 +17275,86 @@ function fcReplyMarkSent(acct) {
 fcRenderPipeline();
 
 // ═══════════════════════════════════════════════════════════════════════════
+// v4.30.1 — TeamOS polish bundle (Mission Briefing transparency, inbox sort,
+// task expansion, data attrib audit).
+// ═══════════════════════════════════════════════════════════════════════════
+
+// FIX 2 — Mission Briefing generation transparency. Timestamp captured at
+// page load; turns amber after 2 hours and prefixes a stale warning via CSS.
+var MB_BRIEFING_GEN_AT = Date.now();
+function mbFormatGenTime(ts) {
+  var d = new Date(ts);
+  var hh = d.getHours(), mm = d.getMinutes();
+  var ampm = hh >= 12 ? 'PM' : 'AM';
+  var hr12 = hh % 12 || 12;
+  return 'Generated ' + hr12 + ':' + (mm < 10 ? '0' + mm : mm) + ' ' + ampm;
+}
+function mbUpdateStaleness() {
+  var bar = document.getElementById('mb-meta-bar');
+  if (!bar) return;
+  var ageMs = Date.now() - MB_BRIEFING_GEN_AT;
+  var stale = ageMs > 2 * 60 * 60 * 1000;
+  bar.classList.toggle('stale', stale);
+  // The ts span carries aria-live so SR users hear the timestamp refresh.
+  var ts = document.getElementById('mb-gen-ts');
+  if (ts) ts.textContent = mbFormatGenTime(MB_BRIEFING_GEN_AT);
+}
+function mbRegenerate() {
+  MB_BRIEFING_GEN_AT = Date.now();
+  var bar = document.getElementById('mb-meta-bar');
+  if (bar) {
+    bar.classList.remove('stale');
+    bar.classList.add('flash');
+    setTimeout(function(){ if (bar) bar.classList.remove('flash'); }, 1000);
+  }
+  mbUpdateStaleness();
+  toast('Mission briefing refreshed · Latest signals applied ✓');
+}
+mbUpdateStaleness();
+// Recheck staleness once a minute so the amber flip happens on its own.
+setInterval(mbUpdateStaleness, 60 * 1000);
+
+// FIX 3 — Urgent Inbox sort by data-priority. Static-HTML rows get reordered
+// in their parent so CRITICAL customer signal leads, INBOUND-from-dark ranks
+// above SLA OPEN, and internal DMs drop to the bottom.
+(function psSortUrgentInbox(){
+  var rows = document.querySelectorAll('.ii[data-priority]');
+  if (!rows.length) return;
+  var parent = rows[0].parentNode;
+  if (!parent) return;
+  var sorted = Array.prototype.slice.call(rows).sort(function(a, b){
+    return parseInt(b.getAttribute('data-priority'), 10) - parseInt(a.getAttribute('data-priority'), 10);
+  });
+  // Annotate ARIA position so SR users hear the order.
+  sorted.forEach(function(row, i){
+    var nm = row.getAttribute('data-nm') || '';
+    var prevLabel = row.getAttribute('aria-label') || '';
+    // Replace any "Priority N of M:" prefix or just prepend.
+    var cleaned = prevLabel.replace(/^Priority \d+ of \d+: /, '');
+    row.setAttribute('aria-label', 'Priority ' + (i + 1) + ' of ' + sorted.length + ': ' + cleaned);
+    parent.appendChild(row); // Re-append in sorted order.
+  });
+})();
+
+// FIX 4 — task title click-to-expand. Long task titles wrap to 2 lines by
+// default (CSS); clicking the title toggles full text. Uses capture phase
+// so inner spans that stopPropagation (the .acct-lk account links) still
+// register a toggle on the title surrounding them — clicking the account
+// link still routes to acctClick (its own onclick), but the title also
+// expands so the CSM never feels their click was lost.
+(function bindTaskExpand(){
+  document.querySelectorAll('#tab-dash .ac .ac-title').forEach(function(t){
+    t.addEventListener('click', function(e){
+      // Ignore clicks that came from the inner account-link — that's a
+      // navigation action, not an expand toggle.
+      if (e.target.closest && e.target.closest('.acct-lk')) return;
+      t.classList.toggle('expanded');
+    }, true); // capture phase
+  });
+})();
+
+
+// ═══════════════════════════════════════════════════════════════════════════
 // v4.23.0 — Team View Phase 1: Pod Pulse + Roster + Shared Account Book.
 // All cross-role data is hardcoded demo state. Slack DM, Calendar, Strategy
 // Huddle, and the member profile modal are Phase 2/3 stubs that toast for now.
@@ -17328,6 +17440,11 @@ function tvPulseJump(id) {
 function tvBuildRoster() {
   var el = document.getElementById('tv-roster');
   if (!el) return;
+  // v4.30.1 — FIX 6: data attribution at the bottom of the roster section.
+  var sec = document.getElementById('tv-roster-sec');
+  if (sec && !sec.querySelector('.data-attrib') && typeof dataAttribHtml === 'function') {
+    sec.insertAdjacentHTML('beforeend', dataAttribHtml());
+  }
   el.innerHTML = POD_ROSTER.map(function(m){
     return '<div class="tv-roster-card" role="button" tabindex="0"'
       + ' aria-label="View ' + tvEscape(m.name) + ' profile"'
@@ -17389,6 +17506,11 @@ function tvBuildBook() {
   var mt  = document.getElementById('tv-book-meta');
   if (!el || !hd) return;
   if (mt) mt.textContent = TV_BOOK.length + ' accounts · click row to open Strategy Huddle';
+  // v4.30.1 — FIX 6: data attribution at the bottom of the Book section.
+  var sec = document.getElementById('tv-book-sec');
+  if (sec && !sec.querySelector('.data-attrib') && typeof dataAttribHtml === 'function') {
+    sec.insertAdjacentHTML('beforeend', dataAttribHtml());
+  }
 
   var visibleCols = TV_COL_DEF.filter(function(c){return c.visible;});
   var visibleColsHtml = TV_COL_DEF.filter(function(c){return c.visible;}).map(function(c){
