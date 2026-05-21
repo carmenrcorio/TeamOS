@@ -1951,6 +1951,31 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .cm-analytics-range-clear:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
 .cm-analytics-banner{margin:0 0 10px;padding:9px 13px;background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:6px;font-size:12px;color:#1F2937;font-weight:600;line-height:1.5;display:none}
 .cm-analytics-banner.on{display:block}
+
+/* ─── v4.28.0 — Send-time scheduling windows ──────────────────────────── */
+.cm-sw{margin-top:16px;padding:14px 16px;background:var(--surf2);border:1px solid var(--bd);border-radius:8px;display:flex;flex-direction:column;gap:11px}
+.cm-sw-hd{font-size:11px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.07em}
+.cm-sw-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:#1F2937}
+.cm-sw-lbl{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:#1F2937;cursor:pointer}
+.cm-sw-lbl input[type="checkbox"]{accent-color:var(--tl);width:14px;height:14px;cursor:pointer}
+.cm-sw-ctrls{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cm-sw-days{display:inline-flex;gap:3px;margin-right:6px}
+.cm-sw-day{font-family:inherit;font-size:10px;font-weight:700;padding:3px 7px;border-radius:4px;border:1px solid var(--bd2);background:var(--surf);color:#374151;cursor:pointer;min-width:34px}
+.cm-sw-day:hover{background:var(--tl-bg);border-color:var(--tl);color:var(--tl-dk)}
+.cm-sw-day.on{background:var(--tl);color:#fff;border-color:var(--tl)}
+.cm-sw-day:focus-visible{outline:2px solid var(--tl);outline-offset:1px}
+.cm-sw-time{font-family:inherit;font-size:12px;padding:5px 8px;border:1px solid var(--bd2);border-radius:5px;background:var(--surf);color:#1F2937}
+.cm-sw-time:focus{border-color:var(--tl);outline:none}
+.cm-sw-sep{color:#6B7280;font-weight:600;font-size:11px}
+.cm-sw-preview{margin-top:6px;padding:10px 12px;background:var(--surf);border:1px solid var(--bd);border-left:3px solid var(--tl);border-radius:6px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.6}
+.cm-sw-preview-hd{font-size:10px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.cm-sw-preview-line{font-size:12px;color:#1F2937;font-weight:500}
+.cm-wiz-warn{margin:8px 0;padding:9px 13px;background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:6px;font-size:12px;color:#1F2937;font-weight:600;line-height:1.5;display:flex;align-items:center;gap:7px}
+.cm-wiz-warn i{color:#92400E}
+
+/* v4.28.0 — Send window section in the campaign View drawer. */
+.cm-view-sw{padding:10px 12px;background:var(--surf2);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55}
+.cm-view-sw-q{margin-top:7px;padding:7px 10px;background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:5px;font-size:11px;color:#78350F;font-weight:700;display:flex;align-items:center;gap:6px}
 .cm-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg);color:var(--tx);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;letter-spacing:0;flex-shrink:0;text-transform:uppercase;border:1px solid var(--bd2)}
 .cm-cnt-mid{flex:1;min-width:0}
 .cm-cnt-nm{font-size:12px;font-weight:700;color:#111827;letter-spacing:-.01em;line-height:1.3}
@@ -11147,6 +11172,176 @@ var CM_CAMPAIGNS = [
   { id:'cmp3', name:'Q2 EBR Invitations',         type:'ebr',     typeLabel:'EBR Invite',    status:'draft',     contactCount:12, touchCount:1, sentDate:null,     openRate:null, replyRate:null, progress:'Not yet sent',                          contactIds:[],                       templateId:'t2' }
 ];
 
+// v4.28.0 — Send-time scheduling windows. Every campaign carries a
+// sendWindow object that governs when individual touches actually fire.
+// Replaces Gainsight JO's "send rules" and Outreach's "delivery windows."
+function cmDefaultSendWindow() {
+  return {
+    businessHoursOnly: true,
+    days: ['mon','tue','wed','thu','fri'],
+    startTime: '09:00',
+    endTime:   '17:00',
+    timezone:  'recipient',
+    skipWeekends: true,
+    skipHolidays: false,
+    quietHours: { enabled:false, start:'20:00', end:'07:00' }
+  };
+}
+// Per-campaign overrides injected into the 3 demo campaigns at script load.
+var CM_SEND_WINDOW_OVERRIDES = {
+  cmp1: {},  // June Renewal Push — default Mon–Fri 9–5, recipient TZ, skip wknds
+  cmp2: { days:['tue','wed','thu'] },                                  // Dark Zone — avoid Mon/Fri
+  cmp3: { days:['mon','tue','wed'], skipHolidays:true }                // Q2 EBR — early-week + skip holidays
+};
+CM_CAMPAIGNS.forEach(function(c){
+  if (c.sendWindow) return;
+  c.sendWindow = Object.assign({}, cmDefaultSendWindow(), CM_SEND_WINDOW_OVERRIDES[c.id] || {});
+});
+
+// US federal holidays (2026 + 2027 subset — enough for the demo's date math).
+var CM_US_HOLIDAYS = ['2026-01-01','2026-01-19','2026-02-16','2026-05-25','2026-06-19','2026-07-03','2026-09-07','2026-10-12','2026-11-11','2026-11-26','2026-12-25','2027-01-01','2027-01-18','2027-02-15','2027-05-31','2027-06-18','2027-07-05','2027-09-06','2027-10-11','2027-11-11','2027-11-25','2027-12-24'];
+function cmIsUSHoliday(d) {
+  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+  var key = d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+  return CM_US_HOLIDAYS.indexOf(key) !== -1;
+}
+function cmDayName(d) { return ['sun','mon','tue','wed','thu','fri','sat'][d.getDay()]; }
+function cmParseHHMM(s) {
+  var p = String(s || '').split(':');
+  return { h: parseInt(p[0], 10) || 0, m: parseInt(p[1], 10) || 0 };
+}
+function cmInWindow(d, win) {
+  if (!win) return true;
+  var dayOk = !win.days || win.days.indexOf(cmDayName(d)) !== -1;
+  if (win.skipWeekends && (d.getDay() === 0 || d.getDay() === 6)) dayOk = false;
+  if (win.skipHolidays && cmIsUSHoliday(d)) dayOk = false;
+  if (!dayOk) return false;
+  if (win.businessHoursOnly) {
+    var s = cmParseHHMM(win.startTime), e = cmParseHHMM(win.endTime);
+    var cur = d.getHours() * 60 + d.getMinutes();
+    if (cur < s.h * 60 + s.m || cur > e.h * 60 + e.m) return false;
+  }
+  if (win.quietHours && win.quietHours.enabled) {
+    var qs = cmParseHHMM(win.quietHours.start), qe = cmParseHHMM(win.quietHours.end);
+    var hr = d.getHours() * 60 + d.getMinutes();
+    var qsM = qs.h * 60 + qs.m, qeM = qe.h * 60 + qe.m;
+    var inQuiet = (qsM < qeM) ? (hr >= qsM && hr < qeM) : (hr >= qsM || hr < qeM);
+    if (inQuiet) return false;
+  }
+  return true;
+}
+// Walk a base date forward minute-by-day until it lands inside the window.
+function cmComputeNextSend(baseDate, win) {
+  if (!win) return new Date(baseDate.getTime());
+  var d = new Date(baseDate.getTime());
+  var start = cmParseHHMM(win.startTime);
+  for (var i = 0; i < 60; i++) {
+    if (cmInWindow(d, win)) return d;
+    // If the current day is excluded entirely, jump to next day's startTime.
+    var dayName = cmDayName(d);
+    var dayExcluded = (win.days && win.days.indexOf(dayName) === -1)
+      || (win.skipWeekends && (d.getDay() === 0 || d.getDay() === 6))
+      || (win.skipHolidays && cmIsUSHoliday(d));
+    if (dayExcluded) {
+      d.setDate(d.getDate() + 1);
+      d.setHours(start.h, start.m, 0, 0);
+      continue;
+    }
+    if (win.businessHoursOnly) {
+      var sMin = start.h * 60 + start.m;
+      var eMin = cmParseHHMM(win.endTime).h * 60 + cmParseHHMM(win.endTime).m;
+      var cur  = d.getHours() * 60 + d.getMinutes();
+      if (cur < sMin) { d.setHours(start.h, start.m, 0, 0); continue; }
+      if (cur > eMin) { d.setDate(d.getDate() + 1); d.setHours(start.h, start.m, 0, 0); continue; }
+    }
+    if (win.quietHours && win.quietHours.enabled) {
+      var qe = cmParseHHMM(win.quietHours.end);
+      d.setHours(qe.h, qe.m, 0, 0);
+      continue;
+    }
+    // Should not reach here, but guard against infinite loop.
+    d.setDate(d.getDate() + 1);
+    d.setHours(start.h, start.m, 0, 0);
+  }
+  return d;
+}
+// Render the Send Window panel for the campaign View drawer. Surfaces the
+// active window in plain English + a queued-touches line when the next
+// computed send time is in the future (because the current moment falls
+// outside the window).
+function cmViewSendWindowHtml(camp) {
+  var win = camp.sendWindow || cmDefaultSendWindow();
+  var html = '<div class="cm-view-sw">' + cmEscape(cmSendWindowDescribe(win)) + '</div>';
+  // Queued count: any touch whose computed next-send time falls outside today.
+  if (win.businessHoursOnly || win.skipWeekends || win.skipHolidays || (win.quietHours && win.quietHours.enabled)) {
+    var now = new Date();
+    if (!cmInWindow(now, win)) {
+      var next = cmComputeNextSend(now, win);
+      // Demo heuristic: number of touches "queued" equals the touchCount of
+      // the campaign minus those already sent (we don't track per-touch send
+      // state in demo, so use a sensible round number).
+      var queued = camp.touchCount;
+      if (camp.id === 'cmp1') queued = 2;
+      if (camp.id === 'cmp2') queued = 0;
+      if (queued > 0) {
+        html += '<div class="cm-view-sw-q"><i class="ti ti-calendar"></i> 📅 ' + queued + ' touch' + (queued === 1 ? '' : 'es') + ' queued for next window: ' + cmFormatSendTime(next) + '</div>';
+      }
+    }
+  }
+  return html;
+}
+
+function cmFormatSendTime(d) {
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var hh = d.getHours();
+  var mm = d.getMinutes();
+  var ampm = hh >= 12 ? 'PM' : 'AM';
+  var hr12 = hh % 12 || 12;
+  var pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+  var today = new Date(); today.setHours(0,0,0,0);
+  var dDay = new Date(d.getTime()); dDay.setHours(0,0,0,0);
+  var dayLbl = (dDay.getTime() === today.getTime())
+    ? 'Today'
+    : months[d.getMonth()] + ' ' + d.getDate();
+  return dayLbl + ' · ' + hr12 + ':' + pad(mm) + ' ' + ampm;
+}
+function cmSendWindowDescribe(win) {
+  if (!win) return 'Anytime · no restrictions';
+  if (!win.businessHoursOnly && !win.skipWeekends && !win.skipHolidays && !(win.quietHours && win.quietHours.enabled) && (!win.days || win.days.length === 7)) {
+    return 'Anytime · no restrictions';
+  }
+  var parts = [];
+  if (win.businessHoursOnly) {
+    var days = win.days || ['mon','tue','wed','thu','fri'];
+    var dayLbl = (days.length === 5 && days.indexOf('mon') >= 0 && days.indexOf('fri') >= 0 && days.indexOf('sat') < 0)
+      ? 'Mon–Fri'
+      : days.map(function(d){ return d.charAt(0).toUpperCase() + d.slice(1); }).join(', ');
+    parts.push('Business hours only (' + dayLbl + ' ' + cmFormatTimeShort(win.startTime) + '–' + cmFormatTimeShort(win.endTime) + ')');
+  }
+  var tzLbl = { recipient:"recipient TZ", my:"my TZ (America/New_York)", account:"account TZ" }[win.timezone] || 'recipient TZ';
+  parts.push(tzLbl);
+  if (win.skipWeekends) parts.push('skip weekends');
+  if (win.skipHolidays) parts.push('skip US holidays');
+  if (win.quietHours && win.quietHours.enabled) parts.push('quiet ' + cmFormatTimeShort(win.quietHours.start) + '–' + cmFormatTimeShort(win.quietHours.end));
+  return parts.join(' · ');
+}
+function cmFormatTimeShort(hhmm) {
+  var p = cmParseHHMM(hhmm);
+  var ampm = p.h >= 12 ? 'PM' : 'AM';
+  var hr12 = p.h % 12 || 12;
+  return hr12 + (p.m === 0 ? '' : ':' + (p.m < 10 ? '0' + p.m : p.m)) + ' ' + ampm;
+}
+// Touch delay → next absolute send time, respecting the window. baseTime is
+// the moment the campaign launches (Touch 1 uses baseTime + 0; Touch N uses
+// baseTime + delayDays).
+function cmTouchAbsoluteSend(baseTime, touch, win) {
+  var t = new Date(baseTime.getTime());
+  if (touch.d !== 'now') {
+    t.setDate(t.getDate() + (parseInt(touch.d, 10) || 0));
+  }
+  return cmComputeNextSend(t, win);
+}
+
 var CM_CONTACT_FILTER = 'all';
 var CM_CAMP_FILTER = 'all';
 // v4.8.0 — Currently-viewed campaign id (null when the drawer is closed).
@@ -11545,6 +11740,7 @@ function cmRenderCampaignView(id) {
     +     '<div class="cm-stat-tile"><div class="cm-stat-l">Unsub</div><div class="cm-stat-v">0</div></div>'
     +   '</div>'
     +   '<div class="cm-drawer-sec"><div class="cm-drawer-sec-t">Sequence progress</div><div class="cm-view-seq">' + seqRowsHtml + '</div></div>'
+    +   '<div class="cm-drawer-sec"><div class="cm-drawer-sec-t">Send window</div>' + cmViewSendWindowHtml(c) + '</div>'
     +   '<div class="cm-drawer-sec"><div class="cm-drawer-sec-t">Contacts (' + c.contactCount + ')</div>'
     +     '<table class="cm-cnt-tbl"><thead><tr><th>Contact</th><th>Account</th><th>Touch Reached</th><th>Status</th><th>Last Activity</th></tr></thead><tbody>' + contactsHtml + '</tbody></table>'
     +     '<div class="cm-add-cnt-link"><button type="button" class="cm-add-cnt-btn" onclick="cmAddContactPrompt({kind:&quot;campaign&quot;,cmpId:&quot;' + c.id + '&quot;})"><i class="ti ti-plus"></i> Add contact to this campaign</button></div>'
@@ -13143,7 +13339,7 @@ function cmRenderAnalytics() {
 
 // ── Campaign creation wizard ────────────────────────────────────────────────
 function cmOpenWizard() {
-  CM_WIZ = { step:1, name:'', type:'', goal:'', contacts:[], template:'', dust:true, touches:[{c:'email',d:'now',t:''},{c:'email',d:'5',t:''},{c:'email',d:'10',t:''}], touchCount:3 };
+  CM_WIZ = { step:1, name:'', type:'', goal:'', contacts:[], template:'', dust:true, touches:[{c:'email',d:'now',t:''},{c:'email',d:'5',t:''},{c:'email',d:'10',t:''}], touchCount:3, sendWindow: cmDefaultSendWindow() };
   var ov = document.getElementById('cm-wiz-ov');
   if (ov) ov.classList.add('on');
   cmWizRender();
@@ -13962,9 +14158,148 @@ function cmWizStep4(body) {
   }).join('');
   body.innerHTML = ''
     + '<div class="cm-wiz-step-l">Step 4 of 5</div>'
+    + cmWizStep4WarningHtml()
     + '<div class="cm-wiz-h">How many touches?</div>'
     + '<div class="cm-wiz-counts">' + countBtns + '</div>'
-    + touchBlocks;
+    + touchBlocks
+    + cmWizStep4SendWindowHtml();
+}
+// v4.28.0 — Validation banner for Step 4. Surfaces 2 warnings:
+//  - Immediately touch outside the current send window (will queue)
+//  - Narrow send window (< 4 hours wide) — likely to delay delivery
+function cmWizStep4WarningHtml() {
+  var win  = CM_WIZ.sendWindow;
+  if (!win) return '';
+  var msgs = [];
+  var hasNow = CM_WIZ.touches.some(function(t){ return t.d === 'now'; });
+  var now = new Date();
+  if (hasNow && win.businessHoursOnly && !cmInWindow(now, win)) {
+    var next = cmComputeNextSend(now, win);
+    msgs.push('Touch 1 is set to Immediately but current time falls outside your send window. It will queue until ' + cmFormatSendTime(next) + '.');
+  }
+  if (win.businessHoursOnly) {
+    var s = cmParseHHMM(win.startTime), e = cmParseHHMM(win.endTime);
+    if ((e.h * 60 + e.m) - (s.h * 60 + s.m) < 240) {
+      msgs.push('Narrow send window may delay delivery significantly');
+    }
+  }
+  if (!msgs.length) return '';
+  return msgs.map(function(m){
+    return '<div class="cm-wiz-warn" role="alert"><i class="ti ti-alert-triangle"></i> ' + cmEscape(m) + '</div>';
+  }).join('');
+}
+function cmWizStep4SendWindowHtml() {
+  var w = CM_WIZ.sendWindow || (CM_WIZ.sendWindow = cmDefaultSendWindow());
+  var dayList = ['mon','tue','wed','thu','fri','sat','sun'];
+  var dayBtns = dayList.map(function(d){
+    var on = w.days.indexOf(d) !== -1;
+    return '<button type="button" class="cm-sw-day' + (on ? ' on' : '') + '" aria-pressed="' + (on ? 'true' : 'false') + '" aria-label="' + cmEscape(d.charAt(0).toUpperCase() + d.slice(1)) + (on ? ' included' : ' excluded') + '" onclick="cmWizSendWindowToggleDay(\'' + d + '\')">' + d.charAt(0).toUpperCase() + d.slice(1, 3) + '</button>';
+  }).join('');
+  var tzOpts = [
+    ['recipient', "Recipient's local TZ"],
+    ['my',        'My TZ (America/New_York)'],
+    ['account',   'Account TZ (from Salesforce)']
+  ].map(function(o){
+    return '<option value="' + o[0] + '"' + (w.timezone === o[0] ? ' selected' : '') + '>' + cmEscape(o[1]) + '</option>';
+  }).join('');
+  var bhOnly = !!w.businessHoursOnly;
+  var skipW  = !!w.skipWeekends;
+  var skipH  = !!w.skipHolidays;
+  var qOn    = !!(w.quietHours && w.quietHours.enabled);
+  return ''
+    + '<div class="cm-sw" role="group" aria-label="Send time window configuration">'
+    +   '<div class="cm-sw-hd">Send Window · When touches can fire</div>'
+    +   '<div class="cm-sw-row">'
+    +     '<label class="cm-sw-lbl"><input type="checkbox" id="cm-sw-bh" aria-describedby="cm-sw-bh-ctrls"' + (bhOnly ? ' checked' : '') + ' onchange="cmWizSendWindowSet(\'businessHoursOnly\', this.checked)"> Send only during business hours</label>'
+    +     '<div class="cm-sw-ctrls" id="cm-sw-bh-ctrls"' + (bhOnly ? '' : ' style="opacity:.5;pointer-events:none"') + '>'
+    +       '<div class="cm-sw-days" role="group" aria-label="Days of week">' + dayBtns + '</div>'
+    +       '<input type="time" class="cm-sw-time" aria-label="Business hours start" value="' + cmEscape(w.startTime) + '" onchange="cmWizSendWindowSet(\'startTime\', this.value)">'
+    +       '<span class="cm-sw-sep">–</span>'
+    +       '<input type="time" class="cm-sw-time" aria-label="Business hours end" value="' + cmEscape(w.endTime) + '" onchange="cmWizSendWindowSet(\'endTime\', this.value)">'
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="cm-sw-row">'
+    +     '<label class="cm-sw-lbl">Time zone:</label>'
+    +     '<select class="cm-wiz-select" aria-label="Time zone" onchange="cmWizSendWindowSet(\'timezone\', this.value)" style="width:auto;margin-bottom:0">' + tzOpts + '</select>'
+    +   '</div>'
+    +   '<div class="cm-sw-row">'
+    +     '<label class="cm-sw-lbl"><input type="checkbox"' + (skipW ? ' checked' : '') + ' onchange="cmWizSendWindowSet(\'skipWeekends\', this.checked)"> Skip weekends</label>'
+    +     '<label class="cm-sw-lbl"><input type="checkbox"' + (skipH ? ' checked' : '') + ' onchange="cmWizSendWindowSet(\'skipHolidays\', this.checked)"> Skip US federal holidays</label>'
+    +   '</div>'
+    +   '<div class="cm-sw-row">'
+    +     '<label class="cm-sw-lbl"><input type="checkbox" id="cm-sw-q" aria-describedby="cm-sw-q-ctrls"' + (qOn ? ' checked' : '') + ' onchange="cmWizSendWindowSetQuiet(this.checked)"> Quiet hours: No sends from</label>'
+    +     '<div class="cm-sw-ctrls" id="cm-sw-q-ctrls"' + (qOn ? '' : ' style="opacity:.5;pointer-events:none"') + '>'
+    +       '<input type="time" class="cm-sw-time" aria-label="Quiet hours start" value="' + cmEscape(w.quietHours.start) + '" onchange="cmWizSendWindowSetQuietTime(\'start\', this.value)">'
+    +       '<span class="cm-sw-sep">to</span>'
+    +       '<input type="time" class="cm-sw-time" aria-label="Quiet hours end" value="' + cmEscape(w.quietHours.end) + '" onchange="cmWizSendWindowSetQuietTime(\'end\', this.value)">'
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="cm-sw-preview" id="cm-sw-preview" role="status" aria-live="polite">' + cmWizSendWindowPreviewHtml() + '</div>'
+    + '</div>';
+}
+function cmWizSendWindowPreviewHtml() {
+  var w = CM_WIZ.sendWindow;
+  if (!w) return '';
+  var base = new Date();
+  var lines = CM_WIZ.touches.map(function(t, i){
+    var when = cmTouchAbsoluteSend(base, t, w);
+    var reasonBits = [];
+    if (t.d !== 'now') reasonBits.push('Day ' + t.d);
+    if (w.businessHoursOnly && when.getHours() >= cmParseHHMM(w.startTime).h && when.getHours() <= cmParseHHMM(w.endTime).h) reasonBits.push('business hours');
+    var skipped = (w.skipWeekends || (w.days && w.days.length < 7));
+    if (skipped) {
+      var raw = new Date(base.getTime());
+      if (t.d !== 'now') raw.setDate(raw.getDate() + parseInt(t.d, 10));
+      var rawDay = cmDayName(raw);
+      if (rawDay !== cmDayName(when)) {
+        reasonBits.push('skipped ' + rawDay.charAt(0).toUpperCase() + rawDay.slice(1) + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][raw.getMonth()] + ' ' + raw.getDate());
+      }
+    }
+    var reason = reasonBits.length ? ' (' + reasonBits.join(' · ') + ')' : '';
+    return '<div class="cm-sw-preview-line">Touch ' + (i+1) + ': ' + cmFormatSendTime(when) + reason + '</div>';
+  }).join('');
+  return '<div class="cm-sw-preview-hd">Next ' + CM_WIZ.touchCount + ' touches will send:</div>' + lines;
+}
+function cmWizSendWindowRefresh() {
+  var pv = document.getElementById('cm-sw-preview');
+  if (pv) pv.innerHTML = cmWizSendWindowPreviewHtml();
+  // Re-render warnings too (they sit at the top of the step body).
+  var wEl = document.querySelector('.cm-wiz-step-l');
+  if (wEl && wEl.parentElement) {
+    var existing = wEl.parentElement.querySelectorAll('.cm-wiz-warn');
+    existing.forEach(function(n){ n.parentNode.removeChild(n); });
+    var warnHtml = cmWizStep4WarningHtml();
+    if (warnHtml) wEl.insertAdjacentHTML('afterend', warnHtml);
+  }
+}
+function cmWizSendWindowSet(field, value) {
+  if (!CM_WIZ.sendWindow) CM_WIZ.sendWindow = cmDefaultSendWindow();
+  CM_WIZ.sendWindow[field] = value;
+  // Re-render the section so disabled/enabled control groups update visually.
+  if (field === 'businessHoursOnly') { cmWizRender(); return; }
+  cmWizSendWindowRefresh();
+}
+function cmWizSendWindowSetQuiet(on) {
+  if (!CM_WIZ.sendWindow) CM_WIZ.sendWindow = cmDefaultSendWindow();
+  if (!CM_WIZ.sendWindow.quietHours) CM_WIZ.sendWindow.quietHours = { enabled:false, start:'20:00', end:'07:00' };
+  CM_WIZ.sendWindow.quietHours.enabled = !!on;
+  cmWizRender();
+}
+function cmWizSendWindowSetQuietTime(which, value) {
+  if (!CM_WIZ.sendWindow) CM_WIZ.sendWindow = cmDefaultSendWindow();
+  if (!CM_WIZ.sendWindow.quietHours) CM_WIZ.sendWindow.quietHours = { enabled:true, start:'20:00', end:'07:00' };
+  CM_WIZ.sendWindow.quietHours[which] = value;
+  cmWizSendWindowRefresh();
+}
+function cmWizSendWindowToggleDay(day) {
+  if (!CM_WIZ.sendWindow) CM_WIZ.sendWindow = cmDefaultSendWindow();
+  var idx = CM_WIZ.sendWindow.days.indexOf(day);
+  if (idx >= 0) CM_WIZ.sendWindow.days.splice(idx, 1);
+  else CM_WIZ.sendWindow.days.push(day);
+  // Keep the canonical day ordering for readability in the describe helper.
+  var order = ['mon','tue','wed','thu','fri','sat','sun'];
+  CM_WIZ.sendWindow.days.sort(function(a, b){ return order.indexOf(a) - order.indexOf(b); });
+  cmWizRender();
 }
 function cmWizSetTouchCount(n) { CM_WIZ.touchCount = n; cmWizRender(); }
 
@@ -14039,6 +14374,7 @@ function cmWizStep5(body) {
     +   '<div class="cm-wiz-summary-r"><span>Contacts</span><b>' + CM_WIZ.contacts.length + ' across ' + Object.keys(accts).length + ' accounts</b></div>'
     +   '<div class="cm-wiz-summary-r"><span>Sequence</span><b>' + CM_WIZ.touchCount + ' touches over ' + totalDays + ' days · ' + cmEscape(perTouchChannels) + '</b></div>'
     +   '<div class="cm-wiz-summary-r"><span>Templates</span><b>' + cmEscape(perTouchTpls) + '</b></div>'
+    +   '<div class="cm-wiz-summary-r"><span>Send window</span><b>' + cmEscape(cmSendWindowDescribe(CM_WIZ.sendWindow)) + '</b></div>'
     +   '<div class="cm-wiz-summary-r"><span>Sending from</span><b>Carmen Corio · carmen@1password.com</b></div>'
     + '</div>'
     + (preview ? '<div class="cm-wiz-step-l">Preview · editable per contact</div>' + preview : '');
@@ -14171,7 +14507,9 @@ function cmWizBuild(status, sentDate) {
     replyRate: status === 'active' ? 0 : null,
     progress: status === 'active' ? 'Touch 1 sending' : (status === 'scheduled' ? 'Awaiting send date' : 'Not yet sent'),
     contactIds: CM_WIZ.contacts.slice(),
-    templateId: CM_WIZ.template
+    templateId: CM_WIZ.template,
+    // v4.28.0 — persist the configured send window onto the new campaign.
+    sendWindow: CM_WIZ.sendWindow ? JSON.parse(JSON.stringify(CM_WIZ.sendWindow)) : cmDefaultSendWindow()
   };
 }
 
