@@ -1976,6 +1976,57 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* v4.28.0 — Send window section in the campaign View drawer. */
 .cm-view-sw{padding:10px 12px;background:var(--surf2);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.55}
 .cm-view-sw-q{margin-top:7px;padding:7px 10px;background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:5px;font-size:11px;color:#78350F;font-weight:700;display:flex;align-items:center;gap:6px}
+
+/* ─── v4.29.0 — Risk & Signals workflow fixes ──────────────────────────── */
+/* FIX 1 — Champion Change protocol drawer (mirrors gb-drawer shell). */
+.cc-drawer-ov{position:fixed;inset:0;background:rgba(17,24,39,.45);z-index:9100;display:none}
+.cc-drawer-ov.on{display:block}
+.cc-drawer{position:fixed;top:0;right:0;width:520px;max-width:100vw;height:100vh;background:var(--surf);border-left:1px solid var(--bd);box-shadow:-12px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;z-index:9101}
+.cc-drawer.on{transform:translateX(0)}
+.cc-drawer-hd{padding:14px 22px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.cc-drawer-hd-l{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.cc-drawer-t{font-size:15px;font-weight:800;color:#111827;letter-spacing:-.01em;display:flex;align-items:center;gap:7px}
+.cc-drawer-sub{font-size:11px;color:#374151;font-weight:600;line-height:1.5}
+.cc-drawer-x{font-family:inherit;font-size:22px;line-height:1;background:transparent;border:none;color:#6B7280;cursor:pointer;padding:4px 8px;border-radius:5px;min-width:36px}
+.cc-drawer-x:hover{background:var(--surf2);color:var(--tx)}
+.cc-drawer-body{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.cc-sec-t{font-size:10px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.cc-sec-bd{font-size:13px;color:#1F2937;font-weight:500;line-height:1.55}
+.cc-sec-bd b{color:#111827;font-weight:800}
+.cc-sec-bd .muted{color:#6B7280;font-weight:600;font-size:12px}
+.cc-seq-list{counter-reset:cc-step;display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.cc-seq-list > div{position:relative;padding:8px 12px 8px 36px;background:var(--surf2);border:1px solid var(--bd);border-radius:6px;font-size:12px;color:#1F2937;font-weight:500;line-height:1.5;counter-increment:cc-step}
+.cc-seq-list > div::before{content:counter(cc-step);position:absolute;left:8px;top:8px;width:20px;height:20px;border-radius:50%;background:var(--tl);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.cc-status{padding:10px 13px;background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:6px;font-size:12px;color:#1F2937;font-weight:600;line-height:1.5}
+.cc-status.notstarted{background:#FEF2F2;border-color:#FECACA;border-left-color:#DC2626;color:#7F1D1D}
+.cc-drawer-acts{display:flex;gap:7px;flex-wrap:wrap;padding-top:6px;border-top:1px dashed var(--bd);margin-top:4px}
+
+/* FIX 3 — STALE signal more aggressive. */
+.rs-sig-row.stale-row{opacity:.75}
+.rs-sig-row.stale-row .rs-sig-time{text-decoration:line-through;color:#9CA3AF}
+.rs-sig-row .rs-sig-meta .rs-sig-age.stale{font-size:11px;font-weight:800;padding:3px 10px;background:#374151;color:#fff;border-radius:99px;letter-spacing:.07em;text-transform:uppercase;margin-left:0;order:-1}
+.rs-sig-row .rs-sig-meta .rs-sig-age.stale[title]{cursor:help}
+
+/* FIX 5 — Stable Champions enhancement (extra fields + recommended action). */
+.rs-stable-row{align-items:flex-start;flex-wrap:wrap}
+.rs-stable-row .rs-stable-mid{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.rs-stable-row .rs-stable-mid .rs-stable-nm{font-size:12px;font-weight:800;color:#111827}
+.rs-stable-row .rs-stable-mid .rs-stable-sub{font-size:11px;color:#6B7280;font-weight:600;line-height:1.5}
+.rs-stable-row .rs-stable-mid .rs-stable-sub b{color:#111827;font-weight:800}
+.rs-stable-rec{flex-basis:100%;margin-top:7px;padding:8px 11px;background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;border-radius:5px;font-size:11px;color:#78350F;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rs-stable-rec span{font-weight:600}
+.rs-stable-rec b{color:#7F1D1D;font-weight:800}
+
+/* FIX 7 — Counter-narrative inline note form. */
+.rs-counter-form{margin-top:8px;padding:9px 11px;background:var(--surf2);border:1px solid var(--bd);border-radius:6px;display:none;flex-direction:column;gap:6px}
+.rs-counter-form.on{display:flex}
+.rs-counter-form textarea{width:100%;border:1px solid var(--bd2);border-radius:5px;padding:7px 10px;font-family:inherit;font-size:12px;color:#1F2937;background:var(--surf);outline:none;min-height:64px;resize:vertical;box-sizing:border-box}
+.rs-counter-form textarea:focus{border-color:var(--tl)}
+.rs-counter-form-acts{display:flex;gap:6px;justify-content:flex-end}
+.rs-sig-actions.multi{display:flex;flex-direction:column;gap:5px;align-items:stretch}
+.rs-sig-actions.multi .rs-btn{justify-content:center;font-size:10px;padding:5px 9px}
+.rs-sig-actions.multi .rs-btn.tertiary{opacity:.65;font-weight:600}
+.rs-sig-actions.multi .rs-btn.tertiary:hover{opacity:1}
 .cm-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg);color:var(--tx);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;letter-spacing:0;flex-shrink:0;text-transform:uppercase;border:1px solid var(--bd2)}
 .cm-cnt-mid{flex:1;min-width:0}
 .cm-cnt-nm{font-size:12px;font-weight:700;color:#111827;letter-spacing:-.01em;line-height:1.3}
@@ -4880,6 +4931,21 @@ body.offline .int-panel{top:124px}
   <div class="bf-sig-pop-body" id="bf-sig-pop-body"></div>
 </aside>
 
+<!-- v4.29.0 — Champion Change Protocol drawer. Body-level so it can be opened
+     from the All Signals row without tab-jumping. Same shell pattern as the
+     gb-drawer. Registered with the single drawer manager. -->
+<div class="cc-drawer-ov" id="cc-drawer-ov" onclick="ccDrawerClose()" aria-hidden="true"></div>
+<aside class="cc-drawer" id="cc-drawer" role="dialog" aria-modal="true" aria-labelledby="cc-drawer-title" aria-hidden="true">
+  <div class="cc-drawer-hd">
+    <div class="cc-drawer-hd-l">
+      <div class="cc-drawer-t" id="cc-drawer-title"><i class="ti ti-user-exclamation" style="color:#7C3AED"></i> Champion Change Protocol</div>
+      <div class="cc-drawer-sub" id="cc-drawer-sub">—</div>
+    </div>
+    <button class="cc-drawer-x" type="button" onclick="ccDrawerClose()" aria-label="Close Champion Change drawer">&times;</button>
+  </div>
+  <div class="cc-drawer-body" id="cc-drawer-body"></div>
+</aside>
+
 <!-- v4.24.0 — Team View Phase 2: Strategy Huddle drawer. Body-level so it
      sits above the Team View tab and stays open while the underlying tab
      scrolls. 5 tabs (Overview / Pod Notes / Pod Tasks / Smart Sheet / AI
@@ -5598,6 +5664,10 @@ document.addEventListener('keydown', function(e){
   // before falling through to lower-precedence drawers.
   var thDrawer = document.getElementById('th-drawer');
   if (thDrawer && thDrawer.classList.contains('on') && typeof thClose === 'function') { thClose(); e.preventDefault(); return; }
+  // v4.29.0 — Champion Change drawer (sits below the Strategy Huddle on
+  // Escape precedence because it's a more focused R&S overlay).
+  var ccDrawer = document.getElementById('cc-drawer');
+  if (ccDrawer && ccDrawer.classList.contains('on') && typeof ccDrawerClose === 'function') { ccDrawerClose(); e.preventDefault(); return; }
   // v4.13.0 — Ghost-Buster drawer has the highest Escape precedence because
   // it's the topmost overlay when open.
   var gbDrawer = document.getElementById('gb-drawer');
@@ -9996,7 +10066,8 @@ var DRAWER_REGISTRY = {
   'rs-slide-ov': { sel:'#rs-slide-ov',close:function(){ if (typeof rsCloseSlide       === 'function') rsCloseSlide();       } },
   'fc-acct':{ sel:'#fc-acct-drawer',  close:function(){ if (typeof fcCloseAcctDrawer  === 'function') fcCloseAcctDrawer();  } },
   'cm-cv':  { sel:'#cm-cv-drawer',    close:function(){ if (typeof cmCampViewClose    === 'function') cmCampViewClose();    } },
-  'th':     { sel:'#th-drawer',       close:function(){ if (typeof thClose            === 'function') thClose();            } }
+  'th':     { sel:'#th-drawer',       close:function(){ if (typeof thClose            === 'function') thClose();            } },
+  'cc':     { sel:'#cc-drawer',       close:function(){ if (typeof ccDrawerClose      === 'function') ccDrawerClose();      } }
 };
 // Sub-panels — closed when any full drawer opens, but not tracked as _openDrawer.
 var DRAWER_SUBPANELS = [
@@ -14653,16 +14724,30 @@ var RS_CHAMPS_CHANGES = [
   }
 ];
 
+// v4.29.0 — FIX 5: Stable Champions carry title, lastGong (sentiment), Last
+// QBR (with overdue flag), engagement trend, and a recommendedAction that
+// renders inline when warning conditions trigger.
 var RS_CHAMPS_STABLE = [
-  { acct:'acme',     nm:'Acme Corp',              champ:'David Kim · Head of IT Security · Last Gong May 10',  warn:false },
-  { acct:'brightex', nm:'Brightex',               champ:'Sarah Chen · VP Operations · Last Gong May 10',       warn:false },
-  { acct:'meridian', nm:'Meridian',               champ:'Jennifer Ramos · IT Manager · Last Gong 73d ago',     warn:true }
+  { acct:'acme',     nm:'Acme Corp', name:'David Kim',       title:'IT Director',
+    lastGong:'May 10 (sentiment +)',    lastQbr:'Mar 18',                 lastQbrOverdue:false,
+    trend:'up',    trendLabel:'Increasing',
+    warn:false },
+  { acct:'brightex', nm:'Brightex',  name:'Sarah Chen',      title:'VP Operations',
+    lastGong:'May 10 (SLA concern)',     lastQbr:'Feb 22 (overdue · Q1)',  lastQbrOverdue:true,
+    trend:'flat', trendLabel:'Stable',
+    warn:true, recommendedAction:'Schedule Q2 EBR', recommendedFn:'rsStableRecScheduleEbr' },
+  { acct:'meridian', nm:'Meridian',  name:'Jennifer Ramos',  title:'IT Manager',
+    lastGong:'73 days ago',              lastQbr:'Nov 14 2025 (overdue · Q4)', lastQbrOverdue:true,
+    trend:'down',  trendLabel:'Declining',
+    warn:true, recommendedAction:'Reply to inbound', recommendedFn:'rsStableRecReplyMeridian' }
 ];
 
+// v4.29.0 — FIX 4: Apex Dynamics moved from Dark Zone to Champions
+// (champion-departed pattern, not passive silence). RS_DARK drops to 2
+// entries (Meridian + Creston).
 var RS_DARK = [
   { acct:'meridian', nm:'Meridian Health Systems', days:73, arr:'$22K', renewal:'Jun 30', renewalDays:45, lastGong:'March 15 · SSO rollout', lastTouch:'March 15', inbound:true, inboundMsg:'Jennifer Ramos emailed yesterday — RESPOND TODAY', history:'No outreach sent yet', rec:'Jennifer’s inbound email is the opening. Reply within the hour — don’t let it go cold again. Reference the SSO rollout from March 15.' },
-  { acct:'creston',  nm:'Creston Software',        days:67, arr:'$18K', renewal:'Jul 15', renewalDays:60, lastGong:'March · Onboarding review', lastTouch:'March', inbound:false, history:'Ghost-Buster Touch 1 not yet sent', rec:'Passive neglect, not risk dark. Marcus Webb is likely intact. Lead with a specific product update — not a generic check-in.' },
-  { acct:'apex',     nm:'Apex Dynamics',           days:61, arr:'$15K', renewal:'Aug 1',  renewalDays:77, lastGong:'~March · Champion: James Wu (departed)', lastTouch:'March', inbound:false, history:'Champion change active (see Champion Tracker). AE warm intro not yet made.', rec:'Do not cold email Ryan Patel. Get AE warm intro first. 61 days gives enough runway to do this right.' }
+  { acct:'creston',  nm:'Creston Software',        days:67, arr:'$18K', renewal:'Jul 15', renewalDays:60, lastGong:'March · Onboarding review', lastTouch:'March', inbound:false, history:'Ghost-Buster Touch 1 not yet sent', rec:'Passive neglect, not risk dark. Marcus Webb is likely intact. Lead with a specific product update — not a generic check-in.' }
 ];
 
 var RS_ACTIVE = 'matrix';
@@ -14973,20 +15058,43 @@ function rsRenderSignals() {
     // ones — NEW and STALE.
     var ageInfo = rsAgeBucket(s.updated);
     var ageBadge = '';
+    var rowExtraCls = '';
     if (ageInfo.bucket === 'NEW') {
       ageBadge = '<span class="rs-sig-age new" aria-label="Signal age: ' + (ageInfo.days != null ? (ageInfo.days + ' day' + (ageInfo.days === 1 ? '' : 's') + ' ago, ') : '') + 'NEW">NEW</span>';
     } else if (ageInfo.bucket === 'STALE') {
-      ageBadge = '<span class="rs-sig-age stale" aria-label="Signal age: ' + (ageInfo.days != null ? (ageInfo.days + ' days ago, ') : '') + 'STALE">STALE</span>';
+      // v4.29.0 — FIX 3: aggressive STALE styling. Pill moves to the LEFT of
+      // the source chip (CSS `order: -1`), the row dims, and the timestamp
+      // gets struck through. Tooltip nudges the CSM to verify in the source
+      // before acting on a possibly outdated signal.
+      var srcLbl = srcKey === 'GONG' ? 'Gong' : srcKey === 'INBOX' ? 'Gmail' : srcKey === 'ZENDESK' ? 'Zendesk' : 'Gainsight';
+      var tip = 'This signal was last updated ' + (ageInfo.days != null ? ageInfo.days + ' days' : 'over a week') + ' ago. Verify in ' + srcLbl + ' before acting.';
+      ageBadge = '<span class="rs-sig-age stale" role="status" title="' + rsEscape(tip) + '" aria-label="Signal stale: last updated ' + (ageInfo.days != null ? ageInfo.days + ' days' : 'over a week') + ' ago, verify in ' + rsEscape(srcLbl) + ' before acting">STALE</span>';
+      rowExtraCls = ' stale-row';
     }
-    return '<div class="rs-sig-row ' + s.sev + '">'
+    // v4.29.0 — FIX 7: Brightex competitor flag (id 5) downgrades the primary
+    // CTA from Save Strategy to Counter-Narrative Note. Save Strategy stays
+    // available as a tertiary option.
+    var actionsHtml;
+    if (s.id === 5) {
+      actionsHtml = '<div class="rs-sig-actions multi" data-sig-id="5">'
+        + '<button class="rs-btn prim" type="button" onclick="rsCounterOpen(\'' + s.acct + '\')" aria-label="Add counter-narrative note for ' + rsEscape(s.acctName) + '"><i class="ti ti-note"></i> 📝 Add Counter-Narrative Note</button>'
+        + '<button class="rs-btn" type="button" onclick="rsWatchTrack(\'' + s.acct + '\')" aria-label="Add ' + rsEscape(s.acctName) + ' competitor signal to watch list"><i class="ti ti-eye"></i> Watch &amp; Track</button>'
+        + '<button class="rs-btn tertiary" type="button" onclick="rsSigAction(\'save\',\'' + s.acct + '\',5)" aria-label="Open Save Strategy for ' + rsEscape(s.acctName) + '">Open Save Strategy</button>'
+      + '</div>';
+    } else {
+      actionsHtml = '<div class="rs-sig-actions"><button class="rs-btn" type="button" onclick="rsSigAction(\'' + s.action + '\',\'' + s.acct + '\',' + s.id + ')">' + rsEscape(s.actionLabel) + '</button></div>';
+    }
+    var counterFormHtml = (s.id === 5) ? rsCounterFormHtml(s.acct) : '';
+    return '<div class="rs-sig-row ' + s.sev + rowExtraCls + '">'
       + '<span class="rs-sig-sev rs-sev ' + s.sev + '">' + sevIcon[s.sev] + ' ' + sevLabel[s.sev] + '</span>'
       + '<div class="rs-sig-mid">'
       +   '<span class="rs-sig-acct acct-lk" onclick="rsOpenMB(\'' + s.acct + '\')">' + rsEscape(s.acctName) + '</span>'
       +   '<div class="rs-sig-desc">' + rsEscape(s.desc) + '</div>'
       +   '<div class="rs-sig-context">' + rsEscape(s.ctx) + '</div>'
-      +   '<div class="rs-sig-meta">' + srcChip + timeChip + ageBadge + '</div>'
+      +   '<div class="rs-sig-meta">' + ageBadge + srcChip + timeChip + '</div>'
+      +   counterFormHtml
       + '</div>'
-      + '<div class="rs-sig-actions"><button class="rs-btn" type="button" onclick="rsSigAction(\'' + s.action + '\',\'' + s.acct + '\',' + s.id + ')">' + rsEscape(s.actionLabel) + '</button></div>'
+      + actionsHtml
     + '</div>';
   }).join('') : '<div class="rs-mx-detail-empty" style="background:var(--surf);border:1px solid var(--bd);border-radius:8px">No signals match this filter.</div>';
   sec.innerHTML = ''
@@ -15009,7 +15117,10 @@ function rsSigAction(kind, acct, sigId) {
     // (FIX 2). All other accounts (e.g. Meridian) keep the existing
     // draftReply panel.
     case 'draft':    if (acct === 'brightex') rsDraftReplyBrightex(); else if (typeof draftReply === 'function') draftReply(acct); else toast('Draft Reply · ' + rsEscape(acct) + ' ✓'); break;
-    case 'champion': rsShow('champions'); toast('Opening Champion Change Protocol · ' + rsEscape(acct) + ' ✓'); break;
+    // v4.29.0 — FIX 1: open the in-tab Champion Change drawer instead of
+    // tab-jumping to Champions. The drawer mirrors the gb-drawer pattern
+    // and surfaces the protocol content right next to the signal.
+    case 'champion': ccDrawerOpen(acct); break;
     default: toast('Action: ' + kind + ' · ' + rsEscape(acct) + ' ✓');
   }
 }
@@ -15087,7 +15198,9 @@ function rsPlayCardHTML(p) {
     + '<div class="rs-play-sec"><div class="rs-play-sec-t">Play steps</div><div class="rs-play-steps">' + steps + '</div></div>'
     + '<div class="rs-play-sec"><div class="rs-play-sec-t">Signals driving this play</div><div class="rs-play-sig">' + sigs + '</div></div>'
     + '<div class="rs-play-acts">'
-    +   '<button class="rs-btn" type="button" onclick="rsPlayUpdate(\'' + p.acct + '\')"><i class="ti ti-edit"></i> Update play status</button>'
+    // v4.29.0 — FIX 6: removed redundant "Update play status" button. The
+    // status badge + per-step status toggle handle status tracking; the
+    // separate button did the same thing without adding workflow.
     +   '<button class="rs-btn" type="button" onclick="rsPlayNote(\'' + p.acct + '\')"><i class="ti ti-note"></i> Add note</button>'
     +   '<button class="rs-btn" type="button" onclick="rsPlayPush(\'' + p.acct + '\')"><i class="ti ti-cloud-upload"></i> Push to Gainsight</button>'
     +   '<button class="rs-btn danger" type="button" onclick="rsPlayEscalate(\'' + p.acct + '\')"><i class="ti ti-arrow-up-circle"></i> Escalate to TL</button>'
@@ -15156,7 +15269,19 @@ function rsPlayNoteSave(ev, acct) {
   toast('Note saved · ' + rsEscape(p ? p.name.replace(/ Save Play$/, '') : acct) + ' · Gainsight timeline ✓');
   return false;
 }
-function rsPlayPush(acct) { toast('Save play updated · Gainsight ✓'); }
+// v4.29.0 — FIX 2: surface the actual CTA count + assignee in the toast so
+// the CSM knows what was just created in Gainsight, not just that something
+// happened.
+function rsPlayPush(acct) {
+  var p = RS_PLAYS.find(function(x){return x.acct===acct;});
+  var nm = p ? p.name.replace(/ Save Play$/, '') : (acct ? acct.charAt(0).toUpperCase() + acct.slice(1) : 'Account');
+  var count = p && Array.isArray(p.steps) ? p.steps.length : 0;
+  if (count === 0) {
+    toast('Save play synced to Gainsight · ' + rsEscape(nm) + ' · No new CTAs created ✓');
+  } else {
+    toast(count + ' CTAs created in Gainsight · ' + rsEscape(nm) + ' · Assigned to Carmen ✓');
+  }
+}
 // v4.13.0 — FIX 3: rewording per spec — "Escalation summary attached" (was
 // "Dust summary attached"). The QA audit reported the button as silent,
 // but the toast handler has been wired since v4.9.0; the report likely
@@ -15187,12 +15312,31 @@ function rsRenderChamps() {
       + '<div class="rs-champ-acts">' + actsHtml + '</div>'
     + '</div>';
   }).join('');
+  // v4.29.0 — FIX 5: stable champions surface title + Last Gong + Last QBR
+  // + engagement trend, plus a recommended action when warning conditions
+  // trigger (overdue QBR, declining trend, prolonged Gong silence).
+  // FIX 6: removed the standalone "Update champion" button on stable rows —
+  // if a champion hasn't changed, there's nothing to update.
+  var trendIcon = { up:'📈', flat:'→', down:'📉' };
   var stable = RS_CHAMPS_STABLE.map(function(s){
+    var trendIco = trendIcon[s.trend] || '→';
+    var recHtml = '';
+    if (s.warn && s.recommendedAction) {
+      var fn = s.recommendedFn || ('rsStableRec_' + s.acct);
+      recHtml = '<div class="rs-stable-rec" role="alert"><span><b>⚠ Recommended:</b> ' + rsEscape(s.recommendedAction) + '</span><button class="rs-btn prim" type="button" onclick="' + fn + '()" aria-label="Recommended action for ' + rsEscape(s.name) + ': ' + rsEscape(s.recommendedAction) + '">' + rsEscape(s.recommendedAction) + '</button></div>';
+    }
     return '<div class="rs-stable-row">'
       + '<span class="rs-stable-ic">' + (s.warn ? '⚠' : '✅') + '</span>'
-      + '<span class="rs-stable-nm">' + rsEscape(s.nm)+ '</span>'
-      + '<span class="rs-stable-meta' + (s.warn ? ' rs-stable-warn' : '') + '">' + rsEscape(s.champ) + (s.warn ? ' ⚠' : '') + '</span>'
-      + '<button class="rs-btn" type="button" onclick="rsChampUpdate(\'' + s.acct + '\')"><i class="ti ti-edit"></i> Update champion</button>'
+      + '<div class="rs-stable-mid">'
+      +   '<div class="rs-stable-nm">' + rsEscape(s.nm) + ' · ' + rsEscape(s.name) + '</div>'
+      +   '<div class="rs-stable-sub">'
+      +     '<b>Title:</b> ' + rsEscape(s.title)
+      +     ' &middot; <b>Last Gong:</b> ' + rsEscape(s.lastGong)
+      +     ' &middot; <b>Last QBR:</b> <span' + (s.lastQbrOverdue ? ' style="color:#B45309;font-weight:800"' : '') + '>' + rsEscape(s.lastQbr) + '</span>'
+      +     ' &middot; <b>Trend:</b> ' + trendIco + ' ' + rsEscape(s.trendLabel)
+      +   '</div>'
+      + '</div>'
+      + recHtml
     + '</div>';
   }).join('');
   sec.innerHTML = ''
@@ -15204,6 +15348,173 @@ function rsRenderChamps() {
 function rsStartReeng(acct)  { toast('Re-engagement sequence started · ' + rsEscape(acct) + ' · AE intro flagged ✓'); }
 function rsNotifyAE(acct)    { toast('Slack DM sent to AE · ' + rsEscape(acct) + ' · Warm intro requested ✓'); }
 function rsChampUpdate(acct) { toast('Champion updated · ' + rsEscape(acct) + ' · Gainsight ✓'); }
+
+// ── v4.29.0 — FIX 1: Champion Change Protocol drawer ────────────────────────
+// Opens in-tab from any signal whose action is 'champion'. Pulls structured
+// content from RS_CHAMPS_CHANGES so the All Signals reviewer can act without
+// leaving the feed. Tab-jump to Champions remains as a tertiary option.
+var _ccDrawerTrigger = null;
+function ccDrawerOpen(acct) {
+  var c = RS_CHAMPS_CHANGES.find(function(x){return x.acct===acct;});
+  if (!c) { toast('Champion change protocol unavailable for ' + rsEscape(acct)); return; }
+  try { _ccDrawerTrigger = document.activeElement; } catch (_) {}
+  var drw = document.getElementById('cc-drawer');
+  var ov  = document.getElementById('cc-drawer-ov');
+  var title = document.getElementById('cc-drawer-title');
+  var sub   = document.getElementById('cc-drawer-sub');
+  var body  = document.getElementById('cc-drawer-body');
+  if (!drw || !body) return;
+
+  if (title) title.innerHTML = '<i class="ti ti-user-exclamation" style="color:#7C3AED"></i> Champion Change Protocol · ' + rsEscape(c.acctName);
+  if (sub)   sub.textContent = c.riskLabel + ' · ' + c.renewalDays + ' days to renewal';
+
+  // Build the recommended sequence as a numbered list. The narrative for
+  // each step is account-specific; fall back to a generic 3-step protocol.
+  var steps;
+  if (acct === 'nova') {
+    steps = [
+      'AE warm intro first (David Kim · check relationship)',
+      'Wait for response from David re: Torres',
+      'CSM cold intro only if AE relationship doesn’t exist'
+    ];
+  } else if (acct === 'apex') {
+    steps = [
+      'AE warm intro before any CSM outreach (renewal is 77d away — time permits doing it right)',
+      'Wait for AE network mapping on Ryan Patel',
+      'Do not cold email Ryan Patel under any circumstances'
+    ];
+  } else {
+    steps = [
+      'AE warm intro first',
+      'Wait for AE response on relationship status',
+      'CSM cold intro only if AE relationship doesn’t exist'
+    ];
+  }
+  var stepsHtml = '<div class="cc-seq-list" role="list">' + steps.map(function(t){ return '<div role="listitem">' + rsEscape(t) + '</div>'; }).join('') + '</div>';
+
+  var reCls = /NOT STARTED/i.test(c.reStatus) ? 'notstarted' : '';
+
+  // v4.29.0 — FIX 1: include a Notify AE / Open Save Strategy primary path,
+  // and a tertiary "View in Champions Tab →" tab-jump for users who want
+  // the broader context.
+  var acts = '<div class="cc-drawer-acts">'
+    + '<button class="rs-btn prim" type="button" onclick="ccDrawerNotifyAE()"><i class="ti ti-brand-slack"></i> Notify AE</button>'
+    + '<button class="rs-btn" type="button" onclick="ccDrawerOpenSave()"><i class="ti ti-shield-check"></i> Open Save Strategy</button>'
+    + '<button class="rs-btn" type="button" onclick="ccDrawerViewTab()"><i class="ti ti-external-link"></i> View in Champions Tab →</button>'
+    + '</div>';
+
+  body.innerHTML = ''
+    + '<div><div class="cc-sec-t">Previous champion</div><div class="cc-sec-bd">' + rsEscape(c.prev) + '</div></div>'
+    + '<div><div class="cc-sec-t">New contact</div><div class="cc-sec-bd">' + rsEscape(c.next) + '</div></div>'
+    + '<div><div class="cc-sec-t">Recommended sequence</div>' + stepsHtml + '</div>'
+    + '<div><div class="cc-sec-t">Re-engagement status</div><div class="cc-status ' + reCls + '" role="status">' + rsEscape(c.reStatus) + '</div></div>'
+    + acts;
+
+  if (ov)  ov.classList.add('on');
+  drw.classList.add('on');
+  drw.setAttribute('aria-hidden', 'false');
+  drw.setAttribute('aria-label', 'Champion change protocol for ' + c.acctName);
+  if (typeof _drawerManagerOpen === 'function') _drawerManagerOpen('cc');
+  // Stash account for the secondary action handlers.
+  drw.setAttribute('data-acct', acct);
+  setTimeout(function(){
+    var x = drw.querySelector('.cc-drawer-x');
+    if (x) try { x.focus(); } catch (_) {}
+  }, 60);
+}
+function ccDrawerClose() {
+  var drw = document.getElementById('cc-drawer');
+  var ov  = document.getElementById('cc-drawer-ov');
+  if (drw) { drw.classList.remove('on'); drw.setAttribute('aria-hidden', 'true'); }
+  if (ov)  ov.classList.remove('on');
+  if (typeof _drawerManagerClose === 'function') _drawerManagerClose('cc');
+  if (_ccDrawerTrigger && typeof _ccDrawerTrigger.focus === 'function') {
+    try { _ccDrawerTrigger.focus(); } catch (_) {}
+  }
+  _ccDrawerTrigger = null;
+}
+function ccDrawerNotifyAE() {
+  var drw = document.getElementById('cc-drawer');
+  var acct = drw ? drw.getAttribute('data-acct') : null;
+  if (acct && typeof rsNotifyAE === 'function') rsNotifyAE(acct);
+  else toast('Notify AE · Phase 2');
+}
+function ccDrawerOpenSave() {
+  var drw = document.getElementById('cc-drawer');
+  var acct = drw ? drw.getAttribute('data-acct') : null;
+  ccDrawerClose();
+  if (acct && typeof rsOpenSave === 'function') rsOpenSave(acct);
+  else if (acct) toast('Open Save Strategy · ' + rsEscape(acct));
+}
+function ccDrawerViewTab() {
+  ccDrawerClose();
+  if (typeof rsShow === 'function') rsShow('champions');
+  toast('Champion tracker · all active changes');
+}
+
+// ── v4.29.0 — FIX 5: Stable Champions recommended-action handlers ─────────
+function rsStableRecScheduleEbr() {
+  // Route to the Campaign Manager wizard with the EBR Overdue segment chip
+  // pre-selected. Falls back to a toast if the campaigns surface isn't
+  // available (e.g. during a tab the wizard isn't reachable from).
+  if (typeof goTab === 'function') {
+    var tab = document.querySelector('.n-tab[onclick*="campaigns"]');
+    if (tab) goTab('campaigns', tab);
+  }
+  setTimeout(function(){
+    if (typeof cmShowSection === 'function') cmShowSection('campaigns');
+    if (typeof cmSegmentClick === 'function') cmSegmentClick('ebr-overdue', { target:{ closest:function(){ return null; } } });
+    toast('Q2 EBR campaign opened · Brightex pre-selected ✓');
+  }, 80);
+}
+function rsStableRecReplyMeridian() {
+  if (typeof draftReply === 'function') { draftReply('meridian'); return; }
+  toast('Reply to Jennifer Ramos · Meridian · Compose drawer · Phase 2');
+}
+
+// ── v4.29.0 — FIX 7: Brightex counter-narrative inline note form ─────────
+var RS_COUNTER_KEY = 'teamos_competitor_notes';
+function rsCounterRead() {
+  try { return JSON.parse(localStorage.getItem(RS_COUNTER_KEY) || '{}') || {}; } catch (_) { return {}; }
+}
+function rsCounterWrite(acct, note) {
+  var store = rsCounterRead();
+  store[acct] = { note: note, ts: Date.now() };
+  try { localStorage.setItem(RS_COUNTER_KEY, JSON.stringify(store)); } catch (_) {}
+}
+function rsCounterFormHtml(acct) {
+  var existing = (rsCounterRead()[acct] && rsCounterRead()[acct].note) || '';
+  return '<div class="rs-counter-form" id="rs-counter-form-' + acct + '" role="form" aria-label="Counter-narrative note">'
+    + '<label class="cc-sec-t" for="rs-counter-ta-' + acct + '" style="margin:0">Counter-narrative note</label>'
+    + '<textarea id="rs-counter-ta-' + acct + '" placeholder="Okta differentiation points to surface in next call:" aria-label="Okta differentiation notes for ' + rsEscape(acct) + '">' + rsEscape(existing) + '</textarea>'
+    + '<div class="rs-counter-form-acts">'
+    +   '<button type="button" class="rs-btn" onclick="rsCounterClose(\'' + acct + '\')">Cancel</button>'
+    +   '<button type="button" class="rs-btn prim" onclick="rsCounterSave(\'' + acct + '\')">Save note</button>'
+    + '</div>'
+  + '</div>';
+}
+function rsCounterOpen(acct) {
+  var form = document.getElementById('rs-counter-form-' + acct);
+  if (!form) return;
+  form.classList.add('on');
+  var ta = document.getElementById('rs-counter-ta-' + acct);
+  if (ta && !ta.value) ta.value = 'Okta differentiation points to surface in next call:\n- ';
+  if (ta) try { ta.focus(); var len = ta.value.length; ta.setSelectionRange(len, len); } catch (_) {}
+}
+function rsCounterClose(acct) {
+  var form = document.getElementById('rs-counter-form-' + acct);
+  if (form) form.classList.remove('on');
+}
+function rsCounterSave(acct) {
+  var ta = document.getElementById('rs-counter-ta-' + acct);
+  if (!ta) return;
+  rsCounterWrite(acct, ta.value || '');
+  rsCounterClose(acct);
+  toast('Counter-narrative note saved · ' + rsEscape(acct) + ' · Gainsight timeline ✓');
+}
+function rsWatchTrack(acct) {
+  toast(rsEscape(acct.charAt(0).toUpperCase() + acct.slice(1)) + ' competitor signal added to watch list · No save play triggered ✓');
+}
 
 // ── Dark Zone (this tab) ────────────────────────────────────────────────────
 function rsRenderDark() {

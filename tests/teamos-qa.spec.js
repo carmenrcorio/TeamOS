@@ -438,11 +438,13 @@ test.describe('Risk & Signals', () => {
     expect(await page.locator('.rs-champ-card').count()).toBe(2);
   });
 
-  test('Dark Zone has 3 cards with status selects', async ({ page }) => {
+  test('Dark Zone has 2 cards with status selects', async ({ page }) => {
+    // v4.29.0 — Apex moved from Dark Zone to Champions (champion-departed
+    // pattern, not passive silence). Dark Zone now carries Meridian + Creston.
     await page.evaluate(() => rsShow('dark'));
     await page.waitForTimeout(200);
-    expect(await page.locator('.rs-dark-card').count()).toBe(3);
-    expect(await page.locator('#rs-sec-dark select').count()).toBe(3);
+    expect(await page.locator('.rs-dark-card').count()).toBe(2);
+    expect(await page.locator('#rs-sec-dark select').count()).toBe(2);
   });
 
   test('Meridian dark card flags the inbound signal', async ({ page }) => {
@@ -3209,10 +3211,12 @@ test.describe('v4.19.0 Risk & Signals workflow fixes', () => {
   });
 
   test('FIX 4: staleness aria-label spells out the age + bucket', async ({ page }) => {
+    // v4.29.0 — STALE aria-label rewritten to direct the CSM to verify in
+    // the source system before acting on possibly-outdated signals.
     await page.evaluate(() => rsShow('signals'));
     await page.waitForTimeout(180);
     const stale = await page.locator('.rs-sig-age.stale').first().getAttribute('aria-label');
-    expect(stale).toMatch(/Signal age: \d+ days ago, STALE/);
+    expect(stale).toMatch(/Signal stale: last updated .+ ago, verify in .+ before acting/);
     const fresh = await page.locator('.rs-sig-age.new').first().getAttribute('aria-label');
     expect(fresh).toMatch(/, NEW$/);
   });
@@ -4970,5 +4974,236 @@ test.describe('v4.28.0 Campaign Manager send-time windows', () => {
     expect(saved).toBeTruthy();
     expect(saved.days).toEqual(['mon','wed','fri']);
     expect(saved.skipHolidays).toBe(true);
+  });
+});
+
+test.describe('v4.29.0 Risk & Signals workflow fixes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.evaluate(() => { try { localStorage.clear(); } catch(_){} });
+    await page.evaluate(() => { goTab('risk', document.querySelector('.n-tab[onclick*="risk"]')); });
+    await page.waitForTimeout(150);
+  });
+
+  // ── FIX 1: Champion Change Protocol drawer ─────────────────────────────
+  test('FIX 1: Champion Change Protocol opens a body-level drawer (no tab-jump)', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(200);
+    await page.locator('button.rs-btn:has-text("Champion Change Protocol")').click();
+    await page.waitForTimeout(250);
+    const drw = page.locator('#cc-drawer.on');
+    await expect(drw).toBeVisible();
+    expect(await drw.getAttribute('role')).toBe('dialog');
+    expect(await drw.getAttribute('aria-modal')).toBe('true');
+    expect(await drw.getAttribute('aria-label')).toMatch(/Champion change protocol for Apex/);
+    // The Signals tab should still be the active sub-tab (no tab-jump).
+    await expect(page.locator('#rs-sec-signals.on')).toBeVisible();
+    const t = await page.locator('#cc-drawer').textContent();
+    expect(t).toMatch(/Champion Change Protocol · Apex Dynamics/);
+    expect(t).toMatch(/Previous champion/);
+    expect(t).toMatch(/New contact/);
+    expect(t).toMatch(/Recommended sequence/);
+    expect(t).toMatch(/Re-engagement status/);
+    expect(t).toMatch(/Notify AE/);
+    expect(t).toMatch(/Open Save Strategy/);
+    expect(t).toMatch(/View in Champions Tab/);
+  });
+
+  test('FIX 1: Escape closes the Champion Change drawer + restores focus', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(200);
+    const btn = page.locator('button.rs-btn:has-text("Champion Change Protocol")');
+    await btn.focus();
+    await btn.click();
+    await page.waitForTimeout(200);
+    await expect(page.locator('#cc-drawer.on')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(200);
+    await expect(page.locator('#cc-drawer.on')).toHaveCount(0);
+  });
+
+  // ── FIX 2: Push to Gainsight toast specificity ─────────────────────────
+  test('FIX 2: rsPlayPush toast surfaces CTA count + assignee', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.evaluate(() => rsPlayPush('nova'));
+    await page.waitForTimeout(150);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /5 CTAs created in Gainsight · NovaVault · Assigned to Carmen/.test(t))).toBe(true);
+  });
+
+  test('FIX 2: 0-step play falls back to no-new-CTAs message', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(150);
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    // Inject a temporary 0-step play to confirm the branch.
+    await page.evaluate(() => {
+      RS_PLAYS.push({ acct:'ztest', name:'Z Test Save Play', status:'WATCH', steps:[] });
+      rsPlayPush('ztest');
+      RS_PLAYS.pop();
+    });
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /Save play synced to Gainsight · Z Test · No new CTAs created/.test(t))).toBe(true);
+  });
+
+  // ── FIX 3: STALE styling aggression ────────────────────────────────────
+  test('FIX 3: STALE signals get .stale-row class + reordered badge + tooltip', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(200);
+    const staleCount = await page.locator('.rs-sig-row.stale-row').count();
+    expect(staleCount).toBeGreaterThan(0);
+    // STALE badge sits inside the meta row and carries a title tooltip.
+    const badgeInfo = await page.locator('.rs-sig-row.stale-row').first().evaluate(row => {
+      const meta = row.querySelector('.rs-sig-meta');
+      const badge = row.querySelector('.rs-sig-age.stale');
+      const children = Array.from(meta.children);
+      return {
+        firstChildIsBadge: children[0] && children[0].classList && children[0].classList.contains('rs-sig-age'),
+        order: getComputedStyle(badge).order,
+        title: badge.getAttribute('title'),
+        aria:  badge.getAttribute('aria-label')
+      };
+    });
+    // CSS sets order: -1 on the stale badge so it visually leads the meta row.
+    expect(badgeInfo.order).toBe('-1');
+    expect(badgeInfo.title).toMatch(/Verify in.*before acting/);
+    expect(badgeInfo.aria).toMatch(/Signal stale: last updated/);
+    // The whole row dims via opacity 0.75.
+    const op = await page.locator('.rs-sig-row.stale-row').first().evaluate(r => getComputedStyle(r).opacity);
+    expect(parseFloat(op)).toBeLessThanOrEqual(0.76);
+  });
+
+  // ── FIX 4: Apex moved from Dark to Champions ───────────────────────────
+  test('FIX 4: RS_DARK no longer contains Apex; RS_CHAMPS_CHANGES does', async ({ page }) => {
+    const data = await page.evaluate(() => ({
+      darkKeys:  RS_DARK.map(d => d.acct),
+      champKeys: RS_CHAMPS_CHANGES.map(c => c.acct)
+    }));
+    expect(data.darkKeys).not.toContain('apex');
+    expect(data.darkKeys).toEqual(['meridian','creston']);
+    expect(data.champKeys).toContain('apex');
+    expect(data.champKeys).toContain('nova');
+  });
+
+  test('FIX 4: Dark Zone renders 2 cards, Champions renders 2 change cards', async ({ page }) => {
+    await page.evaluate(() => rsShow('dark'));
+    await page.waitForTimeout(200);
+    const darkTxt = await page.locator('#rs-sec-dark').textContent();
+    expect(darkTxt).not.toMatch(/Apex/);
+    expect(darkTxt).toMatch(/Meridian/);
+    expect(darkTxt).toMatch(/Creston/);
+    await page.evaluate(() => rsShow('champions'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('#rs-sec-champions .rs-champ-card').count()).toBe(2);
+  });
+
+  // ── FIX 5: Stable Champions enhanced fields + recommended actions ──────
+  test('FIX 5: Stable rows show Title + Last Gong + Last QBR + Trend', async ({ page }) => {
+    await page.evaluate(() => rsShow('champions'));
+    await page.waitForTimeout(200);
+    const stable = await page.locator('#rs-sec-champions .rs-stable-row').allTextContents();
+    const joined = stable.join(' | ');
+    expect(joined).toMatch(/David Kim/);
+    expect(joined).toMatch(/IT Director/);
+    expect(joined).toMatch(/Last QBR/);
+    expect(joined).toMatch(/Mar 18/);
+    expect(joined).toMatch(/Increasing/);
+    expect(joined).toMatch(/Feb 22 \(overdue · Q1\)/);
+    expect(joined).toMatch(/Stable/);
+    expect(joined).toMatch(/Declining/);
+  });
+
+  test('FIX 5: Warning condition triggers recommended action button', async ({ page }) => {
+    await page.evaluate(() => rsShow('champions'));
+    await page.waitForTimeout(200);
+    // Acme has no warn → no recommended action button on its row.
+    const acmeRowTxt = await page.locator('#rs-sec-champions .rs-stable-row').nth(0).textContent();
+    expect(acmeRowTxt).not.toMatch(/Recommended/);
+    // Brightex + Meridian both carry warn → both surface recommended actions.
+    expect(await page.locator('#rs-sec-champions .rs-stable-row .rs-stable-rec').count()).toBe(2);
+    expect(await page.locator('#rs-sec-champions button:has-text("Schedule Q2 EBR")').count()).toBe(1);
+    expect(await page.locator('#rs-sec-champions button:has-text("Reply to inbound")').count()).toBe(1);
+  });
+
+  test('FIX 5: Schedule Q2 EBR routes to Campaigns + opens wizard at Step 2', async ({ page }) => {
+    await page.evaluate(() => rsShow('champions'));
+    await page.waitForTimeout(200);
+    await page.locator('#rs-sec-champions button:has-text("Schedule Q2 EBR")').click();
+    await page.waitForTimeout(400);
+    await expect(page.locator('#tab-campaigns')).toHaveClass(/on/);
+    await expect(page.locator('#cm-wiz-ov.on')).toBeVisible();
+    expect(await page.evaluate(() => CM_WIZ && CM_WIZ.step)).toBe(2);
+    await page.evaluate(() => cmCloseWizard());
+  });
+
+  // ── FIX 6: Redundant buttons removed ───────────────────────────────────
+  test('FIX 6: Save Play cards no longer show "Update play status"', async ({ page }) => {
+    await page.evaluate(() => rsShow('plays'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('button:has-text("Update play status")').count()).toBe(0);
+    // The 3 sibling actions remain (Add note · Push to Gainsight · Escalate).
+    expect(await page.locator('.rs-play-acts button:has-text("Add note")').count()).toBeGreaterThan(0);
+    expect(await page.locator('.rs-play-acts button:has-text("Push to Gainsight")').count()).toBeGreaterThan(0);
+    expect(await page.locator('.rs-play-acts button:has-text("Escalate")').count()).toBeGreaterThan(0);
+  });
+
+  test('FIX 6: Stable rows no longer show "Update champion"; change rows still show "Update status"', async ({ page }) => {
+    await page.evaluate(() => rsShow('champions'));
+    await page.waitForTimeout(200);
+    expect(await page.locator('.rs-stable-row button:has-text("Update champion")').count()).toBe(0);
+    expect(await page.locator('.rs-champ-card button:has-text("Update status")').count()).toBeGreaterThan(0);
+  });
+
+  // ── FIX 7: Brightex competitor flag downgraded primary CTA ─────────────
+  test('FIX 7: Brightex competitor signal renders 3 actions with downgraded Save Strategy', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(200);
+    const row = page.locator('[data-sig-id="5"]');
+    await expect(row).toBeVisible();
+    expect(await row.locator('button.rs-btn.prim:has-text("Counter-Narrative")').count()).toBe(1);
+    expect(await row.locator('button.rs-btn:has-text("Watch & Track")').count()).toBe(1);
+    expect(await row.locator('button.rs-btn.tertiary:has-text("Open Save Strategy")').count()).toBe(1);
+  });
+
+  test('FIX 7: Counter-Narrative inline form opens, saves to localStorage, toasts', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(200);
+    await page.locator('[data-sig-id="5"] button:has-text("Counter-Narrative")').click();
+    await page.waitForTimeout(150);
+    await expect(page.locator('#rs-counter-form-brightex.on')).toBeVisible();
+    await page.locator('#rs-counter-ta-brightex').fill('Okta diff: SSO depth, audit log retention');
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.locator('.rs-counter-form button:has-text("Save note")').click();
+    await page.waitForTimeout(200);
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('teamos_competitor_notes') || '{}'));
+    expect(stored.brightex && stored.brightex.note).toMatch(/SSO depth/);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /Counter-narrative note saved · brightex · Gainsight timeline/.test(t))).toBe(true);
+  });
+
+  test('FIX 7: Watch & Track toasts the no-save-play message', async ({ page }) => {
+    await page.evaluate(() => rsShow('signals'));
+    await page.waitForTimeout(200);
+    await page.evaluate(() => {
+      window._toasts = [];
+      const orig = window.toast;
+      window.toast = function(m){ window._toasts.push(String(m)); return orig.apply(this, arguments); };
+    });
+    await page.locator('[data-sig-id="5"] button:has-text("Watch & Track")').click();
+    await page.waitForTimeout(150);
+    const toasts = await page.evaluate(() => window._toasts);
+    expect(toasts.some(t => /Brightex competitor signal added to watch list · No save play triggered/.test(t))).toBe(true);
   });
 });
